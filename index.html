@@ -3,115 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Mali&display=swap" rel="stylesheet">
-    <title>Math Game - Grade 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400&display=swap" rel="stylesheet">
     <style>
         body {
+            background: linear-gradient(to bottom, purple, blue);
             font-family: 'Mali', sans-serif;
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
-            color: #333;
+            color: white;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             margin: 0;
         }
-        .score-board {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .question {
-            font-size: 28px;
-            margin: 20px 0;
-        }
-        .answer {
-            font-size: 32px;
-            margin: 20px 0;
-            padding: 10px;
-            border: 2px solid #333;
-            width: 200px;
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
             text-align: center;
         }
-        .keypad {
+        .score-board {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .question-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .display-screen {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .button {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: scale(1.1);
+        }
+        .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-top: 20px;
         }
-        .button {
-            padding: 20px;
-            font-size: 24px;
-            border: none;
-            background-color: #fff;
-            border-radius: 5px;
-            cursor: pointer;
-            user-select: none;
-        }
-        .feedback {
-            margin: 20px;
-            font-size: 24px;
-            transition: all 0.3s ease;
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
         }
     </style>
+    <title>Math Game</title>
 </head>
 <body>
-    <div class="score-board">คะแนน: 0/10</div>
-    <div class="question">5 เมตร เท่ากับกี่ เซนติเมตร?</div>
-    <input type="text" class="answer" placeholder="ตอบคำถามที่นี่" readonly>
-    <div class="keypad">
-        <button class="button">1</button>
-        <button class="button">2</button>
-        <button class="button">3</button>
-        <button class="button">4</button>
-        <button class="button">5</button>
-        <button class="button">6</button>
-        <button class="button">7</button>
-        <button class="button">8</button>
-        <button class="button">9</button>
-        <button class="button">0</button>
-        <button class="button">.</button>
-        <button class="button">Backspace</button>
-        <button class="button">Submit</button>
+    <div class="container">
+        <div class="score-board">
+            <div>Score: 0</div>
+            <div>🔢 Questions: 10</div>
+        </div>
+        <div class="question-box">นี่คือคำถาม?</div>
+        <div class="display-screen">ใส่คำตอบที่นี่</div>
+        <div class="grid">
+            <button class="button">1</button>
+            <button class="button">2</button>
+            <button class="button">3</button>
+            <button class="button">4</button>
+            <button class="button">5</button>
+            <button class="button">6</button>
+            <button class="button">7</button>
+            <button class="button">8</button>
+            <button class="button">9</button>
+            <button class="button">0</button>
+            <button class="button">.</button>
+            <button class="button">⌫</button>
+            <button class="button">✅</button>
+        </div>
+        <button class="button" onclick="startGame()">เริ่มเกมใหม่</button>
     </div>
-    <div class="feedback"></div>
-
     <script>
-        // Add your JavaScript logic here for interaction
-        let score = 0;
-        let questionNumber = 0;
-        const feedback = document.querySelector('.feedback');
-        const answerBox = document.querySelector('.answer');
-        const scoreBoard = document.querySelector('.score-board');
-
-        function submitAnswer() {
-            // Logic to check the answer and provide feedback
-            const userAnswer = answerBox.value;
-            // Simple example: If the answer is correct
-            if (userAnswer == "500") {
-                score++;
-                feedback.innerText = 'ถูกต้อง!';
-                feedback.style.color = 'green';
-            } else {
-                feedback.innerText = 'ผิด!';
-                feedback.style.color = 'red';
-            }
-            questionNumber++;
-            scoreBoard.innerText = `คะแนน: ${score}/${questionNumber}`;
+        // This is where the game logic will go
+        function startGame() {
+            // Logic for starting the game with 10 random questions about unit conversions
         }
-
-        document.querySelectorAll('.button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const text = e.target.innerText;
-                if (text === 'Submit') {
-                    submitAnswer();
-                } else if (text === 'Backspace') {
-                    answerBox.value = answerBox.value.slice(0, -1);
-                } else {
-                    answerBox.value += text;
-                }
-            });
-        });
     </script>
 </body>
 </html>
