@@ -1,107 +1,104 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(to bottom, purple, blue);
+            background: linear-gradient(to bottom right, #FFB6C1, #ADD8E6);
             font-family: 'Mali', sans-serif;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            padding: 20px;
-            width: 80%;
-            max-width: 600px;
             text-align: center;
+            margin: 0;
+            padding: 0;
         }
-        .score-board {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        .question-box {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 24px;
-            margin: 20px 0;
-        }
-        .display-screen {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
+        #game-container {
+            max-width: 600px;
+            margin: auto;
             padding: 20px;
-            font-size: 32px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .button {
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            padding: 20px;
-            font-size: 20px;
+        button {
+            border-radius: 5px;
+            padding: 10px;
             margin: 5px;
-            transition: transform 0.2s;
+            font-size: 16px;
+            cursor: pointer;
         }
-        .button:hover {
-            transform: scale(1.1);
-        }
-        .grid {
+        .keypad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        @media (max-width: 768px) {
-            .container {
-                width: 95%;
-            }
+            margin-top: 20px;
         }
     </style>
-    <title>Math Game</title>
 </head>
 <body>
-    <div class="container">
-        <div class="score-board">
-            <div>Score: 0</div>
-            <div>🔢 Questions: 10</div>
+    <div id="game-container">
+        <h1>Unit Conversion Game</h1>
+        <div id="question"></div>
+        <div id="score">Score: 0</div>
+        <div class="keypad">
+            <button onclick="appendNumber(1)">1</button>
+            <button onclick="appendNumber(2)">2</button>
+            <button onclick="appendNumber(3)">3</button>
+            <button onclick="appendNumber(4)">4</button>
+            <button onclick="appendNumber(5)">5</button>
+            <button onclick="appendNumber(6)">6</button>
+            <button onclick="appendNumber(7)">7</button>
+            <button onclick="appendNumber(8)">8</button>
+            <button onclick="appendNumber(9)">9</button>
+            <button onclick="appendNumber(0)">0</button>
+            <button onclick="appendDecimal()">.</button>
+            <button onclick="clearInput()">Backspace</button>
         </div>
-        <div class="question-box">นี่คือคำถาม?</div>
-        <div class="display-screen">ใส่คำตอบที่นี่</div>
-        <div class="grid">
-            <button class="button">1</button>
-            <button class="button">2</button>
-            <button class="button">3</button>
-            <button class="button">4</button>
-            <button class="button">5</button>
-            <button class="button">6</button>
-            <button class="button">7</button>
-            <button class="button">8</button>
-            <button class="button">9</button>
-            <button class="button">0</button>
-            <button class="button">.</button>
-            <button class="button">⌫</button>
-            <button class="button">✅</button>
-        </div>
-        <button class="button" onclick="startGame()">เริ่มเกมใหม่</button>
+        <button onclick="submitAnswer()">Submit</button>
     </div>
     <script>
-        // This is where the game logic will go
-        function startGame() {
-            // Logic for starting the game with 10 random questions about unit conversions
+        let score = 0;
+        let currentQuestionIndex = 0;
+        const questions = [
+            { question: 'Convert 1 meter to centimeters?', answer: '100' },
+            { question: 'Convert 1 centimeter to meters?', answer: '0.01' },
+            { question: 'Convert 1000 millimeters to meters?', answer: '1' },
+            { question: 'Convert 2 meters to centimeters?', answer: '200' },
+            { question: 'Convert 10 centimeters to meters?', answer: '0.1' },
+            { question: 'Convert 5 meters to centimeters?', answer: '500' },
+            { question: 'Convert 500 millimeters to centimeters?', answer: '50' },
+            { question: 'Convert 3 meters to millimeters?', answer: '3000' },
+            { question: 'Convert 150 centimeters to meters?', answer: '1.5' },
+            { question: 'Convert 1.5 meters to centimeters?', answer: '150' }
+        ];
+
+        function loadQuestion() {
+            document.getElementById('question').innerText = questions[currentQuestionIndex].question;
         }
+
+        function appendNumber(number) {
+            // Logic to append number to the answer input
+        }
+
+        function appendDecimal() {
+            // Logic to append decimal to the answer input
+        }
+
+        function clearInput() {
+            // Logic to clear the input or go back
+        }
+
+        function submitAnswer() {
+            // Logic to check answer and update score
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                // Finished the game, show final score
+            }
+        }
+
+        // Initialize the first question
+        loadQuestion();
     </script>
 </body>
 </html>
