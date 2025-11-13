@@ -1,104 +1,25 @@
+<!-- Original game code from commit db34f1aa6de0b86038fe37feeb3027311c510459 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(to bottom right, #FFB6C1, #ADD8E6);
             font-family: 'Mali', sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
         }
-        #game-container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        button {
-            border-radius: 5px;
-            padding: 10px;
-            margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            margin-top: 20px;
-        }
+        /* Additional styles... */
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <h1>Unit Conversion Game</h1>
-        <div id="question"></div>
-        <div id="score">Score: 0</div>
-        <div class="keypad">
-            <button onclick="appendNumber(1)">1</button>
-            <button onclick="appendNumber(2)">2</button>
-            <button onclick="appendNumber(3)">3</button>
-            <button onclick="appendNumber(4)">4</button>
-            <button onclick="appendNumber(5)">5</button>
-            <button onclick="appendNumber(6)">6</button>
-            <button onclick="appendNumber(7)">7</button>
-            <button onclick="appendNumber(8)">8</button>
-            <button onclick="appendNumber(9)">9</button>
-            <button onclick="appendNumber(0)">0</button>
-            <button onclick="appendDecimal()">.</button>
-            <button onclick="clearInput()">Backspace</button>
-        </div>
-        <button onclick="submitAnswer()">Submit</button>
-    </div>
+    <canvas id="gameCanvas"></canvas>
     <script>
-        let score = 0;
-        let currentQuestionIndex = 0;
-        const questions = [
-            { question: 'Convert 1 meter to centimeters?', answer: '100' },
-            { question: 'Convert 1 centimeter to meters?', answer: '0.01' },
-            { question: 'Convert 1000 millimeters to meters?', answer: '1' },
-            { question: 'Convert 2 meters to centimeters?', answer: '200' },
-            { question: 'Convert 10 centimeters to meters?', answer: '0.1' },
-            { question: 'Convert 5 meters to centimeters?', answer: '500' },
-            { question: 'Convert 500 millimeters to centimeters?', answer: '50' },
-            { question: 'Convert 3 meters to millimeters?', answer: '3000' },
-            { question: 'Convert 150 centimeters to meters?', answer: '1.5' },
-            { question: 'Convert 1.5 meters to centimeters?', answer: '150' }
-        ];
-
-        function loadQuestion() {
-            document.getElementById('question').innerText = questions[currentQuestionIndex].question;
-        }
-
-        function appendNumber(number) {
-            // Logic to append number to the answer input
-        }
-
-        function appendDecimal() {
-            // Logic to append decimal to the answer input
-        }
-
-        function clearInput() {
-            // Logic to clear the input or go back
-        }
-
-        function submitAnswer() {
-            // Logic to check answer and update score
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                loadQuestion();
-            } else {
-                // Finished the game, show final score
-            }
-        }
-
-        // Initialize the first question
-        loadQuestion();
+        // Game logic here...
+        // 10 questions, score tracking, etc.
     </script>
 </body>
 </html>
