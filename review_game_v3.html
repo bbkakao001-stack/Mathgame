@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎮 ทบทวนคณิต ม.1 — v3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'TH SarabunPSK','Sarabun',sans-serif;font-size:18px;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:#fff;min-height:100vh}
+
+/* ─── TAB BAR ─── */
+.tab-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:14px 8px 10px;position:sticky;top:0;z-index:90;background:rgba(15,12,41,.94);backdrop-filter:blur(8px);border-bottom:2px solid #7c3aed}
+.tab-btn{padding:8px 14px;border:2px solid #7c3aed;border-radius:24px;background:transparent;color:#c4b5fd;font-family:inherit;font-size:.85rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.tab-btn:hover{background:#7c3aed44}
+.tab-btn.active{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;border-color:transparent;font-weight:600;box-shadow:0 0 18px #7c3aed55}
+
+.section{display:none;max-width:920px;margin:0 auto;padding:18px 14px 60px}
+.section.active{display:block;animation:fadeUp .4s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+h1{text-align:center;font-size:1.7rem;margin:14px 0 8px;background:linear-gradient(90deg,#f9a8d4,#a78bfa,#67e8f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h2{color:#c4b5fd;margin:22px 0 10px;font-size:1.2rem;border-left:4px solid #7c3aed;padding-left:12px}
+h3{color:#f9a8d4;margin:14px 0 8px;font-size:1.05rem}
+
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:18px;margin:12px 0;backdrop-filter:blur(4px)}
+.card.hl{border-color:#7c3aed;box-shadow:0 0 22px rgba(124,58,237,.2)}
+
+.sb{background:rgba(124,58,237,.12);border-left:4px solid #a78bfa;border-radius:0 12px 12px 0;padding:12px 16px;margin:8px 0;font-size:1rem;line-height:1.7}
+.sn{display:inline-block;background:#7c3aed;color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-size:.82rem;font-weight:700;margin-right:8px}
+.math{font-size:1.15rem;color:#67e8f9;font-weight:600}
+.em{color:#fbbf24;font-weight:600}
+.pink{color:#f9a8d4;font-weight:600}
+.green{color:#34d399;font-weight:600}
+.red{color:#f87171;font-weight:600}
+
+.tip{background:rgba(251,191,36,.1);border:1px solid #fbbf2444;border-radius:12px;padding:12px 16px;margin:10px 0;font-size:.95rem}
+.tip::before{content:'💡 '}
+
+.btn{padding:11px 24px;border:none;border-radius:14px;font-family:inherit;font-size:1rem;font-weight:600;cursor:pointer;transition:.2s}
+.btn-p{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff}
+.btn-p:hover{transform:scale(1.04);box-shadow:0 0 18px #7c3aed55}
+.btn-s{background:linear-gradient(135deg,#059669,#34d399);color:#fff}
+.btn-o{background:transparent;border:2px solid #7c3aed;color:#c4b5fd}
+.btn-sm{padding:7px 16px;font-size:.88rem;border-radius:10px}
+.center{text-align:center}.mt{margin-top:14px}.mb{margin-bottom:14px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:600px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;background:linear-gradient(135deg,#f59e0b,#ef4444);font-size:.82rem;font-weight:700;margin:0 4px}
+
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px}
+.frac .fn,.frac .fd{font-size:1.1rem;line-height:1.2;color:#67e8f9;font-weight:600}
+.frac .fb{width:100%;height:2px;background:#67e8f9;margin:2px 0}
+
+/* score bar */
+.score-bar{display:flex;align-items:center;justify-content:center;gap:16px;padding:10px;background:rgba(0,0,0,.3);border-radius:14px;margin:12px 0}
+.score-item{text-align:center}
+.score-item .num{font-size:1.4rem;font-weight:800;color:#fbbf24}
+.score-item .lbl{font-size:.78rem;color:#a78bfa}
+.progress-wrap{background:rgba(255,255,255,.1);border-radius:20px;height:8px;margin:8px 0;overflow:hidden}
+.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#7c3aed,#ec4899,#fbbf24);transition:width .5s}
+
+/* choices */
+.choices{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;justify-content:center}
+.choice-btn{padding:10px 24px;border:2px solid #7c3aed;border-radius:12px;background:rgba(124,58,237,.15);color:#e0d4fc;font-family:inherit;font-size:1.15rem;font-weight:600;cursor:pointer;transition:.2s}
+.choice-btn:hover{background:#7c3aed;color:#fff;transform:scale(1.06)}
+.choice-btn.used{opacity:.3;pointer-events:none}
+
+/* canvas */
+canvas.geo{background:rgba(0,0,0,.3);border-radius:12px;border:1px solid #7c3aed44;display:block;margin:10px auto;max-width:100%}
+
+/* popup */
+.pop-o{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:100}
+.pop-o.show{display:flex}
+.pop{background:linear-gradient(135deg,#1e1b4b,#312e81);border:2px solid #7c3aed;border-radius:20px;padding:28px;text-align:center;max-width:420px;width:92%}
+
+/* SVG cross */
+.cross-svg{display:block;margin:10px auto;max-width:350px}
+.cross-svg text{font-family:'TH SarabunPSK','Sarabun',sans-serif;font-weight:700;fill:#67e8f9;font-size:28px;text-anchor:middle}
+.cross-svg .eq-t{fill:#fbbf24;font-size:24px}
+.cross-svg .line-frac{stroke:#a78bfa;stroke-width:2}
+.cross-ln{stroke-width:3;fill:none;stroke-dasharray:250;stroke-dashoffset:250}
+.cross-ln.anim{animation:drawCross 1s ease-out forwards}
+.cross-ln.d2{animation-delay:.6s}
+@keyframes drawCross{to{stroke-dashoffset:0}}
+.cross-label{font-size:18px!important;fill:#fff!important;font-weight:400!important}
+
+/* Unitary visual */
+.u-box{background:rgba(124,58,237,.08);border:2px solid #7c3aed44;border-radius:16px;padding:20px;margin:12px 0;overflow-x:auto}
+.u-grid{display:grid;grid-template-columns:auto 40px auto 60px auto;gap:4px 8px;align-items:center;justify-items:center;font-size:1.1rem}
+.u-grid .u-item{background:rgba(167,139,250,.15);padding:8px 16px;border-radius:10px;font-weight:600;color:#67e8f9;white-space:nowrap}
+.u-grid .u-arr{color:#fbbf24;font-size:1.3rem}
+.u-grid .u-op{color:#f9a8d4;font-weight:700;font-size:.95rem}
+.u-grid .u-hl{background:rgba(251,191,36,.15);border:2px solid #fbbf24;color:#fbbf24}
+.u-frac-box{background:rgba(251,191,36,.08);border:2px solid #fbbf2444;border-radius:14px;padding:16px;margin:12px 0;text-align:center;font-size:1.2rem}
+
+/* Hangman canvas */
+#hangCanvas{display:block;margin:0 auto;background:rgba(0,0,0,.25);border-radius:14px;border:2px solid #7c3aed44}
+
+/* angle type labels */
+.angle-label{display:inline-block;padding:4px 12px;border-radius:8px;font-size:.9rem;font-weight:600;margin:2px}
+.al-acute{background:rgba(52,211,153,.2);color:#34d399}
+.al-right{background:rgba(251,191,36,.2);color:#fbbf24}
+.al-obtuse{background:rgba(249,115,22,.2);color:#f97316}
+.al-straight{background:rgba(236,72,153,.2);color:#ec4899}
+.al-reflex{background:rgba(248,113,113,.2);color:#f87171}
+
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.shake{animation:shake .4s}
+
+/* step-by-step animation */
+.anim-steps .astep{opacity:0;transform:translateY(15px);transition:opacity .5s,transform .5s}
+.anim-steps.playing .astep{opacity:1;transform:none}
+.anim-steps.playing .astep:nth-child(1){transition-delay:.0s}
+.anim-steps.playing .astep:nth-child(2){transition-delay:.6s}
+.anim-steps.playing .astep:nth-child(3){transition-delay:1.2s}
+.anim-steps.playing .astep:nth-child(4){transition-delay:1.8s}
+.anim-steps.playing .astep:nth-child(5){transition-delay:2.4s}
+.anim-steps.playing .astep:nth-child(6){transition-delay:3.0s}
+.anim-steps.playing .astep:nth-child(7){transition-delay:3.6s}
+.astep .sn{background:linear-gradient(135deg,#7c3aed,#ec4899)}
+.anim-play{cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+
+/* --- V3: VISUAL BREAKS --- */
+body{line-height:1.85}
+.sb{margin:10px 0;line-height:1.9}
+.card{margin:18px 0;padding:20px}
+h2{margin:26px 0 12px}
+.vis-break{text-align:center;margin:22px 0;opacity:.85}
+.vis-break svg{display:inline-block;max-width:320px;width:60%}
+.vis-divider{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px 0;opacity:.6}
+.vis-divider hr{flex:1;border:none;border-top:1px dashed #7c3aed}
+.vis-divider span{font-size:1.5rem}
+.sec-hero{text-align:center;margin:10px auto 18px;padding:12px;max-width:220px}
+.sec-hero svg{width:100%;max-width:180px;height:auto;filter:drop-shadow(0 0 12px rgba(124,58,237,.3))}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.float-icon{animation:floatY 3s ease-in-out infinite}
+</style>
+</head>
+<body>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+<button class="tab-btn active" onclick="go('intro')">🏠 เริ่มต้น</button>
+<button class="tab-btn" onclick="go('ratio')">📖 อัตราส่วน</button>
+<button class="tab-btn" onclick="go('unitary')">📖 บัญญัติไตรยางค์</button>
+<button class="tab-btn" onclick="go('eq')">📖 สมการ</button>
+<button class="tab-btn" onclick="go('angles')">📐 มุม</button>
+<button class="tab-btn" onclick="go('area')">📏 พื้นที่</button>
+<button class="tab-btn" onclick="go('game1')">🎮 เกมแก้สมการ</button>
+<button class="tab-btn" onclick="go('game2')">🎮 เกมอัตราส่วน</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--            INTRO                          -->
+<!-- ══════════════════════════════════════════ -->
+<div id="intro" class="section active">
+<h1>🎮 ทบทวนคณิต + เตรียมบทถัดไป</h1>
+<div class="card hl center">
+  <p style="font-size:1.15rem">วันนี้เราเรียนเรื่อง</p>
+  <p style="font-size:1.4rem;font-weight:700;color:#fbbf24;margin:8px 0">อัตราส่วน · บัญญัติไตรยางค์ · สมการ</p>
+  <p>+ <span class="badge">เกมย้ายข้าง</span> แบบตอบผิดจะโดนวาดหน้า 😵</p>
+  <p class="mt" style="color:#a78bfa">+ เตรียมเรื่องถัดไป: <span class="em">มุม & พื้นที่</span> ฉบับละเอียด</p>
+</div>
+<div class="card">
+  <h3>📋 สิ่งที่จะได้</h3>
+  <div class="sb">✅ <span class="em">อัตราส่วน</span> — เปรียบเทียบ, อย่างต่ำ, <b>A:B + B:C → A:B:C</b></div>
+  <div class="sb">✅ <span class="em">สัดส่วน Cross Multiply</span> — อนิเมชั่นสวยๆ ดูทีละสเต็ป</div>
+  <div class="sb">✅ <span class="em">บัญญัติไตรยางค์</span> ตรง/ผกผัน — เขียน 2 บรรทัด ลากเส้น + เศษส่วน</div>
+  <div class="sb">✅ <span class="em">สมการ</span> — ย้ายข้างอย่างเข้าใจ</div>
+  <div class="sb">📐 <span class="em">มุม</span> — ชนิดมุม, มุมตรงข้าม, มุมแย้ง, มุมภายใน, □ สัญลักษณ์มุมฉาก</div>
+  <div class="sb">📏 <span class="em">พื้นที่</span> — สูตรทุกรูปทรง + การประยุกต์หาพื้นที่รูปซับซ้อน</div>
+  <div class="sb">🎮 <span class="em">เกม</span> — ตอบผิด 6 ครั้ง = วาดหน้า 😵 Game Over!</div>
+</div>
+<div class="center mt"><button class="btn btn-p" onclick="go('ratio')" style="font-size:1.1rem;padding:14px 34px">เริ่มเลย! 🚀</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--            RATIO                          -->
+<!-- ══════════════════════════════════════════ -->
+<div id="ratio" class="section">
+<h1>📖 อัตราส่วนและสัดส่วน</h1>
+
+<div class="card">
+<h2>🔹 อัตราส่วน (Ratio)</h2>
+<div class="sb"><span class="math">a : b</span> = เปรียบเทียบ a กับ b (หน่วยเดียวกัน)</div>
+<div class="sb"><b>สมบัติ:</b><br>
+• <span class="math">a : b = ka : kb</span> (คูณเท่ากัน)<br>
+• <span class="math">a : b = (a÷n) : (b÷n)</span> (หารเท่ากัน)<br>
+• <b>อัตราส่วนอย่างต่ำ</b> — หารด้วย ห.ร.ม. จนเป็นจำนวนเต็มที่เล็กที่สุด</div>
+<div class="sb"><b>ตัวอย่าง:</b> 24 : 36 → ห.ร.ม. = 12 → <span class="math">24÷12 : 36÷12 = 2 : 3</span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x2726;</span><hr></div>
+<!-- A:B:C Section -->
+<div class="card hl">
+<h2>⭐ หา A : B : C จาก A:B และ B:C</h2>
+
+<div class="sb"><b>กรณีที่ 1: B เท่ากันทั้งสอง → เอามารวมได้เลย</b><br>
+A : B = 2 : <span class="em">3</span> &nbsp;&nbsp; B : C = <span class="em">3</span> : 5<br>
+B = 3 ทั้งคู่ → <span class="math">A : B : C = 2 : 3 : 5</span> ✅</div>
+
+<div class="sb"><b>กรณีที่ 2: B ไม่เท่ากัน → ทำ ค.ร.น. ของ B ก่อน</b><br>
+A : B = 2 : <span class="em">5</span> &nbsp;&nbsp; B : C = <span class="em">3</span> : 4<br><br>
+<span class="sn">1</span> ค.ร.น. ของ 5 กับ 3 = <span class="em">15</span><br>
+<span class="sn">2</span> A : B = 2 : 5 → คูณ 3 → <span class="math">6 : 15</span><br>
+<span class="sn">3</span> B : C = 3 : 4 → คูณ 5 → <span class="math">15 : 20</span><br>
+<span class="sn">4</span> ดังนั้น <span class="math">A : B : C = 6 : 15 : 20</span> ✅</div>
+
+<div class="tip">จำ: ต้องทำ <b>B ให้เท่ากัน</b>ก่อน จึงรวมได้!</div>
+
+<div class="sb"><b>ตัวอย่างเพิ่ม:</b><br>
+A : B = 3 : 4 &nbsp;&nbsp; B : C = 6 : 7<br>
+ค.ร.น.(4, 6) = 12<br>
+A : B = 3 : 4 → ×3 → 9 : 12<br>
+B : C = 6 : 7 → ×2 → 12 : 14<br>
+<span class="math">A : B : C = 9 : 12 : 14</span></div>
+</div>
+
+<div class="vis-break"><svg viewBox="0 0 200 40" fill="none"><line x1="10" y1="20" x2="60" y2="20" stroke="#7c3aed" stroke-width="2" stroke-dasharray="6 3"/><polygon points="65,14 80,20 65,26" fill="#7c3aed"/><circle cx="100" cy="20" r="8" fill="rgba(251,191,36,.3)" stroke="#fbbf24" stroke-width="2"/><text x="100" y="25" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700"></text><polygon points="135,14 120,20 135,26" fill="#ec4899"/><line x1="140" y1="20" x2="190" y2="20" stroke="#ec4899" stroke-width="2" stroke-dasharray="6 3"/></svg></div>
+<!-- Cross Multiply Animation -->
+<div class="card hl">
+<h2>🎬 สัดส่วน + Cross Multiply (อนิเมชั่น)</h2>
+<p class="center mb" style="color:#a78bfa">กดปุ่มดูอนิเมชั่นเส้นคูณไขว้!</p>
+
+<div class="sb center"><b>โจทย์:</b> <span class="math">5 : y = 20 : 36</span> &nbsp; หาค่า y</div>
+
+<div class="sb center"><span class="sn">1</span> เขียนเป็นเศษส่วน:</div>
+
+<!-- SVG Cross Multiply -->
+<svg viewBox="0 0 340 170" class="cross-svg" id="crossSvg">
+  <text x="70" y="42">5</text>
+  <line x1="40" y1="55" x2="100" y2="55" class="line-frac"/>
+  <text x="70" y="92">y</text>
+  <text x="170" y="72" class="eq-t">=</text>
+  <text x="270" y="42">20</text>
+  <line x1="240" y1="55" x2="300" y2="55" class="line-frac"/>
+  <text x="270" y="92">36</text>
+  <!-- cross lines -->
+  <line id="crossL1" class="cross-ln" x1="80" y1="42" x2="265" y2="88" stroke="#f87171"/>
+  <line id="crossL2" class="cross-ln" x1="80" y1="88" x2="265" y2="42" stroke="#34d399"/>
+  <!-- labels -->
+  <text id="crossLbl1" class="cross-label" x="170" y="130" opacity="0">5 × 36 = 180</text>
+  <text id="crossLbl2" class="cross-label" x="170" y="155" opacity="0">y × 20 = 20y</text>
+</svg>
+
+<div class="center">
+  <button class="btn btn-p btn-sm" onclick="playCross()">▶ ดูอนิเมชั่น Cross Multiply</button>
+</div>
+
+<div id="crossSteps" style="display:none" class="mt">
+  <div class="sb"><span class="sn">2</span> <span class="red">เส้นแดง:</span> <span class="math">5 × 36 = 180</span></div>
+  <div class="sb"><span class="sn">3</span> <span class="green">เส้นเขียว:</span> <span class="math">y × 20 = 20y</span></div>
+  <div class="sb"><span class="sn">4</span> ตั้งสมการ: <span class="math">180 = 20y</span></div>
+  <div class="sb"><span class="sn">5</span> ย้าย ×20 มาเป็น ÷20: <span class="math">y = 180 ÷ 20 = <span class="em">9</span></span></div>
+</div>
+</div>
+
+<div class="card">
+<h2>🔑 กฎย้ายข้าง</h2>
+<div class="tip"><b>ย้ายข้ามเครื่องหมาย = → เปลี่ยนเครื่องหมาย!</b></div>
+<div class="grid-2">
+  <div class="sb center"><span class="em">× (คูณ)</span> → ย้ายไป → <span class="em">÷ (หาร)</span></div>
+  <div class="sb center"><span class="em">+ (บวก)</span> → ย้ายไป → <span class="em">− (ลบ)</span></div>
+</div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x25C7;</span><hr></div>
+<div class="card">
+<h2>📝 ตัวอย่างเพิ่มเติม</h2>
+<div class="sb"><b>ตัวอย่าง:</b> x : 6 = 10 : 15 หาค่า x<br>
+Cross multiply: <span class="math">x × 15 = 6 × 10</span><br>
+<span class="math">15x = 60</span> → <span class="math">x = 60 ÷ 15 = <span class="em">4</span></span></div>
+
+<div class="sb"><b>ตัวอย่าง:</b> 3 : 7 = 12 : n หาค่า n<br>
+<span class="math">3 × n = 7 × 12</span><br>
+<span class="math">3n = 84</span> → <span class="math">n = 84 ÷ 3 = <span class="em">28</span></span></div>
+
+<div class="sb"><b>ตัวอย่าง: แบ่งของตามอัตราส่วน</b><br>
+แบ่งเงิน 2,400 บาท ให้ A, B, C ในอัตราส่วน 3 : 5 : 4<br>
+ส่วนรวม = 3 + 5 + 4 = 12<br>
+A = (3/12) × 2400 = <span class="math">600 บาท</span><br>
+B = (5/12) × 2400 = <span class="math">1,000 บาท</span><br>
+C = (4/12) × 2400 = <span class="math">800 บาท</span></div>
+</div>
+
+<div class="center mt"><button class="btn btn-p" onclick="go('unitary')">ถัดไป: บัญญัติไตรยางค์ →</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--        UNITARY METHOD                     -->
+<!-- ══════════════════════════════════════════ -->
+<div id="unitary" class="section">
+<h1>📖 บัญญัติไตรยางค์</h1>
+
+<!-- แบบตรง -->
+<div class="card hl">
+<h2>✅ แบบตรง (ยิ่งมาก → ยิ่งมาก)</h2>
+<div class="tip">ซื้อมากขึ้น → จ่ายมากขึ้น &nbsp;|&nbsp; วิ่งนานขึ้น → ไปไกลขึ้น</div>
+<div class="sb"><b>โจทย์:</b> ดินสอ 12 แท่ง ราคา 60 บาท ถ้า 20 แท่ง ราคาเท่าไร?</div>
+
+<!-- Two-line visual -->
+<div class="u-box">
+<div class="u-grid">
+  <span class="u-item">12 แท่ง</span>
+  <span class="u-arr">→</span>
+  <span class="u-item">60 บาท</span>
+  <span></span><span></span>
+
+  <span class="u-op">÷ 12 ↓</span>
+  <span></span>
+  <span class="u-op">↓ ÷ 12</span>
+  <span></span><span></span>
+
+  <span class="u-item">1 แท่ง</span>
+  <span class="u-arr">→</span>
+  <span class="u-item">5 บาท</span>
+  <span></span><span></span>
+
+  <span class="u-op">× 20 ↓</span>
+  <span></span>
+  <span class="u-op">↓ × 20</span>
+  <span></span><span></span>
+
+  <span class="u-item u-hl">20 แท่ง</span>
+  <span class="u-arr">→</span>
+  <span class="u-item u-hl">100 บาท</span>
+  <span></span><span></span>
+</div>
+</div>
+
+<div class="u-frac-box">
+หรือเขียนเป็นเศษส่วน: &nbsp;
+<span class="frac"><span class="fn">60</span><span class="fb"></span><span class="fd">12</span></span>
+<span class="math"> × 20 = </span>
+<span class="math"><span class="em">100 บาท</span></span>
+</div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x21C5;</span><hr></div>
+<!-- แบบผกผัน -->
+<div class="card hl">
+<h2>❌ แบบผกผัน (ยิ่งมาก → ยิ่งน้อย)</h2>
+<div class="tip">คนมากขึ้น → เวลาน้อยลง &nbsp;|&nbsp; รถเร็วขึ้น → ถึงเร็วขึ้น</div>
+<div class="sb"><b>โจทย์:</b> คนงาน 6 คน สร้างบ้านใน 20 วัน ถ้า 10 คน จะกี่วัน?</div>
+
+<div class="u-box">
+<div class="u-grid">
+  <span class="u-item">6 คน</span>
+  <span class="u-arr">→</span>
+  <span class="u-item">20 วัน</span>
+  <span></span><span></span>
+
+  <span class="u-op">÷ 6 ↓</span>
+  <span></span>
+  <span class="u-op" style="color:#f87171">↓ × 6 (กลับ!)</span>
+  <span></span><span></span>
+
+  <span class="u-item">1 คน</span>
+  <span class="u-arr">→</span>
+  <span class="u-item">120 วัน</span>
+  <span></span><span></span>
+
+  <span class="u-op">× 10 ↓</span>
+  <span></span>
+  <span class="u-op" style="color:#f87171">↓ ÷ 10 (กลับ!)</span>
+  <span></span><span></span>
+
+  <span class="u-item u-hl">10 คน</span>
+  <span class="u-arr">→</span>
+  <span class="u-item u-hl">12 วัน</span>
+  <span></span><span></span>
+</div>
+</div>
+
+<div class="u-frac-box">
+เขียนเป็นเศษส่วน: &nbsp;
+<span class="math">20 × </span>
+<span class="frac"><span class="fn">6</span><span class="fb"></span><span class="fd">10</span></span>
+<span class="math"> = <span class="em">12 วัน</span></span>
+</div>
+
+<div class="tip"><b>สังเกต!</b> แบบผกผัน — คนน้อยลง เวลา<b>มากขึ้น</b> → เลยต้อง<b>คูณ</b>แทนหาร!</div>
+</div>
+
+<div class="card">
+<div class="vis-divider"><hr><span>&#x2736;</span><hr></div>
+<h2>🤔 ตรงหรือผกผัน?</h2>
+<div class="grid-2">
+  <div class="sb center"><p style="font-size:2rem">↑ → ↑</p><p class="em">มากขึ้น → มากขึ้น</p><p>= <b>ตรง</b></p><p style="font-size:.85rem;color:#a78bfa">หาร 1 หน่วย แล้วคูณ</p></div>
+  <div class="sb center"><p style="font-size:2rem">↑ → ↓</p><p class="em">มากขึ้น → น้อยลง</p><p>= <b>ผกผัน</b></p><p style="font-size:.85rem;color:#a78bfa">คูณรวม แล้วหาร</p></div>
+</div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x25C7;</span><hr></div>
+<div class="card">
+<h2>📝 ตัวอย่างเพิ่ม</h2>
+<div class="sb"><b>ตรง:</b> รถวิ่ง 3 ชม. ได้ 210 กม. ถ้าวิ่ง 5 ชม.?<br>
+1 ชม. = 210÷3 = 70 กม. → 5 ชม. = 70×5 = <span class="em">350 กม.</span><br>
+หรือ <span class="frac"><span class="fn">210</span><span class="fb"></span><span class="fd">3</span></span> × 5 = 350</div>
+
+<div class="sb"><b>ผกผัน:</b> ก๊อกน้ำ 4 ก๊อก เติมสระใน 30 นาที ถ้า 6 ก๊อก?<br>
+1 ก๊อก = 30×4 = 120 นาที → 6 ก๊อก = 120÷6 = <span class="em">20 นาที</span><br>
+หรือ 30 × <span class="frac"><span class="fn">4</span><span class="fb"></span><span class="fd">6</span></span> = 20</div>
+
+<div class="sb"><b>ตรง:</b> ข้าว 5 กก. หุงได้ 25 จาน ถ้า 8 กก.?<br>
+<span class="frac"><span class="fn">25</span><span class="fb"></span><span class="fd">5</span></span> × 8 = <span class="em">40 จาน</span></div>
+</div>
+
+<div class="center mt"><button class="btn btn-p" onclick="go('eq')">ถัดไป: สมการ →</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--          EQUATION                         -->
+<!-- ══════════════════════════════════════════ -->
+<div id="eq" class="section">
+<h1>📖 สมการและการย้ายข้าง</h1>
+
+<div class="card hl">
+<h2>🔹 สมการ 1 ตัวแปร</h2>
+<div class="sb"><b>โจทย์:</b> <span class="math">3x + 7 = 22</span></div>
+<div class="sb"><span class="sn">1</span> ย้าย +7 → เปลี่ยนเป็น -7: &nbsp; <span class="math">3x = 22 − 7 = 15</span></div>
+<div class="sb"><span class="sn">2</span> ย้าย ×3 → เปลี่ยนเป็น ÷3: &nbsp; <span class="math">x = 15 ÷ 3 = <span class="em">5</span></span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x25C7;</span><hr></div>
+<div class="card">
+<h2>🔹 ตัวอย่างเพิ่ม: 1 ตัวแปร</h2>
+<div class="sb"><b>โจทย์:</b> <span class="math">5x − 3 = 22</span><br>
+5x = 22 + 3 = 25 → x = 25 ÷ 5 = <span class="em">5</span></div>
+<div class="sb"><b>โจทย์:</b> <span class="math">2(x + 4) = 18</span><br>
+x + 4 = 18 ÷ 2 = 9 → x = 9 − 4 = <span class="em">5</span></div>
+<div class="sb"><b>โจทย์:</b> <span class="math">4x + 7 = 2x + 19</span><br>
+ย้าย 2x: 4x − 2x = 19 − 7 → 2x = 12 → x = <span class="em">6</span></div>
+<div class="sb"><b>โจทย์:</b> <span class="math">6(5x − 3) = 24x</span><br>
+30x − 18 = 24x → 30x − 24x = 18 → 6x = 18 → x = <span class="em">3</span></div>
+</div>
+
+<div class="vis-break"><svg viewBox="0 0 200 50" fill="none"><line x1="30" y1="10" x2="170" y2="10" stroke="#7c3aed" stroke-width="2"/><polygon points="100,8 103,2 97,2" fill="#fbbf24"/><circle cx="50" cy="35" r="14" stroke="#34d399" stroke-width="2" fill="rgba(52,211,153,.1)"/><circle cx="150" cy="35" r="14" stroke="#f9a8d4" stroke-width="2" fill="rgba(236,72,153,.1)"/><text x="50" y="40" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700">+</text><text x="150" y="40" text-anchor="middle" fill="#f9a8d4" font-size="12" font-weight="700">=</text></svg></div>
+<div class="card hl">
+<h2>🔹 สมการ 2 ตัวแปร</h2>
+<div class="sb"><b>วิธีแทนค่า:</b> x + y = 10 &nbsp; 2x − y = 5<br>
+จาก (1): y = 10 − x<br>
+แทนใน (2): 2x − (10−x) = 5 → 3x − 10 = 5 → 3x = 15 → x = <span class="em">5</span>, y = <span class="em">5</span></div>
+<div class="sb"><b>วิธีกำจัด:</b> 3x + 2y = 16 &nbsp; 5x − 2y = 24<br>
+บวกกัน: 8x = 40 → x = 5 → y = <span class="em">0.5</span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x2726;</span><hr></div>
+<div class="card">
+<h2>🔹 สมการ 3 ตัวแปร</h2>
+<div class="sb"><b>โจทย์:</b> x+y+z = 10, &nbsp; x+y = 7, &nbsp; y+z = 8<br>
+จาก (1)−(2): z = 3<br>
+จาก (1)−(3): x = 2<br>
+จาก (2): y = 7−2 = 5<br>
+ตอบ <span class="math">x=2, y=5, z=3</span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x25C7;</span><hr></div>
+<div class="card">
+<h2>💡 เคล็ดลับ</h2>
+<div class="tip"><b>ย้ายข้าง = เปลี่ยนเครื่องหมาย</b><br>
++ ↔ − &nbsp;&nbsp;|&nbsp;&nbsp; × ↔ ÷<br>
+จำง่ายๆ: ข้ามเท่ากับ ต้องกลับเครื่องหมาย!</div>
+<div class="tip"><b>สมการมีตัวแปรทั้ง 2 ฝั่ง?</b> ย้ายตัวแปรไปอยู่ฝั่งเดียวกัน!<br>
+4x + 7 = 2x + 19 → ย้าย 2x: <span class="math">4x − 2x = 19 − 7</span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x2726;</span><hr></div>
+<div class="card hl">
+<h2>🎬 อนิเมชั่น: แก้สมการทีละสเต็ป</h2>
+<p class="center mb" style="color:#a78bfa">กดปุ่มดูวิธีทำทีละขั้น!</p>
+
+<div class="sb center"><b>โจทย์:</b> <span class="math">4(2x − 3) = 20</span></div>
+<div class="anim-steps" id="anim-eq1">
+  <div class="sb astep"><span class="sn">1</span> กระจายวงเล็บ: <span class="math">8x − 12 = 20</span></div>
+  <div class="sb astep"><span class="sn">2</span> ย้าย −12 → +12: <span class="math">8x = 20 + 12</span></div>
+  <div class="sb astep"><span class="sn">3</span> บวก: <span class="math">8x = 32</span></div>
+  <div class="sb astep"><span class="sn">4</span> ย้าย ×8 → ÷8: <span class="math">x = 32 ÷ 8 = <span class="em">4</span></span> ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-eq1')">▶ ดูอนิเมชั่น</button></div>
+
+<div class="sb center mt"><b>โจทย์:</b> <span class="math">5x + 3 = 2x + 18</span></div>
+<div class="anim-steps" id="anim-eq2">
+  <div class="sb astep"><span class="sn">1</span> ย้าย 2x ไปซ้าย: <span class="math">5x − 2x + 3 = 18</span></div>
+  <div class="sb astep"><span class="sn">2</span> ย้าย +3 ไปขวา: <span class="math">3x = 18 − 3</span></div>
+  <div class="sb astep"><span class="sn">3</span> ลบ: <span class="math">3x = 15</span></div>
+  <div class="sb astep"><span class="sn">4</span> ย้าย ×3 → ÷3: <span class="math">x = 15 ÷ 3 = <span class="em">5</span></span> ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-eq2')">▶ ดูอนิเมชั่น</button></div>
+
+<div class="sb center mt"><b>โจทย์:</b> <span class="math">3(x + 4) = 2(x + 7)</span></div>
+<div class="anim-steps" id="anim-eq3">
+  <div class="sb astep"><span class="sn">1</span> กระจาย: <span class="math">3x + 12 = 2x + 14</span></div>
+  <div class="sb astep"><span class="sn">2</span> ย้าย 2x: <span class="math">3x − 2x = 14 − 12</span></div>
+  <div class="sb astep"><span class="sn">3</span> ลดรูป: <span class="math">x = <span class="em">2</span></span> ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-eq3')">▶ ดูอนิเมชั่น</button></div>
+</div>
+
+<div class="center mt"><button class="btn btn-p" onclick="go('angles')">ถัดไป: มุม 📐 →</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--          ANGLES                           -->
+<!-- ══════════════════════════════════════════ -->
+<div id="angles" class="section">
+<h1>📐 มุม (Angles)</h1>
+
+<div class="card hl">
+<h2>🔹 ชนิดของมุม</h2>
+<canvas id="cvTypes" class="geo" width="500" height="180"></canvas>
+<div class="sb">
+<span class="angle-label al-acute">มุมแหลม: 0° – 90°</span>
+<span class="angle-label al-right">มุมฉาก: 90° □</span>
+<span class="angle-label al-obtuse">มุมป้าน: 90° – 180°</span>
+<span class="angle-label al-straight">มุมตรง: 180°</span>
+<span class="angle-label al-reflex">มุมกลับ: 180° – 360°</span>
+</div>
+<div class="tip"><b>สัญลักษณ์มุมฉาก □</b> — เมื่อเส้นตั้งฉากกัน เราเขียน □ เล็กๆ ที่มุม แปลว่า "มุมนี้ = 90°"</div>
+</div>
+
+<div class="card hl">
+<h2>🔹 มุมที่เส้นตรง 2 เส้นตัดกัน</h2>
+<canvas id="cvCross" class="geo" width="400" height="260"></canvas>
+<div class="sb"><b>กฎ 1: มุมตรงข้ามมีขนาดเท่ากัน</b> (Vertically Opposite Angles)<br>
+มุม a = มุม c &nbsp;&nbsp; มุม b = มุม d</div>
+<div class="sb"><b>กฎ 2: มุมประกอบมุมตรง (บนเส้นเดียวกัน) = 180°</b><br>
+a + b = 180° &nbsp;&nbsp; b + c = 180°</div>
+<div class="sb"><b>ตัวอย่าง:</b> ถ้า a = 65° → c = 65° (ตรงข้าม), b = 180°−65° = <span class="em">115°</span>, d = 115°</div>
+</div>
+
+<div class="vis-break"><svg viewBox="0 0 160 50" fill="none"><path d="M20 45 A60 60 0 0 1 140 45" stroke="#a78bfa" stroke-width="2" fill="none" stroke-dasharray="5 3"/><line x1="80" y1="45" x2="80" y2="5" stroke="#fbbf24" stroke-width="1.5"/><line x1="80" y1="45" x2="130" y2="15" stroke="#67e8f9" stroke-width="1.5"/><circle cx="80" cy="45" r="3" fill="#f9a8d4"/></svg></div>
+<div class="card hl">
+<h2>🔹 เส้นขนานตัดด้วยเส้นตัด (Transversal)</h2>
+<canvas id="cvParallel" class="geo" width="450" height="300"></canvas>
+
+<div class="sb"><b>มุมที่อยู่ตำแหน่งเดียวกัน (Corresponding Angles)</b> → <span class="em">เท่ากัน</span><br>
+∠1 = ∠5, &nbsp; ∠2 = ∠6, &nbsp; ∠3 = ∠7, &nbsp; ∠4 = ∠8</div>
+
+<div class="sb"><b>มุมแย้ง (Alternate Interior Angles)</b> → <span class="em">เท่ากัน</span><br>
+∠3 = ∠6, &nbsp; ∠4 = ∠5</div>
+
+<div class="sb"><b>มุมภายในข้างเดียวกัน (Co-interior Angles)</b> → <span class="em">รวมกันได้ 180°</span><br>
+∠3 + ∠5 = 180°, &nbsp; ∠4 + ∠6 = 180°</div>
+
+<div class="tip"><b>จำง่าย:</b><br>
+• ตำแหน่งเดียวกัน = เท่ากัน<br>
+• แย้ง (Z shape) = เท่ากัน<br>
+• ภายในข้างเดียว (U shape) = รวม 180°</div>
+
+<div class="sb"><b>ตัวอย่าง:</b> ถ้า ∠1 = 70°<br>
+∠5 = 70° (ตำแหน่งเดียวกัน)<br>
+∠4 = 180°−70° = 110° (บนเส้นเดียวกัน)<br>
+∠6 = 70° (แย้ง ∠3) → แต่ ∠3 = 110° เอ๊ะ!<br>
+→ ∠3 = 180°−70° = 110°, ∠6 = 70° (แย้งกับ ∠3? ไม่ — แย้งกับ ∠1-ข้าม)<br>
+จริงๆ: ∠3 = ∠6 = 180°−70° = <span class="em">110°</span>? ไม่ — ∠3 = 70° (ตรงข้าม ∠1), ∠6 = 70° (แย้ง ∠3) ✅</div>
+
+<div class="sb"><b>สรุปตัวอย่าง ∠1 = 70°:</b><br>
+∠1 = ∠3 = ∠5 = ∠7 = <span class="em">70°</span><br>
+∠2 = ∠4 = ∠6 = ∠8 = <span class="em">110°</span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x2736;</span><hr></div>
+<div class="card">
+<h2>🔹 มุมภายในรูปหลายเหลี่ยม</h2>
+<div class="sb"><b>สามเหลี่ยม:</b> มุมภายในรวมกัน = <span class="math">180°</span></div>
+<div class="sb"><b>สี่เหลี่ยม:</b> มุมภายในรวมกัน = <span class="math">360°</span></div>
+<div class="sb"><b>รูป n เหลี่ยม:</b> มุมภายในรวม = <span class="math">(n − 2) × 180°</span></div>
+<div class="sb">
+ห้าเหลี่ยม (n=5): (5−2)×180° = <span class="em">540°</span><br>
+หกเหลี่ยม (n=6): (6−2)×180° = <span class="em">720°</span><br>
+แปดเหลี่ยม (n=8): (8−2)×180° = <span class="em">1080°</span>
+</div>
+<div class="sb"><b>มุมภายในแต่ละมุมของรูป n เหลี่ยมด้านเท่า:</b><br>
+<span class="math">(n − 2) × 180° ÷ n</span><br>
+สามเหลี่ยมด้านเท่า: 180°÷3 = <span class="em">60°</span><br>
+สี่เหลี่ยมจัตุรัส: 360°÷4 = <span class="em">90°</span><br>
+หกเหลี่ยมด้านเท่า: 720°÷6 = <span class="em">120°</span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x2726;</span><hr></div>
+<div class="card">
+<h2>🎛️ ลองปรับมุม!</h2>
+<canvas id="cvAdjust" class="geo" width="400" height="250"></canvas>
+<div class="center">
+  <input type="range" id="angleSlider" min="5" max="355" value="60" oninput="drawAdjAngle(this.value)" style="width:80%">
+  <p class="math mt" id="angleLbl">60° — มุมแหลม</p>
+</div>
+</div>
+
+<div class="card">
+<h2>📝 ตัวอย่างโจทย์</h2>
+<div class="sb"><b>1.</b> เส้นตรง 2 เส้นตัดกัน มุมหนึ่ง = 72° มุมอื่นๆ = ?<br>
+ตรงข้าม = 72°, ข้างเคียง = 180°−72° = <span class="em">108°</span></div>
+<div class="sb"><b>2.</b> เส้นขนาน มุมแย้ง = 55° มุมภายในข้างเดียว = ?<br>
+= 180° − 55° = <span class="em">125°</span></div>
+<div class="sb"><b>3.</b> สามเหลี่ยม มุม 2 มุม = 50° และ 70° มุมที่ 3 = ?<br>
+= 180° − 50° − 70° = <span class="em">60°</span></div>
+<div class="sb"><b>4.</b> สี่เหลี่ยม มุม 3 มุม = 80°, 100°, 110° มุมที่ 4 = ?<br>
+= 360° − 80° − 100° − 110° = <span class="em">70°</span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x2726;</span><hr></div>
+<div class="card hl">
+<h2>🎬 อนิเมชั่น: หามุมทีละสเต็ป</h2>
+<p class="center mb" style="color:#a78bfa">กดปุ่มดูวิธีหาค่ามุมทีละขั้น!</p>
+
+<div class="sb center"><b>โจทย์:</b> เส้นตรง 2 เส้นตัดกัน มุม a = 55° หามุม b, c, d</div>
+<div class="anim-steps" id="anim-ang1">
+  <div class="sb astep"><span class="sn">1</span> a = <span class="em">55°</span> (โจทย์กำหนด)</div>
+  <div class="sb astep"><span class="sn">2</span> c = a (มุมตรงข้าม) → c = <span class="em">55°</span></div>
+  <div class="sb astep"><span class="sn">3</span> a + b = 180° (มุมข้างเคียงบนเส้นตรง)</div>
+  <div class="sb astep"><span class="sn">4</span> b = 180° − 55° = <span class="em">125°</span></div>
+  <div class="sb astep"><span class="sn">5</span> d = b (มุมตรงข้าม) → d = <span class="em">125°</span> ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-ang1')">▶ ดูอนิเมชั่น</button></div>
+
+<div class="sb center mt"><b>โจทย์:</b> เส้นขนาน ∠1 = 65° หามุมทุกตัว</div>
+<div class="anim-steps" id="anim-ang2">
+  <div class="sb astep"><span class="sn">1</span> ∠1 = <span class="em">65°</span></div>
+  <div class="sb astep"><span class="sn">2</span> ∠4 = ∠1 = 65° (ตรงข้าม)</div>
+  <div class="sb astep"><span class="sn">3</span> ∠2 = 180° − 65° = <span class="em">115°</span> (บนเส้นเดียวกัน)</div>
+  <div class="sb astep"><span class="sn">4</span> ∠3 = ∠2 = 115° (ตรงข้าม)</div>
+  <div class="sb astep"><span class="sn">5</span> ∠5 = ∠1 = <span class="em">65°</span> (ตำแหน่งเดียวกัน)</div>
+  <div class="sb astep"><span class="sn">6</span> ∠6 = ∠2 = 115°, ∠7 = ∠3 = 115°, ∠8 = ∠4 = 65° ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-ang2')">▶ ดูอนิเมชั่น</button></div>
+
+<div class="sb center mt"><b>โจทย์:</b> สามเหลี่ยม มุม A = 3x, มุม B = 2x, มุม C = x หาค่า x</div>
+<div class="anim-steps" id="anim-ang3">
+  <div class="sb astep"><span class="sn">1</span> มุมภายใน △ รวม = <span class="math">180°</span></div>
+  <div class="sb astep"><span class="sn">2</span> ตั้งสมการ: <span class="math">3x + 2x + x = 180°</span></div>
+  <div class="sb astep"><span class="sn">3</span> รวม: <span class="math">6x = 180°</span></div>
+  <div class="sb astep"><span class="sn">4</span> x = 180° ÷ 6 = <span class="em">30°</span></div>
+  <div class="sb astep"><span class="sn">5</span> ∠A = 90°, ∠B = 60°, ∠C = 30° ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-ang3')">▶ ดูอนิเมชั่น</button></div>
+</div>
+
+<div class="center mt"><button class="btn btn-p" onclick="go('area')">ถัดไป: พื้นที่ 📏 →</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--          AREA                             -->
+<!-- ══════════════════════════════════════════ -->
+<div id="area" class="section">
+<h1>📏 พื้นที่ (Area)</h1>
+
+<div class="card hl">
+<h2>🔹 สูตรพื้นที่ทุกรูปทรง</h2>
+<canvas id="cvShapes" class="geo" width="500" height="420"></canvas>
+<div class="grid-2">
+  <div class="sb center"><span class="em">สี่เหลี่ยมจัตุรัส</span><br><span class="math">ด้าน × ด้าน = ด้าน²</span></div>
+  <div class="sb center"><span class="em">สี่เหลี่ยมผืนผ้า</span><br><span class="math">กว้าง × ยาว</span></div>
+  <div class="sb center"><span class="em">สามเหลี่ยม</span><br><span class="math">½ × ฐาน × สูง</span></div>
+  <div class="sb center"><span class="em">สี่เหลี่ยมด้านขนาน</span><br><span class="math">ฐาน × สูง</span></div>
+  <div class="sb center"><span class="em">สี่เหลี่ยมขนมเปียกปูน</span><br><span class="math">½ × d₁ × d₂</span></div>
+  <div class="sb center"><span class="em">สี่เหลี่ยมคางหมู</span><br><span class="math">½ × (a+b) × h</span></div>
+  <div class="sb center"><span class="em">วงกลม</span><br><span class="math">π × r²</span><br><span style="font-size:.85rem;color:#a78bfa">เส้นรอบวง = 2πr</span></div>
+  <div class="sb center"><span class="em">ครึ่งวงกลม</span><br><span class="math">½ × π × r²</span></div>
+</div>
+</div>
+
+<div class="vis-break"><svg viewBox="0 0 200 40" fill="none"><rect x="10" y="5" width="30" height="30" stroke="#34d399" stroke-width="1.5" fill="rgba(52,211,153,.08)"/><rect x="50" y="5" width="40" height="30" stroke="#67e8f9" stroke-width="1.5" fill="rgba(103,232,249,.08)"/><polygon points="100,35 120,5 140,35" stroke="#f9a8d4" stroke-width="1.5" fill="rgba(236,72,153,.08)"/><circle cx="170" cy="20" r="15" stroke="#fbbf24" stroke-width="1.5" fill="rgba(251,191,36,.08)"/></svg></div>
+<div class="card">
+<h2>📝 ตัวอย่างพื้นฐาน</h2>
+<div class="sb"><b>1. สี่เหลี่ยมผืนผ้า</b> กว้าง 8 ยาว 15 ซม.<br>
+พื้นที่ = 8 × 15 = <span class="em">120 ตร.ซม.</span></div>
+<div class="sb"><b>2. สามเหลี่ยม</b> ฐาน 12 สูง 9 ซม.<br>
+พื้นที่ = ½ × 12 × 9 = <span class="em">54 ตร.ซม.</span></div>
+<div class="sb"><b>3. วงกลม</b> รัศมี 7 ซม. (ใช้ π = 22/7)<br>
+พื้นที่ = 22/7 × 7² = 22/7 × 49 = <span class="em">154 ตร.ซม.</span></div>
+<div class="sb"><b>4. สี่เหลี่ยมคางหมู</b> ด้านขนาน 10 และ 16 สูง 8 ซม.<br>
+พื้นที่ = ½ × (10+16) × 8 = ½ × 26 × 8 = <span class="em">104 ตร.ซม.</span></div>
+<div class="sb"><b>5. สี่เหลี่ยมด้านขนาน</b> ฐาน 14 สูง 6 ซม.<br>
+พื้นที่ = 14 × 6 = <span class="em">84 ตร.ซม.</span></div>
+<div class="sb"><b>6. สี่เหลี่ยมขนมเปียกปูน</b> เส้นทแยงมุม 10 และ 8 ซม.<br>
+พื้นที่ = ½ × 10 × 8 = <span class="em">40 ตร.ซม.</span></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x2726;</span><hr></div>
+<div class="card hl">
+<h2>🎬 อนิเมชั่น: หาพื้นที่ทีละสเต็ป</h2>
+
+<div class="sb center"><b>โจทย์:</b> สนาม 30×20 ม. มีสระวงกลม r=3 ม. หาพื้นที่หญ้า</div>
+<div class="anim-steps" id="anim-area1">
+  <div class="sb astep"><span class="sn">1</span> พื้นที่สนาม = <span class="math">30 × 20 = 600 ตร.ม.</span></div>
+  <div class="sb astep"><span class="sn">2</span> พื้นที่สระ = <span class="math">22/7 × 3² = 22/7 × 9</span></div>
+  <div class="sb astep"><span class="sn">3</span> = <span class="math">198/7 ≈ 28.29 ตร.ม.</span></div>
+  <div class="sb astep"><span class="sn">4</span> พื้นที่หญ้า = 600 − 28.29 = <span class="em">571.71 ตร.ม.</span> ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-area1')">▶ ดูอนิเมชั่น</button></div>
+
+<div class="sb center mt"><b>โจทย์:</b> รูป L-shape: ผืนผ้า 10×6 ตัดมุม 4×4 หาพื้นที่</div>
+<div class="anim-steps" id="anim-area2">
+  <div class="sb astep"><span class="sn">1</span> พื้นที่ผืนผ้าเต็ม = <span class="math">10 × 6 = 60 ตร.ซม.</span></div>
+  <div class="sb astep"><span class="sn">2</span> พื้นที่มุมที่ตัดออก = <span class="math">4 × 4 = 16 ตร.ซม.</span></div>
+  <div class="sb astep"><span class="sn">3</span> พื้นที่ L-shape = 60 − 16 = <span class="em">44 ตร.ซม.</span> ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-area2')">▶ ดูอนิเมชั่น</button></div>
+
+<div class="sb center mt"><b>โจทย์:</b> ผืนผ้า 20×10 ซม. มีครึ่งวงกลม r=5 ต่อด้านขวา หาพื้นที่ทั้งหมด</div>
+<div class="anim-steps" id="anim-area3">
+  <div class="sb astep"><span class="sn">1</span> พื้นที่ผืนผ้า = <span class="math">20 × 10 = 200 ตร.ซม.</span></div>
+  <div class="sb astep"><span class="sn">2</span> พื้นที่ครึ่งวงกลม = <span class="math">½ × 22/7 × 5²</span></div>
+  <div class="sb astep"><span class="sn">3</span> = <span class="math">½ × 22/7 × 25 = 275/7 ≈ 39.29</span></div>
+  <div class="sb astep"><span class="sn">4</span> รวม = 200 + 39.29 = <span class="em">239.29 ตร.ซม.</span> ✅</div>
+</div>
+<div class="center mt"><button class="btn btn-p btn-sm anim-play" onclick="playAnim('anim-area3')">▶ ดูอนิเมชั่น</button></div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x2736;</span><hr></div>
+<div class="card hl">
+<h2>⭐ การประยุกต์หาพื้นที่ (Composite Area)</h2>
+<canvas id="cvComposite" class="geo" width="500" height="280"></canvas>
+
+<div class="sb"><b>หลักการ:</b> รูปที่ซับซ้อน → <span class="em">แยกเป็นรูปง่ายๆ</span> แล้วบวก/ลบ</div>
+
+<div class="sb"><b>ตัวอย่าง 1: รูป L-shape</b><br>
+แยกเป็นสี่เหลี่ยมผืนผ้า 2 รูปแล้วบวกกัน<br>
+= (10×4) + (6×4) = 40 + 24 = <span class="em">64 ตร.ซม.</span></div>
+
+<div class="sb"><b>ตัวอย่าง 2: สี่เหลี่ยมเจาะวงกลม</b><br>
+สี่เหลี่ยม 20×20 เจาะวงกลม รัศมี 5 ซม.<br>
+= 20×20 − π×5² = 400 − 22/7×25 ≈ 400 − 78.57 = <span class="em">321.43 ตร.ซม.</span></div>
+
+<div class="sb"><b>ตัวอย่าง 3: ครึ่งวงกลมบนสี่เหลี่ยม</b><br>
+สี่เหลี่ยม 14×10 มีครึ่งวงกลม ร=7 ต่อด้านบน<br>
+= 14×10 + ½×22/7×7² = 140 + 77 = <span class="em">217 ตร.ซม.</span></div>
+
+<div class="sb"><b>ตัวอย่าง 4:</b> สนามหญ้ารูปสี่เหลี่ยมผืนผ้า 30×20 ม. มีสระรูปวงกลม รัศมี 3 ม. อยู่ตรงกลาง พื้นที่หญ้า = ?<br>
+= 30×20 − 22/7×9 = 600 − 28.29 ≈ <span class="em">571.71 ตร.ม.</span></div>
+</div>
+
+<div class="card">
+<h2>🧮 ลองคำนวณ</h2>
+<div class="sb">
+  <label>เลือกรูปทรง: </label>
+  <select id="shpSel" onchange="updateCalc()" style="padding:6px;border-radius:8px;font-family:inherit;font-size:1rem">
+    <option value="rect">สี่เหลี่ยมผืนผ้า</option>
+    <option value="tri">สามเหลี่ยม</option>
+    <option value="circle">วงกลม</option>
+    <option value="trap">สี่เหลี่ยมคางหมู</option>
+    <option value="para">สี่เหลี่ยมด้านขนาน</option>
+  </select>
+  <div id="calcIn" class="mt"></div>
+  <div id="calcRes" class="mt math" style="font-size:1.2rem"></div>
+</div>
+</div>
+
+<div class="vis-divider"><hr><span>&#x25C7;</span><hr></div>
+<div class="card">
+<h2>📝 เส้นรอบรูป</h2>
+<div class="sb"><b>สี่เหลี่ยมผืนผ้า:</b> <span class="math">2 × (กว้าง + ยาว)</span></div>
+<div class="sb"><b>สี่เหลี่ยมจัตุรัส:</b> <span class="math">4 × ด้าน</span></div>
+<div class="sb"><b>สามเหลี่ยม:</b> <span class="math">ด้าน₁ + ด้าน₂ + ด้าน₃</span></div>
+<div class="sb"><b>วงกลม (เส้นรอบวง):</b> <span class="math">2 × π × r</span></div>
+</div>
+
+<div class="center mt"><button class="btn btn-p" onclick="go('game1')">🎮 ไปเล่นเกม!</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--    GAME 1: HANGMAN EQUATION               -->
+<!-- ══════════════════════════════════════════ -->
+<div id="game1" class="section">
+<h1>🎮 เกมแก้สมการ — ตอบผิดโดนวาดหน้า!</h1>
+<p class="center" style="color:#a78bfa">ตอบให้ถูก! ผิด 6 ครั้ง = 😵 Game Over</p>
+
+<div class="score-bar">
+  <div class="score-item"><div class="num" id="h-score">0</div><div class="lbl">คะแนน</div></div>
+  <div class="score-item"><div class="num" id="h-q">1</div><div class="lbl">/ <span id="h-total">20</span></div></div>
+  <div class="score-item"><div class="num" id="h-wrong">0</div><div class="lbl">/ 6 ❌</div></div>
+</div>
+<div class="progress-wrap"><div class="progress-fill" id="h-prog" style="width:0%"></div></div>
+
+<div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:flex-start">
+  <canvas id="hangCanvas" width="200" height="200"></canvas>
+  <div style="flex:1;min-width:280px" id="h-area"></div>
+</div>
+
+<div class="center mt" id="h-next-wrap" style="display:none">
+  <button class="btn btn-p" onclick="hNext()">ข้อถัดไป →</button>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--    GAME 2: RATIO                          -->
+<!-- ══════════════════════════════════════════ -->
+<div id="game2" class="section">
+<h1>🎮 เกมอัตราส่วน</h1>
+<p class="center" style="color:#a78bfa">Cross Multiply แล้วหาค่า! + หา A:B:C</p>
+
+<div class="score-bar">
+  <div class="score-item"><div class="num" id="r-score">0</div><div class="lbl">คะแนน</div></div>
+  <div class="score-item"><div class="num" id="r-q">1</div><div class="lbl">/ <span id="r-total">15</span></div></div>
+</div>
+<div class="progress-wrap"><div class="progress-fill" id="r-prog" style="width:0%"></div></div>
+<div id="r-area"></div>
+</div>
+
+<!-- POPUP -->
+<div class="pop-o" id="popup"><div class="pop"><div id="pop-c"></div><button class="btn btn-p mt" onclick="closePop()">ปิด ✕</button></div></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<script>
+// ═══ TABS ═══
+function go(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{if(b.getAttribute('onclick')?.includes("'"+id+"'"))b.classList.add('active')});
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='game1'&&!hStarted)hStart();
+  if(id==='game2'&&!rStarted)rStart();
+  if(id==='angles')drawAngleDiagrams();
+  if(id==='area'){drawShapes();drawComposite();updateCalc()}
+}
+function closePop(){document.getElementById('popup').classList.remove('show')}
+function showPop(h){document.getElementById('pop-c').innerHTML=h;document.getElementById('popup').classList.add('show')}
+
+// ═══ CROSS MULTIPLY ANIMATION ═══
+function playCross(){
+  const l1=document.getElementById('crossL1');
+  const l2=document.getElementById('crossL2');
+  const lb1=document.getElementById('crossLbl1');
+  const lb2=document.getElementById('crossLbl2');
+  // reset
+  l1.classList.remove('anim');l2.classList.remove('anim');
+  lb1.setAttribute('opacity','0');lb2.setAttribute('opacity','0');
+  document.getElementById('crossSteps').style.display='none';
+  void l1.offsetWidth; // force reflow
+  l1.classList.add('anim');l2.classList.add('anim');
+  setTimeout(()=>{lb1.setAttribute('opacity','1')},1000);
+  setTimeout(()=>{lb2.setAttribute('opacity','1')},1600);
+  setTimeout(()=>{document.getElementById('crossSteps').style.display=''},2000);
+}
+
+// ═══ ANGLE DIAGRAMS ═══
+function drawAngleDiagrams(){
+  drawAngleTypes();
+  drawCrossingLines();
+  drawParallelLines();
+  drawAdjAngle(document.getElementById('angleSlider').value);
+}
+
+function drawAngleTypes(){
+  const c=document.getElementById('cvTypes');if(!c)return;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,500,180);
+  const angles=[{deg:45,lbl:'มุมแหลม 45°',col:'#34d399'},{deg:90,lbl:'มุมฉาก 90°',col:'#fbbf24'},{deg:130,lbl:'มุมป้าน 130°',col:'#f97316'},{deg:180,lbl:'มุมตรง 180°',col:'#ec4899'}];
+  angles.forEach((a,i)=>{
+    const cx=65+i*120,cy=140,r=50;
+    const rad=-a.deg*Math.PI/180;
+    // base
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.strokeStyle=a.col;ctx.lineWidth=2.5;ctx.stroke();
+    // arm
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(rad),cy+r*Math.sin(rad));ctx.stroke();
+    // arc
+    ctx.beginPath();ctx.arc(cx,cy,18,0,rad,true);ctx.strokeStyle=a.col+'88';ctx.lineWidth=2;ctx.stroke();
+    // right angle symbol (L-shape)
+    if(a.deg===90){
+      ctx.strokeStyle=a.col;ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(cx+14,cy);ctx.lineTo(cx+14,cy-14);ctx.lineTo(cx,cy-14);ctx.stroke();
+    }
+    // label
+    ctx.fillStyle=a.col;ctx.font='bold 16px Sarabun';ctx.textAlign='center';
+    ctx.fillText(a.lbl,cx+20,20+i%2*14);
+  });
+}
+
+function drawCrossingLines(){
+  const c=document.getElementById('cvCross');if(!c)return;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,400,260);
+  const cx=200,cy=130;
+  // two lines
+  ctx.lineWidth=2.5;
+  ctx.strokeStyle='#a78bfa';
+  ctx.beginPath();ctx.moveTo(60,50);ctx.lineTo(340,210);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(340,50);ctx.lineTo(60,210);ctx.stroke();
+  // angle arcs at intersection
+  const a1=Math.atan2(80,140),a2=Math.atan2(-80,140),a3=Math.atan2(-80,-140),a4=Math.atan2(80,-140);
+  const arcR=28;
+  // a (top sector, yellow)
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,arcR,a3,a2);ctx.closePath();
+  ctx.fillStyle='rgba(251,191,36,.18)';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,arcR,a3,a2);ctx.strokeStyle='#fbbf24';ctx.lineWidth=1.5;ctx.stroke();
+  // b (right sector, cyan)
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,arcR,a2,a1);ctx.closePath();
+  ctx.fillStyle='rgba(103,232,249,.18)';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,arcR,a2,a1);ctx.strokeStyle='#67e8f9';ctx.lineWidth=1.5;ctx.stroke();
+  // c (bottom sector, yellow)
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,arcR,a1,a4);ctx.closePath();
+  ctx.fillStyle='rgba(251,191,36,.18)';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,arcR,a1,a4);ctx.strokeStyle='#fbbf24';ctx.lineWidth=1.5;ctx.stroke();
+  // d (left sector, cyan)
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,arcR,a4,a3+2*Math.PI);ctx.closePath();
+  ctx.fillStyle='rgba(103,232,249,.18)';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,arcR,a4,a3+2*Math.PI);ctx.strokeStyle='#67e8f9';ctx.lineWidth=1.5;ctx.stroke();
+  // labels
+  ctx.font='bold 22px Sarabun';ctx.textAlign='center';
+  ctx.fillStyle='#fbbf24';ctx.fillText('a',155,100);
+  ctx.fillStyle='#67e8f9';ctx.fillText('b',235,100);
+  ctx.fillStyle='#fbbf24';ctx.fillText('c',245,170);
+  ctx.fillStyle='#67e8f9';ctx.fillText('d',155,170);
+  // note
+  ctx.font='18px Sarabun';ctx.fillStyle='#c4b5fd';
+  ctx.fillText('a = c (ตรงข้าม)',200,240);
+  ctx.fillText('a + b = 180° (ข้างเคียง)',200,258);
+}
+
+function drawParallelLines(){
+  const c=document.getElementById('cvParallel');if(!c)return;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,450,300);
+  // parallel lines
+  ctx.strokeStyle='#a78bfa';ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.moveTo(30,80);ctx.lineTo(420,80);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(30,200);ctx.lineTo(420,200);ctx.stroke();
+  // arrows for parallel
+  ctx.fillStyle='#a78bfa';ctx.font='18px Sarabun';
+  ctx.fillText('ℓ₁',425,84);ctx.fillText('ℓ₂',425,204);
+  // transversal
+  ctx.strokeStyle='#ec4899';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(120,20);ctx.lineTo(300,280);ctx.stroke();
+  ctx.fillStyle='#ec4899';ctx.fillText('t',305,278);
+  // compute transversal angle and intersection points
+  const tAng=Math.atan2(260,180); // ≈0.966 rad, down-right direction
+  const tUp=tAng-Math.PI; // up-left direction
+  const hR=0; // horizontal right
+  const hL=Math.PI; // horizontal left
+  // top intersection
+  const ix1=120+(300-120)*(80-20)/(280-20), iy1=80;
+  // bottom intersection
+  const ix2=120+(300-120)*(200-20)/(280-20), iy2=200;
+  const arcR=18;
+  // helper to draw a filled arc sector
+  function drawArc(px,py,startA,endA,col){
+    ctx.beginPath();ctx.moveTo(px,py);ctx.arc(px,py,arcR,startA,endA);ctx.closePath();
+    ctx.fillStyle=col;ctx.fill();
+    ctx.beginPath();ctx.arc(px,py,arcR,startA,endA);
+    ctx.strokeStyle=col.replace(',.18)',',1)').replace(',.22)',',1)');ctx.lineWidth=1;ctx.stroke();
+  }
+  // color groups: angles 1,4,5,8 (acute≈55°) = yellow; 2,3,6,7 (obtuse≈125°) = cyan
+  var cA='rgba(251,191,36,.22)',cB='rgba(103,232,249,.22)';
+  // top intersection arcs (sorted: tUp, hL, tAng(down), hR+2π for correct wrapping)
+  // Sectors clockwise from 0: hR(0)→tAng(0.966)=angle4, tAng→hL(π)=angle3, hL→tUp(π+0.966=4.108)=angle1, tUp→hR+2π=angle2
+  drawArc(ix1,iy1, hR, tAng, cA);       // angle 4 (acute, yellow)
+  drawArc(ix1,iy1, tAng, hL, cB);       // angle 3 (obtuse, cyan)
+  drawArc(ix1,iy1, hL, tAng+Math.PI, cA);  // angle 1 (acute, yellow)
+  drawArc(ix1,iy1, tAng+Math.PI, hR+2*Math.PI, cB); // angle 2 (obtuse, cyan)
+  // bottom intersection arcs (same pattern = corresponding angles)
+  drawArc(ix2,iy2, hR, tAng, cA);       // angle 8
+  drawArc(ix2,iy2, tAng, hL, cB);       // angle 7
+  drawArc(ix2,iy2, hL, tAng+Math.PI, cA);  // angle 5
+  drawArc(ix2,iy2, tAng+Math.PI, hR+2*Math.PI, cB); // angle 6
+  // labels
+  ctx.font='bold 18px Sarabun';
+  ctx.textAlign='center';
+  // top intersection
+  ctx.fillStyle='#fbbf24';ctx.fillText('1',ix1-25,iy1-8);
+  ctx.fillStyle='#67e8f9';ctx.fillText('2',ix1+25,iy1-8);
+  ctx.fillStyle='#67e8f9';ctx.fillText('3',ix1-25,iy1+20);
+  ctx.fillStyle='#fbbf24';ctx.fillText('4',ix1+25,iy1+20);
+  // bottom intersection
+  ctx.fillStyle='#fbbf24';ctx.fillText('5',ix2-25,iy2-8);
+  ctx.fillStyle='#67e8f9';ctx.fillText('6',ix2+25,iy2-8);
+  ctx.fillStyle='#67e8f9';ctx.fillText('7',ix2-25,iy2+22);
+  ctx.fillStyle='#fbbf24';ctx.fillText('8',ix2+25,iy2+22);
+  // note
+  ctx.font='15px Sarabun';ctx.fillStyle='#c4b5fd';
+  ctx.fillText('ตำแหน่งเดียวกัน: ∠1=∠5  ∠2=∠6  ∠3=∠7  ∠4=∠8',225,262);
+  ctx.fillText('มุมแย้ง: ∠3=∠6   ∠4=∠5',225,280);
+  ctx.fillText('ภายในข้างเดียว: ∠3+∠5=180°  ∠4+∠6=180°',225,298);
+}
+
+function drawAdjAngle(deg){
+  deg=parseInt(deg);
+  const c=document.getElementById('cvAdjust');if(!c)return;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,400,250);
+  const cx=200,cy=200,r=120;
+  const rad=-deg*Math.PI/180;
+  // base
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.strokeStyle='#a78bfa';ctx.lineWidth=3;ctx.stroke();
+  // arm
+  const ex=cx+r*Math.cos(rad),ey=cy+r*Math.sin(rad);
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);ctx.strokeStyle='#ec4899';ctx.lineWidth=3;ctx.stroke();
+  // arc fill
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,40,0,rad,true);ctx.closePath();
+  ctx.fillStyle='rgba(251,191,36,.15)';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,40,0,rad,true);ctx.strokeStyle='#fbbf2488';ctx.lineWidth=2;ctx.stroke();
+  // right angle symbol
+  if(deg===90){
+    ctx.strokeStyle='#fbbf24';ctx.lineWidth=2;
+    ctx.strokeRect(cx+12,cy-12,12,12);
+  }
+  // label
+  let type='มุมแหลม',color='#34d399';
+  if(deg===90){type='มุมฉาก □';color='#fbbf24'}
+  else if(deg>90&&deg<180){type='มุมป้าน';color='#f97316'}
+  else if(deg===180){type='มุมตรง';color='#ec4899'}
+  else if(deg>180){type='มุมกลับ';color='#f87171'}
+  ctx.fillStyle='#fbbf24';ctx.font='bold 22px Sarabun';ctx.textAlign='center';
+  ctx.fillText(deg+'°',cx,30);
+  ctx.fillStyle=color;ctx.font='18px Sarabun';ctx.fillText(type,cx,55);
+  document.getElementById('angleLbl').innerHTML=deg+'° — '+type;
+  document.getElementById('angleLbl').style.color=color;
+}
+
+// ═══ AREA DIAGRAMS ═══
+function drawShapes(){
+  const c=document.getElementById('cvShapes');if(!c)return;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,500,420);
+  ctx.lineWidth=2;ctx.font='bold 16px Sarabun';ctx.textAlign='center';
+  // Rectangle
+  ctx.fillStyle='rgba(167,139,250,.15)';ctx.strokeStyle='#a78bfa';
+  ctx.fillRect(20,20,100,60);ctx.strokeRect(20,20,100,60);
+  ctx.fillStyle='#f9a8d4';ctx.fillText('ผืนผ้า',70,14);
+  ctx.fillStyle='#67e8f9';ctx.fillText('กว้าง×ยาว',70,55);
+  // Square
+  ctx.fillStyle='rgba(251,191,36,.1)';ctx.strokeStyle='#fbbf24';
+  ctx.fillRect(150,20,70,70);ctx.strokeRect(150,20,70,70);
+  ctx.fillStyle='#f9a8d4';ctx.fillText('จัตุรัส',185,14);
+  ctx.fillStyle='#67e8f9';ctx.fillText('ด้าน²',185,60);
+  // Triangle
+  ctx.beginPath();ctx.moveTo(280,90);ctx.lineTo(380,90);ctx.lineTo(330,20);ctx.closePath();
+  ctx.fillStyle='rgba(236,72,153,.1)';ctx.fill();ctx.strokeStyle='#ec4899';ctx.stroke();
+  ctx.fillStyle='#f9a8d4';ctx.fillText('สามเหลี่ยม',330,14);
+  ctx.fillStyle='#67e8f9';ctx.fillText('½×ฐาน×สูง',330,65);
+  // dashed height
+  ctx.setLineDash([4,4]);ctx.strokeStyle='#67e8f988';
+  ctx.beginPath();ctx.moveTo(330,20);ctx.lineTo(330,90);ctx.stroke();
+  ctx.setLineDash([]);
+  // Parallelogram
+  ctx.beginPath();ctx.moveTo(40,140);ctx.lineTo(140,140);ctx.lineTo(160,200);ctx.lineTo(60,200);ctx.closePath();
+  ctx.fillStyle='rgba(52,211,153,.1)';ctx.fill();ctx.strokeStyle='#34d399';ctx.stroke();
+  ctx.fillStyle='#f9a8d4';ctx.fillText('ด้านขนาน',100,132);
+  ctx.fillStyle='#67e8f9';ctx.fillText('ฐาน×สูง',100,175);
+  // dashed height
+  ctx.setLineDash([4,4]);ctx.strokeStyle='#67e8f988';
+  ctx.beginPath();ctx.moveTo(90,140);ctx.lineTo(90,200);ctx.stroke();
+  ctx.setLineDash([]);
+  // Rhombus
+  ctx.beginPath();ctx.moveTo(280,140);ctx.lineTo(330,170);ctx.lineTo(280,200);ctx.lineTo(230,170);ctx.closePath();
+  ctx.fillStyle='rgba(248,113,113,.1)';ctx.fill();ctx.strokeStyle='#f87171';ctx.stroke();
+  ctx.fillStyle='#f9a8d4';ctx.fillText('ขนมเปียกปูน',280,132);
+  ctx.fillStyle='#67e8f9';ctx.fillText('½×d₁×d₂',280,175);
+  // diagonals dashed
+  ctx.setLineDash([4,4]);ctx.strokeStyle='#67e8f988';
+  ctx.beginPath();ctx.moveTo(230,170);ctx.lineTo(330,170);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(280,140);ctx.lineTo(280,200);ctx.stroke();
+  ctx.setLineDash([]);
+  // Trapezoid
+  ctx.beginPath();ctx.moveTo(30,260);ctx.lineTo(160,260);ctx.lineTo(130,310);ctx.lineTo(60,310);ctx.closePath();
+  ctx.fillStyle='rgba(52,211,153,.12)';ctx.fill();ctx.strokeStyle='#34d399';ctx.stroke();
+  ctx.fillStyle='#f9a8d4';ctx.fillText('คางหมู',95,252);
+  ctx.fillStyle='#67e8f9';ctx.fillText('½×(a+b)×h',95,290);
+  // dashed height
+  ctx.setLineDash([4,4]);ctx.strokeStyle='#67e8f988';
+  ctx.beginPath();ctx.moveTo(100,260);ctx.lineTo(100,310);ctx.stroke();
+  ctx.setLineDash([]);
+  // Circle
+  ctx.beginPath();ctx.arc(320,285,45,0,Math.PI*2);
+  ctx.fillStyle='rgba(251,191,36,.1)';ctx.fill();ctx.strokeStyle='#fbbf24';ctx.stroke();
+  ctx.fillStyle='#f9a8d4';ctx.fillText('วงกลม',320,232);
+  ctx.fillStyle='#67e8f9';ctx.fillText('πr²',320,290);
+  // radius line
+  ctx.strokeStyle='#fbbf24';ctx.setLineDash([]);ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(320,285);ctx.lineTo(365,285);ctx.stroke();
+  ctx.fillStyle='#fbbf24';ctx.font='13px Sarabun';ctx.fillText('r',345,280);
+  // Semi-circle
+  ctx.beginPath();ctx.arc(100,390,40,Math.PI,0);ctx.closePath();
+  ctx.fillStyle='rgba(167,139,250,.1)';ctx.fill();ctx.strokeStyle='#a78bfa';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='#f9a8d4';ctx.font='bold 16px Sarabun';ctx.fillText('ครึ่งวงกลม',100,352);
+  ctx.fillStyle='#67e8f9';ctx.fillText('½πr²',100,380);
+}
+
+function drawComposite(){
+  const c=document.getElementById('cvComposite');if(!c)return;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,500,280);
+  // L-shape
+  ctx.fillStyle='rgba(167,139,250,.15)';ctx.strokeStyle='#a78bfa';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(20,20);ctx.lineTo(120,20);ctx.lineTo(120,60);ctx.lineTo(80,60);ctx.lineTo(80,120);ctx.lineTo(20,120);ctx.closePath();
+  ctx.fill();ctx.stroke();
+  ctx.fillStyle='#c4b5fd';ctx.font='13px Sarabun';ctx.textAlign='center';
+  ctx.fillText('10',70,16);ctx.fillText('4',125,42);ctx.fillText('6',16,70);ctx.fillText('L-shape',70,140);
+  ctx.fillStyle='#67e8f9';ctx.font='bold 16px Sarabun';ctx.fillText('แยก 2 ผืนผ้า',70,155);
+  // Rect with circle hole
+  ctx.fillStyle='rgba(251,191,36,.1)';ctx.strokeStyle='#fbbf24';
+  ctx.fillRect(180,20,120,100);ctx.strokeRect(180,20,120,100);
+  ctx.fillStyle='rgba(15,12,41,1)';ctx.strokeStyle='#f87171';
+  ctx.beginPath();ctx.arc(240,70,25,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#c4b5fd';ctx.font='13px Sarabun';
+  ctx.fillText('เจาะวงกลม',240,140);
+  ctx.fillStyle='#67e8f9';ctx.font='bold 16px Sarabun';ctx.fillText('= ผืนผ้า − วงกลม',240,155);
+  // Rect + semicircle
+  ctx.fillStyle='rgba(52,211,153,.12)';ctx.strokeStyle='#34d399';ctx.lineWidth=2;
+  ctx.fillRect(360,50,100,70);ctx.strokeRect(360,50,100,70);
+  ctx.beginPath();ctx.arc(410,50,50,Math.PI,0);
+  ctx.fillStyle='rgba(236,72,153,.12)';ctx.fill();ctx.strokeStyle='#ec4899';ctx.stroke();
+  ctx.fillStyle='#c4b5fd';ctx.font='13px Sarabun';
+  ctx.fillText('ผืนผ้า+ครึ่งวงกลม',410,140);
+  ctx.fillStyle='#67e8f9';ctx.font='bold 16px Sarabun';ctx.fillText('= ผืนผ้า + ½πr²',410,155);
+  // General note
+  ctx.fillStyle='#fbbf24';ctx.font='bold 16px Sarabun';
+  ctx.fillText('หลัก: แยกรูปซับซ้อน → รูปง่ายๆ → บวก/ลบพื้นที่',250,200);
+}
+
+// ═══ AREA CALCULATOR ═══
+function updateCalc(){
+  const s=document.getElementById('shpSel').value;
+  const d=document.getElementById('calcIn');
+  document.getElementById('calcRes').textContent='';
+  const inp=(id,v,l)=>`${l}: <input type="number" id="${id}" value="${v}" style="width:55px;padding:4px;border-radius:6px;font-size:1rem;text-align:center"> `;
+  if(s==='rect')d.innerHTML=inp('cw',8,'กว้าง')+inp('ch',15,'ยาว')+'ซม. <button class="btn btn-sm btn-p" onclick="doCalc()">คำนวณ!</button>';
+  else if(s==='tri')d.innerHTML=inp('cw',12,'ฐาน')+inp('ch',9,'สูง')+'ซม. <button class="btn btn-sm btn-p" onclick="doCalc()">คำนวณ!</button>';
+  else if(s==='circle')d.innerHTML=inp('cw',7,'รัศมี')+'ซม. <button class="btn btn-sm btn-p" onclick="doCalc()">คำนวณ!</button>';
+  else if(s==='trap')d.innerHTML=inp('cw',10,'ด้าน a')+inp('ch',16,'ด้าน b')+inp('cd',8,'สูง')+'ซม. <button class="btn btn-sm btn-p" onclick="doCalc()">คำนวณ!</button>';
+  else d.innerHTML=inp('cw',14,'ฐาน')+inp('ch',6,'สูง')+'ซม. <button class="btn btn-sm btn-p" onclick="doCalc()">คำนวณ!</button>';
+}
+function doCalc(){
+  const s=document.getElementById('shpSel').value;
+  const r=document.getElementById('calcRes');
+  const w=parseFloat(document.getElementById('cw')?.value||0);
+  const h=parseFloat(document.getElementById('ch')?.value||0);
+  const d=parseFloat(document.getElementById('cd')?.value||0);
+  if(s==='rect')r.innerHTML=`พื้นที่ = ${w} × ${h} = <span class="em">${w*h} ตร.ซม.</span>`;
+  else if(s==='tri')r.innerHTML=`พื้นที่ = ½ × ${w} × ${h} = <span class="em">${w*h/2} ตร.ซม.</span>`;
+  else if(s==='circle'){const a=(22/7)*w*w;r.innerHTML=`พื้นที่ = (22/7) × ${w}² = <span class="em">${a.toFixed(2)} ตร.ซม.</span>`}
+  else if(s==='trap')r.innerHTML=`พื้นที่ = ½ × (${w}+${h}) × ${d} = <span class="em">${(w+h)*d/2} ตร.ซม.</span>`;
+  else r.innerHTML=`พื้นที่ = ${w} × ${h} = <span class="em">${w*h} ตร.ซม.</span>`;
+}
+
+// ═══════════════════════════════════════════
+// GAME 1: HANGMAN EQUATION
+// ═══════════════════════════════════════════
+let hStarted=false,hIdx=0,hScore=0,hWrong=0;
+const hProblems=[
+  {eq:'5x + 3 = 28', ans:5, choices:[3,5,7,8]},
+  {eq:'2x − 4 = 10', ans:7, choices:[3,5,7,9]},
+  {eq:'4y + 8 = 36', ans:7, choices:[4,6,7,9]},
+  {eq:'6a − 12 = 30', ans:7, choices:[5,6,7,8]},
+  {eq:'3(x + 2) = 21', ans:5, choices:[3,5,7,9]},
+  {eq:'8x − 6 = 42', ans:6, choices:[4,5,6,8]},
+  {eq:'2(3y − 1) = 16', ans:3, choices:[2,3,4,5]},
+  {eq:'7x + 5 = 40', ans:5, choices:[3,4,5,7]},
+  {eq:'5(x − 3) = 20', ans:7, choices:[4,5,7,8]},
+  {eq:'9a + 9 = 90', ans:9, choices:[7,8,9,10]},
+  {eq:'4x + 12 = 44', ans:8, choices:[6,7,8,10]},
+  {eq:'3(2x − 5) = 9', ans:4, choices:[3,4,5,6]},
+  {eq:'10x − 25 = 75', ans:10, choices:[8,9,10,12]},
+  {eq:'2x + 3x = 35', ans:7, choices:[5,6,7,9]},
+  {eq:'6(x + 1) = 48', ans:7, choices:[6,7,8,9]},
+  {eq:'12a − 8 = 40', ans:4, choices:[3,4,5,6]},
+  {eq:'4(2y + 3) = 36', ans:3, choices:[2,3,4,5]},
+  {eq:'15x − 10 = 50', ans:4, choices:[3,4,5,6]},
+  {eq:'7(x − 4) = 21', ans:7, choices:[5,6,7,8]},
+  {eq:'2x + 8 = 3x + 2', ans:6, choices:[4,5,6,8]},
+];
+
+function hStart(){
+  hStarted=true;hIdx=0;hScore=0;hWrong=0;
+  hClearCanvas();
+  hRender();
+}
+
+function hClearCanvas(){
+  const c=document.getElementById('hangCanvas');if(!c)return;
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,200,200);
+  // draw empty frame
+  ctx.strokeStyle='#7c3aed44';ctx.lineWidth=1;
+  ctx.strokeRect(1,1,198,198);
+}
+
+function drawHangmanStage(stage){
+  const c=document.getElementById('hangCanvas');if(!c)return;
+  const ctx=c.getContext('2d');
+  ctx.strokeStyle='#f87171';ctx.lineWidth=3;ctx.lineCap='round';
+
+  if(stage>=1){
+    // Big circle (head)
+    ctx.beginPath();ctx.arc(100,85,55,0,Math.PI*2);ctx.stroke();
+  }
+  if(stage>=2){
+    // Left eye - one line /
+    ctx.beginPath();ctx.moveTo(72,65);ctx.lineTo(82,80);ctx.stroke();
+  }
+  if(stage>=3){
+    // Left eye - cross \ → X
+    ctx.beginPath();ctx.moveTo(82,65);ctx.lineTo(72,80);ctx.stroke();
+  }
+  if(stage>=4){
+    // Right eye - one line /
+    ctx.beginPath();ctx.moveTo(118,65);ctx.lineTo(128,80);ctx.stroke();
+  }
+  if(stage>=5){
+    // Right eye - cross \ → X
+    ctx.beginPath();ctx.moveTo(128,65);ctx.lineTo(118,80);ctx.stroke();
+  }
+  if(stage>=6){
+    // Mouth (frown)
+    ctx.beginPath();ctx.arc(100,115,18,1.15*Math.PI,1.85*Math.PI);ctx.stroke();
+    // Game over text
+    ctx.fillStyle='#f87171';ctx.font='bold 26px Sarabun';ctx.textAlign='center';
+    ctx.fillText('😵 GAME OVER',100,175);
+  }
+}
+
+function hRender(){
+  if(hWrong>=6){
+    // Game Over
+    const area=document.getElementById('h-area');
+    area.innerHTML=`<div class="card hl center"><h2 style="color:#f87171;text-align:center;border:none">😵 Game Over!</h2>
+      <p class="mt">คะแนน: <span class="em">${hScore}/${hProblems.length}</span></p>
+      <p class="mt">ทำได้ ${hScore} ข้อ จาก ${hProblems.length} ข้อ</p>
+      <button class="btn btn-p mt" onclick="hStarted=false;hStart()">เล่นใหม่ 🔄</button></div>`;
+    document.getElementById('h-next-wrap').style.display='none';
+    return;
+  }
+  if(hIdx>=hProblems.length){
+    // Win!
+    showPop(`<h2 style="border:none;text-align:center;color:#34d399">🏆 ชนะ! ยอดเยี่ยม!</h2>
+      <p class="mt" style="font-size:1.3rem">คะแนน: <span class="em">${hScore}/${hProblems.length}</span></p>
+      <p>ตอบผิด: ${hWrong} ครั้ง</p>
+      <div class="mt">${'⭐'.repeat(Math.max(1,6-hWrong))}</div>
+      <button class="btn btn-p mt" onclick="closePop();hStarted=false;hStart()">เล่นอีกรอบ</button>`);
+    return;
+  }
+  const p=hProblems[hIdx];
+  document.getElementById('h-q').textContent=hIdx+1;
+  document.getElementById('h-total').textContent=hProblems.length;
+  document.getElementById('h-score').textContent=hScore;
+  document.getElementById('h-wrong').textContent=hWrong;
+  document.getElementById('h-prog').style.width=(hIdx/hProblems.length*100)+'%';
+  document.getElementById('h-next-wrap').style.display='none';
+
+  let shuffled=[...p.choices].sort(()=>Math.random()-.5);
+  const area=document.getElementById('h-area');
+  area.innerHTML=`<div class="card hl">
+    <h2 style="text-align:center;border:none">โจทย์ ข้อ ${hIdx+1}</h2>
+    <p class="center" style="font-size:1.5rem"><span class="math">${p.eq}</span></p>
+    <p class="center mt" style="font-size:1.1rem">ตัวแปร = ?</p>
+    <div class="choices mt" id="h-opts">
+      ${shuffled.map(v=>`<button class="choice-btn" style="min-width:65px;font-size:1.4rem" onclick="hPick(this,${v})">${v}</button>`).join('')}
+    </div>
+    <div id="h-fb" class="center mt" style="min-height:36px"></div>
+  </div>`;
+}
+
+function hPick(btn,val){
+  const p=hProblems[hIdx];
+  document.querySelectorAll('#h-opts .choice-btn').forEach(b=>b.style.pointerEvents='none');
+  const fb=document.getElementById('h-fb');
+
+  if(val===p.ans){
+    btn.style.background='linear-gradient(135deg,#059669,#34d399)';btn.style.color='#fff';
+    hScore++;
+    fb.innerHTML=`<p style="color:#34d399;font-size:1.2rem">✅ ถูกต้อง! คำตอบคือ <span class="em">${p.ans}</span></p>`;
+    document.getElementById('h-score').textContent=hScore;
+    if(hIdx<hProblems.length-1){
+      document.getElementById('h-next-wrap').style.display='';
+    } else {
+      setTimeout(()=>{hIdx++;hRender()},1000);
+    }
+  } else {
+    btn.style.background='#f87171';btn.style.color='#fff';
+    hWrong++;
+    document.getElementById('h-wrong').textContent=hWrong;
+    // Draw on hangman
+    hClearCanvas();
+    drawHangmanStage(hWrong);
+
+    if(hWrong>=6){
+      fb.innerHTML=`<p style="color:#f87171;font-size:1.2rem">❌ ผิด! คำตอบคือ <span class="em">${p.ans}</span></p>`;
+      setTimeout(()=>hRender(),1500);
+    } else {
+      fb.innerHTML=`<p style="color:#f87171;font-size:1.1rem">❌ ผิด! (เหลือโอกาสอีก ${6-hWrong} ครั้ง) — ลองใหม่!</p>`;
+      setTimeout(()=>{
+        document.querySelectorAll('#h-opts .choice-btn').forEach(b=>b.style.pointerEvents='');
+        btn.classList.add('used');
+        fb.innerHTML='';
+      },800);
+    }
+  }
+}
+
+function hNext(){
+  hIdx++;
+  hRender();
+}
+
+// ═══════════════════════════════════════════
+// GAME 2: RATIO
+// ═══════════════════════════════════════════
+let rStarted=false,rIdx=0,rScore=0;
+const rProblems=[
+  {type:'prop',text:'5 : y = 20 : 36',ans:9},
+  {type:'prop',text:'x : 8 = 15 : 24',ans:5},
+  {type:'prop',text:'3 : 7 = 12 : n',ans:28},
+  {type:'prop',text:'4 : m = 16 : 20',ans:5},
+  {type:'prop',text:'a : 6 = 10 : 15',ans:4},
+  {type:'prop',text:'7 : 3 = p : 9',ans:21},
+  {type:'prop',text:'6 : x = 18 : 12',ans:4},
+  {type:'prop',text:'x : 9 = 8 : 12',ans:6},
+  {type:'prop',text:'10 : 4 = n : 6',ans:15},
+  {type:'prop',text:'3 : x = 9 : 21',ans:7},
+  {type:'abc',text:'A:B = 2:3 และ B:C = 3:5<br>หา A+B+C',ans:10,explain:'A:B:C = 2:3:5 → A+B+C = 10'},
+  {type:'abc',text:'A:B = 2:5 และ B:C = 3:4<br>หา A (ถ้า C=20)',ans:6,explain:'ค.ร.น.(5,3)=15 → A:B:C = 6:15:20 → A=6'},
+  {type:'abc',text:'A:B = 3:4 และ B:C = 6:7<br>หา A+B+C',ans:35,explain:'ค.ร.น.(4,6)=12 → A:B:C = 9:12:14 → รวม 35'},
+  {type:'abc',text:'A:B = 1:2 และ B:C = 4:3<br>หา C (ถ้า A=10)',ans:15,explain:'ค.ร.น.(2,4)=4 → A:B:C = 2:4:3 → A=10 → C=15'},
+  {type:'abc',text:'A:B = 5:3 และ B:C = 3:2<br>หา A−C',ans:3,explain:'B เท่ากัน=3 → A:B:C = 5:3:2 → A−C = 3'},
+];
+
+function rStart(){
+  rStarted=true;rIdx=0;rScore=0;rRender();
+}
+
+function rRender(){
+  if(rIdx>=rProblems.length){
+    document.getElementById('r-area').innerHTML=`<div class="card hl center">
+      <h2 style="border:none;text-align:center">🏆 จบเกม!</h2>
+      <p class="mt" style="font-size:2rem"><span class="em">${rScore} / ${rProblems.length}</span></p>
+      <div class="mt">${'⭐'.repeat(rScore)}</div>
+      <button class="btn btn-p mt" onclick="rStarted=false;rStart()">เล่นอีกรอบ</button></div>`;
+    return;
+  }
+  const p=rProblems[rIdx];
+  document.getElementById('r-q').textContent=rIdx+1;
+  document.getElementById('r-total').textContent=rProblems.length;
+  document.getElementById('r-score').textContent=rScore;
+  document.getElementById('r-prog').style.width=(rIdx/rProblems.length*100)+'%';
+
+  // Generate wrong answers
+  let wrongs=new Set();
+  while(wrongs.size<3){let w=p.ans+Math.floor(Math.random()*11)-5;if(w>0&&w!==p.ans)wrongs.add(w)}
+  let opts=[p.ans,...wrongs].sort(()=>Math.random()-.5);
+
+  const area=document.getElementById('r-area');
+  area.innerHTML=`<div class="card hl">
+    <h2 style="text-align:center;border:none">${p.type==='abc'?'หา A:B:C':'หาค่าตัวแปร'}</h2>
+    <p class="center" style="font-size:1.3rem"><span class="math">${p.text}</span></p>
+    ${p.type==='abc'?'<p class="center" style="color:#a78bfa;font-size:.9rem">(ใช้วิธี ค.ร.น. ถ้า B ไม่เท่ากัน)</p>':''}
+    <div class="choices mt" id="r-opts">
+      ${opts.map(o=>`<button class="choice-btn" style="min-width:65px;font-size:1.3rem" onclick="rPick(this,${o})">${o}</button>`).join('')}
+    </div>
+    <div id="r-fb" class="center mt" style="min-height:40px"></div>
+  </div>`;
+}
+
+function rPick(btn,val){
+  const p=rProblems[rIdx];
+  const fb=document.getElementById('r-fb');
+  document.querySelectorAll('#r-opts .choice-btn').forEach(b=>b.style.pointerEvents='none');
+  if(val===p.ans){
+    btn.style.background='linear-gradient(135deg,#059669,#34d399)';btn.style.color='#fff';
+    rScore++;
+    let extra=p.explain?`<br><span style="font-size:.9rem;color:#a78bfa">${p.explain}</span>`:'';
+    fb.innerHTML=`<p style="color:#34d399;font-size:1.2rem">✅ ถูกต้อง! <span class="em">${p.ans}</span>${extra}</p>`;
+  } else {
+    btn.style.background='#f87171';btn.style.color='#fff';
+    let extra=p.explain?`<br><span style="font-size:.9rem;color:#a78bfa">${p.explain}</span>`:'';
+    fb.innerHTML=`<p style="color:#f87171;font-size:1.2rem">❌ คำตอบคือ <span class="em">${p.ans}</span>${extra}</p>`;
+  }
+  document.getElementById('r-score').textContent=rScore;
+  setTimeout(()=>{rIdx++;rRender()},2000);
+}
+
+// ═══ STEP ANIMATION ═══
+function playAnim(id){
+  const el=document.getElementById(id);if(!el)return;
+  el.classList.remove('playing');
+  void el.offsetWidth; // force reflow
+  el.classList.add('playing');
+}
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded',()=>{updateCalc()});
+</script>
+</body>
+</html>
