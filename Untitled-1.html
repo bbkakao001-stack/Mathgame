@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เฉลยคณิตศาสตร์พร้อมวิธีทำ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #e0d4f7;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        /* ============ CARD ============ */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card-header {
+            padding: 18px 24px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.15em;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header .toggle-icon {
+            font-size: 1.4em;
+            transition: transform 0.3s;
+        }
+
+        .card-header.open .toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        /* สีหัวแต่ละข้อ */
+        .color-1 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .color-2 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .color-3 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .color-4 { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .color-5 { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+        .color-6 { background: linear-gradient(135deg, #fccb90, #d57eeb); }
+        .color-7 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .color-8 { background: linear-gradient(135deg, #f6d365, #fda085); }
+
+        .card-body {
+            padding: 24px;
+            display: none;
+        }
+
+        .card-body.show {
+            display: block;
+        }
+
+        /* ============ โจทย์ ============ */
+        .question {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-weight: 500;
+            line-height: 1.8;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .choice {
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            font-size: 0.95em;
+        }
+
+        .choice.correct {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        /* ============ วิธีทำ ============ */
+        .solution-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step {
+            background: #fafafa;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .step-label {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .step p {
+            margin: 4px 0;
+            line-height: 1.7;
+        }
+
+        .calc {
+            font-family: 'Courier New', monospace;
+            background: #eef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* ============ คำตอบ ============ */
+        .answer-box {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #1a5c2a;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 1.15em;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        /* ============ 3D Box (ข้อ 5) ============ */
+        .box-3d-container {
+            perspective: 600px;
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .box-3d {
+            width: 140px;
+            height: 60px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(-25deg) rotateY(-35deg);
+            animation: rotateBox 8s infinite linear;
+        }
+
+        @keyframes rotateBox {
+            0%   { transform: rotateX(-25deg) rotateY(0deg); }
+            100% { transform: rotateX(-25deg) rotateY(360deg); }
+        }
+
+        .box-3d .face {
+            position: absolute;
+            border: 2px solid rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .box-3d .front {
+            width: 140px; height: 60px;
+            background: rgba(102, 126, 234, 0.7);
+            transform: translateZ(10px);
+        }
+
+        .box-3d .back {
+            width: 140px; height: 60px;
+            background: rgba(102, 126, 234, 0.5);
+            transform: translateZ(-10px) rotateY(180deg);
+        }
+
+        .box-3d .left {
+            width: 20px; height: 60px;
+            background: rgba(118, 75, 162, 0.7);
+            transform: translateX(-10px) rotateY(-90deg);
+        }
+
+        .box-3d .right {
+            width: 20px; height: 60px;
+            background: rgba(118, 75, 162, 0.7);
+            transform: translateX(130px) rotateY(90deg);
+        }
+
+        .box-3d .top {
+            width: 140px; height: 20px;
+            background: rgba(240, 147, 251, 0.7);
+            transform: translateY(-10px) rotateX(90deg);
+        }
+
+        .box-3d .bottom {
+            width: 140px; height: 20px;
+            background: rgba(240, 147, 251, 0.5);
+            transform: translateY(50px) rotateX(-90deg);
+        }
+
+        /* ============ ตาราง ============ */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #667eea;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background: #f5f5ff;
+        }
+
+        /* ============ สรุป ============ */
+        .summary {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .summary h2 {
+            text-align: center;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .summary table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .summary .correct-cell {
+            background: #e8f5e9;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        /* ============ Pattern (ข้อ 27) ============ */
+        .pattern-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            margin: 10px 0;
+        }
+
+        .pattern-display span {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            color: #fff;
+        }
+
+        .letter-A { background: #f5576c; }
+        .letter-B { background: #4facfe; }
+        .letter-C { background: #43e97b; color: #1a5c2a !important; }
+        .letter-D { background: #764ba2; }
+        .letter-highlight {
+            outline: 3px solid red;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { outline-color: red; }
+            50% { outline-color: yellow; }
+        }
+
+        /* ============ Dartboard (ข้อ 26) ============ */
+        .dartboard {
+            display: flex;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .dartboard svg {
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+        }
+
+        /* ============ Responsive ============ */
+        @media (max-width: 600px) {
+            .choices {
+                grid-template-columns: 1fr;
+            }
+
+            h1 { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🎯 เฉลยคณิตศาสตร์พร้อมวิธีทำ</h1>
+    <p class="subtitle">วิธีทำแบบง่ายๆ ไม่ใช้สูตรยาก — คลิกที่แต่ละข้อเพื่อดูวิธีทำ</p>
+
+    <!-- ==================== ข้อ 5 ==================== -->
+    <div class="card">
+        <div class="card-header color-1" onclick="toggleCard(this)">
+            <span>📦 ข้อ 5: กล่องจากกระดาษตัดมุม</span>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="card-body">
+            <div class="question">
+                กระดาษรูปสี่เหลี่ยมมุมฉาก กว้าง 14 ซม. ยาว 26 ซม. ตัดมุมทั้งสี่เป็นรูปสี่เหลี่ยมจัตุรัสด้านละ 6 ซม. แล้วพับขึ้นเป็นกล่อง จะมีปริมาตรกี่ ลบ.ซม.?
+            </div>
+            <div class="choices">
+                <div class="choice correct">1. 168 ลบ.ซม. ✅</div>
+                <div class="choice">2. 504 ลบ.ซม.</div>
+                <div class="choice">3. 672 ลบ.ซม.</div>
+                <div class="choice">4. 960 ลบ.ซม.</div>
+            </div>
+
+            <!-- 3D Box -->
+            <div class="box-3d-container">
+                <div class="box-3d">
+                    <div class="face front">ยาว 14 × สูง 6</div>
+                    <div class="face back">ยาว 14 × สูง 6</div>
+                    <div class="face left">2</div>
+                    <div class="face right">2</div>
+                    <div class="face top">กว้าง 2 × ยาว 14</div>
+                    <div class="face bottom">พื้น</div>
+                </div>
+            </div>
+
+            <div class="solution-title">📝 วิธีทำ</div>
+            <div class="step">
+                <div class="step-label">ขั้น 1 — หากว้างกล่อง</div>
+                <p>กระดาษกว้าง 14 ซม. ตัดมุมออกซ้าย 6 ขวา 6</p>
+                <p>กว้างกล่อง = <span class="calc">14 − 6 − 6 = 2 ซม.</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 2 — หายาวกล่อง</div>
+                <p>กระดาษยาว 26 ซม. ตัดมุมออกบน 6 ล่าง 6</p>
+                <p>ยาวกล่อง = <span class="calc">26 − 6 − 6 = 14 ซม.</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 3 — ความสูงกล่อง</div>
+                <p>พับขอบขึ้นมา → สูงเท่ากับด้านที่ตัด = <span class="calc">6 ซม.</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 4 — หาปริมาตร</div>
+                <p>กว้าง × ยาว × สูง = <span class="calc">2 × 14 × 6 = 168 ลบ.ซม.</span></p>
+            </div>
+            <div class="answer-box">✅ ตอบข้อ 1 → 168 ลูกบาศก์เซนติเมตร</div>
+        </div>
+    </div>
+
+    <!-- ==================== ข้อ 18 ==================== -->
+    <div class="card">
+        <div class="card-header color-2" onclick="toggleCard(this)">
+            <span>💰 ข้อ 18: กำไร-ขาดทุนเสื้อ</span>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="card-body">
+            <div class="question">
+                เสื้อราคาทุน 1,000 บาท ติดราคาขายเพื่อเอากำไร 10% แต่ขายไม่ได้ จึงลดราคาขายลง 10% ข้อใดถูกต้อง
+            </div>
+            <div class="choices">
+                <div class="choice">1. เท่าทุน</div>
+                <div class="choice">2. กำไร 10 บาท</div>
+                <div class="choice correct">3. ขาดทุน 10 บาท ✅</div>
+                <div class="choice">4. ขาดทุน 100 บาท</div>
+            </div>
+
+            <div class="solution-title">📝 วิธีทำ</div>
+            <div class="step">
+                <div class="step-label">ขั้น 1 — หาราคาป้าย</div>
+                <p>ทุน 1,000 บาท บวกกำไร 10%</p>
+                <p>10% ของ 1,000 = <span class="calc">100</span></p>
+                <p>ราคาป้าย = <span class="calc">1,000 + 100 = 1,100 บาท</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 2 — ลดราคา 10%</div>
+                <p>⚠️ ลด 10% <b>จากราคาป้าย (1,100)</b> ไม่ใช่จากทุน!</p>
+                <p>10% ของ 1,100 = <span class="calc">110</span></p>
+                <p>ขายจริง = <span class="calc">1,100 − 110 = 990 บาท</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 3 — เทียบกับทุน</div>
+                <p>ขาย 990 บาท ทุน 1,000 บาท</p>
+                <p><span class="calc">990 − 1,000 = −10</span> → ขาดทุน 10 บาท</p>
+            </div>
+
+            <!-- Money Flow Diagram -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0;font-size:.95em">
+                <div style="background:#e3f2fd;padding:10px 16px;border-radius:10px;text-align:center;border:2px solid #42a5f5;font-weight:bold">1,000<br><small>ทุน</small></div>
+                <span style="font-size:1.3em">→ +100 →</span>
+                <div style="background:#fff9c4;padding:10px 16px;border-radius:10px;text-align:center;border:2px solid #fbc02d;font-weight:bold">1,100<br><small>ป้าย</small></div>
+                <span style="font-size:1.3em">→ −110 →</span>
+                <div style="background:#ffebee;padding:10px 16px;border-radius:10px;text-align:center;border:2px solid #ef5350;font-weight:bold">990<br><small>ขายจริง</small></div>
+            </div>
+            <div class="answer-box">✅ ตอบข้อ 3 → ขาดทุน 10 บาท</div>
+        </div>
+    </div>
+
+    <!-- ==================== ข้อ 19 ==================== -->
+    <div class="card">
+        <div class="card-header color-3" onclick="toggleCard(this)">
+            <span>🧊 ข้อ 19: ปริมาตรจากพื้นที่ 3 หน้า</span>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="card-body">
+            <div class="question">
+                ทรงสี่เหลี่ยมมุมฉากแต่ละหน้าเป็นรูปสี่เหลี่ยมผืนผ้า ถ้าพื้นที่แต่ละหน้าคือ 42, 72 และ 84 ตร.หน่วย จงหาปริมาตร
+            </div>
+            <div class="choices">
+                <div class="choice">1. 280 ลบ.หน่วย</div>
+                <div class="choice">2. 320 ลบ.หน่วย</div>
+                <div class="choice">3. 405 ลบ.หน่วย</div>
+                <div class="choice correct">4. 504 ลบ.หน่วย ✅</div>
+            </div>
+
+            <div class="solution-title">📝 วิธีทำ — ลองหาตัวเลขที่ลงตัว</div>
+            <div class="step">
+                <div class="step-label">ขั้น 1 — ตั้งให้ 3 ด้าน = a, b, c</div>
+                <p>หน้า 1: a × b = 42</p>
+                <p>หน้า 2: b × c = 72</p>
+                <p>หน้า 3: a × c = 84</p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 2 — ลองแยก 42</div>
+                <p>42 = 6 × 7 → ลอง a = 7, b = 6</p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 3 — หา c จาก b × c = 72</div>
+                <p>6 × c = 72 → c = <span class="calc">72 ÷ 6 = 12</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 4 — ตรวจ a × c</div>
+                <p>7 × 12 = <span class="calc">84</span> ✓ ตรง!</p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 5 — หาปริมาตร</div>
+                <p>ด้าน = 6, 7, 12</p>
+                <p>ปริมาตร = <span class="calc">6 × 7 × 12 = 504 ลบ.หน่วย</span></p>
+            </div>
+            <div class="answer-box">✅ ตอบข้อ 4 → 504 ลูกบาศก์หน่วย</div>
+        </div>
+    </div>
+
+    <!-- ==================== ข้อ 21 ==================== -->
+    <div class="card">
+        <div class="card-header color-4" onclick="toggleCard(this)">
+            <span>⭕ ข้อ 21: เส้นผ่านศูนย์กลางวงกลม</span>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="card-body">
+            <div class="question">
+                วงกลมวงหนึ่งมีพื้นที่เป็น 4 เท่าของพื้นที่รูปสี่เหลี่ยมผืนผ้าที่มีด้านกว้าง 21 ยาว 66 หน่วย เส้นผ่านศูนย์กลางยาวเท่าไหร่
+            </div>
+            <div class="choices">
+                <div class="choice">1. 264 หน่วย</div>
+                <div class="choice">2. 132 หน่วย</div>
+                <div class="choice">3. 98 หน่วย</div>
+                <div class="choice correct">4. 84 หน่วย ✅</div>
+            </div>
+
+            <div class="solution-title">📝 วิธีทำ</div>
+            <div class="step">
+                <div class="step-label">ขั้น 1 — พื้นที่ผืนผ้า</div>
+                <p><span class="calc">21 × 66 = 1,386</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 2 — พื้นที่วงกลม</div>
+                <p>4 เท่า = <span class="calc">4 × 1,386 = 5,544</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 3 — หา r × r</div>
+                <p>พื้นที่วงกลม = 22/7 × r × r</p>
+                <p>r × r = 5,544 × 7 ÷ 22</p>
+                <p>= <span class="calc">38,808 ÷ 22 = 1,764</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 4 — หา r</div>
+                <p>ลอง: 42 × 42 = 1,764 ✓</p>
+                <p>r = <span class="calc">42</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 5 — เส้นผ่านศูนย์กลาง</div>
+                <p>= 2 × r = <span class="calc">2 × 42 = 84 หน่วย</span></p>
+            </div>
+            <div class="answer-box">✅ ตอบข้อ 4 → เส้นผ่านศูนย์กลาง 84 หน่วย</div>
+        </div>
+    </div>
+
+    <!-- ==================== ข้อ 22 ==================== -->
+    <div class="card">
+        <div class="card-header color-5" onclick="toggleCard(this)">
+            <span>🔺 ข้อ 22: ท่อระบายน้ำรอบสามเหลี่ยม</span>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="card-body">
+            <div class="question">
+                สนามเด็กเล่นรูปสามเหลี่ยมด้านเท่า มีพื้นที่ 96 ตร.ม. ส่วนสูง 12 ม. วางท่อระบายน้ำรอบสนาม ท่อยาว 5 ม. ราคา 70 บาท ต้องจ่ายเงินกี่บาท
+            </div>
+            <div class="choices">
+                <div class="choice">1. 560 บาท</div>
+                <div class="choice">2. 630 บาท</div>
+                <div class="choice correct">3. 700 บาท ✅</div>
+                <div class="choice">4. 770 บาท</div>
+            </div>
+
+            <div class="solution-title">📝 วิธีทำ</div>
+            <div class="step">
+                <div class="step-label">ขั้น 1 — หาฐาน</div>
+                <p>พื้นที่สามเหลี่ยม = ครึ่งหนึ่งของ ฐาน × สูง</p>
+                <p>96 = ครึ่งหนึ่งของ ฐาน × 12</p>
+                <p>ฐาน × 12 = 96 × 2 = 192</p>
+                <p>ฐาน = <span class="calc">192 ÷ 12 = 16 เมตร</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 2 — เส้นรอบรูป</div>
+                <p>สามเหลี่ยม<b>ด้านเท่า</b> → ทุกด้าน = 16 ม.</p>
+                <p>รอบรูป = <span class="calc">16 + 16 + 16 = 48 เมตร</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 3 — จำนวนท่อ</div>
+                <p>48 ÷ 5 = 9.6</p>
+                <p>⚠️ ซื้อ 9 ท่อไม่พอ → <b>ปัดขึ้นเป็น 10 ท่อ</b></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 4 — เงินทั้งหมด</div>
+                <p><span class="calc">10 × 70 = 700 บาท</span></p>
+            </div>
+            <div class="answer-box">✅ ตอบข้อ 3 → 700 บาท</div>
+        </div>
+    </div>
+
+    <!-- ==================== ข้อ 25 ==================== -->
+    <div class="card">
+        <div class="card-header color-6" onclick="toggleCard(this)">
+            <span>🧴 ข้อ 25: ผงซักฟอก</span>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="card-body">
+            <div class="question">
+                ผงซักฟอก 1 กล่อง ขนาด กว้าง 10 ซม. ยาว 20 ซม. สูง 30 ซม. ใช้ซักผ้าได้ 90 วัน ถ้าเหลือ 1/5 ลิตร จะใช้ซักผ้าได้กี่วัน
+            </div>
+            <div class="choices">
+                <div class="choice">1. 15 วัน</div>
+                <div class="choice">2. 9 วัน</div>
+                <div class="choice correct">3. 3 วัน ✅</div>
+                <div class="choice">4. 1 วัน</div>
+            </div>
+
+            <div class="solution-title">📝 วิธีทำ</div>
+            <div class="step">
+                <div class="step-label">ขั้น 1 — ปริมาตรกล่อง</div>
+                <p><span class="calc">10 × 20 × 30 = 6,000 ลบ.ซม.</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 2 — แปลงเป็นลิตร</div>
+                <p>1 ลิตร = 1,000 ลบ.ซม.</p>
+                <p>กล่องจุ <span class="calc">6,000 ÷ 1,000 = 6 ลิตร</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 3 — แบ่งเป็นส่วนละ 1/5 ลิตร</div>
+                <p>1 ลิตร แบ่ง 5 ส่วน → 6 ลิตร = <span class="calc">6 × 5 = 30 ส่วน</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 4 — หาจำนวนวัน</div>
+                <p>30 ส่วนใช้ 90 วัน</p>
+                <p>1 ส่วน (1/5 ลิตร) ใช้ <span class="calc">90 ÷ 30 = 3 วัน</span></p>
+            </div>
+            <div class="answer-box">✅ ตอบข้อ 3 → 3 วัน</div>
+        </div>
+    </div>
+
+    <!-- ==================== ข้อ 26 ==================== -->
+    <div class="card">
+        <div class="card-header color-7" onclick="toggleCard(this)">
+            <span>🎯 ข้อ 26: ปาลูกดอก</span>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="card-body">
+            <div class="question">
+                วงกลมซ้อนแต้ม 3, 5, 7 ปา 3 ลูก ได้แต้มรวมเท่าไหร่ที่<b>ไม่มีทางเกิดขึ้น</b>อย่างแน่นอน
+            </div>
+            <div class="choices">
+                <div class="choice">1. 13 แต้ม</div>
+                <div class="choice">2. 15 แต้ม</div>
+                <div class="choice correct">3. 20 แต้ม ✅</div>
+                <div class="choice">4. 21 แต้ม</div>
+            </div>
+
+            <!-- Dartboard SVG -->
+            <div class="dartboard">
+                <svg width="180" height="180" viewBox="0 0 180 180">
+                    <circle cx="90" cy="90" r="85" fill="#e8f5e9" stroke="#43e97b" stroke-width="3"/>
+                    <circle cx="90" cy="90" r="55" fill="#e3f2fd" stroke="#42a5f5" stroke-width="3"/>
+                    <circle cx="90" cy="90" r="25" fill="#fce4ec" stroke="#ef5350" stroke-width="3"/>
+                    <text x="90" y="96" text-anchor="middle" font-size="22" font-weight="bold" fill="#c62828">7</text>
+                    <text x="90" y="58" text-anchor="middle" font-size="18" font-weight="bold" fill="#1565c0">5</text>
+                    <text x="90" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#2e7d32">3</text>
+                </svg>
+            </div>
+
+            <div class="solution-title">📝 วิธีทำ — เขียนทุกแบบที่ปาได้</div>
+            <div class="step">
+                <div class="step-label">ขั้น 1 — ลูกดอกแต่ละลูกได้ 3, 5 หรือ 7</div>
+                <p>เขียนทุกแบบที่ 3 ลูกรวมกันได้:</p>
+                <table>
+                    <tr><th>ลูก 1</th><th>ลูก 2</th><th>ลูก 3</th><th>รวม</th></tr>
+                    <tr><td>3</td><td>3</td><td>3</td><td><b>9</b></td></tr>
+                    <tr><td>3</td><td>3</td><td>5</td><td><b>11</b></td></tr>
+                    <tr><td>3</td><td>3</td><td>7</td><td><b>13</b></td></tr>
+                    <tr><td>3</td><td>5</td><td>5</td><td><b>13</b></td></tr>
+                    <tr><td>3</td><td>5</td><td>7</td><td><b>15</b></td></tr>
+                    <tr><td>3</td><td>7</td><td>7</td><td><b>17</b></td></tr>
+                    <tr><td>5</td><td>5</td><td>5</td><td><b>15</b></td></tr>
+                    <tr><td>5</td><td>5</td><td>7</td><td><b>17</b></td></tr>
+                    <tr><td>5</td><td>7</td><td>7</td><td><b>19</b></td></tr>
+                    <tr><td>7</td><td>7</td><td>7</td><td><b>21</b></td></tr>
+                </table>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 2 — สรุปผลรวมที่ได้</div>
+                <p>9, 11, 13, 15, 17, 19, 21 — <b>สังเกต: ล้วนเป็นเลขคี่!</b></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 3 — เช็คตัวเลือก</div>
+                <p>13 → ได้ ✓ &nbsp; 15 → ได้ ✓ &nbsp; <b style="color:#ef5350">20 → ไม่มี! ✗</b> &nbsp; 21 → ได้ ✓</p>
+                <p>💡 คี่ + คี่ + คี่ = คี่เสมอ → 20 เป็นเลขคู่ เป็นไปไม่ได้!</p>
+            </div>
+            <div class="answer-box">✅ ตอบข้อ 3 → 20 แต้ม ไม่มีทางเกิดขึ้น</div>
+        </div>
+    </div>
+
+    <!-- ==================== ข้อ 27 ==================== -->
+    <div class="card">
+        <div class="card-header color-8" onclick="toggleCard(this)">
+            <span>🔤 ข้อ 27: แบบรูปตัวอักษร</span>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="card-body">
+            <div class="question">
+                ABBCCCDDDD ABBCCCDDDD… เขียนไปเรื่อยๆ ตัวอักษรลำดับที่ 101 คืออักษรอะไร
+            </div>
+            <div class="choices">
+                <div class="choice correct">1. A ✅</div>
+                <div class="choice">2. B</div>
+                <div class="choice">3. C</div>
+                <div class="choice">4. D</div>
+            </div>
+
+            <!-- Pattern Display !-->
+            <div class="solution-title">📝 แบบรูป (สีจะช่วยให้เห็นง่าย)</div>
+            <div class="pattern-display" id="patternBox"></div>
+
+            <div class="step">
+                <div class="step-label">ขั้น 1 — นับ 1 รอบ</div>
+                <p><b style="color:#f5576c">A</b> = 1 ตัว, <b style="color:#4facfe">BB</b> = 2 ตัว, <b style="color:#2e7d32">CCC</b> = 3 ตัว, <b style="color:#764ba2">DDDD</b> = 4 ตัว</p>
+                <p>รวม 1 รอบ = <span class="calc">1 + 2 + 3 + 4 = 10 ตัว</span></p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 2 — หารด้วย 10</div>
+                <p>101 ÷ 10 = <span class="calc">10 รอบเต็ม เหลือ 1</span></p>
+                <p>10 รอบ = 100 ตัวพอดี</p>
+            </div>
+            <div class="step">
+                <div class="step-label">ขั้น 3 — ตัวที่ 101</div>
+                <p>ตัวที่ 101 = ตัว<b>แรก</b>ของรอบที่ 11</p>
+                <p>ตัวแรกของทุกรอบ = <b style="color:#f5576c;font-size:1.3em">A</b></p>
+            </div>
+            <div class="answer-box">✅ ตอบข้อ 1 → ตัวอักษรลำดับที่ 101 คือ A</div>
+        </div>
+    </div>
+
+    <!-- ==================== สรุป ==================== -->
+    <div class="summary">
+        <h2>📋 สรุปคำตอบทุกข้อ</h2>
+        <table>
+            <tr><th>ข้อ</th><th>คำตอบ</th><th>ค่า</th></tr>
+            <tr><td>5</td><td class="correct-cell">ข้อ 1</td><td>168 ลบ.ซม.</td></tr>
+            <tr><td>18</td><td class="correct-cell">ข้อ 3</td><td>ขาดทุน 10 บาท</td></tr>
+            <tr><td>19</td><td class="correct-cell">ข้อ 4</td><td>504 ลบ.หน่วย</td></tr>
+            <tr><td>21</td><td class="correct-cell">ข้อ 4</td><td>เส้นผ่านฯ 84 หน่วย</td></tr>
+            <tr><td>22</td><td class="correct-cell">ข้อ 3</td><td>700 บาท</td></tr>
+            <tr><td>25</td><td class="correct-cell">ข้อ 3</td><td>3 วัน</td></tr>
+            <tr><td>26</td><td class="correct-cell">ข้อ 3</td><td>20 แต้ม (ไม่เกิดขึ้น)</td></tr>
+            <tr><td>27</td><td class="correct-cell">ข้อ 1</td><td>A</td></tr>
+        </table>
+    </div>
+
+</div>
+
+<script>
+function toggleCard(header) {
+    var body = header.nextElementSibling;
+    var isOpen = body.classList.contains('show');
+    // ปิดทุกการ์ดก่อน
+    document.querySelectorAll('.card-body').forEach(function(b) { b.classList.remove('show'); });
+    document.querySelectorAll('.card-header').forEach(function(h) { h.classList.remove('open'); });
+    // ถ้าไม่ได้เปิดอยู่ → เปิด
+    if (!isOpen) {
+        body.classList.add('show');
+        header.classList.add('open');
+    }
+}
+
+// สร้างแบบรูปตัวอักษรข้อ 27
+(function() {
+    var box = document.getElementById('patternBox');
+    if (!box) return;
+    var pattern = 'ABBCCCDDDD';
+    var full = '';
+    for (var i = 0; i < 11; i++) full += pattern;
+    for (var j = 0; j < 105; j++) {
+        var ch = full[j];
+        var span = document.createElement('span');
+        span.textContent = ch;
+        span.className = 'letter-' + ch;
+        if (j === 100) span.classList.add('letter-highlight');
+        box.appendChild(span);
+    }
+})();
+</script>
+</body>
+</html>
