@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Test English M.1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+:root {
+  --pri: #6C5CE7; --pri-l: #a29bfe; --sec: #00b894; --sec-l: #55efc4;
+  --acc: #fdcb6e; --dng: #e17055; --bg: #f0f2ff; --card: #fff;
+  --txt: #2d3436; --txt2: #636e72;
+  --sh: 0 8px 32px rgba(108,92,231,0.13); --r: 18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Kanit','Nunito',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;min-height:100vh}
+
+/* === BG === */
+.bg-anim{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bc{position:absolute;border-radius:50%;opacity:.07;animation:fb 25s ease-in-out infinite}
+.bc:nth-child(1){width:350px;height:350px;background:var(--pri);top:-80px;left:-60px}
+.bc:nth-child(2){width:250px;height:250px;background:var(--sec);top:55%;right:-40px;animation-delay:-7s}
+.bc:nth-child(3){width:280px;height:280px;background:var(--acc);bottom:-50px;left:35%;animation-delay:-14s}
+@keyframes fb{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.12)}66%{transform:translate(-25px,25px) scale(.93)}}
+
+/* === START === */
+.start{position:fixed;inset:0;background:linear-gradient(135deg,#6C5CE7,#a29bfe 50%,#74b9ff);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;transition:opacity .8s,transform .8s}
+.start.hide{opacity:0;transform:scale(1.15);pointer-events:none}
+.start h1{font-size:2.8em;color:#fff;text-align:center;margin-bottom:8px;animation:bi 1s ease;text-shadow:2px 4px 10px rgba(0,0,0,.2)}
+.start p{font-size:1.2em;color:rgba(255,255,255,.9);margin-bottom:35px;animation:bi 1s ease .2s both}
+.start-chars{display:flex;gap:60px;margin-bottom:35px;animation:bi 1s ease .4s both}
+.start-btn{padding:16px 55px;font-size:1.3em;font-family:'Kanit';background:#fff;color:var(--pri);border:none;border-radius:50px;cursor:pointer;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.2);transition:all .3s;animation:bi 1s ease .6s both}
+.start-btn:hover{transform:translateY(-4px) scale(1.06);box-shadow:0 14px 45px rgba(0,0,0,.3)}
+@keyframes bi{0%{opacity:0;transform:scale(.3) translateY(40px)}50%{transform:scale(1.05)}70%{transform:scale(.96)}100%{opacity:1;transform:scale(1)}}
+
+/* === AVATAR SVG === */
+.avatar{display:inline-block}
+.avatar svg{filter:drop-shadow(0 4px 8px rgba(0,0,0,.1))}
+
+/* === QUIZ === */
+.quiz{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:20px;display:none}
+.quiz.on{display:block}
+
+/* Progress */
+.prog-wrap{background:#fff;border-radius:50px;padding:8px 18px;box-shadow:var(--sh);margin-bottom:22px;display:flex;align-items:center;gap:14px}
+.prog-bar{flex:1;height:10px;background:#e8e8f0;border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--pri),var(--sec));border-radius:10px;transition:width .5s;width:0%}
+.prog-txt{font-size:.82em;font-weight:600;color:var(--txt2);white-space:nowrap}
+
+/* Part header */
+.part-h{text-align:center;margin-bottom:18px;animation:sd .5s ease}
+.part-badge{display:inline-block;background:linear-gradient(135deg,var(--pri),var(--pri-l));color:#fff;padding:7px 22px;border-radius:50px;font-size:.88em;font-weight:600;margin-bottom:6px}
+.part-sub{font-size:1em;color:var(--txt2)}
+@keyframes sd{0%{opacity:0;transform:translateY(-18px)}100%{opacity:1;transform:translateY(0)}}
+
+/* Question card */
+.q-card{background:#fff;border-radius:var(--r);padding:22px 28px;box-shadow:var(--sh);margin-bottom:18px;animation:si .5s ease;border-left:5px solid var(--pri)}
+@keyframes si{0%{opacity:0;transform:translateX(25px)}100%{opacity:1;transform:translateX(0)}}
+.q-num{display:inline-flex;align-items:center;justify-content:center;background:var(--pri);color:#fff;width:34px;height:34px;border-radius:50%;font-weight:700;font-size:.88em;margin-right:10px;flex-shrink:0}
+.q-txt{font-size:1.1em;line-height:1.8}
+.q-txt .bl{display:inline-block;min-width:90px;height:1.4em;border-bottom:3px dashed var(--pri);margin:0 4px;vertical-align:bottom}
+
+/* Options */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}
+.opt{display:flex;align-items:center;gap:11px;padding:13px 16px;background:#f8f9ff;border:2px solid #e8e8f0;border-radius:14px;cursor:pointer;transition:all .3s;font-family:'Kanit';font-size:.98em;text-align:left;color:var(--txt)}
+.opt:hover{border-color:var(--pri);background:#f0eeff;transform:translateY(-2px);box-shadow:0 4px 15px rgba(108,92,231,.12)}
+.opt.sel{border-color:var(--pri);background:linear-gradient(135deg,#6C5CE7,#a29bfe);color:#fff;transform:scale(1.02)}
+.opt.ok{border-color:var(--sec);background:linear-gradient(135deg,#00b894,#55efc4);color:#fff;animation:pu .5s}
+.opt.no{border-color:var(--dng);background:linear-gradient(135deg,#e17055,#fab1a0);color:#fff;animation:sk .5s}
+.ol{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--pri);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82em;flex-shrink:0}
+.opt.sel .ol,.opt.ok .ol,.opt.no .ol{background:rgba(255,255,255,.3);color:#fff}
+@keyframes pu{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+@keyframes sk{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* Explain box */
+.expl{margin-top:14px;padding:12px 16px;border-radius:12px;line-height:1.6;font-size:.95em}
+.expl.ok-bg{background:#e8f5e9;border-left:4px solid var(--sec)}
+.expl.no-bg{background:#fde8e8;border-left:4px solid var(--dng)}
+
+/* Nav */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+.nbtn{padding:11px 28px;font-size:1em;font-family:'Kanit';border:none;border-radius:50px;cursor:pointer;font-weight:600;transition:all .3s;display:flex;align-items:center;gap:8px}
+.nbtn.pr{background:#fff;color:var(--pri);border:2px solid var(--pri)}
+.nbtn.nx{background:linear-gradient(135deg,var(--pri),var(--pri-l));color:#fff;box-shadow:0 4px 15px rgba(108,92,231,.25)}
+.nbtn:hover{transform:translateY(-2px)}
+.nbtn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* === CHAT BUBBLE CONVERSATION === */
+.chat-area{margin:15px 0}
+.chat-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:14px;animation:fu .5s ease both}
+.chat-row.right{flex-direction:row-reverse}
+.chat-row:nth-child(1){animation-delay:0s}
+.chat-row:nth-child(2){animation-delay:.15s}
+.chat-row:nth-child(3){animation-delay:.3s}
+.chat-row:nth-child(4){animation-delay:.45s}
+.chat-av{flex-shrink:0}
+.chat-bub{max-width:420px;padding:12px 18px;border-radius:18px;font-size:1em;line-height:1.6;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.chat-row:not(.right) .chat-bub{background:linear-gradient(135deg,#6C5CE7,#a29bfe);color:#fff;border-bottom-left-radius:4px}
+.chat-row.right .chat-bub{background:#fff;color:var(--txt);border:2px solid #e8e8f0;border-bottom-right-radius:4px}
+.chat-name{font-size:.72em;font-weight:600;margin-bottom:2px;opacity:.7}
+.chat-row:not(.right) .chat-name{color:rgba(255,255,255,.8)}
+@keyframes fu{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
+
+/* Conv blank in chat */
+.cb{display:inline-block;min-width:50px;padding:2px 8px;border:2px dashed var(--acc);border-radius:6px;background:rgba(253,203,110,.25);font-weight:600;text-align:center}
+.chat-row:not(.right) .cb{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.2);color:#fff}
+
+/* Situation */
+.situ{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:12px;padding:10px 16px;margin-bottom:14px;font-style:italic;color:#2e7d32;border-left:4px solid #4caf50;font-size:.95em}
+
+/* === ILLUSTRATION === */
+.illus{background:linear-gradient(135deg,#f8f9ff,#e8e8f0);border-radius:15px;padding:18px;margin:14px 0;display:flex;align-items:center;justify-content:center;min-height:110px;border:2px dashed var(--pri-l)}
+
+/* Speed sign */
+.ss{display:flex;flex-direction:column;align-items:center}
+.ss-b{width:90px;height:90px;background:#fff;border:4px solid #333;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Nunito';font-weight:800}
+.ss-b .s1{font-size:12px;letter-spacing:2px}.ss-b .s2{font-size:10px;letter-spacing:1px}.ss-b .s3{font-size:36px;line-height:1}
+.ss-p{width:8px;height:28px;background:#666}
+
+/* === READING PASSAGE === */
+.rdpass{background:linear-gradient(135deg,#fff9e6,#fff3cc);border-radius:15px;padding:22px;margin:14px 0;border-left:5px solid var(--acc);line-height:1.85;font-size:1.02em;position:relative}
+.rdpass .rl{position:absolute;top:-12px;left:18px;background:var(--acc);color:#fff;padding:2px 14px;border-radius:20px;font-size:.78em;font-weight:700}
+.rdpass p{margin-bottom:8px}
+
+/* Para label */
+.pl{display:inline-flex;align-items:center;justify-content:center;background:var(--pri);color:#fff;width:26px;height:26px;border-radius:50%;font-weight:700;font-size:.82em;margin-right:7px}
+.para-box{margin-bottom:10px;padding:11px 14px;background:#f8f9ff;border-radius:10px;border-left:4px solid var(--pri-l);line-height:1.7;font-size:.95em}
+
+/* === STORY SCENE === */
+.story-sc{position:relative;width:100%;height:280px;border-radius:15px;overflow:hidden;margin:14px 0;border:3px solid #5a9e3f}
+.story-sky{position:absolute;inset:0;background:linear-gradient(180deg,#87CEEB 0%,#B0E0F0 60%,#90EE90 60%,#3a8f3a 100%)}
+.story-river{position:absolute;bottom:25px;left:0;width:100%;height:55px;background:linear-gradient(180deg,#4FC3F7,#0277BD);overflow:hidden}
+.story-river::before{content:'';position:absolute;top:0;left:0;width:200%;height:100%;background:repeating-linear-gradient(90deg,transparent 0px,rgba(255,255,255,.15) 40px,transparent 80px);animation:rwv 4s linear infinite}
+@keyframes rwv{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.story-sun{position:absolute;top:12px;right:22px;width:50px;height:50px;animation:sp 4s ease-in-out infinite}
+@keyframes sp{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.12);filter:brightness(1.15)}}
+.s-tree{position:absolute;bottom:72px;left:42%;z-index:2}
+.s-ant{position:absolute;bottom:82px;left:30px;z-index:6;transition:all 1.5s ease}
+.s-ant.fallen{bottom:38px;left:80px;animation:drown 1s ease-in-out infinite}
+.s-ant.saved{bottom:82px;left:180px}
+.s-ant.biting{bottom:82px;left:calc(100% - 115px);transform:scaleX(-1)}
+@keyframes drown{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-10px) rotate(12deg)}}
+.s-dove{position:absolute;top:35px;left:44%;z-index:6;transition:all 1.5s ease}
+.s-dove.fly{animation:fb2 2s ease-in-out infinite}
+.s-dove.away{top:-60px;left:110%;transition:all 2s}
+@keyframes fb2{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.s-leaf{position:absolute;top:70px;left:46%;z-index:5;opacity:0;transition:all 1.5s ease}
+.s-leaf.drop{opacity:1;top:40px;left:65px;animation:lf 1.2s ease-in-out infinite}
+@keyframes lf{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.s-hunter{position:absolute;bottom:82px;right:-60px;z-index:6;opacity:0;transition:all 1.5s ease}
+.s-hunter.show{right:50px;opacity:1}
+.s-hunter.hurt{animation:sk .4s ease-in-out infinite}
+.s-cap{position:absolute;bottom:0;left:0;width:100%;background:rgba(0,0,0,.72);color:#fff;padding:10px 14px;font-size:.88em;line-height:1.5;text-align:center;z-index:10}
+.s-ctrls{display:flex;justify-content:center;gap:10px;margin:10px 0}
+.s-btn{padding:8px 20px;border:none;border-radius:25px;font-family:'Kanit';font-size:.88em;cursor:pointer;color:#fff;transition:all .3s}
+.s-btn.play{background:var(--pri)}.s-btn.rst{background:#636e72}
+.s-btn:hover{transform:scale(1.06)}.s-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* === RESULTS === */
+.res{display:none;text-align:center;padding:40px 20px;position:relative;z-index:1}
+.res.on{display:block}
+.res-card{background:#fff;border-radius:28px;padding:38px;max-width:480px;margin:0 auto;box-shadow:var(--sh);animation:bi .8s ease}
+.sc-circ{width:140px;height:140px;border-radius:50%;background:conic-gradient(var(--pri) 0%,var(--pri-l) var(--sp),#e8e8f0 var(--sp));display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.sc-in{width:110px;height:110px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sc-n{font-size:2.4em;font-weight:800;color:var(--pri);line-height:1}
+.sc-t{font-size:.88em;color:var(--txt2)}
+.res-msg{font-size:1.4em;font-weight:700;margin:14px 0}
+.res-det{color:var(--txt2);margin-bottom:22px}
+.rbtn{padding:13px 38px;font-size:1.05em;font-family:'Kanit';background:linear-gradient(135deg,var(--pri),var(--pri-l));color:#fff;border:none;border-radius:50px;cursor:pointer;font-weight:600;transition:all .3s}
+.rbtn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(108,92,231,.3)}
+
+/* Confetti */
+.conf-c{position:fixed;inset:0;pointer-events:none;z-index:9999}
+.conf{position:absolute;width:10px;height:10px;top:-20px;animation:cf 3s ease-out forwards}
+@keyframes cf{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* Responsive */
+@media(max-width:700px){.start h1{font-size:2em}.opts{grid-template-columns:1fr}.q-card{padding:16px 18px}.story-sc{height:220px}.chat-bub{max-width:260px}}
+</style>
+</head>
+<body>
+<div class="bg-anim"><div class="bc"></div><div class="bc"></div><div class="bc"></div></div>
+
+<!-- === START === -->
+<div class="start" id="startScreen">
+  <h1>Pre-Test English</h1>
+  <p>Entrance Exam M.1 | 50 Questions</p>
+  <div class="start-chars">
+    <!-- Teacher avatar -->
+    <div class="avatar">
+      <svg width="110" height="150" viewBox="0 0 110 150">
+        <defs>
+          <linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6C5CE7"/><stop offset="100%" stop-color="#a29bfe"/></linearGradient>
+          <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00b894"/><stop offset="100%" stop-color="#55efc4"/></linearGradient>
+        </defs>
+        <!-- Body -->
+        <rect x="28" y="68" width="54" height="60" rx="14" fill="url(#tg)"/>
+        <!-- Arms -->
+        <rect x="10" y="72" width="22" height="12" rx="6" fill="url(#tg)">
+          <animateTransform attributeName="transform" type="rotate" values="-5,21,78;5,21,78;-5,21,78" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="78" y="72" width="22" height="12" rx="6" fill="url(#tg)">
+          <animateTransform attributeName="transform" type="rotate" values="5,89,78;-5,89,78;5,89,78" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+        </rect>
+        <!-- Head -->
+        <circle cx="55" cy="36" r="28" fill="#FFDCC8">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Hair -->
+        <path d="M28 30 Q30 8 55 6 Q80 8 82 30 L80 22 Q78 12 55 10 Q32 12 30 22Z" fill="#5a3825">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="3s" repeatCount="indefinite"/>
+        </path>
+        <!-- Glasses -->
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="3s" repeatCount="indefinite"/>
+          <circle cx="44" cy="34" r="8" fill="none" stroke="#555" stroke-width="2"/>
+          <circle cx="66" cy="34" r="8" fill="none" stroke="#555" stroke-width="2"/>
+          <line x1="52" y1="34" x2="58" y2="34" stroke="#555" stroke-width="2"/>
+        </g>
+        <!-- Eyes -->
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="3s" repeatCount="indefinite"/>
+          <circle cx="44" cy="34" r="3" fill="#333">
+            <animate attributeName="ry" values="3;0.3;3" dur="4s" repeatCount="indefinite" keyTimes="0;0.025;0.05" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1"/>
+          </circle>
+          <circle cx="66" cy="34" r="3" fill="#333">
+            <animate attributeName="ry" values="3;0.3;3" dur="4s" repeatCount="indefinite" keyTimes="0;0.025;0.05" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1"/>
+          </circle>
+        </g>
+        <!-- Smile -->
+        <path d="M47 44 Q55 52 63 44" fill="none" stroke="#e17055" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="3s" repeatCount="indefinite"/>
+        </path>
+        <!-- Book -->
+        <rect x="14" y="88" width="18" height="24" rx="2" fill="#e74c3c" transform="rotate(-10,23,100)"/>
+        <rect x="16" y="90" width="14" height="20" rx="1" fill="#fff" transform="rotate(-10,23,100)" opacity=".3"/>
+        <!-- Label -->
+        <text x="55" y="146" text-anchor="middle" font-size="12" fill="#6C5CE7" font-weight="600" font-family="Kanit">Teacher</text>
+      </svg>
+    </div>
+    <!-- Student avatar -->
+    <div class="avatar">
+      <svg width="110" height="150" viewBox="0 0 110 150">
+        <rect x="28" y="68" width="54" height="60" rx="14" fill="url(#sg)"/>
+        <rect x="10" y="72" width="22" height="12" rx="6" fill="url(#sg)">
+          <animateTransform attributeName="transform" type="rotate" values="5,21,78;-5,21,78;5,21,78" dur="2.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="78" y="72" width="22" height="12" rx="6" fill="url(#sg)">
+          <animateTransform attributeName="transform" type="rotate" values="-5,89,78;5,89,78;-5,89,78" dur="2.8s" repeatCount="indefinite" begin="1.4s"/>
+        </rect>
+        <circle cx="55" cy="36" r="28" fill="#FFDCC8">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2.8s" repeatCount="indefinite"/>
+        </circle>
+        <path d="M28 28 Q32 5 55 4 Q78 5 82 28 L80 20 Q76 8 55 7 Q34 8 30 20Z" fill="#2d1810">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2.8s" repeatCount="indefinite"/>
+        </path>
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2.8s" repeatCount="indefinite"/>
+          <circle cx="44" cy="34" r="3.5" fill="#333"/>
+          <circle cx="66" cy="34" r="3.5" fill="#333"/>
+          <circle cx="45" cy="33" r="1.2" fill="#fff"/>
+          <circle cx="67" cy="33" r="1.2" fill="#fff"/>
+        </g>
+        <path d="M47 44 Q55 51 63 44" fill="none" stroke="#e17055" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="2.8s" repeatCount="indefinite"/>
+        </path>
+        <!-- Backpack strap -->
+        <line x1="38" y1="68" x2="34" y2="82" stroke="#2d8f6f" stroke-width="3" stroke-linecap="round"/>
+        <line x1="72" y1="68" x2="76" y2="82" stroke="#2d8f6f" stroke-width="3" stroke-linecap="round"/>
+        <text x="55" y="146" text-anchor="middle" font-size="12" fill="#00b894" font-weight="600" font-family="Kanit">Student</text>
+      </svg>
+    </div>
+  </div>
+  <button class="start-btn" onclick="go()">Start!</button>
+</div>
+
+<!-- === QUIZ === -->
+<div class="quiz" id="quiz">
+  <div class="prog-wrap">
+    <div class="prog-txt" id="pTxt">1 / 50</div>
+    <div class="prog-bar"><div class="prog-fill" id="pFill"></div></div>
+    <div class="prog-txt" id="sTxt">Score: 0</div>
+  </div>
+  <div id="pH" class="part-h"></div>
+  <div id="qArea"></div>
+  <div class="nav">
+    <button class="nbtn pr" id="prevB" onclick="prev()">&#9664; Prev</button>
+    <button class="nbtn nx" id="nextB" onclick="next()">Next &#9654;</button>
+  </div>
+</div>
+
+<!-- === RESULTS === -->
+<div class="res" id="resScreen">
+  <div class="res-card">
+    <div class="sc-circ" id="sCirc" style="--sp:0%"><div class="sc-in"><div class="sc-n" id="fScore">0</div><div class="sc-t">/ 50</div></div></div>
+    <div class="res-msg" id="rMsg"></div>
+    <div class="res-det" id="rDet"></div>
+    <button class="rbtn" onclick="location.reload()">Try Again</button>
+  </div>
+</div>
+<div class="conf-c" id="confC"></div>
+
+<script>
+// ========== SVG HELPERS ==========
+function avatarSVG(type, size=60) {
+  const s = size;
+  const colors = {
+    teacher: {body:'#6C5CE7',body2:'#a29bfe',hair:'#5a3825'},
+    student: {body:'#00b894',body2:'#55efc4',hair:'#2d1810'},
+    girl:    {body:'#e84393',body2:'#fd79a8',hair:'#d35400'},
+    waiter:  {body:'#2d3436',body2:'#636e72',hair:'#1a1a2e'},
+    tourist: {body:'#0984e3',body2:'#74b9ff',hair:'#8B4513'},
+    peter:   {body:'#6C5CE7',body2:'#a29bfe',hair:'#5a3825'},
+    jane:    {body:'#e84393',body2:'#fd79a8',hair:'#d35400'},
+    joe:     {body:'#00b894',body2:'#55efc4',hair:'#2d1810'},
+    monica:  {body:'#e84393',body2:'#fd79a8',hair:'#c0392b'},
+    pawel:   {body:'#0984e3',body2:'#74b9ff',hair:'#34495e'},
+    dang:    {body:'#00b894',body2:'#55efc4',hair:'#2d1810'}
+  };
+  const c = colors[type] || colors.teacher;
+  const r = s/2;
+  const hr = r*0.48;
+  const cy = r*0.58;
+  return `<svg width="${s}" height="${s*1.1}" viewBox="0 0 ${s} ${s*1.1}">
+    <defs><linearGradient id="av_${type}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${c.body}"/><stop offset="100%" stop-color="${c.body2}"/></linearGradient></defs>
+    <rect x="${r-s*0.24}" y="${s*0.55}" width="${s*0.48}" height="${s*0.42}" rx="${s*0.1}" fill="url(#av_${type})"/>
+    <circle cx="${r}" cy="${cy}" r="${hr}" fill="#FFDCC8"/>
+    <ellipse cx="${r}" cy="${cy-hr*0.3}" rx="${hr*1.08}" ry="${hr*0.6}" fill="${c.hair}"/>
+    <circle cx="${r-hr*0.28}" cy="${cy}" r="${hr*0.1}" fill="#333"/>
+    <circle cx="${r+hr*0.28}" cy="${cy}" r="${hr*0.1}" fill="#333"/>
+    <path d="M${r-hr*0.2} ${cy+hr*0.3} Q${r} ${cy+hr*0.5} ${r+hr*0.2} ${cy+hr*0.3}" fill="none" stroke="#e17055" stroke-width="1.8" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function miniAvatar(type, size=38) { return `<div class="chat-av">${avatarSVG(type, size)}</div>`; }
+
+// ========== STORY SVGs ==========
+const svgSun = `<svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="12" fill="#F9A825"/><g stroke="#F9A825" stroke-width="3" stroke-linecap="round"><line x1="25" y1="3" x2="25" y2="9"/><line x1="25" y1="41" x2="25" y2="47"/><line x1="3" y1="25" x2="9" y2="25"/><line x1="41" y1="25" x2="47" y2="25"/><line x1="9" y1="9" x2="13.5" y2="13.5"/><line x1="36.5" y1="36.5" x2="41" y2="41"/><line x1="9" y1="41" x2="13.5" y2="36.5"/><line x1="36.5" y1="13.5" x2="41" y2="9"/></g></svg>`;
+
+const svgTree = `<svg width="60" height="80" viewBox="0 0 60 80"><rect x="25" y="50" width="10" height="30" rx="2" fill="#795548"/><ellipse cx="30" cy="35" rx="25" ry="28" fill="#4CAF50"/><ellipse cx="22" cy="28" rx="15" ry="16" fill="#66BB6A"/></svg>`;
+
+const svgAnt = `<svg width="32" height="22" viewBox="0 0 32 22"><ellipse cx="10" cy="14" rx="6" ry="5" fill="#4a2c0a"/><ellipse cx="22" cy="12" rx="8" ry="6" fill="#3e2108"/><circle cx="28" cy="8" r="4" fill="#4a2c0a"/><circle cx="29.5" cy="6.5" r="1.2" fill="#fff"/><line x1="2" y1="18" x2="0" y2="22" stroke="#3e2108" stroke-width="1.5"/><line x1="6" y1="18" x2="5" y2="22" stroke="#3e2108" stroke-width="1.5"/><line x1="10" y1="18" x2="10" y2="22" stroke="#3e2108" stroke-width="1.5"/><line x1="18" y1="17" x2="16" y2="22" stroke="#3e2108" stroke-width="1.5"/><line x1="22" y1="17" x2="22" y2="22" stroke="#3e2108" stroke-width="1.5"/><line x1="26" y1="16" x2="28" y2="22" stroke="#3e2108" stroke-width="1.5"/><line x1="30" y1="5" x2="32" y2="1" stroke="#3e2108" stroke-width="1"/><line x1="28" y1="5" x2="26" y2="1" stroke="#3e2108" stroke-width="1"/></svg>`;
+
+const svgDove = `<svg width="40" height="30" viewBox="0 0 40 30"><ellipse cx="20" cy="18" rx="12" ry="8" fill="#E0E0E0"/><circle cx="30" cy="12" r="6" fill="#EEEEEE"/><circle cx="32" cy="11" r="1.5" fill="#333"/><polygon points="36,12 42,10 42,14" fill="#FF8F00"/><path d="M8 18 Q2 8 10 4" fill="none" stroke="#BDBDBD" stroke-width="2.5" stroke-linecap="round"/><path d="M10 18 Q5 10 12 6" fill="none" stroke="#E0E0E0" stroke-width="2" stroke-linecap="round"/><path d="M12 24 L10 30 L14 28" fill="#FF8F00"/></svg>`;
+
+const svgLeaf = `<svg width="28" height="20" viewBox="0 0 28 20"><path d="M2 18 Q6 2 26 2 Q20 10 2 18Z" fill="#81C784"/><line x1="2" y1="18" x2="20" y2="6" stroke="#4CAF50" stroke-width="1" opacity=".6"/></svg>`;
+
+const svgHunter = `<svg width="45" height="65" viewBox="0 0 45 65"><rect x="13" y="30" width="20" height="28" rx="6" fill="#8D6E63"/><circle cx="23" cy="18" r="12" fill="#FFDCC8"/><path d="M12 14 Q14 4 23 3 Q32 4 34 14 L32 10 Q30 5 23 4 Q16 5 14 10Z" fill="#3E2723"/><circle cx="19" cy="17" r="2" fill="#333"/><circle cx="27" cy="17" r="2" fill="#333"/><path d="M20 23 Q23 26 26 23" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round"/><rect x="10" y="34" width="8" height="4" rx="2" fill="#8D6E63"/><line x1="4" y1="36" x2="10" y2="36" stroke="#795548" stroke-width="3" stroke-linecap="round"/><rect x="28" y="34" width="8" height="4" rx="2" fill="#8D6E63"/><rect x="14" y="56" width="7" height="9" rx="2" fill="#5D4037"/><rect x="25" y="56" width="7" height="9" rx="2" fill="#5D4037"/><rect x="36" y="26" width="4" height="34" rx="1" fill="#795548"/><line x1="36" y1="26" x2="44" y2="22" stroke="#795548" stroke-width="2"/><line x1="36" y1="34" x2="44" y2="22" stroke="#9E9E9E" stroke-width="1"/></svg>`;
+
+// ========== QUESTION ILLUSTRATIONS ==========
+const qIllust={1:'clean',3:'phone',4:'home',5:'car',6:'friends',7:'movie',8:'calendar',9:'scarf',10:'piano',11:'error',12:'error',13:'error',14:'error',15:'error',17:'doctor',18:'sunset',19:'book',20:'handsome',21:'friends',22:'milk',23:'baby',24:'brain',25:'email',38:'pizza',39:'pencil',40:'pencil'};
+function getIllust(t){
+const I={
+clean:`<svg viewBox="0 0 120 110" width="110" height="100"><circle cx="60" cy="25" r="15" fill="#FFDCC8"/><path d="M47 20 Q50 9 60 8 Q70 9 73 20" fill="#5a3825"/><circle cx="55" cy="24" r="2" fill="#333"/><circle cx="65" cy="24" r="2" fill="#333"/><path d="M56 31 Q60 35 64 31" fill="none" stroke="#e17055" stroke-width="1.5" stroke-linecap="round"/><rect x="48" y="38" width="24" height="28" rx="6" fill="#74b9ff"/><g><animateTransform attributeName="transform" type="rotate" values="-8,35,60;8,35,60;-8,35,60" dur="1s" repeatCount="indefinite"/><line x1="38" y1="44" x2="28" y2="88" stroke="#8B7355" stroke-width="3" stroke-linecap="round"/><rect x="20" y="85" width="18" height="6" rx="2" fill="#a0d468"/></g><circle cx="95" cy="90" r="4" fill="#74b9ff" opacity=".4"><animate attributeName="r" values="3;7;3" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".5;.1;.5" dur="2s" repeatCount="indefinite"/></circle><circle cx="85" cy="80" r="3" fill="#74b9ff" opacity=".3"><animate attributeName="r" values="2;5;2" dur="1.5s" repeatCount="indefinite"/></circle><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito">housework</text></svg>`,
+phone:`<svg viewBox="0 0 120 110" width="110" height="100"><rect x="38" y="8" width="44" height="80" rx="8" fill="#2d3436"/><rect x="41" y="16" width="38" height="60" rx="2" fill="#dfe6e9"/><circle cx="60" cy="88" r="4" fill="#636e72"/><rect x="48" y="26" width="24" height="6" rx="2" fill="#74b9ff"/><rect x="48" y="36" width="20" height="4" rx="1" fill="#b2bec3"/><rect x="48" y="44" width="16" height="4" rx="1" fill="#b2bec3"/><circle cx="78" cy="14" r="8" fill="#e74c3c"><animate attributeName="r" values="7;9;7" dur="1s" repeatCount="indefinite"/></circle><text x="78" y="17" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">1</text><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito">cell phone</text></svg>`,
+home:`<svg viewBox="0 0 120 110" width="110" height="100"><polygon points="60,12 20,48 100,48" fill="#e74c3c"/><rect x="30" y="48" width="60" height="42" fill="#ffeaa7"/><rect x="50" y="60" width="20" height="30" rx="2" fill="#8B6914"/><circle cx="66" cy="76" r="2" fill="#F9A825"/><rect x="35" y="56" width="12" height="12" rx="1" fill="#74b9ff" opacity=".7"/><rect x="73" y="56" width="12" height="12" rx="1" fill="#74b9ff" opacity=".7"/><circle cx="18" cy="75" r="3" fill="#55efc4" opacity=".6"><animate attributeName="cy" values="78;70;78" dur="3s" repeatCount="indefinite"/></circle><circle cx="102" cy="70" r="2.5" fill="#55efc4" opacity=".5"><animate attributeName="cy" values="72;65;72" dur="2.5s" repeatCount="indefinite"/></circle><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito">came home</text></svg>`,
+car:`<svg viewBox="0 0 130 100" width="120" height="90"><rect x="25" y="40" width="80" height="30" rx="6" fill="#e74c3c"/><path d="M38 40 L48 20 L82 20 L92 40" fill="#c0392b"/><rect x="50" y="24" width="12" height="14" rx="2" fill="#74b9ff" opacity=".7"/><rect x="66" y="24" width="12" height="14" rx="2" fill="#74b9ff" opacity=".7"/><circle cx="42" cy="72" r="10" fill="#2d3436"/><circle cx="42" cy="72" r="5" fill="#636e72"/><circle cx="88" cy="72" r="10" fill="#2d3436"/><circle cx="88" cy="72" r="5" fill="#636e72"/><rect x="93" y="44" width="14" height="6" rx="2" fill="#ffeaa7"/><rect x="23" y="44" width="14" height="6" rx="2" fill="#ffeaa7"/><g opacity=".6"><line x1="8" y1="50" x2="18" y2="50" stroke="#e74c3c" stroke-width="2"><animate attributeName="x1" values="5;15;5" dur=".8s" repeatCount="indefinite"/></line><line x1="5" y1="58" x2="16" y2="58" stroke="#e74c3c" stroke-width="2"><animate attributeName="x1" values="8;2;8" dur=".6s" repeatCount="indefinite"/></line></g></svg>`,
+friends:`<svg viewBox="0 0 130 110" width="110" height="100"><circle cx="42" cy="30" r="14" fill="#FFDCC8"/><path d="M30 24 Q33 14 42 13 Q51 14 54 24" fill="#5a3825"/><circle cx="38" cy="29" r="2" fill="#333"/><circle cx="46" cy="29" r="2" fill="#333"/><path d="M38 35 Q42 39 46 35" fill="none" stroke="#e17055" stroke-width="1.5" stroke-linecap="round"/><rect x="32" y="42" width="20" height="24" rx="5" fill="#6C5CE7"/><circle cx="88" cy="30" r="14" fill="#FFDCC8"/><path d="M76 22 Q80 12 88 11 Q96 12 100 22" fill="#d35400"/><circle cx="84" cy="29" r="2" fill="#333"/><circle cx="92" cy="29" r="2" fill="#333"/><path d="M84 35 Q88 39 92 35" fill="none" stroke="#e17055" stroke-width="1.5" stroke-linecap="round"/><rect x="78" y="42" width="20" height="24" rx="5" fill="#e84393"/><line x1="52" y1="50" x2="60" y2="46" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="0,52,50;-15,52,50;0,52,50" dur="1.5s" repeatCount="indefinite"/></line><line x1="78" y1="50" x2="70" y2="46" stroke="#e84393" stroke-width="3" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="0,78,50;15,78,50;0,78,50" dur="1.5s" repeatCount="indefinite"/></line><text x="65" y="20" text-anchor="middle" font-size="16" fill="#fdcb6e" opacity=".8"><animate attributeName="opacity" values=".3;1;.3" dur="2s" repeatCount="indefinite"/>&#x2764;</text></svg>`,
+movie:`<svg viewBox="0 0 120 110" width="110" height="100"><rect x="15" y="20" width="55" height="45" rx="4" fill="#2d3436"/><rect x="18" y="14" width="55" height="12" rx="2" fill="#636e72"/><line x1="28" y1="14" x2="25" y2="26" stroke="#2d3436" stroke-width="2"/><line x1="40" y1="14" x2="37" y2="26" stroke="#2d3436" stroke-width="2"/><line x1="52" y1="14" x2="49" y2="26" stroke="#2d3436" stroke-width="2"/><line x1="64" y1="14" x2="61" y2="26" stroke="#2d3436" stroke-width="2"/><polygon points="36,34 36,54 52,44" fill="#fff"/><rect x="75" y="25" width="30" height="50" rx="5" fill="#ffeaa7"/><rect x="78" y="28" width="24" height="5" rx="2" fill="#e74c3c"/><circle cx="90" cy="50" r="10" fill="#fff"/><circle cx="90" cy="50" r="8" fill="#ffeaa7"/><circle cx="90" cy="50" r="3" fill="#fdcb6e"/><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito">movie night</text></svg>`,
+calendar:`<svg viewBox="0 0 120 110" width="110" height="100"><rect x="25" y="20" width="70" height="70" rx="8" fill="#fff" stroke="#e74c3c" stroke-width="2"/><rect x="25" y="20" width="70" height="22" rx="8" fill="#e74c3c"/><rect x="25" y="34" width="70" height="8" fill="#e74c3c"/><text x="60" y="38" text-anchor="middle" font-size="12" fill="#fff" font-weight="700" font-family="Nunito">MARCH</text><text x="60" y="74" text-anchor="middle" font-size="30" fill="#2d3436" font-weight="800" font-family="Nunito">1</text><line x1="40" y1="16" x2="40" y2="24" stroke="#636e72" stroke-width="3" stroke-linecap="round"/><line x1="80" y1="16" x2="80" y2="24" stroke="#636e72" stroke-width="3" stroke-linecap="round"/><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito">born on March 1</text></svg>`,
+scarf:`<svg viewBox="0 0 120 110" width="110" height="100"><g><animateTransform attributeName="transform" type="rotate" values="-3,60,50;3,60,50;-3,60,50" dur="3s" repeatCount="indefinite"/><path d="M30 30 Q30 20 45 18 Q60 16 75 18 Q90 20 90 30 L88 60 Q88 68 80 70 L75 70 L75 95 Q75 100 70 100 L60 100 Q55 100 55 95 L55 70 L40 70 Q32 68 32 60Z" fill="#e74c3c"/><path d="M35 34 L85 34" stroke="#c0392b" stroke-width="2"/><path d="M35 42 L85 42" stroke="#c0392b" stroke-width="2"/><path d="M35 50 L85 50" stroke="#c0392b" stroke-width="2"/><line x1="58" y1="75" x2="58" y2="95" stroke="#c0392b" stroke-width="1.5"/><line x1="65" y1="75" x2="65" y2="95" stroke="#c0392b" stroke-width="1.5"/><line x1="72" y1="75" x2="72" y2="95" stroke="#c0392b" stroke-width="1.5"/></g><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito">scarves</text></svg>`,
+piano:`<svg viewBox="0 0 130 100" width="120" height="90"><rect x="10" y="15" width="110" height="65" rx="6" fill="#2d3436"/><g><rect x="15" y="20" width="14" height="55" rx="1" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="31" y="20" width="14" height="55" rx="1" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="47" y="20" width="14" height="55" rx="1" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="63" y="20" width="14" height="55" rx="1" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="79" y="20" width="14" height="55" rx="1" fill="#fff" stroke="#ddd" stroke-width=".5"/><rect x="95" y="20" width="14" height="55" rx="1" fill="#fff" stroke="#ddd" stroke-width=".5"/></g><g><rect x="25" y="20" width="10" height="34" rx="1" fill="#2d3436"/><rect x="41" y="20" width="10" height="34" rx="1" fill="#2d3436"/><rect x="73" y="20" width="10" height="34" rx="1" fill="#2d3436"/><rect x="89" y="20" width="10" height="34" rx="1" fill="#2d3436"/></g><g opacity=".6"><text x="20" y="10" font-size="11" fill="#6C5CE7">&#x266A;<animate attributeName="y" values="12;4;12" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;.3;.8" dur="1.5s" repeatCount="indefinite"/></text><text x="55" y="8" font-size="14" fill="#e84393">&#x266B;<animate attributeName="y" values="10;2;10" dur="2s" repeatCount="indefinite"/></text><text x="95" y="10" font-size="11" fill="#00b894">&#x266A;<animate attributeName="y" values="12;5;12" dur="1.8s" repeatCount="indefinite"/></text></g></svg>`,
+error:`<svg viewBox="0 0 120 110" width="100" height="90"><circle cx="50" cy="50" r="30" fill="none" stroke="#6C5CE7" stroke-width="4"/><line x1="72" y1="72" x2="98" y2="98" stroke="#6C5CE7" stroke-width="6" stroke-linecap="round"/><text x="50" y="45" text-anchor="middle" font-size="12" fill="#636e72" font-family="Nunito">find the</text><text x="50" y="60" text-anchor="middle" font-size="14" fill="#e74c3c" font-weight="700" font-family="Nunito">ERROR</text><circle cx="92" cy="22" r="12" fill="#e74c3c"><animate attributeName="r" values="11;13;11" dur="1.5s" repeatCount="indefinite"/></circle><text x="92" y="27" text-anchor="middle" font-size="16" fill="#fff" font-weight="700">&#x2717;</text></svg>`,
+doctor:`<svg viewBox="0 0 120 110" width="110" height="100"><circle cx="60" cy="28" r="16" fill="#FFDCC8"/><path d="M46 22 Q50 10 60 9 Q70 10 74 22" fill="#5a3825"/><circle cx="55" cy="27" r="2" fill="#333"/><circle cx="65" cy="27" r="2" fill="#333"/><path d="M56 34 Q60 37 64 34" fill="none" stroke="#e17055" stroke-width="1.5" stroke-linecap="round"/><rect x="48" y="42" width="24" height="30" rx="6" fill="#fff" stroke="#ddd" stroke-width="1"/><circle cx="60" cy="14" r="10" fill="#fff" stroke="#ddd" stroke-width="1"/><line x1="55" y1="14" x2="65" y2="14" stroke="#e74c3c" stroke-width="2"/><line x1="60" y1="9" x2="60" y2="19" stroke="#e74c3c" stroke-width="2"/><path d="M72 50 Q84 50 84 60 Q84 68 76 72 L76 78 L68 78 L68 72 Q60 68 60 60" fill="none" stroke="#636e72" stroke-width="2.5" stroke-linecap="round"/><circle cx="72" cy="78" r="4" fill="#636e72"/><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito"></text></svg>`,
+sunset:`<svg viewBox="0 0 130 100" width="120" height="90"><rect x="0" y="0" width="130" height="100" rx="8" fill="#fdcb6e"/><rect x="0" y="50" width="130" height="50" fill="#55a630"/><circle cx="65" cy="52" r="22" fill="#F9A825"><animate attributeName="cy" values="48;55;48" dur="4s" repeatCount="indefinite"/></circle><line x1="65" y1="22" x2="65" y2="28" stroke="#F9A825" stroke-width="2"/><line x1="40" y1="34" x2="44" y2="38" stroke="#F9A825" stroke-width="2"/><line x1="90" y1="34" x2="86" y2="38" stroke="#F9A825" stroke-width="2"/><path d="M0 55 Q15 50 30 55 Q45 60 60 55 Q75 50 90 55 Q105 60 130 55 L130 100 L0 100Z" fill="#3a8f3a" opacity=".5"/><text x="112" y="20" font-size="10" fill="#e74c3c" font-weight="700" font-family="Nunito">W</text><text x="65" y="95" text-anchor="middle" font-size="9" fill="#fff" font-family="Nunito">sun sets in the west</text></svg>`,
+book:`<svg viewBox="0 0 120 110" width="110" height="100"><g><animateTransform attributeName="transform" type="rotate" values="-2,60,55;2,60,55;-2,60,55" dur="3s" repeatCount="indefinite"/><path d="M60 20 L20 28 L20 85 L60 78Z" fill="#74b9ff"/><path d="M60 20 L100 28 L100 85 L60 78Z" fill="#a29bfe"/><line x1="30" y1="40" x2="55" y2="35" stroke="#fff" stroke-width="1.5" opacity=".6"/><line x1="30" y1="50" x2="55" y2="45" stroke="#fff" stroke-width="1.5" opacity=".6"/><line x1="30" y1="60" x2="55" y2="55" stroke="#fff" stroke-width="1.5" opacity=".6"/><line x1="65" y1="35" x2="90" y2="40" stroke="#fff" stroke-width="1.5" opacity=".6"/><line x1="65" y1="45" x2="90" y2="50" stroke="#fff" stroke-width="1.5" opacity=".6"/><line x1="65" y1="55" x2="90" y2="60" stroke="#fff" stroke-width="1.5" opacity=".6"/></g><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito"></text></svg>`,
+handsome:`<svg viewBox="0 0 120 110" width="110" height="100"><circle cx="60" cy="38" r="18" fill="#FFDCC8"/><path d="M44 32 Q48 18 60 17 Q72 18 76 32" fill="#3E2723"/><circle cx="54" cy="37" r="2.5" fill="#333"/><circle cx="66" cy="37" r="2.5" fill="#333"/><circle cx="55" cy="36" r="1" fill="#fff"/><circle cx="67" cy="36" r="1" fill="#fff"/><path d="M56 44 Q60 48 64 44" fill="none" stroke="#e17055" stroke-width="1.5" stroke-linecap="round"/><rect x="48" y="54" width="24" height="26" rx="6" fill="#0984e3"/><g opacity=".8"><text x="28" y="26" font-size="14" fill="#fdcb6e"><animate attributeName="opacity" values=".3;1;.3" dur="1.5s" repeatCount="indefinite"/>&#x2726;</text><text x="88" y="30" font-size="12" fill="#fdcb6e"><animate attributeName="opacity" values=".5;1;.5" dur="2s" repeatCount="indefinite"/>&#x2726;</text><text x="82" y="55" font-size="10" fill="#fdcb6e"><animate attributeName="opacity" values=".4;1;.4" dur="1.8s" repeatCount="indefinite"/>&#x2726;</text></g><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito"></text></svg>`,
+milk:`<svg viewBox="0 0 130 100" width="120" height="90"><g><rect x="12" y="25" width="22" height="50" rx="4" fill="#fff" stroke="#ddd" stroke-width="1.5"/><rect x="14" y="30" width="18" height="12" rx="2" fill="#74b9ff"/><text x="23" y="39" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">MILK</text><path d="M16 25 L18 18 L28 18 L30 25" fill="#fff" stroke="#ddd" stroke-width="1"/></g><g transform="translate(28,0)"><rect x="12" y="25" width="22" height="50" rx="4" fill="#fff" stroke="#ddd" stroke-width="1.5"/><rect x="14" y="30" width="18" height="12" rx="2" fill="#74b9ff"/><text x="23" y="39" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">MILK</text><path d="M16 25 L18 18 L28 18 L30 25" fill="#fff" stroke="#ddd" stroke-width="1"/></g><g transform="translate(56,0)"><rect x="12" y="25" width="22" height="50" rx="4" fill="#fff" stroke="#ddd" stroke-width="1.5"/><rect x="14" y="30" width="18" height="12" rx="2" fill="#74b9ff"/><text x="23" y="39" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">MILK</text><path d="M16 25 L18 18 L28 18 L30 25" fill="#fff" stroke="#ddd" stroke-width="1"/></g><g transform="translate(84,0)"><rect x="12" y="25" width="22" height="50" rx="4" fill="#fff" stroke="#ddd" stroke-width="1.5"/><rect x="14" y="30" width="18" height="12" rx="2" fill="#74b9ff"/><text x="23" y="39" text-anchor="middle" font-size="7" fill="#fff" font-weight="700">MILK</text><path d="M16 25 L18 18 L28 18 L30 25" fill="#fff" stroke="#ddd" stroke-width="1"/></g><rect x="5" y="78" width="120" height="10" rx="4" fill="#dfe6e9"/></svg>`,
+baby:`<svg viewBox="0 0 120 110" width="110" height="100"><circle cx="60" cy="40" r="22" fill="#FFDCC8"/><circle cx="40" cy="35" r="5" fill="#FFDCC8"/><circle cx="80" cy="35" r="5" fill="#FFDCC8"/><circle cx="52" cy="38" r="3" fill="#333"><animate attributeName="cy" values="38;37;38" dur="2s" repeatCount="indefinite"/></circle><circle cx="68" cy="38" r="3" fill="#333"><animate attributeName="cy" values="38;37;38" dur="2s" repeatCount="indefinite"/></circle><circle cx="53" cy="37" r="1" fill="#fff"/><circle cx="69" cy="37" r="1" fill="#fff"/><ellipse cx="60" cy="50" rx="5" ry="3.5" fill="#e84393" opacity=".7"/><ellipse cx="48" cy="46" rx="5" ry="3" fill="#fab1a0" opacity=".5"/><ellipse cx="72" cy="46" rx="5" ry="3" fill="#fab1a0" opacity=".5"/><rect x="44" y="60" width="32" height="30" rx="10" fill="#ffeaa7"/><path d="M46 22 Q50 16 54 20" stroke="#FFDCC8" stroke-width="3" fill="none"/><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito"></text></svg>`,
+brain:`<svg viewBox="0 0 120 110" width="110" height="100"><circle cx="60" cy="45" r="30" fill="#ffeaa7" opacity=".3"/><path d="M45 55 Q30 55 28 42 Q26 30 38 25 Q36 15 48 12 Q55 8 62 12 Q70 8 78 14 Q88 18 86 30 Q95 35 92 48 Q90 58 78 58 Q75 62 68 60 Q62 65 55 60 Q48 62 45 55Z" fill="#fdcb6e" stroke="#f0932b" stroke-width="1.5"/><path d="M60 20 L60 55 M48 30 L72 30 M45 42 L75 42" stroke="#f0932b" stroke-width="1" opacity=".4"/><circle cx="88" cy="18" r="10" fill="#fff" stroke="#6C5CE7" stroke-width="2"><animate attributeName="r" values="9;11;9" dur="2s" repeatCount="indefinite"/></circle><text x="88" y="22" text-anchor="middle" font-size="12" fill="#6C5CE7" font-weight="700">!</text><g opacity=".6"><text x="22" y="20" font-size="10" fill="#6C5CE7">A+</text><text x="85" y="70" font-size="10" fill="#6C5CE7">&#x2211;</text></g><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito">clever = smart</text></svg>`,
+email:`<svg viewBox="0 0 130 110" width="115" height="100"><circle cx="40" cy="30" r="14" fill="#FFDCC8"/><path d="M28 24 Q32 14 40 13 Q48 14 52 24" fill="#5a3825"/><circle cx="36" cy="29" r="2" fill="#333"/><circle cx="44" cy="29" r="2" fill="#333"/><path d="M37 35 Q40 38 43 35" fill="none" stroke="#e17055" stroke-width="1.5" stroke-linecap="round"/><rect x="30" y="42" width="20" height="24" rx="5" fill="#00b894"/><rect x="26" y="62" width="8" height="10" rx="2" fill="#5D4037"/><rect x="46" y="62" width="8" height="10" rx="2" fill="#5D4037"/><rect x="70" y="28" width="44" height="32" rx="4" fill="#fff" stroke="#74b9ff" stroke-width="2"><animate attributeName="x" values="100;70" dur="1.5s" fill="freeze"/><animate attributeName="opacity" values="0;1" dur="1s" fill="freeze"/></rect><path d="M72 30 L92 46 L112 30" fill="none" stroke="#74b9ff" stroke-width="2"><animate attributeName="opacity" values="0;1" dur="1s" fill="freeze"/></path><line x1="20" y1="78" x2="115" y2="78" stroke="#dfe6e9" stroke-width="2"/><text x="65" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito"></text></svg>`,
+pizza:`<svg viewBox="0 0 120 110" width="110" height="100"><path d="M60 15 L95 85 L25 85Z" fill="#ffeaa7" stroke="#f0932b" stroke-width="2"/><circle cx="55" cy="55" r="6" fill="#e74c3c" opacity=".8"/><circle cx="70" cy="65" r="5" fill="#e74c3c" opacity=".8"/><circle cx="45" cy="70" r="5.5" fill="#e74c3c" opacity=".8"/><circle cx="62" cy="42" r="4" fill="#e74c3c" opacity=".7"/><ellipse cx="50" cy="58" rx="4" ry="3" fill="#4CAF50" opacity=".6"/><ellipse cx="72" cy="52" rx="3" ry="2.5" fill="#4CAF50" opacity=".6"/><path d="M25 85 Q60 92 95 85" stroke="#f0932b" stroke-width="3" fill="#ffeaa7"/><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito"></text></svg>`,
+pencil:`<svg viewBox="0 0 120 110" width="110" height="100"><rect x="30" y="20" width="60" height="75" rx="4" fill="#fff" stroke="#ddd" stroke-width="1.5"/><line x1="40" y1="35" x2="80" y2="35" stroke="#dfe6e9" stroke-width="1.5"/><line x1="40" y1="45" x2="80" y2="45" stroke="#dfe6e9" stroke-width="1.5"/><line x1="40" y1="55" x2="80" y2="55" stroke="#dfe6e9" stroke-width="1.5"/><line x1="40" y1="65" x2="65" y2="65" stroke="#dfe6e9" stroke-width="1.5"/><g><animateTransform attributeName="transform" type="translate" values="0,0;3,-2;0,0" dur="1.5s" repeatCount="indefinite"/><rect x="82" y="45" width="6" height="40" rx="1" fill="#ffeaa7" transform="rotate(15,85,65)"/><polygon points="82,85 85,93 88,85" fill="#FFDCC8" transform="rotate(15,85,65)"/><rect x="82" y="45" width="6" height="6" rx="1" fill="#e74c3c" transform="rotate(15,85,65)"/></g><circle cx="40" cy="35" r="3" fill="#6C5CE7" opacity=".6"/><circle cx="57" cy="45" r="2.5" fill="#e74c3c" opacity=".5"/><text x="60" y="108" text-anchor="middle" font-size="9" fill="#636e72" font-family="Nunito"></text></svg>`
+};
+return I[t]?`<div class="illus">${I[t]}</div>`:'';
+}
+
+// ========== QUESTIONS DATA ==========
+const storyParas = [
+  {l:"A",t:"A few days later, a hunter came to the river bank. He saw the dove and wanted to shoot it. The ant wanted to save the dove so it quickly bit his leg."},
+  {l:"B",t:"A dove which was resting on a nearby tree saw the ant. The dove quickly plucked off a leaf and dropped it into the water. The ant climbed on top of the leaf and reached the shore safely."},
+  {l:"C",t:"The hunter shouted in pain and missed the shot. The dove heard the hunter's cry and flew away. The dove thanked the ant for saving its life."},
+  {l:"D",t:"One hot day, an ant was walking near a river bank. Suddenly, it fell inside the river. The ant screamed for help as the water was too strong."}
+];
+
+const tvPassage = `My mother was telling me about how she and her family got their first television when she was a teenager. It was black and white TV. She said she only watched it at night. When I was young we had only about 3 or 4 different channels. My brother and I always fight each other to see favorite channels.\n\nNowadays we can get hundreds of channels on TV. There are channels with only old movies, and channels with only cooking, and channels with only fishing. It's amazing! There is a channel for everything. I think about how much my brothers and I would fight if we had hundreds of channels when I was a child. These days I see families with 2 or 3 or more televisions in their homes. I guess it stops people from fighting for watching different channel.`;
+
+const Q = [
+  // PART I: GRAMMAR Q1-10
+  {id:1,p:"I",pt:"Grammar",tp:"fill",q:'I always <span class="bl"></span> mom with the housework.',o:["help","helps","helped","helping"],a:0,ex:"I + V1 in present simple = help"},
+  {id:2,p:"I",pt:"Grammar",tp:"conv",sp:["A","B"],cv:[{s:"A",t:"What is John doing at this moment?"},{s:"B",t:'He <span class="cb"></span> newspaper.'}],o:["read","reads","is reading","was reading"],a:2,ex:"'at this moment' = Present Continuous → is reading"},
+  {id:3,p:"I",pt:"Grammar",tp:"fill",q:'Jonathan <span class="bl"></span> his cell phone yesterday.',o:["don't bring","doesn't bring","didn't bring","didn't brought"],a:2,ex:"yesterday = past → didn't + V1 = didn't bring"},
+  {id:4,p:"I",pt:"Grammar",tp:"fill",q:'<span class="bl"></span> Lisa came home, we were talking about Donald Trump.',o:["While","As","During","When"],a:3,ex:"When + past simple, past continuous"},
+  {id:5,p:"I",pt:"Grammar",tp:"fill",q:'He <span class="bl"></span> by the car last week.',o:["hits","is hitting","is hit","was hit"],a:3,ex:"last week + passive = was hit"},
+  {id:6,p:"I",pt:"Grammar",tp:"fill",q:'Helen gave <span class="bl"></span> some advice about being a good friend.',o:["I","me","mine","my"],a:1,ex:"After 'gave' → object pronoun = me"},
+  {id:7,p:"I",pt:"Grammar",tp:"fill",q:'Mary can\'t go to see the movie tonight <span class="bl"></span> she has to study for the exam.',o:["and","but","because","so"],a:2,ex:"'because' gives reason"},
+  {id:8,p:"I",pt:"Grammar",tp:"fill",q:'Justin was born <span class="bl"></span> March 1, 2003.',o:["in","on","at","under"],a:1,ex:"'on' + specific date"},
+  {id:9,p:"I",pt:"Grammar",tp:"fill",q:'Those aren\'t my scarves. They\'re <span class="bl"></span>.',o:["you","your","yours","yourself"],a:2,ex:"possessive pronoun = yours"},
+  {id:10,p:"I",pt:"Grammar",tp:"fill",q:'He <span class="bl"></span> the piano every day last year.',o:["playing","played","plays","play"],a:1,ex:"last year = past → played"},
+  // Q11-15 Error
+  {id:11,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'There <u>are</u> a <u>book</u> <u>on</u> the <u>desk</u>.',o:["a. are","b. book","c. on","d. desk"],a:0,ex:"'a book' = singular → 'is' not 'are'"},
+  {id:12,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'A: Listen! Someone <u>is singing</u> the song <u>beautifully</u>.<br>B: It\'s Susan. She\'s <u>a</u> singer. She always <u>practice</u> singing.',o:["a. is singing","b. beautifully","c. a","d. practice"],a:3,ex:"She → practices (add -s for he/she/it)"},
+  {id:13,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'Have you ever <u>been</u> to Grand Palace <u>for</u> you <u>arrived</u> <u>in</u> Bangkok?',o:["a. been","b. for","c. arrived","d. in"],a:1,ex:"Should be 'since' not 'for' (since + point in time)"},
+  {id:14,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'"<u>How much</u> <u>does</u> <u>this</u> bar of <u>chocolate</u>?" "It\'s 20 baht."',o:["a. How much","b. does","c. this","d. chocolate"],a:1,ex:"Missing 'cost' → 'How much does this bar of chocolate cost?'"},
+  {id:15,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'Natalie <u>is</u> able to <u>speak</u> German <u>very</u> <u>good</u>.',o:["a. is","b. speak","c. very","d. good"],a:3,ex:"'good' is adj → should be 'well' (adverb)"},
+  // PART II: VOCABULARY Q16-25
+  {id:16,p:"II",pt:"Vocabulary",tp:"pic-sick",q:"What's wrong with the boy?",o:["He has a cold.","He has a fever.","He has a headache.","He has a sore throat."],a:1,ex:"The boy has a fever (high temperature)"},
+  {id:17,p:"II",pt:"Vocabulary",tp:"norm",q:"What suggestion should you give him?",o:["He should go to see the doctor.","He should go to see the dentist.","He should go to the club.","He should go to the airport."],a:0,ex:"Sick → go to see the doctor"},
+  {id:18,p:"II",pt:"Vocabulary",tp:"fill",q:'The sun sets in the <span class="bl"></span>.',o:["north","west","east","south"],a:1,ex:""},
+  {id:19,p:"II",pt:"Vocabulary",tp:"fill",q:'<span class="bl"></span> book does Moana take home?',o:["Who","Why","Whose","Where"],a:2,ex:"Whose = asking about possession"},
+  {id:20,p:"II",pt:"Vocabulary",tp:"fill",q:'A handsome person is someone who <span class="bl"></span>.',o:["talks a lot.","is good-looking.","makes you laugh.","has no money."],a:1,ex:"handsome = good-looking"},
+  {id:21,p:"II",pt:"Vocabulary",tp:"fill",q:'Margaret is <span class="bl"></span> to see her old friend again.',o:["sad","upset","angry","glad"],a:3,ex:"Meeting old friend → glad (happy)"},
+  {id:22,p:"II",pt:"Vocabulary",tp:"fill",q:'There are four <span class="bl"></span> of milk in the refrigerator.',o:["bars","loaves","rolls","bottles"],a:3,ex:"milk → bottles"},
+  {id:23,p:"II",pt:"Vocabulary",tp:"norm",q:'The <strong>infant</strong> is crying so her mom feeds her some milk. What does "infant" mean?',o:["baby","adult","teenager","elder"],a:0,ex:"infant = baby"},
+  {id:24,p:"II",pt:"Vocabulary",tp:"norm",q:'Michael is really <strong>clever</strong>. He can solve math problems quickly. What does "clever" mean?',o:["stupid","talkative","smart","diligent"],a:2,ex:""},
+  {id:25,p:"II",pt:"Vocabulary",tp:"norm",q:'I will <strong>reply</strong> her email as soon as I arrive home. What does "reply" mean?',o:["read","answer","listen","ask"],a:1,ex:"reply = answer"},
+  // PART III: CONVERSATION Q26-33
+  {id:26,p:"III",pt:"Conversation",tp:"conv",sit:"Peter and Jane see each other after the summer vacation.",sp:["peter","jane"],cv:[{s:"Peter",t:"Hello, Jane."},{s:"Peter",t:'<span class="cb">(26)</span>'},{s:"Jane",t:"(27) _____ We went to the beach."}],q:"Q26: What did Peter say?",o:["How was your vacation?","What did you do on the beach?","Where did you spend your vacation?","Did you go on your vacation?"],a:0,ex:"Asking about vacation → How was your vacation?"},
+  {id:27,p:"III",pt:"Conversation",tp:"conv",sit:"Peter and Jane see each other after the summer vacation.",sp:["peter","jane"],cv:[{s:"Peter",t:"Hello, Jane. How was your vacation?"},{s:"Jane",t:'<span class="cb">(27)</span> We went to the beach.'}],q:"Q27: What did Jane reply?",o:["We plan to go to the beach.","You know nothing.","I always enjoy the trip.","It was great."],a:3,ex:"Answering about vacation → It was great."},
+  {id:28,p:"III",pt:"Conversation",tp:"conv",sit:"At a restaurant.",sp:["waiter","joe"],cv:[{s:"Waiter",t:'<span class="cb">(28)</span>'},{s:"Joe",t:"Pork steak, please."},{s:"Waiter",t:"How about the dessert?"},{s:"Joe",t:'<span class="cb">(29)</span>'}],q:"Q28: What did the waiter ask?",o:["What's your favorite food?","How about the dessert?","What is this food?","What would you like to eat?"],a:3,ex:"Waiter asking for order → What would you like to eat?"},
+  {id:29,p:"III",pt:"Conversation",tp:"conv",sit:"At a restaurant.",sp:["waiter","joe"],cv:[{s:"Waiter",t:"What would you like to eat?"},{s:"Joe",t:"Pork steak, please."},{s:"Waiter",t:"How about the dessert?"},{s:"Joe",t:'<span class="cb">(29)</span>'}],q:"Q29: What did Joe answer about the dessert?",o:["Cheesecake, thanks.","I hate dessert.","Ask yourself.","I'll have hamburger."],a:0,ex:"Ordering dessert → Cheesecake, thanks."},
+  {id:30,p:"III",pt:"Conversation",tp:"conv",sit:"The teacher asks a student some questions.",sp:["teacher","student"],cv:[{s:"Teacher",t:'<span class="cb">(30)</span>'},{s:"Student",t:"A rainbow."},{s:"Teacher",t:'<span class="cb">(31)</span>'},{s:"Student",t:"Seven colors."}],q:"Q30: What did the teacher ask?",o:["What is that with the rain?","What comes before it rains?","What can we see after the rain?","What do we see when it rains?"],a:2,ex:"Answer = rainbow → What can we see after the rain?"},
+  {id:31,p:"III",pt:"Conversation",tp:"conv",sit:"The teacher asks a student some questions.",sp:["teacher","student"],cv:[{s:"Teacher",t:"What can we see after the rain?"},{s:"Student",t:"A rainbow."},{s:"Teacher",t:'<span class="cb">(31)</span>'},{s:"Student",t:"Seven colors."}],q:"Q31: What did the teacher ask next?",o:["How much do the colors cost?","What are the colors of it?","What colors are there in it?","How many colors are there in it?"],a:3,ex:"Answer = Seven (number) → How many colors are there in it?"},
+  {id:32,p:"III",pt:"Conversation",tp:"conv",sp:["monica","pawel"],cv:[{s:"Monica",t:"May I borrow your pen?"},{s:"Pawel",t:'<span class="cb">(32)</span>'}],q:"Q32: What did Pawel reply?",o:["Not at all.","That's all right.","You're welcome.","Yes, here you are."],a:3,ex:"Lending something → Yes, here you are."},
+  {id:33,p:"III",pt:"Conversation",tp:"conv",sp:["tourist","dang"],cv:[{s:"Tourist",t:"Could you tell me the way to the train station, please?"},{s:"Dang",t:'<span class="cb">(33)</span>'}],q:"Q33: What did Dang reply?",o:["Poor you.","No, thanks.","Sorry. I'm a stranger here, too.","You should have a map with you."],a:2,ex:"Don't know the way → Sorry. I'm a stranger here, too."},
+  // PART IV: WRITING Q34-40
+  {id:34,p:"IV",pt:"Writing — Story Ordering",tp:"story",q:"Which paragraph comes <strong>first</strong>?",o:["A","B","C","D"],a:3,ex:"D comes first — the ant walks near the river and falls in"},
+  {id:35,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>second</strong>?",o:["A","B","C","D"],a:1,ex:"B comes second — the dove drops a leaf to save the ant"},
+  {id:36,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>third</strong>?",o:["A","B","C","D"],a:0,ex:"A comes third — the hunter arrives, the ant bites his leg"},
+  {id:37,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>last</strong>?",o:["A","B","C","D"],a:2,ex:"C comes last — hunter misses, dove flies away safely"},
+  {id:38,p:"IV",pt:"Writing — Sentence Ordering",tp:"norm",q:'Find the correct order:<br><br>1. I don\'t want pizza again for a long time.<br>2. I ate ten pieces of pizza.<br>3. Later that night, I got sick.<br>4. I felt very full.',o:["1-3-4-2","2-4-3-1","3-2-1-4","4-2-1-3"],a:1,ex:"Ate pizza → felt full → got sick → don't want pizza"},
+  {id:39,p:"IV",pt:"Writing — Punctuation",tp:"norm",q:'My mom always tells me to follow the golden rule <span class="bl"></span> "treat others as you want to be treated."<br><br>Choose the correct punctuation:',o:[". (period)",": (colon)","? (question mark)","– (dash)"],a:1,ex:"Use colon (:) before explaining/quoting"},
+  {id:40,p:"IV",pt:"Writing — Punctuation",tp:"norm",q:'Do you have your own golden rule <span class="bl"></span> If yes, let me know.<br><br>Choose the correct punctuation:',o:[". (period)",": (colon)","? (question mark)","– (dash)"],a:2,ex:"It's a question → use ? (question mark)"},
+  // PART V: READING Q41-50
+  {id:41,p:"V",pt:"Reading",tp:"read",pass:'"James is opening the car door, turning the key, driving down the road, and going to his home."',q:"What is James doing?",o:["James is walking home.","James is opening the door.","James is driving a car.","James is going to the road."],a:2,ex:"James is driving a car"},
+  {id:42,p:"V",pt:"Reading",tp:"read-c",q:"What will happen after the events?",o:["James will open the car door.","James will arrive home.","James will get out of the office.","James will drive down the road."],a:1,ex:"James is going home → he will arrive home"},
+  {id:43,p:"V",pt:"Reading",tp:"read",pass:'"I sold my old car to buy a new one."',q:'What does "one" mean?',o:["car","old","sold","order"],a:0,ex:"'one' replaces 'car'"},
+  {id:44,p:"V",pt:"Reading",tp:"read-c",q:"What does this sentence mean?",o:["I want to buy an old car.","I want to buy a new car.","I can't sell my old car.","I can't sell my new car."],a:1,ex:"Sold old car to buy new one → wants a new car"},
+  {id:45,p:"V",pt:"Reading",tp:"speed",q:'A: Look at that. You <span class="bl"></span><br>B: All right.',o:["must drive at least 90 km/h.","must drive more than 90 km/h.","mustn't drive over 90 km/h.","mustn't drive less than 90 km/h."],a:2,ex:"SPEED LIMIT 90 = must not drive over 90 km/h"},
+  {id:46,p:"V",pt:"Reading — TV Passage",tp:"tv",q:"What is this story about?",o:["Television","Mother and I","Fight","Family"],a:0,ex:"The whole story is about Television"},
+  {id:47,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"When his mother was a teenager, TV was...",o:["black and white","full of colors","high technology","amazing"],a:0,ex:"'It was black and white TV'"},
+  {id:48,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"Why do you think the writer fights with his brother?",o:["Because they have three televisions.","Because they have too many channels to watch.","Because they don't want to watch the same channel.","Because they don't want the other to watch the favorite channel."],a:2,ex:"They fight because they don't want to watch the same channel"},
+  {id:49,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"According to the passage, which is TRUE?",o:["The writer and his brother never argue.","The writer could watch TV all day when young.","The writer liked channel 7 when young.","The writer and his brother like the same programs."],a:1,ex:"Option b is closest to the context"},
+  {id:50,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:'What does "it" in paragraph 2, line 5 mean?',o:["shows","families","televisions","people"],a:2,ex:"'it' refers to televisions (having multiple TVs stops fighting)"}
+];
+
+// ========== STATE ==========
+let cur=0, score=0, ans=new Array(50).fill(null), sstep=0, stmr=null;
+let lastPass = {};
+
+function go(){
+  document.getElementById('startScreen').classList.add('hide');
+  setTimeout(()=>{document.getElementById('startScreen').style.display='none';document.getElementById('quiz').classList.add('on');render()},800);
+}
+
+// ========== RENDER ==========
+function render(){
+  const q=Q[cur], area=document.getElementById('qArea');
+  document.getElementById('pTxt').textContent=`${cur+1} / 50`;
+  document.getElementById('pFill').style.width=`${((cur+1)/50)*100}%`;
+  document.getElementById('sTxt').textContent=`Score: ${score}`;
+  document.getElementById('pH').innerHTML=`<span class="part-badge">Part ${q.p}</span><div class="part-sub">${q.pt}</div>`;
+
+  let h='';
+
+  // === ILLUSTRATION ===
+  if(q.tp==='pic-sick'){
+    h+=`<div class="illus">
+      <svg viewBox="0 0 120 120" width="110" height="110">
+        <circle cx="60" cy="40" r="25" fill="#FFD5C2" stroke="#e8a87c" stroke-width="1"/>
+        <path d="M38 35 Q40 15 60 15 Q80 15 82 35" fill="#5a3825"/>
+        <path d="M48 38 Q52 42 56 38" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+        <path d="M64 38 Q68 42 72 38" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+        <path d="M52 50 Q60 46 68 50" fill="none" stroke="#e17055" stroke-width="2" stroke-linecap="round"/>
+        <rect x="72" y="42" width="5" height="25" rx="2" fill="white" stroke="#ccc" stroke-width="1" transform="rotate(-30,74,54)"/>
+        <circle cx="75" cy="63" r="4" fill="#e74c3c" transform="rotate(-30,74,54)"/>
+        <rect x="73.5" y="50" width="2" height="12" fill="#e74c3c" transform="rotate(-30,74,54)"/>
+        <rect x="42" y="62" width="36" height="40" rx="8" fill="#74b9ff"/>
+        <circle cx="38" cy="30" r="3" fill="#74b9ff" opacity=".7"><animate attributeName="cy" values="30;45" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0" dur="1.5s" repeatCount="indefinite"/></circle>
+        <circle cx="82" cy="33" r="2.5" fill="#74b9ff" opacity=".6"><animate attributeName="cy" values="33;48" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".6;0" dur="1.8s" repeatCount="indefinite"/></circle>
+        <circle cx="46" cy="44" r="5" fill="#fab1a0" opacity=".6"/>
+        <circle cx="74" cy="44" r="5" fill="#fab1a0" opacity=".6"/>
+        <rect x="10" y="98" width="100" height="15" rx="5" fill="#dfe6e9"/>
+        <rect x="5" y="95" width="18" height="22" rx="4" fill="#b2bec3"/>
+      </svg>
+    </div>`;
+  } else if(q.tp==='speed'){
+    h+=`<div class="illus"><div class="ss"><div class="ss-b"><div class="s1">SPEED</div><div class="s2">LIMIT</div><div class="s3">90</div></div><div class="ss-p"></div></div></div>`;
+  } else if(qIllust[q.id]){
+    h+=getIllust(qIllust[q.id]);
+  }
+
+  // === STORY SCENE (Q34) ===
+  if(q.tp==='story'){
+    h+=buildStory();
+  }
+
+  // === STORY PARAGRAPHS for Q34-37 ===
+  if(q.tp==='story'||q.tp==='story-c'){
+    h+='<div style="margin:14px 0">';
+    storyParas.forEach(p=>{h+=`<div class="para-box"><span class="pl">${p.l}</span>${p.t}</div>`;});
+    h+='</div>';
+  }
+
+  // === CONVERSATION (chat bubbles) ===
+  if(q.tp==='conv'){
+    if(q.sit) h+=`<div class="situ">${q.sit}</div>`;
+    h+='<div class="chat-area">';
+    const speakers = q.sp || ['teacher','student'];
+    const s0name = q.cv[0].s;
+    q.cv.forEach(line=>{
+      const isRight = line.s !== s0name;
+      const avType = isRight ? speakers[1] : speakers[0];
+      h+=`<div class="chat-row${isRight?' right':''}">
+        ${miniAvatar(avType)}
+        <div class="chat-bub"><div class="chat-name">${line.s}</div>${line.t}</div>
+      </div>`;
+    });
+    h+='</div>';
+  }
+
+  // === READING PASSAGE ===
+  if(q.tp==='read'){
+    lastPass.read = q.pass;
+    h+=`<div class="rdpass"><span class="rl">Reading Passage</span><p style="margin-top:8px">${q.pass}</p></div>`;
+  }
+  if(q.tp==='read-c' && lastPass.read){
+    h+=`<div class="rdpass"><span class="rl">Reading Passage</span><p style="margin-top:8px">${lastPass.read}</p></div>`;
+  }
+
+  // === TV PASSAGE ===
+  if(q.tp==='tv'){
+    h+=`<div class="rdpass"><span class="rl">Reading Passage</span><p style="margin-top:8px">${tvPassage.replace(/\n/g,'<br>')}</p></div>`;
+  }
+  if(q.tp==='tv-c'){
+    h+=`<div class="rdpass"><span class="rl">Reading Passage</span><p style="margin-top:8px">${tvPassage.replace(/\n/g,'<br>')}</p></div>`;
+  }
+
+  // === QUESTION CARD ===
+  h+=`<div class="q-card"><div style="display:flex;align-items:flex-start"><span class="q-num">${q.id}</span><span class="q-txt">${q.q||''}</span></div>`;
+
+  // Options
+  h+='<div class="opts">';
+  const L=['a','b','c','d'];
+  q.o.forEach((opt,i)=>{
+    const sel=ans[cur]===i;
+    let c='opt';
+    if(sel) c+=ans[cur]===q.a?' ok':' no';
+    const dis=ans[cur]!==null?'pointer-events:none;':'';
+    h+=`<button class="${c}" style="${dis}" onclick="pick(${i})"><span class="ol">${L[i]}</span><span>${opt}</span></button>`;
+  });
+  h+='</div>';
+
+  // Explanation
+  if(ans[cur]!==null){
+    const ok=ans[cur]===q.a;
+    h+=`<div class="expl ${ok?'ok-bg':'no-bg'}"><strong>${ok?'Correct!':'Incorrect'}</strong>${!ok?`<br>Answer: <strong>${L[q.a]}. ${q.o[q.a]}</strong>`:''}
+    <br><span style="color:var(--txt2);font-size:.9em">${q.ex}</span></div>`;
+  }
+
+  h+='</div>';
+  area.innerHTML=h;
+
+  document.getElementById('prevB').disabled=cur===0;
+  document.getElementById('nextB').innerHTML=cur===49?'See Results':'Next &#9654;';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ========== STORY ==========
+function buildStory(){
+  return `<div class="story-sc" id="sSc">
+    <div class="story-sky"></div>
+    <div class="story-sun" id="sSun">${svgSun}</div>
+    <div class="s-tree">${svgTree}</div>
+    <div class="s-dove" id="sDove">${svgDove}</div>
+    <div class="s-leaf" id="sLeaf">${svgLeaf}</div>
+    <div class="s-ant" id="sAnt">${svgAnt}</div>
+    <div class="s-hunter" id="sHunt">${svgHunter}</div>
+    <div class="story-river"></div>
+    <div class="s-cap" id="sCap">Press &#9654; to watch the story</div>
+  </div>
+  <div class="s-ctrls">
+    <button class="s-btn play" id="sPlay" onclick="playS()">&#9654; Play Story</button>
+    <button class="s-btn rst" onclick="rstS()">Reset</button>
+  </div>`;
+}
+
+function playS(){
+  const b=document.getElementById('sPlay');if(b)b.disabled=true;
+  sstep=0;advS();
+}
+function advS(){
+  const ant=document.getElementById('sAnt'),dove=document.getElementById('sDove'),leaf=document.getElementById('sLeaf'),hunt=document.getElementById('sHunt'),cap=document.getElementById('sCap');
+  if(!ant)return;
+  const steps=[
+    ()=>{cap.textContent="One hot day, an ant was walking near a river bank...";ant.style.left='30px';ant.className='s-ant';},
+    ()=>{cap.textContent="Suddenly, the ant fell into the river! The water was too strong!";ant.classList.add('fallen');},
+    ()=>{cap.textContent="A dove on a nearby tree saw the ant. It plucked a leaf and dropped it into the water.";dove.classList.add('fly');leaf.classList.add('drop');},
+    ()=>{cap.textContent="The ant climbed on the leaf and reached the shore safely!";ant.classList.remove('fallen');ant.classList.add('saved');},
+    ()=>{cap.textContent="A few days later, a hunter came to the river bank. He wanted to shoot the dove!";hunt.classList.add('show');ant.classList.remove('saved');ant.style.left='180px';},
+    ()=>{cap.textContent="The ant bit the hunter's leg to save the dove!";ant.classList.add('biting');},
+    ()=>{cap.textContent="The hunter shouted in pain and missed the shot! The dove flew away safely!";hunt.classList.add('hurt');dove.classList.add('away');dove.classList.remove('fly');},
+    ()=>{cap.textContent="The dove thanked the ant for saving its life. The End!";hunt.classList.remove('hurt');}
+  ];
+  if(sstep<steps.length){steps[sstep]();sstep++;stmr=setTimeout(advS,3500);}
+  else{const b=document.getElementById('sPlay');if(b)b.disabled=false;}
+}
+function rstS(){
+  clearTimeout(stmr);sstep=0;
+  const a=document.getElementById('sAnt'),d=document.getElementById('sDove'),l=document.getElementById('sLeaf'),hu=document.getElementById('sHunt'),c=document.getElementById('sCap');
+  if(a){a.className='s-ant';a.style.left='30px';}
+  if(d)d.className='s-dove';if(l)l.className='s-leaf';if(hu)hu.className='s-hunter';
+  if(c)c.textContent='Press \u25B6 to watch the story';
+  const b=document.getElementById('sPlay');if(b)b.disabled=false;
+}
+
+// ========== INTERACTION ==========
+function pick(i){if(ans[cur]!==null)return;ans[cur]=i;if(i===Q[cur].a)score++;render();}
+function next(){if(cur===49){showRes();return;}if(cur<49){cur++;render();}}
+function prev(){if(cur>0){cur--;render();}}
+
+function showRes(){
+  document.getElementById('quiz').classList.remove('on');
+  const r=document.getElementById('resScreen');r.classList.add('on');
+  const pct=Math.round((score/50)*100);
+  document.getElementById('sCirc').style.setProperty('--sp',pct+'%');
+  let m,d;
+  if(pct>=80){m='Excellent!';d='You are ready for M.1!';confetti();}
+  else if(pct>=60){m='Good job!';d='Almost there, keep going!';confetti();}
+  else if(pct>=40){m='Keep trying!';d='Review the wrong answers and try again!';}
+  else{m='Need more practice';d='Study the lessons and try again!';}
+  document.getElementById('rMsg').textContent=m;
+  document.getElementById('rDet').textContent=d;
+  let ds=0;const si=setInterval(()=>{ds++;document.getElementById('fScore').textContent=ds;if(ds>=score)clearInterval(si);},50);
+}
+
+function confetti(){
+  const c=document.getElementById('confC'),cols=['#6C5CE7','#00b894','#fdcb6e','#e17055','#74b9ff','#a29bfe','#ff7675','#55efc4'];
+  for(let i=0;i<80;i++){const e=document.createElement('div');e.className='conf';e.style.left=Math.random()*100+'%';e.style.background=cols[~~(Math.random()*cols.length)];e.style.width=(Math.random()*8+5)+'px';e.style.height=(Math.random()*8+5)+'px';e.style.borderRadius=Math.random()>.5?'50%':'2px';e.style.animationDelay=Math.random()*2+'s';e.style.animationDuration=(Math.random()*2+2)+'s';c.appendChild(e);}
+  setTimeout(()=>c.innerHTML='',5000);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='Enter')next();
+  if(e.key==='ArrowLeft')prev();
+  if(e.key>='1'&&e.key<='4'){const i=parseInt(e.key)-1;if(i<Q[cur].o.length)pick(i);}
+});
+</script>
+</body>
+</html>
