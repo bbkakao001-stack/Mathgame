@@ -72,6 +72,12 @@ body{font-family:'Kanit','Nunito',sans-serif;background:var(--bg);color:var(--tx
 @keyframes pu{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
 @keyframes sk{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 
+/* TTS button */
+.tts-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:2px solid var(--pri);background:#f0eeff;color:var(--pri);cursor:pointer;font-size:1.1em;transition:all .3s;flex-shrink:0;margin-left:auto;padding:0}
+.tts-btn:hover{background:var(--pri);color:#fff;transform:scale(1.1);box-shadow:0 4px 12px rgba(108,92,231,.3)}
+.tts-btn.speaking{background:var(--pri);color:#fff;animation:tts-pulse 1s ease infinite}
+@keyframes tts-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
 /* Explain box */
 .expl{margin-top:14px;padding:12px 16px;border-radius:12px;line-height:1.6;font-size:.95em}
 .expl.ok-bg{background:#e8f5e9;border-left:4px solid var(--sec)}
@@ -168,6 +174,74 @@ body{font-family:'Kanit','Nunito',sans-serif;background:var(--bg);color:var(--tx
 .res-det{color:var(--txt2);margin-bottom:22px}
 .rbtn{padding:13px 38px;font-size:1.05em;font-family:'Kanit';background:linear-gradient(135deg,var(--pri),var(--pri-l));color:#fff;border:none;border-radius:50px;cursor:pointer;font-weight:600;transition:all .3s}
 .rbtn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(108,92,231,.3)}
+.rbtn.sum{background:linear-gradient(135deg,#00b894,#55efc4);margin-top:12px}
+.rbtn.sum:hover{box-shadow:0 8px 25px rgba(0,184,148,.3)}
+
+/* Summary Modal */
+.sum-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.sum-overlay.on{display:flex}
+.sum-modal{background:linear-gradient(135deg,#e8f6ff,#d4f0ff);border-radius:22px;max-width:960px;width:100%;margin:20px auto;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:bi .5s ease}
+.sum-close{position:sticky;top:0;float:right;background:var(--dng);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:1.3em;cursor:pointer;font-weight:700;transition:all .3s;z-index:1}
+.sum-close:hover{transform:scale(1.1)}
+.sum-title{text-align:center;font-size:1.6em;font-weight:700;color:#1a3a5c;margin-bottom:8px;background:linear-gradient(135deg,#5ba3d9,#3d7cb8);color:#fff;padding:12px 24px;border-radius:12px;display:inline-block;margin:0 auto 6px;transform:rotate(-1deg);box-shadow:0 4px 15px rgba(59,124,184,.3)}
+.sum-title-wrap{text-align:center;margin-bottom:18px}
+.sum-subtitle{text-align:center;color:var(--txt2);font-size:.92em;margin-bottom:22px}
+
+/* Timeline */
+.tl-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-bottom:24px;position:relative}
+.tl-col{position:relative}
+.tl-header{text-align:center;padding:10px;font-weight:700;font-size:1.1em;color:#fff;border-radius:10px 10px 0 0;margin:0 4px;letter-spacing:1px}
+.tl-col.past .tl-header{background:linear-gradient(135deg,#3d6b7e,#4a8fa8)}
+.tl-col.present .tl-header{background:linear-gradient(135deg,#b8860b,#c49a2a)}
+.tl-col.future .tl-header{background:linear-gradient(135deg,#6a4c93,#8b6ab0)}
+
+/* Main tense row */
+.tl-main{margin:0 4px;padding:14px;border-radius:0 0 10px 10px;min-height:80px}
+.tl-col.past .tl-main{background:linear-gradient(135deg,#4a8fa8,#5ba3b8)}
+.tl-col.present .tl-main{background:linear-gradient(135deg,#c49a2a,#d4aa3a)}
+.tl-col.future .tl-main{background:linear-gradient(135deg,#7b5ea7,#8b6ab0)}
+.tl-main-title{font-weight:700;font-size:.95em;color:#fff;margin-bottom:4px}
+.tl-main-struct{font-size:.85em;color:rgba(255,255,255,.9)}
+.tl-main-ex{font-size:.82em;color:rgba(255,255,255,.75);font-style:italic;margin-top:2px}
+.tl-main-th{font-size:.82em;color:#fff;margin-top:4px;background:rgba(255,255,255,.15);padding:3px 8px;border-radius:6px;display:inline-block}
+
+/* Arrow line */
+.tl-arrow{display:flex;align-items:center;justify-content:center;margin:12px 0;position:relative}
+.tl-arrow-line{width:90%;height:4px;background:#1a3a5c;border-radius:2px;position:relative}
+.tl-arrow-line::after{content:'';position:absolute;right:-6px;top:-5px;border:7px solid transparent;border-left:10px solid #1a3a5c}
+.tl-dot{width:12px;height:12px;border-radius:50%;background:#1a3a5c;position:absolute}
+.tl-dot.left{left:15%}.tl-dot.mid{left:48%}.tl-dot.right{left:82%}
+
+/* Sub tenses */
+.tl-subs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.tl-card{background:#fff;border-radius:12px;padding:12px;border:2px solid #e0e8f0;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:all .3s}
+.tl-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.tl-card-title{font-weight:700;font-size:.88em;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.tl-card-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tl-card.past-c .tl-card-dot{background:#4a8fa8}
+.tl-card.present-c .tl-card-dot{background:#c49a2a}
+.tl-card.future-c .tl-card-dot{background:#7b5ea7}
+.tl-card-struct{font-size:.82em;color:var(--pri);font-weight:600;margin-bottom:2px}
+.tl-card-ex{font-size:.8em;color:var(--txt2);font-style:italic}
+.tl-card-th{font-size:.8em;color:#333;margin-top:4px;background:#f0f4ff;padding:3px 8px;border-radius:6px}
+
+/* Extra section */
+.sum-extra{margin-top:24px}
+.sum-section{margin-bottom:16px;background:#fff;border-radius:14px;padding:16px;border-left:5px solid var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.sum-section h3{font-size:1em;color:var(--pri);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.sum-section h3 .sum-icon{width:26px;height:26px;border-radius:50%;background:var(--pri);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.75em;flex-shrink:0}
+.sum-row{padding:7px 10px;margin-bottom:5px;background:#f8f9ff;border-radius:8px;border:1px solid #e8e8f0;line-height:1.6;font-size:.88em}
+.sum-row b{color:var(--pri)}
+.sum-section.vocab{border-left-color:var(--sec)}
+.sum-section.vocab h3 .sum-icon{background:var(--sec)}
+.sum-section.conv{border-left-color:#e84393}
+.sum-section.conv h3 .sum-icon{background:#e84393}
+.sum-section.write{border-left-color:var(--acc)}
+.sum-section.write h3 .sum-icon{background:var(--acc);color:#333}
+.sum-section.read{border-left-color:#0984e3}
+.sum-section.read h3 .sum-icon{background:#0984e3}
+
+@media(max-width:700px){.sum-modal{padding:16px 10px}.tl-grid,.tl-subs{grid-template-columns:1fr}.tl-main{margin:0 4px 8px}.tl-card{margin-bottom:4px}}
 
 /* Confetti */
 .conf-c{position:fixed;inset:0;pointer-events:none;z-index:9999}
@@ -272,6 +346,7 @@ body{font-family:'Kanit','Nunito',sans-serif;background:var(--bg);color:var(--tx
     </div>
   </div>
   <button class="start-btn" onclick="go()">Start!</button>
+  <button class="start-btn" onclick="openSummary()" style="background:linear-gradient(135deg,#00b894,#55efc4);color:#fff;margin-top:12px;font-size:1em;padding:12px 35px;box-shadow:0 6px 20px rgba(0,184,148,.3)">&#128218; สรุปโครงสร้างก่อนสอบ</button>
 </div>
 
 <!-- === QUIZ === -->
@@ -296,9 +371,191 @@ body{font-family:'Kanit','Nunito',sans-serif;background:var(--bg);color:var(--tx
     <div class="res-msg" id="rMsg"></div>
     <div class="res-det" id="rDet"></div>
     <button class="rbtn" onclick="location.reload()">Try Again</button>
+    <br>
+    <button class="rbtn sum" onclick="openSummary()">&#128218; สรุปโครงสร้างที่ใช้ในข้อสอบ</button>
   </div>
 </div>
 <div class="conf-c" id="confC"></div>
+
+<!-- === SUMMARY MODAL === -->
+<div class="sum-overlay" id="sumOverlay" onclick="if(event.target===this)closeSummary()">
+<div class="sum-modal">
+<button class="sum-close" onclick="closeSummary()">&times;</button>
+
+<div class="sum-title-wrap">
+<div class="sum-title">&#128218; โครงสร้างทั้ง 12 แบบ</div>
+<div class="sum-subtitle">สรุปโครงสร้างภาษาอังกฤษ อธิบายเป็นภาษาไทย<br>แบ่งตาม อดีต / ปัจจุบัน / อนาคต</div>
+</div>
+
+<!-- ===== TIMELINE GRID ===== -->
+<div class="tl-grid">
+<!-- PAST -->
+<div class="tl-col past">
+<div class="tl-header">&#9664; อดีต (PAST)</div>
+<div class="tl-main">
+<div class="tl-main-title">ประธาน + V2</div>
+<div class="tl-main-struct">I/She/He + กริยาช่อง 2</div>
+<div class="tl-main-ex">I <u>worked</u> hard.</div>
+<div class="tl-main-th">ทำแล้วจบไปแล้วในอดีต</div>
+</div>
+</div>
+<!-- PRESENT -->
+<div class="tl-col present">
+<div class="tl-header">&#9679; ปัจจุบัน (PRESENT)</div>
+<div class="tl-main">
+<div class="tl-main-title">ประธาน + V1</div>
+<div class="tl-main-struct">I + V1 / He,She,It + V1+s</div>
+<div class="tl-main-ex">I <u>work</u> hard.</div>
+<div class="tl-main-th">ทำเป็นประจำ / เป็นจริงเสมอ</div>
+</div>
+</div>
+<!-- FUTURE -->
+<div class="tl-col future">
+<div class="tl-header">อนาคต (FUTURE) &#9654;</div>
+<div class="tl-main">
+<div class="tl-main-title">ประธาน + will + V1</div>
+<div class="tl-main-struct">I/She/He + will + กริยาช่อง 1</div>
+<div class="tl-main-ex">I <u>will work</u> hard.</div>
+<div class="tl-main-th">จะทำในอนาคต</div>
+</div>
+</div>
+</div>
+
+<!-- Arrow -->
+<div class="tl-arrow">
+<div class="tl-arrow-line">
+<div class="tl-dot left"></div>
+<div class="tl-dot mid"></div>
+<div class="tl-dot right"></div>
+</div>
+</div>
+
+<!-- Sub tenses -->
+<div class="tl-subs">
+
+<!-- PAST subs -->
+<div class="tl-card past-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>was/were + V-ing</div>
+<div class="tl-card-struct">ประธาน + was/were + V-ing</div>
+<div class="tl-card-ex">I <u>was working</u> hard.</div>
+<div class="tl-card-th">กำลังทำอยู่ในอดีต (มีเหตุการณ์แทรก)</div>
+</div>
+<div class="tl-card past-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>had + V3</div>
+<div class="tl-card-struct">ประธาน + had + กริยาช่อง 3</div>
+<div class="tl-card-ex">I <u>had worked</u> hard.</div>
+<div class="tl-card-th">ทำเสร็จก่อนอีกเหตุการณ์ในอดีต</div>
+</div>
+<div class="tl-card past-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>had been + V-ing</div>
+<div class="tl-card-struct">ประธาน + had been + V-ing</div>
+<div class="tl-card-ex">I <u>had been working</u> hard.</div>
+<div class="tl-card-th">ทำต่อเนื่องจนถึงจุดหนึ่งในอดีต</div>
+</div>
+
+<!-- PRESENT subs -->
+<div class="tl-card present-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>is/am/are + V-ing</div>
+<div class="tl-card-struct">ประธาน + is/am/are + V-ing</div>
+<div class="tl-card-ex">I <u>am studying</u> hard.</div>
+<div class="tl-card-th">กำลังทำอยู่ตอนนี้</div>
+</div>
+<div class="tl-card present-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>have/has + V3</div>
+<div class="tl-card-struct">ประธาน + have/has + กริยาช่อง 3</div>
+<div class="tl-card-ex">I <u>have worked</u> hard.</div>
+<div class="tl-card-th">ทำแล้วส่งผลถึงปัจจุบัน</div>
+</div>
+<div class="tl-card present-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>have/has been + V-ing</div>
+<div class="tl-card-struct">ประธาน + have/has been + V-ing</div>
+<div class="tl-card-ex">I <u>have been working</u> hard.</div>
+<div class="tl-card-th">ทำต่อเนื่องจนถึงตอนนี้</div>
+</div>
+
+<!-- FUTURE subs -->
+<div class="tl-card future-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>will be + V-ing</div>
+<div class="tl-card-struct">ประธาน + will be + V-ing</div>
+<div class="tl-card-ex">I <u>will be working</u> hard.</div>
+<div class="tl-card-th">จะกำลังทำอยู่ในอนาคต</div>
+</div>
+<div class="tl-card future-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>will have + V3</div>
+<div class="tl-card-struct">ประธาน + will have + กริยาช่อง 3</div>
+<div class="tl-card-ex">I <u>will have worked</u> hard.</div>
+<div class="tl-card-th">จะทำเสร็จก่อนจุดหนึ่งในอนาคต</div>
+</div>
+<div class="tl-card future-c">
+<div class="tl-card-title"><span class="tl-card-dot"></span>will have been + V-ing</div>
+<div class="tl-card-struct">ประธาน + will have been + V-ing</div>
+<div class="tl-card-ex">I <u>will have been working</u> hard.</div>
+<div class="tl-card-th">จะทำต่อเนื่องจนถึงจุดหนึ่งในอนาคต</div>
+</div>
+
+</div>
+
+<!-- ===== PASSIVE ===== -->
+<div class="sum-extra">
+<div class="sum-section" style="border-left-color:#e74c3c">
+<h3><span class="sum-icon" style="background:#e74c3c">P</span> ถูกกระทำ (Passive Voice)</h3>
+<div class="sum-row"><b>ประธาน + was/were + V3 + by ...</b><br>ใช้เมื่อประธานถูกกระทำ เช่น He <u>was hit</u> by the car. (เขาถูกรถชน)<br>คำบอกเวลา: last week, yesterday + by → มักเป็น Passive</div>
+</div>
+
+<!-- ===== EXTRA STRUCTURES ===== -->
+<div class="sum-section">
+<h3><span class="sum-icon">&#9733;</span> โครงสร้างเสริมสำคัญ</h3>
+<div class="sum-row">
+<b>สรรพนาม:</b> ประธาน (I, he, she) / กรรม (me, him, her) / เจ้าของหน้าคำนาม (my, his, her) / เจ้าของยืนเดี่ยว (mine, yours, hers)
+</div>
+<div class="sum-row">
+<b>คำเชื่อม:</b> and = และ / but = แต่ / because = เพราะว่า / so = ดังนั้น
+</div>
+<div class="sum-row">
+<b>คำบุพบทเวลา:</b> <b>on</b> + วัน/วันที่ (on March 1) / <b>in</b> + เดือน/ปี (in 2003) / <b>at</b> + เวลา (at 8 o'clock)
+</div>
+<div class="sum-row">
+<b>Adj vs Adv:</b> good (ขยายคำนาม) / well (ขยายคำกริยา) เช่น speak German very <u>well</u>
+</div>
+<div class="sum-row">
+<b>should + V1</b> = ควรจะ / <b>must + V1</b> = ต้อง / <b>mustn't + V1</b> = ห้าม
+</div>
+<div class="sum-row">
+<b>How much ... cost?</b> = ราคาเท่าไหร่ / <b>How many + นามพหูพจน์</b> = มีกี่อัน / <b>Whose</b> = ของใคร
+</div>
+<div class="sum-row">
+<b>since</b> + จุดเริ่มต้นเวลา (since 2020) / <b>for</b> + ช่วงเวลา (for 3 years) → ใช้กับ have/has + V3
+</div>
+</div>
+
+<div class="sum-section vocab">
+<h3><span class="sum-icon">V</span> คำศัพท์สำคัญ</h3>
+<div class="sum-row">handsome = รูปหล่อ / glad = ยินดี / infant = ทารก / clever = ฉลาด / reply = ตอบกลับ</div>
+<div class="sum-row"><b>ลักษณะนาม:</b> bottles of milk / bars of chocolate / loaves of bread / rolls of tape</div>
+</div>
+
+<div class="sum-section conv">
+<h3><span class="sum-icon">C</span> บทสนทนาสำคัญ</h3>
+<div class="sum-row"><b>ถามเรื่องวันหยุด:</b> How was your vacation? → It was great.</div>
+<div class="sum-row"><b>สั่งอาหาร:</b> What would you like to eat? → ..., please.</div>
+<div class="sum-row"><b>ขอยืมของ:</b> May I borrow...? → Yes, here you are.</div>
+<div class="sum-row"><b>ถามทาง (ไม่รู้):</b> Could you tell me the way to...? → Sorry, I'm a stranger here, too.</div>
+</div>
+
+<div class="sum-section write">
+<h3><span class="sum-icon">W</span> เครื่องหมายวรรคตอน</h3>
+<div class="sum-row"><b>: (colon)</b> ใช้ก่อนอธิบายหรือยกคำพูด / <b>? (question mark)</b> ใช้ท้ายประโยคคำถาม</div>
+</div>
+
+<div class="sum-section read">
+<h3><span class="sum-icon">R</span> เทคนิคการอ่าน</h3>
+<div class="sum-row"><b>'one'</b> แทนคำนามที่กล่าวถึง เช่น a new <u>one</u> = a new car / <b>'it'</b> แทนคำนามก่อนหน้า → ดูบริบท</div>
+<div class="sum-row">เรียงลำดับเหตุการณ์: อ่านแล้วเรียงตามเวลาที่เกิดขึ้นก่อน-หลัง</div>
+</div>
+</div>
+
+</div>
+</div>
 
 <script>
 // ========== SVG HELPERS ==========
@@ -387,61 +644,61 @@ const tvPassage = `My mother was telling me about how she and her family got the
 
 const Q = [
   // PART I: GRAMMAR Q1-10
-  {id:1,p:"I",pt:"Grammar",tp:"fill",q:'I always <span class="bl"></span> mom with the housework.',o:["help","helps","helped","helping"],a:0,ex:"I + V1 in present simple = help"},
-  {id:2,p:"I",pt:"Grammar",tp:"conv",sp:["A","B"],cv:[{s:"A",t:"What is John doing at this moment?"},{s:"B",t:'He <span class="cb"></span> newspaper.'}],o:["read","reads","is reading","was reading"],a:2,ex:"'at this moment' = Present Continuous → is reading"},
-  {id:3,p:"I",pt:"Grammar",tp:"fill",q:'Jonathan <span class="bl"></span> his cell phone yesterday.',o:["don't bring","doesn't bring","didn't bring","didn't brought"],a:2,ex:"yesterday = past → didn't + V1 = didn't bring"},
-  {id:4,p:"I",pt:"Grammar",tp:"fill",q:'<span class="bl"></span> Lisa came home, we were talking about Donald Trump.',o:["While","As","During","When"],a:3,ex:"When + past simple, past continuous"},
-  {id:5,p:"I",pt:"Grammar",tp:"fill",q:'He <span class="bl"></span> by the car last week.',o:["hits","is hitting","is hit","was hit"],a:3,ex:"last week + passive = was hit"},
-  {id:6,p:"I",pt:"Grammar",tp:"fill",q:'Helen gave <span class="bl"></span> some advice about being a good friend.',o:["I","me","mine","my"],a:1,ex:"After 'gave' → object pronoun = me"},
-  {id:7,p:"I",pt:"Grammar",tp:"fill",q:'Mary can\'t go to see the movie tonight <span class="bl"></span> she has to study for the exam.',o:["and","but","because","so"],a:2,ex:"'because' gives reason"},
-  {id:8,p:"I",pt:"Grammar",tp:"fill",q:'Justin was born <span class="bl"></span> March 1, 2003.',o:["in","on","at","under"],a:1,ex:"'on' + specific date"},
-  {id:9,p:"I",pt:"Grammar",tp:"fill",q:'Those aren\'t my scarves. They\'re <span class="bl"></span>.',o:["you","your","yours","yourself"],a:2,ex:"possessive pronoun = yours"},
-  {id:10,p:"I",pt:"Grammar",tp:"fill",q:'He <span class="bl"></span> the piano every day last year.',o:["playing","played","plays","play"],a:1,ex:"last year = past → played"},
+  {id:1,p:"I",pt:"Grammar",tp:"fill",q:'I always <span class="bl"></span> mom with the housework.',o:["help","helps","helped","helping"],a:0,ex:"ประธาน I + คำกริยาช่องที่ 1 (V1) ไม่ต้องเติม -s → help"},
+  {id:2,p:"I",pt:"Grammar",tp:"conv",sp:["A","B"],cv:[{s:"A",t:"What is John doing at this moment?"},{s:"B",t:'He <span class="cb"></span> newspaper.'}],o:["read","reads","is reading","was reading"],a:2,ex:"คำว่า 'at this moment' (ตอนนี้) → ใช้โครงสร้าง is/am/are + V-ing → is reading"},
+  {id:3,p:"I",pt:"Grammar",tp:"fill",q:'Jonathan <span class="bl"></span> his cell phone yesterday.',o:["don't bring","doesn't bring","didn't bring","didn't brought"],a:2,ex:"คำว่า 'yesterday' (เมื่อวาน) → เป็นอดีต ปฏิเสธใช้ didn't + V1 → didn't bring"},
+  {id:4,p:"I",pt:"Grammar",tp:"fill",q:'<span class="bl"></span> Lisa came home, we were talking about Donald Trump.',o:["While","As","During","When"],a:3,ex:"โครงสร้าง: When + ประธาน + V2, ประธาน + was/were + V-ing → ใช้ When"},
+  {id:5,p:"I",pt:"Grammar",tp:"fill",q:'He <span class="bl"></span> by the car last week.',o:["hits","is hitting","is hit","was hit"],a:3,ex:"คำว่า 'last week' → อดีต + 'by' → ถูกกระทำ ใช้โครงสร้าง was/were + V3 → was hit"},
+  {id:6,p:"I",pt:"Grammar",tp:"fill",q:'Helen gave <span class="bl"></span> some advice about being a good friend.',o:["I","me","mine","my"],a:1,ex:"หลังคำกริยา (gave) ต้องใช้สรรพนามกรรม (object pronoun) → I=ประธาน, me=กรรม → ตอบ me"},
+  {id:7,p:"I",pt:"Grammar",tp:"fill",q:'Mary can\'t go to see the movie tonight <span class="bl"></span> she has to study for the exam.',o:["and","but","because","so"],a:2,ex:"ประโยคหลังเป็นเหตุผล (ต้องอ่านหนังสือสอบ) → ใช้ because (เพราะว่า) เชื่อมเหตุผล"},
+  {id:8,p:"I",pt:"Grammar",tp:"fill",q:'Justin was born <span class="bl"></span> March 1, 2003.',o:["in","on","at","under"],a:1,ex:"หน้าวันที่เฉพาะเจาะจง ใช้ on (เช่น on March 1) / in ใช้กับเดือน-ปี / at ใช้กับเวลา"},
+  {id:9,p:"I",pt:"Grammar",tp:"fill",q:'Those aren\'t my scarves. They\'re <span class="bl"></span>.',o:["you","your","yours","yourself"],a:2,ex:"ตรงนี้ไม่มีคำนามตามหลัง → ใช้คำแสดงความเป็นเจ้าของที่ยืนได้เดี่ยวๆ → yours (ของคุณ)"},
+  {id:10,p:"I",pt:"Grammar",tp:"fill",q:'He <span class="bl"></span> the piano every day last year.',o:["playing","played","plays","play"],a:1,ex:"คำว่า 'last year' (ปีที่แล้ว) → อดีต ใช้คำกริยาช่องที่ 2 (V2) → played"},
   // Q11-15 Error
-  {id:11,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'There <u>are</u> a <u>book</u> <u>on</u> the <u>desk</u>.',o:["a. are","b. book","c. on","d. desk"],a:0,ex:"'a book' = singular → 'is' not 'are'"},
-  {id:12,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'A: Listen! Someone <u>is singing</u> the song <u>beautifully</u>.<br>B: It\'s Susan. She\'s <u>a</u> singer. She always <u>practice</u> singing.',o:["a. is singing","b. beautifully","c. a","d. practice"],a:3,ex:"She → practices (add -s for he/she/it)"},
-  {id:13,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'Have you ever <u>been</u> to Grand Palace <u>for</u> you <u>arrived</u> <u>in</u> Bangkok?',o:["a. been","b. for","c. arrived","d. in"],a:1,ex:"Should be 'since' not 'for' (since + point in time)"},
-  {id:14,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'"<u>How much</u> <u>does</u> <u>this</u> bar of <u>chocolate</u>?" "It\'s 20 baht."',o:["a. How much","b. does","c. this","d. chocolate"],a:1,ex:"Missing 'cost' → 'How much does this bar of chocolate cost?'"},
-  {id:15,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'Natalie <u>is</u> able to <u>speak</u> German <u>very</u> <u>good</u>.',o:["a. is","b. speak","c. very","d. good"],a:3,ex:"'good' is adj → should be 'well' (adverb)"},
+  {id:11,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'There <u>are</u> a <u>book</u> <u>on</u> the <u>desk</u>.',o:["a. are","b. book","c. on","d. desk"],a:0,ex:"'a book' = เอกพจน์ (1 เล่ม) → ต้องใช้ 'is' ไม่ใช่ 'are' (are ใช้กับพหูพจน์)"},
+  {id:12,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'A: Listen! Someone <u>is singing</u> the song <u>beautifully</u>.<br>B: It\'s Susan. She\'s <u>a</u> singer. She always <u>practice</u> singing.',o:["a. is singing","b. beautifully","c. a","d. practice"],a:3,ex:"ประธาน She + always → คำกริยาต้องเติม -s/-es (He/She/It + V1+s) → practices"},
+  {id:13,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'Have you ever <u>been</u> to Grand Palace <u>for</u> you <u>arrived</u> <u>in</u> Bangkok?',o:["a. been","b. for","c. arrived","d. in"],a:1,ex:"ต้องใช้ 'since' ไม่ใช่ 'for' เพราะ since ใช้กับ จุดเริ่มต้นเวลา (arrived) / for ใช้กับ ช่วงเวลา (2 years)"},
+  {id:14,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'"<u>How much</u> <u>does</u> <u>this</u> bar of <u>chocolate</u>?" "It\'s 20 baht."',o:["a. How much","b. does","c. this","d. chocolate"],a:1,ex:"ประโยคขาดคำกริยาหลัก → ต้องเป็น 'How much does ... cost?' (ราคาเท่าไหร่)"},
+  {id:15,p:"I",pt:"Grammar — Find the Error",tp:"err",q:'Natalie <u>is</u> able to <u>speak</u> German <u>very</u> <u>good</u>.',o:["a. is","b. speak","c. very","d. good"],a:3,ex:"good เป็นคำคุณศัพท์ (adj) ขยายคำนาม แต่ตรงนี้ต้องขยายคำกริยา speak → ใช้ well (คำวิเศษณ์/adv)"},
   // PART II: VOCABULARY Q16-25
-  {id:16,p:"II",pt:"Vocabulary",tp:"pic-sick",q:"What's wrong with the boy?",o:["He has a cold.","He has a fever.","He has a headache.","He has a sore throat."],a:1,ex:"The boy has a fever (high temperature)"},
-  {id:17,p:"II",pt:"Vocabulary",tp:"norm",q:"What suggestion should you give him?",o:["He should go to see the doctor.","He should go to see the dentist.","He should go to the club.","He should go to the airport."],a:0,ex:"Sick → go to see the doctor"},
-  {id:18,p:"II",pt:"Vocabulary",tp:"fill",q:'The sun sets in the <span class="bl"></span>.',o:["north","west","east","south"],a:1,ex:""},
-  {id:19,p:"II",pt:"Vocabulary",tp:"fill",q:'<span class="bl"></span> book does Moana take home?',o:["Who","Why","Whose","Where"],a:2,ex:"Whose = asking about possession"},
-  {id:20,p:"II",pt:"Vocabulary",tp:"fill",q:'A handsome person is someone who <span class="bl"></span>.',o:["talks a lot.","is good-looking.","makes you laugh.","has no money."],a:1,ex:"handsome = good-looking"},
-  {id:21,p:"II",pt:"Vocabulary",tp:"fill",q:'Margaret is <span class="bl"></span> to see her old friend again.',o:["sad","upset","angry","glad"],a:3,ex:"Meeting old friend → glad (happy)"},
-  {id:22,p:"II",pt:"Vocabulary",tp:"fill",q:'There are four <span class="bl"></span> of milk in the refrigerator.',o:["bars","loaves","rolls","bottles"],a:3,ex:"milk → bottles"},
-  {id:23,p:"II",pt:"Vocabulary",tp:"norm",q:'The <strong>infant</strong> is crying so her mom feeds her some milk. What does "infant" mean?',o:["baby","adult","teenager","elder"],a:0,ex:"infant = baby"},
-  {id:24,p:"II",pt:"Vocabulary",tp:"norm",q:'Michael is really <strong>clever</strong>. He can solve math problems quickly. What does "clever" mean?',o:["stupid","talkative","smart","diligent"],a:2,ex:""},
-  {id:25,p:"II",pt:"Vocabulary",tp:"norm",q:'I will <strong>reply</strong> her email as soon as I arrive home. What does "reply" mean?',o:["read","answer","listen","ask"],a:1,ex:"reply = answer"},
+  {id:16,p:"II",pt:"Vocabulary",tp:"pic-sick",q:"What's wrong with the boy?",o:["He has a cold.","He has a fever.","He has a headache.","He has a sore throat."],a:1,ex:"เด็กผู้ชายมีอาการไข้ (ตัวร้อนสูง) → has a fever (เป็นไข้)"},
+  {id:17,p:"II",pt:"Vocabulary",tp:"norm",q:"What suggestion should you give him?",o:["He should go to see the doctor.","He should go to see the dentist.","He should go to the club.","He should go to the airport."],a:0,ex:"ไม่สบาย → ควรไปหาหมอ (โครงสร้างแนะนำ: should + V1)"},
+  {id:18,p:"II",pt:"Vocabulary",tp:"fill",q:'The sun sets in the <span class="bl"></span>.',o:["north","west","east","south"],a:1,ex:"ความรู้ทั่วไป: พระอาทิตย์ตกทางทิศตะวันตก (west)"},
+  {id:19,p:"II",pt:"Vocabulary",tp:"fill",q:'<span class="bl"></span> book does Moana take home?',o:["Who","Why","Whose","Where"],a:2,ex:"Whose = ของใคร (ถามเรื่องความเป็นเจ้าของ) → Whose book = หนังสือของใคร"},
+  {id:20,p:"II",pt:"Vocabulary",tp:"fill",q:'A handsome person is someone who <span class="bl"></span>.',o:["talks a lot.","is good-looking.","makes you laugh.","has no money."],a:1,ex:"handsome = รูปหล่อ, ดูดี → good-looking"},
+  {id:21,p:"II",pt:"Vocabulary",tp:"fill",q:'Margaret is <span class="bl"></span> to see her old friend again.',o:["sad","upset","angry","glad"],a:3,ex:"เจอเพื่อนเก่า → รู้สึกดีใจ → glad (ยินดี/ดีใจ)"},
+  {id:22,p:"II",pt:"Vocabulary",tp:"fill",q:'There are four <span class="bl"></span> of milk in the refrigerator.',o:["bars","loaves","rolls","bottles"],a:3,ex:"ลักษณะนาม: bars=แท่ง, loaves=ก้อน(ขนมปัง), rolls=ม้วน, bottles=ขวด → นม ใช้ bottles"},
+  {id:23,p:"II",pt:"Vocabulary",tp:"norm",q:'The <strong>infant</strong> is crying so her mom feeds her some milk. What does "infant" mean?',o:["baby","adult","teenager","elder"],a:0,ex:"infant = ทารก, เด็กทารก → baby"},
+  {id:24,p:"II",pt:"Vocabulary",tp:"norm",q:'Michael is really <strong>clever</strong>. He can solve math problems quickly. What does "clever" mean?',o:["stupid","talkative","smart","diligent"],a:2,ex:"clever = ฉลาด, หัวไว → smart"},
+  {id:25,p:"II",pt:"Vocabulary",tp:"norm",q:'I will <strong>reply</strong> her email as soon as I arrive home. What does "reply" mean?',o:["read","answer","listen","ask"],a:1,ex:"reply = ตอบกลับ → answer"},
   // PART III: CONVERSATION Q26-33
-  {id:26,p:"III",pt:"Conversation",tp:"conv",sit:"Peter and Jane see each other after the summer vacation.",sp:["peter","jane"],cv:[{s:"Peter",t:"Hello, Jane."},{s:"Peter",t:'<span class="cb">(26)</span>'},{s:"Jane",t:"(27) _____ We went to the beach."}],q:"Q26: What did Peter say?",o:["How was your vacation?","What did you do on the beach?","Where did you spend your vacation?","Did you go on your vacation?"],a:0,ex:"Asking about vacation → How was your vacation?"},
-  {id:27,p:"III",pt:"Conversation",tp:"conv",sit:"Peter and Jane see each other after the summer vacation.",sp:["peter","jane"],cv:[{s:"Peter",t:"Hello, Jane. How was your vacation?"},{s:"Jane",t:'<span class="cb">(27)</span> We went to the beach.'}],q:"Q27: What did Jane reply?",o:["We plan to go to the beach.","You know nothing.","I always enjoy the trip.","It was great."],a:3,ex:"Answering about vacation → It was great."},
-  {id:28,p:"III",pt:"Conversation",tp:"conv",sit:"At a restaurant.",sp:["waiter","joe"],cv:[{s:"Waiter",t:'<span class="cb">(28)</span>'},{s:"Joe",t:"Pork steak, please."},{s:"Waiter",t:"How about the dessert?"},{s:"Joe",t:'<span class="cb">(29)</span>'}],q:"Q28: What did the waiter ask?",o:["What's your favorite food?","How about the dessert?","What is this food?","What would you like to eat?"],a:3,ex:"Waiter asking for order → What would you like to eat?"},
-  {id:29,p:"III",pt:"Conversation",tp:"conv",sit:"At a restaurant.",sp:["waiter","joe"],cv:[{s:"Waiter",t:"What would you like to eat?"},{s:"Joe",t:"Pork steak, please."},{s:"Waiter",t:"How about the dessert?"},{s:"Joe",t:'<span class="cb">(29)</span>'}],q:"Q29: What did Joe answer about the dessert?",o:["Cheesecake, thanks.","I hate dessert.","Ask yourself.","I'll have hamburger."],a:0,ex:"Ordering dessert → Cheesecake, thanks."},
-  {id:30,p:"III",pt:"Conversation",tp:"conv",sit:"The teacher asks a student some questions.",sp:["teacher","student"],cv:[{s:"Teacher",t:'<span class="cb">(30)</span>'},{s:"Student",t:"A rainbow."},{s:"Teacher",t:'<span class="cb">(31)</span>'},{s:"Student",t:"Seven colors."}],q:"Q30: What did the teacher ask?",o:["What is that with the rain?","What comes before it rains?","What can we see after the rain?","What do we see when it rains?"],a:2,ex:"Answer = rainbow → What can we see after the rain?"},
-  {id:31,p:"III",pt:"Conversation",tp:"conv",sit:"The teacher asks a student some questions.",sp:["teacher","student"],cv:[{s:"Teacher",t:"What can we see after the rain?"},{s:"Student",t:"A rainbow."},{s:"Teacher",t:'<span class="cb">(31)</span>'},{s:"Student",t:"Seven colors."}],q:"Q31: What did the teacher ask next?",o:["How much do the colors cost?","What are the colors of it?","What colors are there in it?","How many colors are there in it?"],a:3,ex:"Answer = Seven (number) → How many colors are there in it?"},
-  {id:32,p:"III",pt:"Conversation",tp:"conv",sp:["monica","pawel"],cv:[{s:"Monica",t:"May I borrow your pen?"},{s:"Pawel",t:'<span class="cb">(32)</span>'}],q:"Q32: What did Pawel reply?",o:["Not at all.","That's all right.","You're welcome.","Yes, here you are."],a:3,ex:"Lending something → Yes, here you are."},
-  {id:33,p:"III",pt:"Conversation",tp:"conv",sp:["tourist","dang"],cv:[{s:"Tourist",t:"Could you tell me the way to the train station, please?"},{s:"Dang",t:'<span class="cb">(33)</span>'}],q:"Q33: What did Dang reply?",o:["Poor you.","No, thanks.","Sorry. I'm a stranger here, too.","You should have a map with you."],a:2,ex:"Don't know the way → Sorry. I'm a stranger here, too."},
+  {id:26,p:"III",pt:"Conversation",tp:"conv",sit:"Peter and Jane see each other after the summer vacation.",sp:["peter","jane"],cv:[{s:"Peter",t:"Hello, Jane."},{s:"Peter",t:'<span class="cb">(26)</span>'},{s:"Jane",t:"(27) _____ We went to the beach."}],q:"Q26: What did Peter say?",o:["How was your vacation?","What did you do on the beach?","Where did you spend your vacation?","Did you go on your vacation?"],a:0,ex:"ถามเรื่องวันหยุดเป็นยังไง → How was your vacation? (วันหยุดเป็นยังไงบ้าง)"},
+  {id:27,p:"III",pt:"Conversation",tp:"conv",sit:"Peter and Jane see each other after the summer vacation.",sp:["peter","jane"],cv:[{s:"Peter",t:"Hello, Jane. How was your vacation?"},{s:"Jane",t:'<span class="cb">(27)</span> We went to the beach.'}],q:"Q27: What did Jane reply?",o:["We plan to go to the beach.","You know nothing.","I always enjoy the trip.","It was great."],a:3,ex:"ตอบเรื่องวันหยุด → It was great. (ดีมากเลย)"},
+  {id:28,p:"III",pt:"Conversation",tp:"conv",sit:"At a restaurant.",sp:["waiter","joe"],cv:[{s:"Waiter",t:'<span class="cb">(28)</span>'},{s:"Joe",t:"Pork steak, please."},{s:"Waiter",t:"How about the dessert?"},{s:"Joe",t:'<span class="cb">(29)</span>'}],q:"Q28: What did the waiter ask?",o:["What's your favorite food?","How about the dessert?","What is this food?","What would you like to eat?"],a:3,ex:"พนักงานถามออเดอร์ → What would you like to eat? (โครงสร้างสุภาพ: Would you like + คำนาม)"},
+  {id:29,p:"III",pt:"Conversation",tp:"conv",sit:"At a restaurant.",sp:["waiter","joe"],cv:[{s:"Waiter",t:"What would you like to eat?"},{s:"Joe",t:"Pork steak, please."},{s:"Waiter",t:"How about the dessert?"},{s:"Joe",t:'<span class="cb">(29)</span>'}],q:"Q29: What did Joe answer about the dessert?",o:["Cheesecake, thanks.","I hate dessert.","Ask yourself.","I'll have hamburger."],a:0,ex:"ถามเรื่องของหวาน → ตอบชื่อของหวาน → Cheesecake, thanks."},
+  {id:30,p:"III",pt:"Conversation",tp:"conv",sit:"The teacher asks a student some questions.",sp:["teacher","student"],cv:[{s:"Teacher",t:'<span class="cb">(30)</span>'},{s:"Student",t:"A rainbow."},{s:"Teacher",t:'<span class="cb">(31)</span>'},{s:"Student",t:"Seven colors."}],q:"Q30: What did the teacher ask?",o:["What is that with the rain?","What comes before it rains?","What can we see after the rain?","What do we see when it rains?"],a:2,ex:"คำตอบ = A rainbow → คำถามต้องเกี่ยวกับรุ้งกินน้ำ → What can we see after the rain?"},
+  {id:31,p:"III",pt:"Conversation",tp:"conv",sit:"The teacher asks a student some questions.",sp:["teacher","student"],cv:[{s:"Teacher",t:"What can we see after the rain?"},{s:"Student",t:"A rainbow."},{s:"Teacher",t:'<span class="cb">(31)</span>'},{s:"Student",t:"Seven colors."}],q:"Q31: What did the teacher ask next?",o:["How much do the colors cost?","What are the colors of it?","What colors are there in it?","How many colors are there in it?"],a:3,ex:"คำตอบ = Seven (ตัวเลข) → คำถามใช้ How many (ถามจำนวนนับได้)"},
+  {id:32,p:"III",pt:"Conversation",tp:"conv",sp:["monica","pawel"],cv:[{s:"Monica",t:"May I borrow your pen?"},{s:"Pawel",t:'<span class="cb">(32)</span>'}],q:"Q32: What did Pawel reply?",o:["Not at all.","That's all right.","You're welcome.","Yes, here you are."],a:3,ex:"ขอยืมของ → ตอบตกลงแล้วส่งให้ → Yes, here you are. (ได้ค่ะ นี่เลย)"},
+  {id:33,p:"III",pt:"Conversation",tp:"conv",sp:["tourist","dang"],cv:[{s:"Tourist",t:"Could you tell me the way to the train station, please?"},{s:"Dang",t:'<span class="cb">(33)</span>'}],q:"Q33: What did Dang reply?",o:["Poor you.","No, thanks.","Sorry. I'm a stranger here, too.","You should have a map with you."],a:2,ex:"ไม่รู้ทาง → ขอโทษแล้วบอกว่าไม่รู้ทางเหมือนกัน → Sorry. I'm a stranger here, too."},
   // PART IV: WRITING Q34-40
-  {id:34,p:"IV",pt:"Writing — Story Ordering",tp:"story",q:"Which paragraph comes <strong>first</strong>?",o:["A","B","C","D"],a:3,ex:"D comes first — the ant walks near the river and falls in"},
-  {id:35,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>second</strong>?",o:["A","B","C","D"],a:1,ex:"B comes second — the dove drops a leaf to save the ant"},
-  {id:36,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>third</strong>?",o:["A","B","C","D"],a:0,ex:"A comes third — the hunter arrives, the ant bites his leg"},
-  {id:37,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>last</strong>?",o:["A","B","C","D"],a:2,ex:"C comes last — hunter misses, dove flies away safely"},
-  {id:38,p:"IV",pt:"Writing — Sentence Ordering",tp:"norm",q:'Find the correct order:<br><br>1. I don\'t want pizza again for a long time.<br>2. I ate ten pieces of pizza.<br>3. Later that night, I got sick.<br>4. I felt very full.',o:["1-3-4-2","2-4-3-1","3-2-1-4","4-2-1-3"],a:1,ex:"Ate pizza → felt full → got sick → don't want pizza"},
-  {id:39,p:"IV",pt:"Writing — Punctuation",tp:"norm",q:'My mom always tells me to follow the golden rule <span class="bl"></span> "treat others as you want to be treated."<br><br>Choose the correct punctuation:',o:[". (period)",": (colon)","? (question mark)","– (dash)"],a:1,ex:"Use colon (:) before explaining/quoting"},
-  {id:40,p:"IV",pt:"Writing — Punctuation",tp:"norm",q:'Do you have your own golden rule <span class="bl"></span> If yes, let me know.<br><br>Choose the correct punctuation:',o:[". (period)",": (colon)","? (question mark)","– (dash)"],a:2,ex:"It's a question → use ? (question mark)"},
+  {id:34,p:"IV",pt:"Writing — Story Ordering",tp:"story",q:"Which paragraph comes <strong>first</strong>?",o:["A","B","C","D"],a:3,ex:"D มาก่อน — มดเดินริมแม่น้ำและตกลงไป (เป็นจุดเริ่มต้นของเรื่อง)"},
+  {id:35,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>second</strong>?",o:["A","B","C","D"],a:1,ex:"B ลำดับที่ 2 — นกพิราบทิ้งใบไม้ลงไปช่วยมด"},
+  {id:36,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>third</strong>?",o:["A","B","C","D"],a:0,ex:"A ลำดับที่ 3 — นายพรานมา มดกัดขานายพรานช่วยนกพิราบ"},
+  {id:37,p:"IV",pt:"Writing — Story Ordering",tp:"story-c",q:"Which paragraph comes <strong>last</strong>?",o:["A","B","C","D"],a:2,ex:"C ลำดับสุดท้าย — นายพรานยิงพลาด นกพิราบบินหนีไปปลอดภัย"},
+  {id:38,p:"IV",pt:"Writing — Sentence Ordering",tp:"norm",q:'Find the correct order:<br><br>1. I don\'t want pizza again for a long time.<br>2. I ate ten pieces of pizza.<br>3. Later that night, I got sick.<br>4. I felt very full.',o:["1-3-4-2","2-4-3-1","3-2-1-4","4-2-1-3"],a:1,ex:"เรียงตามลำดับเหตุการณ์: กินพิซซ่า → อิ่มมาก → ไม่สบาย → ไม่อยากกินอีก"},
+  {id:39,p:"IV",pt:"Writing — Punctuation",tp:"norm",q:'My mom always tells me to follow the golden rule <span class="bl"></span> "treat others as you want to be treated."<br><br>Choose the correct punctuation:',o:[". (period)",": (colon)","? (question mark)","– (dash)"],a:1,ex:"ใช้เครื่องหมาย : (colon/ทวิภาค) ก่อนอธิบายหรือยกคำพูด"},
+  {id:40,p:"IV",pt:"Writing — Punctuation",tp:"norm",q:'Do you have your own golden rule <span class="bl"></span> If yes, let me know.<br><br>Choose the correct punctuation:',o:[". (period)",": (colon)","? (question mark)","– (dash)"],a:2,ex:"ประโยคนี้เป็นคำถาม (Do you...?) → ใช้เครื่องหมาย ? (ปรัศนีย์)"},
   // PART V: READING Q41-50
-  {id:41,p:"V",pt:"Reading",tp:"read",pass:'"James is opening the car door, turning the key, driving down the road, and going to his home."',q:"What is James doing?",o:["James is walking home.","James is opening the door.","James is driving a car.","James is going to the road."],a:2,ex:"James is driving a car"},
-  {id:42,p:"V",pt:"Reading",tp:"read-c",q:"What will happen after the events?",o:["James will open the car door.","James will arrive home.","James will get out of the office.","James will drive down the road."],a:1,ex:"James is going home → he will arrive home"},
-  {id:43,p:"V",pt:"Reading",tp:"read",pass:'"I sold my old car to buy a new one."',q:'What does "one" mean?',o:["car","old","sold","order"],a:0,ex:"'one' replaces 'car'"},
-  {id:44,p:"V",pt:"Reading",tp:"read-c",q:"What does this sentence mean?",o:["I want to buy an old car.","I want to buy a new car.","I can't sell my old car.","I can't sell my new car."],a:1,ex:"Sold old car to buy new one → wants a new car"},
-  {id:45,p:"V",pt:"Reading",tp:"speed",q:'A: Look at that. You <span class="bl"></span><br>B: All right.',o:["must drive at least 90 km/h.","must drive more than 90 km/h.","mustn't drive over 90 km/h.","mustn't drive less than 90 km/h."],a:2,ex:"SPEED LIMIT 90 = must not drive over 90 km/h"},
-  {id:46,p:"V",pt:"Reading — TV Passage",tp:"tv",q:"What is this story about?",o:["Television","Mother and I","Fight","Family"],a:0,ex:"The whole story is about Television"},
-  {id:47,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"When his mother was a teenager, TV was...",o:["black and white","full of colors","high technology","amazing"],a:0,ex:"'It was black and white TV'"},
-  {id:48,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"Why do you think the writer fights with his brother?",o:["Because they have three televisions.","Because they have too many channels to watch.","Because they don't want to watch the same channel.","Because they don't want the other to watch the favorite channel."],a:2,ex:"They fight because they don't want to watch the same channel"},
-  {id:49,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"According to the passage, which is TRUE?",o:["The writer and his brother never argue.","The writer could watch TV all day when young.","The writer liked channel 7 when young.","The writer and his brother like the same programs."],a:1,ex:"Option b is closest to the context"},
-  {id:50,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:'What does "it" in paragraph 2, line 5 mean?',o:["shows","families","televisions","people"],a:2,ex:"'it' refers to televisions (having multiple TVs stops fighting)"}
+  {id:41,p:"V",pt:"Reading",tp:"read",pass:'"James is opening the car door, turning the key, driving down the road, and going to his home."',q:"What is James doing?",o:["James is walking home.","James is opening the door.","James is driving a car.","James is going to the road."],a:2,ex:"อ่านจากบริบท: James กำลังขับรถอยู่ → James is driving a car."},
+  {id:42,p:"V",pt:"Reading",tp:"read-c",q:"What will happen after the events?",o:["James will open the car door.","James will arrive home.","James will get out of the office.","James will drive down the road."],a:1,ex:"James กำลังกลับบ้าน (going to his home) → สิ่งที่เกิดขึ้นต่อไปคือถึงบ้าน → will arrive home"},
+  {id:43,p:"V",pt:"Reading",tp:"read",pass:'"I sold my old car to buy a new one."',q:'What does "one" mean?',o:["car","old","sold","order"],a:0,ex:"'one' ใช้แทนคำนามที่กล่าวถึงไปแล้ว → แทน car"},
+  {id:44,p:"V",pt:"Reading",tp:"read-c",q:"What does this sentence mean?",o:["I want to buy an old car.","I want to buy a new car.","I can't sell my old car.","I can't sell my new car."],a:1,ex:"ขายรถเก่าเพื่อซื้อรถใหม่ → ต้องการซื้อรถใหม่ (a new car)"},
+  {id:45,p:"V",pt:"Reading",tp:"speed",q:'A: Look at that. You <span class="bl"></span><br>B: All right.',o:["must drive at least 90 km/h.","must drive more than 90 km/h.","mustn't drive over 90 km/h.","mustn't drive less than 90 km/h."],a:2,ex:"SPEED LIMIT 90 = จำกัดความเร็ว 90 → ห้ามขับเกิน 90 km/h → mustn't drive over 90 (must not + V1)"},
+  {id:46,p:"V",pt:"Reading — TV Passage",tp:"tv",q:"What is this story about?",o:["Television","Mother and I","Fight","Family"],a:0,ex:"เรื่องทั้งหมดพูดถึงโทรทัศน์ (Television)"},
+  {id:47,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"When his mother was a teenager, TV was...",o:["black and white","full of colors","high technology","amazing"],a:0,ex:"ในบทอ่านบอกว่า 'It was black and white TV' → โทรทัศน์ขาวดำ"},
+  {id:48,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"Why do you think the writer fights with his brother?",o:["Because they have three televisions.","Because they have too many channels to watch.","Because they don't want to watch the same channel.","Because they don't want the other to watch the favorite channel."],a:2,ex:"พี่น้องทะเลาะกันเพราะไม่อยากดูช่องเดียวกัน"},
+  {id:49,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:"According to the passage, which is TRUE?",o:["The writer and his brother never argue.","The writer could watch TV all day when young.","The writer liked channel 7 when young.","The writer and his brother like the same programs."],a:1,ex:"ตัวเลือก b ตรงกับเนื้อหามากที่สุด (ตอนเด็กมีแค่ 3-4 ช่อง)"},
+  {id:50,p:"V",pt:"Reading — TV Passage",tp:"tv-c",q:'What does "it" in paragraph 2, line 5 mean?',o:["shows","families","televisions","people"],a:2,ex:"'it' หมายถึง televisions (การมีทีวีหลายเครื่องทำให้ไม่ต้องทะเลาะกัน)"}
 ];
 
 // ========== STATE ==========
@@ -452,6 +709,58 @@ function go(){
   document.getElementById('startScreen').classList.add('hide');
   setTimeout(()=>{document.getElementById('startScreen').style.display='none';document.getElementById('quiz').classList.add('on');render()},800);
 }
+
+// ========== TEXT-TO-SPEECH ==========
+let ttsQueue=[];
+let ttsBtn=null;
+const femaleNames=['jane','monica','helen','mary','margaret','natalie','lisa','susan','she','her','moana'];
+function isFemale(name){return femaleNames.includes(name.toLowerCase());}
+function getTTSVoices(){const v=speechSynthesis.getVoices();const en=v.filter(x=>x.lang.startsWith('en'));const f=en.find(x=>/female|zira|hazel|susan|jenny|aria/i.test(x.name))||en[1]||v[1]||null;const m=en.find(x=>/male|david|mark|guy|roger/i.test(x.name))||en[0]||v[0]||null;return{m,f};}
+function speakQ(btn){
+  if(!('speechSynthesis' in window))return;
+  if(speechSynthesis.speaking||ttsQueue.length){
+    speechSynthesis.cancel();ttsQueue=[];
+    document.querySelectorAll('.tts-btn.speaking').forEach(b=>b.classList.remove('speaking'));
+    if(btn===ttsBtn){ttsBtn=null;return;}
+  }
+  ttsBtn=btn;btn.classList.add('speaking');
+  const q=Q[cur];
+  const voices=getTTSVoices();
+  ttsQueue=[];
+  // Question text
+  let qt=btn.getAttribute('data-text')||'';
+  if(qt) ttsQueue.push({txt:qt,voice:voices.m,rate:0.85});
+  // Conversation lines with different voices
+  if(q.cv){
+    q.cv.forEach(c=>{
+      let line=c.s+' says: '+c.t.replace(/<span class="cb"><\/span>/g,' ... ').replace(/<[^>]*>/g,'').replace(/\(\d+\)\s*_+/g,' ... ').replace(/\s{2,}/g,' ').trim();
+      ttsQueue.push({txt:line,voice:isFemale(c.s)?voices.f:voices.m,rate:0.85});
+    });
+  }
+  // Passage
+  if(q.pass){
+    let pt=q.pass.replace(/<[^>]*>/g,'').replace(/\s{2,}/g,' ').trim();
+    ttsQueue.push({txt:pt,voice:voices.m,rate:0.82});
+  }
+  // Options
+  const L=['A','B','C','D'];
+  let optTxt='';
+  q.o.forEach((o,i)=>{optTxt+=` ${L[i]}. ${o.replace(/<[^>]*>/g,'').replace(/\s{2,}/g,' ').trim()}. `;});
+  ttsQueue.push({txt:optTxt.trim(),voice:voices.m,rate:0.85});
+  // Start speaking queue
+  speakNext();
+}
+function speakNext(){
+  if(!ttsQueue.length){if(ttsBtn)ttsBtn.classList.remove('speaking');ttsBtn=null;return;}
+  const item=ttsQueue.shift();
+  const u=new SpeechSynthesisUtterance(item.txt);
+  u.lang='en-US';u.rate=item.rate||0.85;
+  if(item.voice)u.voice=item.voice;
+  u.onend=()=>{speakNext();};
+  u.onerror=()=>{speakNext();};
+  speechSynthesis.speak(u);
+}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=()=>{getTTSVoices();}; getTTSVoices();}
 
 // ========== RENDER ==========
 function render(){
@@ -537,7 +846,8 @@ function render(){
   }
 
   // === QUESTION CARD ===
-  h+=`<div class="q-card"><div style="display:flex;align-items:flex-start"><span class="q-num">${q.id}</span><span class="q-txt">${q.q||''}</span></div>`;
+  const qText = q.q ? q.q.replace(/<span class="bl"><\/span>/g,' ... ').replace(/<span class="cb"><\/span>/g,' ... ').replace(/<[^>]*>/g,'').replace(/&[^;]+;/g,' ').replace(/\s{2,}/g,' ').trim() : '';
+  h+=`<div class="q-card"><div style="display:flex;align-items:flex-start;gap:8px"><span class="q-num">${q.id}</span><span class="q-txt">${q.q||''}</span><button class="tts-btn" onclick="speakQ(this)" title="ฟังคำถาม" data-text="${qText.replace(/"/g,'&quot;')}">&#128264;</button></div>`;
 
   // Options
   h+='<div class="opts">';
@@ -644,7 +954,11 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key==='Enter')next();
   if(e.key==='ArrowLeft')prev();
   if(e.key>='1'&&e.key<='4'){const i=parseInt(e.key)-1;if(i<Q[cur].o.length)pick(i);}
+  if(e.key==='Escape')closeSummary();
 });
+
+function openSummary(){document.getElementById('sumOverlay').classList.add('on');}
+function closeSummary(){document.getElementById('sumOverlay').classList.remove('on');}
 </script>
 </body>
 </html>
