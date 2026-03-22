@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar Practice - M3 EP</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --secondary: #FF6584;
+            --success: #00C851;
+            --warning: #FFB84D;
+            --dark: #2D3436;
+            --light: #F8F9FE;
+            --gradient-1: linear-gradient(135deg, #6C63FF 0%, #3F3D9E 100%);
+            --gradient-2: linear-gradient(135deg, #FF6584 0%, #FF3860 100%);
+            --gradient-3: linear-gradient(135deg, #00C851 0%, #007E33 100%);
+            --gradient-4: linear-gradient(135deg, #FFB84D 0%, #FF8F00 100%);
+            --shadow: 0 10px 40px rgba(108, 99, 255, 0.15);
+            --shadow-hover: 0 15px 50px rgba(108, 99, 255, 0.25);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Kanit', 'Poppins', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--gradient-1);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+
+        .header h1 { font-size: 2.5em; font-weight: 700; position: relative; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .header p { font-size: 1.1em; opacity: 0.9; margin-top: 8px; position: relative; }
+
+        .score-bar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .score-item { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .score-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 50%; color: white; font-weight: 700; font-size: 1em;
+        }
+        .score-correct { background: var(--gradient-3); }
+        .score-wrong { background: var(--gradient-2); }
+        .score-total { background: var(--gradient-1); }
+        .reset-btn {
+            background: var(--gradient-2); color: white; border: none;
+            padding: 10px 24px; border-radius: 25px; cursor: pointer;
+            font-family: inherit; font-weight: 600; font-size: 0.95em; transition: all 0.3s;
+        }
+        .reset-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255,101,132,0.4); }
+
+        .nav-tabs {
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 8px; padding: 20px; background: white; border-bottom: 1px solid #eee;
+        }
+        .nav-tab {
+            padding: 10px 20px; border: 2px solid #e0e0e0; border-radius: 25px;
+            cursor: pointer; font-family: inherit; font-weight: 500; font-size: 0.9em;
+            background: white; transition: all 0.3s; position: relative;
+        }
+        .nav-tab:hover { border-color: var(--primary); color: var(--primary); }
+        .nav-tab.active { background: var(--gradient-1); color: white; border-color: var(--primary); }
+        .nav-tab .tab-score {
+            position: absolute; top: -8px; right: -8px; background: var(--success);
+            color: white; font-size: 0.7em; width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
+            opacity: 0; transform: scale(0); transition: all 0.3s;
+        }
+        .nav-tab .tab-score.show { opacity: 1; transform: scale(1); }
+
+        .quiz-container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+        .section-header { text-align: center; margin-bottom: 30px; }
+        .section-title { font-size: 1.8em; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
+        .section-subtitle { color: #888; font-size: 1em; }
+
+        /* ===== LESSON CARD ===== */
+        .lesson-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+            line-height: 1.9;
+        }
+        .lesson-card h3 {
+            font-size: 1.3em;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .lesson-card .rule-box {
+            background: linear-gradient(135deg, #f0efff 0%, #e8e6ff 100%);
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin: 12px 0;
+            font-size: 1.05em;
+        }
+        .lesson-card .rule-box code {
+            background: var(--primary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+        .lesson-card .example {
+            background: #f8fffe;
+            border-left: 3px solid var(--success);
+            padding: 12px 18px;
+            margin: 8px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 0.98em;
+        }
+        .lesson-card .example em { color: var(--primary); font-weight: 600; font-style: normal; }
+        .lesson-card .example .th { color: #999; font-size: 0.85em; }
+        .lesson-card .warn {
+            background: #fff8e6;
+            border-left: 3px solid var(--warning);
+            padding: 12px 18px;
+            margin: 8px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        .lesson-card table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.95em;
+        }
+        .lesson-card th {
+            background: var(--gradient-1);
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+        }
+        .lesson-card th:first-child { border-radius: 10px 0 0 0; }
+        .lesson-card th:last-child { border-radius: 0 10px 0 0; }
+        .lesson-card td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #eee;
+        }
+        .lesson-card tr:nth-child(even) td { background: #fafafe; }
+        .lesson-card .keyword-tags {
+            display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0;
+        }
+        .lesson-card .keyword-tag {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #e65100;
+        }
+        .listen-example {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: var(--gradient-4); color: white;
+            border: none; padding: 4px 12px; border-radius: 14px;
+            cursor: pointer; font-family: inherit; font-weight: 500;
+            font-size: 0.78em; margin-left: 6px; transition: all 0.3s; vertical-align: middle;
+        }
+        .listen-example:hover { transform: scale(1.08); }
+        .listen-example.playing { animation: glow 1s ease-in-out infinite alternate; }
+
+        .start-quiz-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+        .start-quiz-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+
+        .quiz-area { display: none; }
+        .quiz-area.show { display: block; animation: fadeIn 0.5s ease; }
+
+        .question-card {
+            background: white; border-radius: 20px; padding: 28px;
+            margin-bottom: 20px; box-shadow: var(--shadow);
+            transition: all 0.3s; border: 2px solid transparent;
+        }
+        .question-card:hover { box-shadow: var(--shadow-hover); }
+        .question-card.correct { border-color: var(--success); background: #f0fff4; }
+        .question-card.wrong { border-color: var(--secondary); background: #fff5f5; }
+
+        .question-number {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; background: var(--gradient-1); color: white;
+            border-radius: 50%; font-weight: 700; font-size: 0.9em; margin-bottom: 12px;
+        }
+        .question-text { font-size: 1.15em; font-weight: 500; margin-bottom: 15px; line-height: 1.6; }
+
+        .listen-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--gradient-4); color: white; border: none;
+            padding: 8px 18px; border-radius: 20px; cursor: pointer;
+            font-family: inherit; font-weight: 500; font-size: 0.85em;
+            margin-bottom: 15px; transition: all 0.3s;
+        }
+        .listen-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255,184,77,0.4); }
+        .listen-btn.playing { animation: glow 1s ease-in-out infinite alternate; }
+        @keyframes glow { from{box-shadow:0 0 5px rgba(255,184,77,0.5)} to{box-shadow:0 0 20px rgba(255,184,77,0.8)} }
+
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 600px) { .options { grid-template-columns: 1fr; } }
+
+        .option-btn {
+            padding: 14px 20px; border: 2px solid #e8e8e8; border-radius: 14px;
+            background: #fafafa; cursor: pointer; font-family: inherit;
+            font-size: 1em; font-weight: 400; transition: all 0.3s; text-align: left;
+        }
+        .option-btn:hover:not(.disabled) { border-color: var(--primary-light); background: #f0efff; transform: translateY(-2px); }
+        .option-btn.selected-correct { border-color: var(--success); background: #e6f9ed; color: #007E33; font-weight: 600; }
+        .option-btn.selected-wrong { border-color: var(--secondary); background: #ffe6eb; color: #FF3860; font-weight: 600; }
+        .option-btn.disabled { cursor: not-allowed; opacity: 0.7; }
+
+        .feedback { margin-top: 12px; padding: 12px 16px; border-radius: 10px; font-weight: 500; display: none; animation: fadeIn 0.3s ease; }
+        .feedback.correct-fb { display: block; background: #e6f9ed; color: #007E33; }
+        .feedback.wrong-fb { display: block; background: #ffe6eb; color: #d63031; }
+
+        .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+        .confetti { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall 3s ease-out forwards; }
+        @keyframes confettiFall { 0%{transform:translateY(-10vh) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+
+        .progress-bar { width: 100%; height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gradient-3); border-radius: 3px; transition: width 0.5s ease; }
+
+        .section-result {
+            text-align: center; padding: 30px; background: white;
+            border-radius: 20px; box-shadow: var(--shadow); margin-top: 20px; display: none;
+        }
+        .section-result.show { display: block; animation: fadeIn 0.5s ease; }
+        .result-score {
+            font-size: 3em; font-weight: 700;
+            background: var(--gradient-1); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .result-text { font-size: 1.2em; color: #666; margin-top: 8px; }
+        .emoji-big { font-size: 3em; margin-bottom: 10px; }
+
+        footer { text-align: center; padding: 30px; color: #aaa; font-size: 0.85em; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>📚 English Grammar Practice</h1>
+    <p>M3 EP — อ่านสรุปเนื้อหาก่อน แล้วค่อยทำข้อสอบ! 🔊</p>
+</div>
+
+<div class="score-bar">
+    <div class="score-item"><span class="score-badge score-correct" id="totalCorrect">0</span><span>ถูก</span></div>
+    <div class="score-item"><span class="score-badge score-wrong" id="totalWrong">0</span><span>ผิด</span></div>
+    <div class="score-item"><span class="score-badge score-total" id="totalAnswered">0</span><span>/ 40</span></div>
+    <button class="reset-btn" onclick="resetAll()">🔄 เริ่มใหม่</button>
+</div>
+
+<div class="nav-tabs" id="navTabs"></div>
+<div class="quiz-container" id="quizContainer"></div>
+<footer>English Grammar Practice — M3 EP Final Exam Review 🎓</footer>
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+const sections = [
+    {
+        id: 'while-during-when',
+        title: 'While / During / When / As',
+        subtitle: 'คำเชื่อมบอกเวลา',
+        lesson: `
+            <h3>📖 สรุปเนื้อหา: While / During / When / As</h3>
+            <p>คำเหล่านี้แปลว่า <strong>"ในขณะที่"</strong> หรือ <strong>"เมื่อ"</strong> แต่ใช้ต่างกัน!</p>
+
+            <div class="rule-box">
+                <code>While</code> / <code>As</code> + <strong>Subject + Verb</strong> (ตามด้วยประโยค)<br>
+                → ใช้กับ 2 เหตุการณ์ที่เกิด<strong>พร้อมกัน</strong> มักใช้กับ was/were + V.ing
+            </div>
+            <div class="example">
+                I was studying <em>while</em> he was cooking.
+                <button class="listen-example" onclick="speak('I was studying while he was cooking.', this)">🔊</button>
+                <br><span class="th">ฉันกำลังอ่านหนังสือในขณะที่เขากำลังทำอาหาร</span>
+            </div>
+            <div class="example">
+                <em>As</em> I was walking home, it started to rain.
+                <button class="listen-example" onclick="speak('As I was walking home, it started to rain.', this)">🔊</button>
+                <br><span class="th">ขณะที่ฉันกำลังเดินกลับบ้าน ฝนก็เริ่มตก</span>
+            </div>
+
+            <div class="rule-box">
+                <code>During</code> + <strong>Noun</strong> (ตามด้วยคำนาม)<br>
+                → ใช้ระบุ<strong>ช่วงเวลา</strong>
+            </div>
+            <div class="example">
+                She slept <em>during</em> the film.
+                <button class="listen-example" onclick="speak('She slept during the film.', this)">🔊</button>
+                <br><span class="th">เธอหลับระหว่างหนัง (the film = คำนาม)</span>
+            </div>
+            <div class="example">
+                We saw many birds <em>during</em> our vacation.
+                <button class="listen-example" onclick="speak('We saw many birds during our vacation.', this)">🔊</button>
+                <br><span class="th">เราเห็นนกหลายตัวระหว่างวันหยุด (our vacation = คำนาม)</span>
+            </div>
+
+            <div class="rule-box">
+                <code>When</code> + <strong>Subject + Verb</strong> (ตามด้วยประโยค)<br>
+                → บอก<strong>จุดเวลา</strong>ที่เหตุการณ์หนึ่งแทรกเข้ามา
+            </div>
+            <div class="example">
+                I was sleeping <em>when</em> you called.
+                <button class="listen-example" onclick="speak('I was sleeping when you called.', this)">🔊</button>
+                <br><span class="th">ฉันกำลังหลับอยู่ตอนที่เธอโทรมา</span>
+            </div>
+            <div class="example">
+                <em>When</em> I arrived, everyone was already eating.
+                <button class="listen-example" onclick="speak('When I arrived, everyone was already eating.', this)">🔊</button>
+                <br><span class="th">ตอนที่ฉันมาถึง ทุกคนกำลังกินอยู่แล้ว</span>
+            </div>
+
+            <div class="warn">⚠️ <strong>จำง่ายๆ:</strong> ถ้าหลังช่องว่างเป็น<strong>คำนาม</strong> → ใช้ <strong>during</strong> / ถ้าเป็น<strong>ประโยค</strong> → ใช้ <strong>while / when / as</strong></div>
+
+            <table>
+                <tr><th>คำ</th><th>ตามด้วย</th><th>ใช้เมื่อ</th></tr>
+                <tr><td><strong>While / As</strong></td><td>ประโยค (S + V)</td><td>2 เหตุการณ์เกิดพร้อมกัน</td></tr>
+                <tr><td><strong>During</strong></td><td>Noun (คำนาม)</td><td>ระบุช่วงเวลา</td></tr>
+                <tr><td><strong>When</strong></td><td>ประโยค (S + V)</td><td>จุดเวลาที่เหตุการณ์แทรก</td></tr>
+            </table>
+        `,
+        questions: [
+            { text: 'I was studying _____ he was cooking.', speak: 'I was studying, ,he was cooking.', options: ['during','while','at','in'], correct: 1, explain: 'ใช้ "while" เพราะตามด้วยประโยค (he was cooking)' },
+            { text: 'She slept _____ the film.', speak: 'She slept, ,the film.', options: ['while','when','during','as'], correct: 2, explain: 'ใช้ "during" เพราะตามด้วยคำนาม (the film)' },
+            { text: 'I was sleeping _____ you called.', speak: 'I was sleeping, ,you called.', options: ['during','while','when','for'], correct: 2, explain: 'ใช้ "when" เพราะบอกจุดเวลาที่เหตุการณ์เกิด (you called = V.2)' },
+            { text: '_____ I was walking home, it started to rain.', speak: ', ,I was walking home, it started to rain.', options: ['During','When','As','For'], correct: 2, explain: '"As" ความหมายเหมือน while — ใช้กับ 2 เหตุการณ์เกิดพร้อมกัน' },
+            { text: 'He called me _____ the meeting.', speak: 'He called me, ,the meeting.', options: ['while','during','as','when'], correct: 1, explain: 'ใช้ "during" เพราะตามด้วยคำนาม (the meeting)' }
+        ]
+    },
+    {
+        id: 'there-is-are',
+        title: 'There is / There are',
+        subtitle: 'มี...อยู่',
+        lesson: `
+            <h3>📖 สรุปเนื้อหา: There is / There are</h3>
+            <p>ใช้บอกว่า <strong>"มี...อยู่"</strong> เลือกใช้ตามจำนวนคำนามที่ตามมา</p>
+
+            <div class="rule-box">
+                <code>There is</code> + ของ <strong>1 อย่าง</strong> / สิ่งที่<strong>นับไม่ได้</strong> (เช่น น้ำ นม)
+            </div>
+            <div class="example">
+                <em>There is</em> a cat on the roof.
+                <button class="listen-example" onclick="speak('There is a cat on the roof.', this)">🔊</button>
+                <br><span class="th">มีแมวตัวหนึ่งอยู่บนหลังคา (a cat = 1 ตัว)</span>
+            </div>
+            <div class="example">
+                <em>There is</em> some water in the glass.
+                <button class="listen-example" onclick="speak('There is some water in the glass.', this)">🔊</button>
+                <br><span class="th">มีน้ำอยู่ในแก้ว (water = นับไม่ได้)</span>
+            </div>
+
+            <div class="rule-box">
+                <code>There are</code> + ของ <strong>หลายอย่าง</strong> (2 อันขึ้นไป)
+            </div>
+            <div class="example">
+                <em>There are</em> three books on the table.
+                <button class="listen-example" onclick="speak('There are three books on the table.', this)">🔊</button>
+                <br><span class="th">มีหนังสือ 3 เล่มอยู่บนโต๊ะ (three books = หลายอัน)</span>
+            </div>
+            <div class="example">
+                <em>There are</em> two cats in the garden.
+                <button class="listen-example" onclick="speak('There are two cats in the garden.', this)">🔊</button>
+                <br><span class="th">มีแมว 2 ตัวในสวน (two cats = หลายอัน)</span>
+            </div>
+
+            <div class="warn">⚠️ <strong>จำง่ายๆ:</strong> ดูคำนามที่ตามหลัง — <strong>1 อัน = is</strong> / <strong>หลายอัน = are</strong></div>
+
+            <table>
+                <tr><th>โครงสร้าง</th><th>ใช้กับ</th><th>ตัวอย่าง</th></tr>
+                <tr><td><strong>There is</strong></td><td>1 อัน / นับไม่ได้</td><td>There is <em>a</em> dog / <em>some</em> milk</td></tr>
+                <tr><td><strong>There are</strong></td><td>หลายอัน (2+)</td><td>There are <em>many</em> students</td></tr>
+            </table>
+        `,
+        questions: [
+            { text: 'There _____ a cat on the roof.', speak: 'There, ,a cat on the roof.', options: ['are','is','am','be'], correct: 1, explain: 'ใช้ "is" เพราะ a cat = 1 ตัว' },
+            { text: 'There _____ three books on the table.', speak: 'There, ,three books on the table.', options: ['is','are','was','am'], correct: 1, explain: 'ใช้ "are" เพราะ three books = หลายอัน' },
+            { text: 'There _____ some water in the glass.', speak: 'There, ,some water in the glass.', options: ['are','am','is','were'], correct: 2, explain: 'ใช้ "is" เพราะ water = นับไม่ได้' },
+            { text: 'There _____ many students in the classroom.', speak: 'There, ,many students in the classroom.', options: ['is','am','was','are'], correct: 3, explain: 'ใช้ "are" เพราะ many students = หลายอัน' },
+            { text: 'There _____ an apple on the desk.', speak: 'There, ,an apple on the desk.', options: ['are','were','is','am'], correct: 2, explain: 'ใช้ "is" เพราะ an apple = 1 ลูก' }
+        ]
+    },
+    {
+        id: 'articles',
+        title: 'a / an / the',
+        subtitle: 'คำนำหน้านาม',
+        lesson: `
+            <h3>📖 สรุปเนื้อหา: a / an / the</h3>
+            <p><strong>a</strong> กับ <strong>an</strong> → ใช้กับของ <strong>1 อัน</strong> (ยังไม่เจาะจงว่าอันไหน)<br>
+            <strong>the</strong> → ใช้กับของที่ <strong>รู้กันอยู่แล้ว</strong> ว่าหมายถึงอันไหน (1 อัน หรือ มากกว่า 1 ก็ได้)</p>
+
+            <div class="rule-box">
+                <code>a</code> → ใช้นำหน้าคำที่ขึ้นต้นด้วย<strong>เสียงพยัญชนะ</strong>
+            </div>
+            <div class="example">
+                I have <em>a</em> book. — ฉันมีหนังสือเล่มหนึ่ง (b = เสียงพยัญชนะ)
+                <button class="listen-example" onclick="speak('I have a book.', this)">🔊</button>
+            </div>
+            <div class="example">
+                She goes to <em>a</em> university. — เธอเรียนมหาวิทยาลัยแห่งหนึ่ง (university ออกเสียง /juː/ = พยัญชนะ แม้เขียนด้วย u!)
+                <button class="listen-example" onclick="speak('She goes to a university.', this)">🔊</button>
+            </div>
+
+            <div class="rule-box">
+                <code>an</code> → ใช้นำหน้าคำที่ขึ้นต้นด้วย<strong>เสียงสระ</strong><br>
+                📌 สระภาษาอังกฤษมี 5 ตัว: <code>A</code> <code>E</code> <code>I</code> <code>O</code> <code>U</code>
+            </div>
+            <div class="example">
+                I ate <em>an</em> apple. — ฉันกินแอปเปิ้ลลูกหนึ่ง (apple ขึ้นต้นด้วย a = สระ)
+                <button class="listen-example" onclick="speak('I ate an apple.', this)">🔊</button>
+            </div>
+            <div class="example">
+                Wait <em>an</em> hour. — รอสักชั่วโมง (hour ไม่ออกเสียง h → เสียงแรกคือ /aʊ/ = สระ)
+                <button class="listen-example" onclick="speak('Wait an hour.', this)">🔊</button>
+            </div>
+            <div class="example" style="background:#f0f0ff; border-left-color:var(--primary);">
+                📝 ตัวอย่างเพิ่ม: <em>an</em> egg, <em>an</em> ice cream, <em>an</em> orange, <em>an</em> umbrella, <em>an</em> engineer
+                <button class="listen-example" onclick="speak('an egg, an ice cream, an orange, an umbrella, an engineer', this)">🔊</button>
+                <br>→ ทุกคำขึ้นต้นด้วยเสียงสระ!
+            </div>
+            <div class="example" style="background:#fff5f5; border-left-color:var(--secondary);">
+                📝 ระวัง! <em>a</em> cat, <em>a</em> dog, <em>a</em> phone, <em>a</em> one-dollar bill (one ออกเสียง /wʌn/ = พยัญชนะ)
+                <button class="listen-example" onclick="speak('a cat, a dog, a phone, a one dollar bill', this)">🔊</button>
+                <br>→ ทุกคำขึ้นต้นด้วยเสียงพยัญชนะ!
+            </div>
+
+            <div class="rule-box">
+                <code>the</code> → ใช้เมื่อ<strong>ชี้เฉพาะเจาะจง</strong> หรือสิ่งที่<strong>รู้กันอยู่แล้ว</strong>
+            </div>
+            <div class="example">
+                <em>The</em> sun rises in the east.
+                <button class="listen-example" onclick="speak('The sun rises in the east.', this)">🔊</button>
+                <br><span class="th">ดวงอาทิตย์ขึ้นทางทิศตะวันออก (มีอันเดียวในโลก → the)</span>
+            </div>
+            <div class="example">
+                I saw <em>a</em> dog. <em>The</em> dog was friendly.
+                <button class="listen-example" onclick="speak('I saw a dog. The dog was friendly.', this)">🔊</button>
+                <br><span class="th">ครั้งแรก = a (ยังไม่รู้จัก) → ครั้งที่สอง = the (รู้แล้วว่าตัวไหน)</span>
+            </div>
+
+            <div class="warn">⚠️ <strong>จำไว้: ดูที่เสียง ไม่ใช่ตัวอักษร!</strong><br>
+            • honest → ออกเสียง /ˈɒnɪst/ (ไม่ออก h) → ใช้ <strong>an</strong> honest person<br>
+            • university → ออกเสียง /juːnɪ.../ (เสียงแรก y = พยัญชนะ) → ใช้ <strong>a</strong> university</div>
+
+            <table>
+                <tr><th>Article</th><th>ใช้เมื่อ</th><th>ตัวอย่าง</th></tr>
+                <tr><td><strong>a</strong></td><td>1 อัน + เสียงพยัญชนะ</td><td>a book, a cat, a university</td></tr>
+                <tr><td><strong>an</strong></td><td>1 อัน + เสียงสระ (A E I O U)</td><td>an apple, an egg, an hour</td></tr>
+                <tr><td><strong>the</strong></td><td>ชี้เฉพาะ / รู้กันแล้ว</td><td>the moon, the teacher</td></tr>
+            </table>
+        `,
+        questions: [
+            { text: 'She is _____ honest person.', speak: 'She is, ,honest person.', options: ['a','an','the','--'], correct: 1, explain: 'ใช้ "an" เพราะ honest ออกเสียงขึ้นต้นด้วยสระ (ไม่ออกเสียง h)' },
+            { text: 'I saw _____ dog in the park. _____ dog was very friendly.', speak: 'I saw, ,dog in the park., ,dog was very friendly.', options: ['a, The','an, A','the, A','a, A'], correct: 0, explain: 'ครั้งแรกใช้ "a" (กล่าวถึงครั้งแรก) ครั้งที่สองใช้ "The" (ชี้เฉพาะตัวเดิม)' },
+            { text: 'He wants to be _____ engineer.', speak: 'He wants to be, ,engineer.', options: ['a','the','an','--'], correct: 2, explain: 'ใช้ "an" เพราะ engineer ขึ้นต้นด้วยเสียงสระ (e = สระ)' },
+            { text: '_____ sun rises in the east.', speak: ', ,sun rises in the east.', options: ['A','An','The','--'], correct: 2, explain: 'ใช้ "The" เพราะ sun มีเพียงดวงเดียว — ชี้เฉพาะ' },
+            { text: 'I need _____ umbrella because it is raining.', speak: 'I need, ,umbrella because it is raining.', options: ['a','an','the','--'], correct: 1, explain: 'ใช้ "an" เพราะ umbrella ขึ้นต้นด้วยเสียงสระ (u = สระ)' }
+        ]
+    },
+    {
+        id: 'prepositions',
+        title: 'on / in / at (เวลา)',
+        subtitle: 'คำบุพบทบอกเวลา',
+        lesson: `
+            <h3>📖 สรุปเนื้อหา: on / in / at (เวลา)</h3>
+            <p>ใช้บอก<strong>เวลา</strong>ที่เหตุการณ์เกิดขึ้น เลือกตามขนาดของเวลา</p>
+
+            <div class="rule-box">
+                <code>on</code> → ใช้กับ <strong>วัน</strong> / <strong>วันที่</strong>
+            </div>
+            <div class="example">
+                The meeting is <em>on</em> Monday.
+                <button class="listen-example" onclick="speak('The meeting is on Monday.', this)">🔊</button>
+                <br><span class="th">ประชุมวันจันทร์ (Monday = วัน)</span>
+            </div>
+            <div class="example">
+                My birthday is <em>on</em> June 5th.
+                <button class="listen-example" onclick="speak('My birthday is on June fifth.', this)">🔊</button>
+                <br><span class="th">วันเกิดฉันวันที่ 5 มิถุนายน (June 5th = วันที่)</span>
+            </div>
+
+            <div class="rule-box">
+                <code>in</code> → ใช้กับ <strong>เดือน / ปี / ฤดู / ช่วงเวลายาว</strong>
+            </div>
+            <div class="example">
+                She was born <em>in</em> 1998.
+                <button class="listen-example" onclick="speak('She was born in 1998.', this)">🔊</button>
+                <br><span class="th">เธอเกิดปี 1998 (1998 = ปี)</span>
+            </div>
+            <div class="example">
+                We go to the beach <em>in</em> summer.
+                <button class="listen-example" onclick="speak('We go to the beach in summer.', this)">🔊</button>
+                <br><span class="th">เราไปทะเลในฤดูร้อน (summer = ฤดู)</span>
+            </div>
+
+            <div class="rule-box">
+                <code>at</code> → ใช้กับ <strong>เวลาเฉพาะ</strong> / <strong>จุดเวลา</strong>
+            </div>
+            <div class="example">
+                The class starts <em>at</em> 9 o'clock.
+                <button class="listen-example" onclick="speak('The class starts at 9 o clock.', this)">🔊</button>
+                <br><span class="th">เข้าเรียน 9 โมง (9 o'clock = เวลา)</span>
+            </div>
+            <div class="example">
+                I always wake up <em>at</em> 6 AM.
+                <button class="listen-example" onclick="speak('I always wake up at 6 AM.', this)">🔊</button>
+                <br><span class="th">ฉันตื่นตอน 6 โมงเช้าเสมอ (6 AM = เวลา)</span>
+            </div>
+
+            <div class="warn">⚠️ <strong>ข้อยกเว้น:</strong> <em>at night</em> / <em>at noon</em> / <em>at midnight</em> — ใช้ <strong>at</strong> แม้เป็นช่วงเวลา</div>
+
+            <table>
+                <tr><th>Preposition</th><th>ใช้กับ</th><th>ตัวอย่าง</th></tr>
+                <tr><td><strong>on</strong></td><td>วัน / วันที่</td><td>on Monday, on July 4th</td></tr>
+                <tr><td><strong>in</strong></td><td>เดือน / ปี / ฤดู</td><td>in March, in 2024, in winter</td></tr>
+                <tr><td><strong>at</strong></td><td>เวลา / จุดเวลา</td><td>at 8 AM, at night, at noon</td></tr>
+            </table>
+        `,
+        questions: [
+            { text: 'The meeting is _____ Monday.', speak: 'The meeting is, ,Monday.', options: ['in','at','on','for'], correct: 2, explain: 'ใช้ "on" กับวัน (Monday)' },
+            { text: 'She was born _____ 1998.', speak: 'She was born, ,1998.', options: ['on','in','at','to'], correct: 1, explain: 'ใช้ "in" กับปี (1998)' },
+            { text: "The class starts _____ 9 o'clock.", speak: 'The class starts, ,9 o clock.', options: ['on','in','at','by'], correct: 2, explain: "ใช้ \"at\" กับเวลา (9 o'clock)" },
+            { text: 'We go to the beach _____ summer.', speak: 'We go to the beach, ,summer.', options: ['on','at','in','to'], correct: 2, explain: 'ใช้ "in" กับฤดู (summer)' },
+            { text: 'He always studies _____ night.', speak: 'He always studies, ,night.', options: ['in','on','at','by'], correct: 2, explain: 'ใช้ "at" กับ night → at night (ข้อยกเว้น)' }
+        ]
+    },
+    {
+        id: 'past-simple',
+        title: 'เล่าเรื่องอดีต (V.2)',
+        subtitle: 'เรื่องที่จบไปแล้ว',
+        lesson: `
+            <h3>📖 สรุปเนื้อหา: เล่าเรื่องที่จบแล้วในอดีต</h3>
+            <p>ใช้เล่าเรื่องที่<strong>เกิดขึ้นแล้วจบแล้ว</strong>ในอดีต</p>
+
+            <div class="rule-box">
+                <strong>บอกเล่า:</strong> Subject + <code>V.2</code>
+            </div>
+            <div class="example">
+                She <em>went</em> to school yesterday.
+                <button class="listen-example" onclick="speak('She went to school yesterday.', this)">🔊</button>
+                <br><span class="th">เธอไปโรงเรียนเมื่อวาน (go → went)</span>
+            </div>
+            <div class="example">
+                I <em>ate</em> rice this morning.
+                <button class="listen-example" onclick="speak('I ate rice this morning.', this)">🔊</button>
+                <br><span class="th">ฉันกินข้าวเมื่อเช้า (eat → ate)</span>
+            </div>
+
+            <div class="rule-box">
+                <strong>ปฏิเสธ:</strong> Subject + <code>didn't</code> + V.1
+            </div>
+            <div class="example">
+                They <em>didn't</em> watch TV last night.
+                <button class="listen-example" onclick="speak('They didn\\'t watch TV last night.', this)">🔊</button>
+                <br><span class="th">พวกเขาไม่ได้ดูทีวีเมื่อคืน</span>
+            </div>
+            <div class="example">
+                She <em>didn't</em> go to the party last week.
+                <button class="listen-example" onclick="speak('She didn\\'t go to the party last week.', this)">🔊</button>
+                <br><span class="th">เธอไม่ได้ไปงานเลี้ยงอาทิตย์ที่แล้ว</span>
+            </div>
+
+            <div class="rule-box">
+                <strong>คำถาม:</strong> <code>Did</code> + Subject + V.1 ?
+            </div>
+            <div class="example">
+                <em>Did</em> you eat breakfast this morning?
+                <button class="listen-example" onclick="speak('Did you eat breakfast this morning?', this)">🔊</button>
+                <br><span class="th">เธอกินข้าวเช้าหรือเปล่า?</span>
+            </div>
+            <div class="example">
+                <em>Did</em> he buy a new phone yesterday?
+                <button class="listen-example" onclick="speak('Did he buy a new phone yesterday?', this)">🔊</button>
+                <br><span class="th">เขาซื้อโทรศัพท์ใหม่เมื่อวานไหม?</span>
+            </div>
+
+            <p style="margin-top: 15px; font-weight: 600;">🔑 คำที่บอกว่าเป็นเรื่องอดีต:</p>
+            <div class="keyword-tags">
+                <span class="keyword-tag">yesterday</span>
+                <span class="keyword-tag">last week / month / year</span>
+                <span class="keyword-tag">... ago</span>
+            </div>
+
+            <table>
+                <tr><th>V.1</th><th>V.2</th><th>V.3</th></tr>
+                <tr><td>eat</td><td>ate</td><td>eaten</td></tr>
+                <tr><td>go</td><td>went</td><td>gone</td></tr>
+                <tr><td>buy</td><td>bought</td><td>bought</td></tr>
+                <tr><td>come</td><td>came</td><td>come</td></tr>
+                <tr><td>bring</td><td>brought</td><td>brought</td></tr>
+                <tr><td>see</td><td>saw</td><td>seen</td></tr>
+                <tr><td>do</td><td>did</td><td>done</td></tr>
+                <tr><td>have</td><td>had</td><td>had</td></tr>
+            </table>
+        `,
+        questions: [
+            { text: 'She _____ to school yesterday.', speak: 'She, ,to school yesterday.', options: ['go','goes','went','going'], correct: 2, explain: '"yesterday" → อดีต → go เปลี่ยนเป็น went (V.2)' },
+            { text: 'They _____ watch TV last night.', speak: 'They, ,watch TV last night.', options: ["don't","doesn't","didn't","isn't"], correct: 2, explain: '"last night" → อดีต ปฏิเสธ → didn\'t + V.1' },
+            { text: 'I _____ my homework two hours ago.', speak: 'I, ,my homework two hours ago.', options: ['finish','finished','finishing','finishes'], correct: 1, explain: '"two hours ago" → อดีต → finished (V.2)' },
+            { text: '_____ you eat breakfast this morning?', speak: ', ,you eat breakfast this morning?', options: ['Do','Does','Did','Are'], correct: 2, explain: 'คำถามเรื่องอดีต → Did + S + V.1' },
+            { text: 'He _____ a new car last month.', speak: 'He, ,a new car last month.', options: ['buy','buys','bought','buying'], correct: 2, explain: '"last month" → อดีต → buy เปลี่ยนเป็น bought (V.2)' }
+        ]
+    },
+    {
+        id: 'past-continuous',
+        title: 'กำลังทำอยู่ตอนนั้น (was/were + V.ing)',
+        subtitle: 'เหตุการณ์ที่กำลังเกิดในอดีต',
+        lesson: `
+            <h3>📖 สรุปเนื้อหา: กำลังทำอยู่ ณ ตอนนั้น (was/were + V.ing)</h3>
+            <p>ใช้บอกเหตุการณ์ที่<strong>กำลังเกิดขึ้นอยู่</strong>ในอดีต (ยังไม่จบ ณ ตอนนั้น)</p>
+
+            <div class="rule-box">
+                He / She / It / I + <code>was</code> + V.ing<br>
+                You / We / They + <code>were</code> + V.ing
+            </div>
+            <div class="example">
+                I <em>was watching</em> TV when she arrived.
+                <button class="listen-example" onclick="speak('I was watching TV when she arrived.', this)">🔊</button>
+                <br><span class="th">ฉันกำลังดูทีวีอยู่ตอนที่เธอมาถึง</span>
+            </div>
+            <div class="example">
+                They <em>were playing</em> football at 5 PM yesterday.
+                <button class="listen-example" onclick="speak('They were playing football at 5 PM yesterday.', this)">🔊</button>
+                <br><span class="th">พวกเขากำลังเล่นฟุตบอลอยู่ตอน 5 โมงเย็นเมื่อวาน</span>
+            </div>
+
+            <div class="warn">⚠️ มักใช้คู่กับ <strong>while / when</strong><br>
+            • <strong>While</strong> (ขณะที่) + S + was/were + V.ing, S + V.2<br>
+            • <strong>When</strong> (เมื่อ) + S + V.2, S + was/were + V.ing</div>
+
+            <div class="example">
+                She <em>was reading</em> a book <em>while</em> he was cooking.
+                <button class="listen-example" onclick="speak('She was reading a book while he was cooking.', this)">🔊</button>
+                <br><span class="th">2 เหตุการณ์เกิดพร้อมกัน → ใช้ was/were + V.ing ทั้งคู่</span>
+            </div>
+            <div class="example">
+                <em>When</em> the phone rang, I <em>was taking</em> a shower.
+                <button class="listen-example" onclick="speak('When the phone rang, I was taking a shower.', this)">🔊</button>
+                <br><span class="th">ตอนที่โทรศัพท์ดัง ฉันกำลังอาบน้ำอยู่</span>
+            </div>
+
+            <table>
+                <tr><th>ประธาน</th><th>ใช้</th><th>ตัวอย่าง</th></tr>
+                <tr><td>I / He / She / It</td><td><strong>was</strong> + V.ing</td><td>I was sleeping</td></tr>
+                <tr><td>You / We / They</td><td><strong>were</strong> + V.ing</td><td>They were playing</td></tr>
+            </table>
+        `,
+        questions: [
+            { text: 'I _____ TV when she arrived.', speak: 'I, ,TV when she arrived.', options: ['watch','was watching','watched','am watching'], correct: 1, explain: 'กำลังทำอยู่ในอดีต (when she arrived) → was watching' },
+            { text: 'They _____ football at 5 PM yesterday.', speak: 'They, ,football at 5 PM yesterday.', options: ['play','played','were playing','are playing'], correct: 2, explain: 'They → were + V.ing (กำลังเล่นอยู่ ณ เวลานั้นในอดีต)' },
+            { text: 'She _____ a book while he was cooking.', speak: 'She, ,a book while he was cooking.', options: ['reads','was reading','read','is reading'], correct: 1, explain: '2 เหตุการณ์เกิดพร้อมกันในอดีต → She was reading' },
+            { text: 'We _____ when the lights went out.', speak: 'We, ,when the lights went out.', options: ['were sleeping','slept','sleep','are sleeping'], correct: 0, explain: 'We → were + V.ing (when = จุดที่เหตุการณ์แทรก)' },
+            { text: 'He _____ to music at that time.', speak: 'He, ,to music at that time.', options: ['listens','listened','is listening','was listening'], correct: 3, explain: '"at that time" → กำลังทำอยู่ตอนนั้น → was listening' }
+        ]
+    },
+    {
+        id: 'present',
+        title: 'ทำประจำ & กำลังทำ',
+        subtitle: 'ปัจจุบัน',
+        lesson: `
+            <h3>📖 สรุปเนื้อหา: ทำเป็นประจำ & กำลังทำอยู่ตอนนี้</h3>
+
+            <p style="font-size:1.15em; font-weight:600; color:var(--primary); margin: 15px 0 8px;">🔹 ทำเป็นประจำ / ความจริงทั่วไป</p>
+
+            <div class="rule-box">
+                <strong>He / She / It</strong> + <code>V.1 + s/es</code> &nbsp; (does / has)<br>
+                <strong>I / You / We / They</strong> + <code>V.1</code> &nbsp; (do / have)
+            </div>
+            <div class="example">
+                She <em>goes</em> to school every day.
+                <button class="listen-example" onclick="speak('She goes to school every day.', this)">🔊</button>
+                <br><span class="th">เธอไปโรงเรียนทุกวัน (She + V.1+es = goes)</span>
+            </div>
+            <div class="example">
+                I <em>drink</em> coffee every morning.
+                <button class="listen-example" onclick="speak('I drink coffee every morning.', this)">🔊</button>
+                <br><span class="th">ฉันดื่มกาแฟทุกเช้า (I + V.1 = drink)</span>
+            </div>
+
+            <p style="margin-top: 10px; font-weight: 600;">🔑 คำที่บอกว่าทำประจำ:</p>
+            <div class="keyword-tags">
+                <span class="keyword-tag">every day</span>
+                <span class="keyword-tag">always</span>
+                <span class="keyword-tag">sometimes</span>
+                <span class="keyword-tag">often</span>
+                <span class="keyword-tag">rarely</span>
+            </div>
+
+            <p style="font-size:1.15em; font-weight:600; color:var(--secondary); margin: 20px 0 8px;">🔸 กำลังทำอยู่ตอนนี้</p>
+
+            <div class="rule-box">
+                He / She / It + <code>is</code> + V.ing<br>
+                I + <code>am</code> + V.ing<br>
+                You / We / They + <code>are</code> + V.ing
+            </div>
+            <div class="example">
+                He <em>is doing</em> his homework <em>at this moment</em>.
+                <button class="listen-example" onclick="speak('He is doing his homework at this moment.', this)">🔊</button>
+                <br><span class="th">เขากำลังทำการบ้านอยู่ตอนนี้</span>
+            </div>
+            <div class="example">
+                Look! The children <em>are playing</em> in the garden <em>now</em>.
+                <button class="listen-example" onclick="speak('Look! The children are playing in the garden now.', this)">🔊</button>
+                <br><span class="th">ดูสิ! เด็กๆ กำลังเล่นอยู่ในสวนตอนนี้</span>
+            </div>
+
+            <p style="margin-top: 10px; font-weight: 600;">🔑 คำที่บอกว่ากำลังทำอยู่:</p>
+            <div class="keyword-tags">
+                <span class="keyword-tag">now</span>
+                <span class="keyword-tag">at this moment</span>
+                <span class="keyword-tag">right now</span>
+                <span class="keyword-tag">Look!</span>
+            </div>
+        `,
+        questions: [
+            { text: 'She _____ to school every day.', speak: 'She, ,to school every day.', options: ['go','goes','going','is going'], correct: 1, explain: '"every day" → ทำประจำ → She + V.1+es = goes' },
+            { text: 'Look! The children _____ in the garden now.', speak: 'Look! The children, ,in the garden now.', options: ['play','plays','are playing','played'], correct: 2, explain: '"now" → กำลังทำอยู่ → are playing' },
+            { text: 'I _____ coffee every morning.', speak: 'I, ,coffee every morning.', options: ['drinks','am drinking','drink','drinking'], correct: 2, explain: '"every morning" → ทำประจำ → I + V.1 = drink' },
+            { text: 'He _____ his homework at this moment.', speak: 'He, ,his homework at this moment.', options: ['does','do','is doing','did'], correct: 2, explain: '"at this moment" → กำลังทำอยู่ → is doing' },
+            { text: 'They rarely _____ fast food.', speak: 'They rarely, ,fast food.', options: ['eats','eating','are eating','eat'], correct: 3, explain: '"rarely" → ทำประจำ → They + V.1 = eat' }
+        ]
+    },
+    {
+        id: 'future',
+        title: 'จะทำ / อนาคต (will)',
+        subtitle: 'เรื่องที่จะเกิดขึ้น',
+        lesson: `
+            <h3>📖 สรุปเนื้อหา: เรื่องที่จะเกิดขึ้น (will + V.1)</h3>
+            <p>ใช้พูดถึงเหตุการณ์ที่<strong>จะเกิดขึ้นในอนาคต</strong></p>
+
+            <div class="rule-box">
+                <strong>ทุกประธาน</strong> + <code>will</code> + V.1
+            </div>
+            <div class="example">
+                She <em>will</em> come to the party tomorrow.
+                <button class="listen-example" onclick="speak('She will come to the party tomorrow.', this)">🔊</button>
+                <br><span class="th">เธอจะมางานปาร์ตี้พรุ่งนี้</span>
+            </div>
+            <div class="example">
+                I <em>will</em> help you with your project.
+                <button class="listen-example" onclick="speak('I will help you with your project.', this)">🔊</button>
+                <br><span class="th">ฉันจะช่วยเธอทำโปรเจกต์</span>
+            </div>
+
+            <div class="rule-box">
+                <strong>ปฏิเสธ:</strong> Subject + <code>will not</code> (won't) + V.1
+            </div>
+            <div class="example">
+                He <em>will not</em> be late again. = He <em>won't</em> be late again.
+                <button class="listen-example" onclick="speak('He will not be late again.', this)">🔊</button>
+                <br><span class="th">เขาจะไม่มาสายอีกแล้ว</span>
+            </div>
+            <div class="example">
+                I <em>won't</em> tell anyone your secret.
+                <button class="listen-example" onclick="speak('I won\\'t tell anyone your secret.', this)">🔊</button>
+                <br><span class="th">ฉันจะไม่บอกใครเรื่องลับของเธอ</span>
+            </div>
+
+            <div class="rule-box">
+                <strong>คำถาม:</strong> <code>Will</code> + Subject + V.1 ?
+            </div>
+            <div class="example">
+                <em>Will</em> you visit us next Sunday?
+                <button class="listen-example" onclick="speak('Will you visit us next Sunday?', this)">🔊</button>
+                <br><span class="th">เธอจะมาเยี่ยมเราอาทิตย์หน้าไหม?</span>
+            </div>
+            <div class="example">
+                <em>Will</em> they finish the work on time?
+                <button class="listen-example" onclick="speak('Will they finish the work on time?', this)">🔊</button>
+                <br><span class="th">พวกเขาจะทำงานเสร็จทันเวลาไหม?</span>
+            </div>
+
+            <p style="margin-top: 15px; font-weight: 600;">🔑 คำที่บอกว่าเป็นเรื่องอนาคต:</p>
+            <div class="keyword-tags">
+                <span class="keyword-tag">tomorrow</span>
+                <span class="keyword-tag">next week / month / year</span>
+                <span class="keyword-tag">in the future</span>
+                <span class="keyword-tag">soon</span>
+            </div>
+
+            <div class="warn">⚠️ <strong>"will"</strong> ใช้ได้กับ<strong>ทุกประธาน</strong>เหมือนกันหมด — ง่ายที่สุด!</div>
+        `,
+        questions: [
+            { text: 'She _____ come to the party tomorrow.', speak: 'She, ,come to the party tomorrow.', options: ['will','is','was','does'], correct: 0, explain: '"tomorrow" → อนาคต → will + V.1' },
+            { text: 'They _____ travel to Japan next year.', speak: 'They, ,travel to Japan next year.', options: ['are','were','will','did'], correct: 2, explain: '"next year" → อนาคต → will + V.1' },
+            { text: 'I _____ help you with your project.', speak: 'I, ,help you with your project.', options: ['will','am','was','did'], correct: 0, explain: 'เสนอช่วยเหลือ → will + V.1' },
+            { text: 'He _____ not be late again.', speak: 'He, ,not be late again.', options: ['does','did','is','will'], correct: 3, explain: 'ปฏิเสธอนาคต → will not (won\'t) + V.1' },
+            { text: '_____ you visit us next Sunday?', speak: ', ,you visit us next Sunday?', options: ['Do','Are','Will','Did'], correct: 2, explain: '"next Sunday" → อนาคต คำถาม → Will + S + V.1?' }
+        ]
+    }
+];
+
+// ============ STATE ============
+let state = {};
+function initState() {
+    state = { correct: 0, wrong: 0, answered: {}, sectionScores: {}, quizStarted: {} };
+    sections.forEach(s => {
+        state.sectionScores[s.id] = { correct: 0, total: s.questions.length };
+        state.quizStarted[s.id] = false;
+    });
+}
+initState();
+
+// ============ RENDER ============
+function renderNavTabs() {
+    document.getElementById('navTabs').innerHTML = sections.map((s, i) =>
+        `<button class="nav-tab ${i===0?'active':''}" data-section="${s.id}" onclick="switchSection('${s.id}')">
+            ${s.title}
+            <span class="tab-score" id="tabScore-${s.id}">0</span>
+        </button>`
+    ).join('');
+}
+
+function renderSections() {
+    document.getElementById('quizContainer').innerHTML = sections.map((s, i) =>
+        `<div class="section ${i===0?'active':''}" id="section-${s.id}">
+            <div class="section-header">
+                <div class="section-title">${s.title}</div>
+                <div class="section-subtitle">${s.subtitle}</div>
+            </div>
+            <div class="lesson-card" id="lesson-${s.id}">${s.lesson}</div>
+            <button class="start-quiz-btn" id="startBtn-${s.id}" onclick="startQuiz('${s.id}')">
+                📝 อ่านเข้าใจแล้ว — เริ่มทำข้อสอบ (${s.questions.length} ข้อ)
+            </button>
+            <div class="quiz-area" id="quiz-${s.id}">
+                ${s.questions.map((q, qi) => renderQuestion(s.id, q, qi)).join('')}
+                <div class="progress-bar"><div class="progress-fill" id="progress-${s.id}" style="width:0%"></div></div>
+                <div class="section-result" id="result-${s.id}">
+                    <div class="emoji-big" id="resultEmoji-${s.id}">🎉</div>
+                    <div class="result-score" id="resultScore-${s.id}">0/5</div>
+                    <div class="result-text" id="resultText-${s.id}"></div>
+                </div>
+            </div>
+        </div>`
+    ).join('');
+}
+
+function renderQuestion(sId, q, qi) {
+    const qId = `${sId}-${qi}`;
+    return `<div class="question-card" id="card-${qId}">
+        <div class="question-number">${qi+1}</div>
+        <div class="question-text">${esc(q.text)}</div>
+        <button class="listen-btn" onclick="speak('${escJs(q.speak)}', this)">🔊 ฟังเสียง</button>
+        <div class="options">
+            ${q.options.map((o,oi)=>`<button class="option-btn" id="opt-${qId}-${oi}" onclick="answer('${sId}',${qi},${oi})">${esc(o)}</button>`).join('')}
+        </div>
+        <div class="feedback" id="fb-${qId}"></div>
+    </div>`;
+}
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escJs(s){ return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+// ============ START QUIZ ============
+function startQuiz(sId) {
+    state.quizStarted[sId] = true;
+    document.getElementById(`startBtn-${sId}`).style.display = 'none';
+    document.getElementById(`quiz-${sId}`).classList.add('show');
+    document.getElementById(`quiz-${sId}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============ ANSWER ============
+function answer(sId, qi, oi) {
+    const qId = `${sId}-${qi}`;
+    if (state.answered[qId] !== undefined) return;
+    const sec = sections.find(s=>s.id===sId);
+    const q = sec.questions[qi];
+    const ok = oi === q.correct;
+    state.answered[qId] = oi;
+
+    document.querySelectorAll(`#card-${qId} .option-btn`).forEach((b,i) => {
+        b.classList.add('disabled');
+        if (i === q.correct) b.classList.add('selected-correct');
+        if (i === oi && !ok) b.classList.add('selected-wrong');
+    });
+
+    document.getElementById(`card-${qId}`).classList.add(ok ? 'correct' : 'wrong');
+
+    const fb = document.getElementById(`fb-${qId}`);
+    if (ok) {
+        fb.className = 'feedback correct-fb';
+        fb.innerHTML = '✅ ถูกต้อง! ' + q.explain;
+        state.correct++;
+        state.sectionScores[sId].correct++;
+        miniConfetti(document.getElementById(`card-${qId}`));
+    } else {
+        fb.className = 'feedback wrong-fb';
+        fb.innerHTML = '❌ ผิด! ' + q.explain;
+        state.wrong++;
+    }
+    updateScores(sId);
+
+    const done = sec.questions.filter((_,i) => state.answered[`${sId}-${i}`] !== undefined).length;
+    document.getElementById(`progress-${sId}`).style.width = `${(done/sec.questions.length)*100}%`;
+    if (done === sec.questions.length) showResult(sId);
+}
+
+function updateScores(sId) {
+    document.getElementById('totalCorrect').textContent = state.correct;
+    document.getElementById('totalWrong').textContent = state.wrong;
+    document.getElementById('totalAnswered').textContent = state.correct + state.wrong;
+    const sc = state.sectionScores[sId];
+    const ts = document.getElementById(`tabScore-${sId}`);
+    if (ts) {
+        ts.textContent = sc.correct;
+        const sec = sections.find(s=>s.id===sId);
+        const done = sec.questions.filter((_,i)=>state.answered[`${sId}-${i}`]!==undefined).length;
+        if (done === sec.questions.length) ts.classList.add('show');
+    }
+}
+
+function showResult(sId) {
+    const sc = state.sectionScores[sId];
+    document.getElementById(`resultScore-${sId}`).textContent = `${sc.correct}/${sc.total}`;
+    const e = document.getElementById(`resultEmoji-${sId}`);
+    const t = document.getElementById(`resultText-${sId}`);
+    if (sc.correct === sc.total) { e.textContent='🏆'; t.textContent='เก่งมาก! ได้คะแนนเต็ม!'; launchConfetti(); }
+    else if (sc.correct >= 3) { e.textContent='👍'; t.textContent='ดีมาก! ลองทบทวนข้อที่ผิดนะ'; }
+    else { e.textContent='💪'; t.textContent='ลองทบทวนกฎแกรมม่าร์แล้วทำใหม่นะ!'; }
+    document.getElementById(`result-${sId}`).classList.add('show');
+}
+
+// ============ NAVIGATION ============
+function switchSection(sId) {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(`section-${sId}`).classList.add('active');
+    document.querySelector(`.nav-tab[data-section="${sId}"]`).classList.add('active');
+}
+
+// ============ TEXT-TO-SPEECH ============
+function speak(text, btn) {
+    if (!('speechSynthesis' in window)) { alert('เบราว์เซอร์ไม่รองรับ Text-to-Speech'); return; }
+    window.speechSynthesis.cancel();
+
+    // Split at ", ," to create a pause (blank position)
+    const parts = text.split(', ,').map(p => p.trim()).filter(p => p);
+
+    btn.classList.add('playing');
+    let idx = 0;
+
+    function speakNext() {
+        if (idx >= parts.length) { btn.classList.remove('playing'); return; }
+        const u = new SpeechSynthesisUtterance(parts[idx]);
+        u.lang = 'en-US';
+        u.rate = 0.85;
+        u.pitch = 1;
+        idx++;
+        if (idx < parts.length) {
+            u.onend = () => setTimeout(speakNext, 600);
+        } else {
+            u.onend = () => btn.classList.remove('playing');
+        }
+        u.onerror = () => btn.classList.remove('playing');
+        window.speechSynthesis.speak(u);
+    }
+    speakNext();
+}
+
+// ============ CONFETTI ============
+function miniConfetti(el) {
+    const r = el.getBoundingClientRect();
+    const c = ['#6C63FF','#FF6584','#00C851','#FFB84D','#36D1DC'];
+    for (let i=0;i<15;i++) {
+        const d = document.createElement('div');
+        d.className='confetti';
+        d.style.background = c[Math.floor(Math.random()*c.length)];
+        d.style.left = (r.left+r.width/2+(Math.random()-0.5)*100)+'px';
+        d.style.top = r.top+'px';
+        d.style.animationDuration = (2+Math.random())+'s';
+        document.getElementById('confettiContainer').appendChild(d);
+        setTimeout(()=>d.remove(), 3000);
+    }
+}
+function launchConfetti() {
+    const c = ['#6C63FF','#FF6584','#00C851','#FFB84D','#36D1DC','#FF9FF3','#54a0ff'];
+    for (let i=0;i<60;i++) {
+        setTimeout(()=>{
+            const d = document.createElement('div');
+            d.className='confetti';
+            d.style.background = c[Math.floor(Math.random()*c.length)];
+            d.style.left = Math.random()*window.innerWidth+'px';
+            d.style.top = '-10px';
+            d.style.width = (8+Math.random()*8)+'px';
+            d.style.height = (8+Math.random()*8)+'px';
+            d.style.animationDuration = (2+Math.random()*2)+'s';
+            document.getElementById('confettiContainer').appendChild(d);
+            setTimeout(()=>d.remove(), 4000);
+        }, i*30);
+    }
+}
+
+// ============ RESET ============
+function resetAll() {
+    initState();
+    renderSections();
+    renderNavTabs();
+    switchSection(sections[0].id);
+}
+
+// ============ INIT ============
+renderNavTabs();
+renderSections();
+</script>
+</body>
+</html>
