@@ -51,7 +51,7 @@ body{font-family:'Sarabun','TH SarabunPSK',sans-serif;background:var(--bg);color
 .card h3::after{content:'＋';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--text-dim);transition:transform .3s,color .3s}
 .card.open h3::after{content:'－';color:var(--cyan)}
 .card-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1),padding .3s;padding:0 24px}
-.card.open .card-body{max-height:5000px;padding:0 24px 24px}
+.card.open .card-body{max-height:8000px;padding:0 24px 24px}
 
 /* ===== IMAGES ===== */
 .img-wrap{text-align:center;margin:20px 0}
@@ -81,7 +81,7 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 .quiz-section h3{color:var(--purple);font-size:1.2rem;margin-bottom:20px;font-weight:700;cursor:pointer;position:relative;padding-right:40px}
 .quiz-section h3::after{content:'📝';position:absolute;right:0;top:0}
 .quiz-section .quiz-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
-.quiz-section.open .quiz-body{max-height:5000px}
+.quiz-section.open .quiz-body{max-height:8000px}
 .quiz-q{background:#fdfdff;border:1px solid rgba(0,0,0,0.06);border-radius:12px;padding:20px;margin-bottom:14px}
 .quiz-q h4{color:var(--cyan);margin-bottom:12px;font-size:1rem;font-weight:700}
 .quiz-opts{display:flex;flex-direction:column;gap:8px}
@@ -219,6 +219,65 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
   .card h3{padding:16px 44px 16px 18px}
   .card.open .card-body{padding:0 18px 18px}
 }
+
+/* ===== FRACTION NOTATION ===== */
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 6px;line-height:1.25;font-size:.93em}
+.frac .num{border-bottom:2.5px solid currentColor;padding:2px 10px 4px;text-align:center;white-space:nowrap}
+.frac .den{padding:4px 10px 2px;text-align:center;white-space:nowrap}
+.frac-eq{display:inline-flex;align-items:center;flex-wrap:wrap;gap:5px;justify-content:center;vertical-align:middle}
+.formula-box .frac{font-size:1em}
+
+/* ===== EXTRA ANIMATIONS ===== */
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes bounceIn{0%{opacity:0;transform:scale(.5)}60%{transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.75) translateY(12px)}65%{transform:scale(1.04)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes shimmerBg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes borderPulse{0%,100%{border-color:rgba(2,136,209,0.15)}50%{border-color:rgba(2,136,209,0.55)}}
+@keyframes stepIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+
+.anim-left{opacity:0;transform:translateX(-40px);transition:opacity .55s ease,transform .55s ease}
+.anim-right{opacity:0;transform:translateX(40px);transition:opacity .55s ease,transform .55s ease}
+.anim-up{opacity:0;transform:translateY(22px);transition:opacity .5s ease,transform .5s ease}
+.anim-pop{opacity:0;transform:scale(.8);transition:opacity .5s cubic-bezier(.34,1.56,.64,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+.anim-in{opacity:1!important;transform:none!important}
+
+/* shimmer on formula-box strong title */
+.formula-box>strong:first-child{background:linear-gradient(90deg,var(--cyan) 0%,var(--purple) 50%,var(--cyan) 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmerBg 3.5s linear infinite}
+
+/* formula-box pop when card opens */
+.card.open .formula-box{animation:popIn .55s cubic-bezier(.34,1.56,.64,1) both}
+
+/* hero float */
+.hero-icon{animation:pulse 2.5s ease-in-out infinite,floatY 4s ease-in-out infinite}
+
+/* hbox subtle left-bar slide */
+.hbox,.hbox.info,.hbox.good,.hbox.warn{transition:box-shadow .3s,transform .25s}
+.hbox:hover,.hbox.info:hover,.hbox.good:hover,.hbox.warn:hover{transform:translateX(3px);box-shadow:0 4px 16px rgba(0,0,0,0.08)}
+
+/* table row highlight animate */
+table.t tbody tr{transition:background .2s,transform .2s}
+table.t tbody tr:hover td{background:rgba(2,136,209,0.06);transform:scale(1.002)}
+
+/* card open step-in for children */
+.card.open .card-body>*{animation:stepIn .35s ease both}
+.card.open .card-body>*:nth-child(1){animation-delay:.05s}
+.card.open .card-body>*:nth-child(2){animation-delay:.10s}
+.card.open .card-body>*:nth-child(3){animation-delay:.15s}
+.card.open .card-body>*:nth-child(4){animation-delay:.20s}
+.card.open .card-body>*:nth-child(5){animation-delay:.25s}
+.card.open .card-body>*:nth-child(6){animation-delay:.30s}
+.card.open .card-body>*:nth-child(n+7){animation-delay:.35s}
+
+/* quiz option bounce on hover */
+.quiz-opt:hover{transform:translateX(4px)}
+.quiz-opt{transition:.25s,transform .2s}
+
+/* nav link underline animation */
+.nav-link{position:relative}
+.nav-link::after{content:'';position:absolute;bottom:-2px;left:50%;right:50%;height:2px;background:var(--cyan);transition:.3s;border-radius:2px}
+.nav-link:hover::after{left:8%;right:8%}
 </style>
 </head>
 <body>
@@ -442,7 +501,7 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
   <p><strong>✗ ไม่ถูกต้อง!</strong> มวล 100 g <strong>ไม่ได้มีปริมาตร 100 cm³ เสมอไป</strong> ปริมาตรขึ้นอยู่กับ<span class="hl">ความหนาแน่น</span>ของสาร</p>
 </div>
 <div class="formula-box" style="margin:14px 0">
-  <strong>ความหนาแน่น (ρ)</strong> = มวล (m) ÷ ปริมาตร (V)<br>
+  <strong>ความหนาแน่น (ρ)</strong> = มวล (m) / ปริมาตร (V)<br>
   <span style="font-size:.85rem;font-weight:400">ถ้า ρ ≠ 1 g/cm³ → มวล 100 g ≠ ปริมาตร 100 cm³</span>
 </div>
 <table class="t">
@@ -676,68 +735,6 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 
 </div>
 
-<!-- ตัวอย่าง -->
-<div class="hbox good">
-<p><strong>📌 กฎ 1: สารละลายประกอบด้วยสาร<u>ต่างสถานะ</u>กัน</strong></p>
-<p style="margin-top:8px">👉 <span class="hl">ตัวทำละลายมีสถานะเดียวกันกับสารละลาย</span></p>
-</div>
-
-<table class="t" style="margin-top:16px">
-<thead><tr><th>สารละลาย</th><th>องค์ประกอบ</th><th>ตัวทำละลาย</th><th>ตัวละลาย</th></tr></thead>
-<tbody>
-<tr>
-<td>น้ำหวาน (ของเหลว)</td>
-<td>น้ำ (ของเหลว) 86%<br>น้ำตาล (ของแข็ง) 12%<br>สารปรุงแต่ง 2%</td>
-<td><strong>น้ำ</strong> (ของเหลว)</td>
-<td>น้ำตาล, สารปรุงแต่ง</td>
-</tr>
-<tr>
-<td>น้ำโซดา (ของเหลว)</td>
-<td>น้ำ (ของเหลว) 99.5%<br>CO₂ (แก๊ส) 0.5%</td>
-<td><strong>น้ำ</strong> (ของเหลว)</td>
-<td>แก๊ส CO₂</td>
-</tr>
-<tr>
-<td>น้ำเชื่อมเมเปิล (ของเหลว)</td>
-<td>น้ำ (ของเหลว) 33%<br>น้ำตาล (ของแข็ง) 67%</td>
-<td><strong>น้ำ</strong> (ของเหลว)</td>
-<td>น้ำตาล</td>
-</tr>
-</tbody>
-</table>
-
-<div class="hbox good" style="margin-top:24px">
-<p><strong>📌 กฎ 2: สารละลายประกอบด้วยสาร<u>สถานะเหมือนกัน</u></strong></p>
-<p style="margin-top:8px">👉 <span class="hl">สารที่มีปริมาณมากกว่าจัดเป็นตัวทำละลาย</span> ส่วนองค์ประกอบที่เหลือจัดเป็นตัวละลาย</p>
-</div>
-
-<table class="t" style="margin-top:16px">
-<thead><tr><th>สารละลาย</th><th>องค์ประกอบ</th><th>ตัวทำละลาย</th><th>ตัวละลาย</th></tr></thead>
-<tbody>
-<tr>
-<td>ทองชมพู 18K (ของแข็ง)</td>
-<td>ทองคำ (ของแข็ง) 75%<br>ทองแดง (ของแข็ง) 16%<br>เงิน (ของแข็ง) 9%</td>
-<td><strong>ทองคำ</strong> (75%)</td>
-<td>ทองแดง, เงิน</td>
-</tr>
-<tr>
-<td>น้ำส้มสายชู (ของเหลว)</td>
-<td>น้ำ (ของเหลว) 95%<br>กรดน้ำส้ม (ของเหลว) 5%</td>
-<td><strong>น้ำ</strong> (95%)</td>
-<td>กรดน้ำส้ม</td>
-</tr>
-<tr>
-<td>อากาศ (แก๊ส)</td>
-<td>N₂ (แก๊ส) 78%<br>O₂ (แก๊ส) 21%<br>แก๊สอื่นๆ 1%</td>
-<td><strong>ไนโตรเจน</strong> (78%)</td>
-<td>ออกซิเจน, แก๊สอื่นๆ</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-
-</div>
 
 <!-- ตัวอย่าง -->
 <div class="section" style="animation-delay:.4s" id="examples">
@@ -866,7 +863,7 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 </div>
 
 <div class="formula-box" style="margin:16px 0;font-size:1.2rem">
-  <strong>%w/v</strong> = <span style="border-bottom:2px solid #5e35b1">มวลตัวละลาย (g)</span> &divide; <span style="border-bottom:2px solid #5e35b1">ปริมาตรสารละลาย (cm³)</span> &times; 100
+  <span class="frac-eq"><strong>%w/v</strong> = <span class="frac"><span class="num">มวลตัวละลาย (g)</span><span class="den">ปริมาตรสารละลาย (cm³)</span></span> × 100</span>
 </div>
 
 <div class="hbox good">
@@ -876,11 +873,11 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
     <tbody>
       <tr>
         <td>ใบที่ 1</td><td>2</td><td>100</td><td>สีเขียวอมฟ้า</td>
-        <td style="font-weight:700;color:#0288d1">(2 ÷ 100) × 100 = <strong>2%</strong></td>
+        <td style="font-weight:700;color:#0288d1"><span class="frac-eq"><span class="frac"><span class="num">2</span><span class="den">100</span></span> × 100 = <strong>2%</strong></span></td>
       </tr>
       <tr>
         <td>ใบที่ 2</td><td>4</td><td>200</td><td>สีเขียวอมฟ้า</td>
-        <td style="font-weight:700;color:#0288d1">(4 ÷ 200) × 100 = <strong>2%</strong></td>
+        <td style="font-weight:700;color:#0288d1"><span class="frac-eq"><span class="frac"><span class="num">4</span><span class="den">200</span></span> × 100 = <strong>2%</strong></span></td>
       </tr>
     </tbody>
   </table>
@@ -913,7 +910,7 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 </div>
 
 <div class="formula-box" style="margin:16px 0;font-size:1.2rem">
-  <strong>%v/v</strong> = <span style="border-bottom:2px solid #2e7d32">ปริมาตรตัวละลาย (cm³)</span> &divide; <span style="border-bottom:2px solid #2e7d32">ปริมาตรสารละลาย (cm³)</span> &times; 100
+  <span class="frac-eq"><strong>%v/v</strong> = <span class="frac"><span class="num">ปริมาตรตัวละลาย (cm³)</span><span class="den">ปริมาตรสารละลาย (cm³)</span></span> × 100</span>
 </div>
 
 <div class="hbox good">
@@ -923,11 +920,11 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
     <tbody>
       <tr>
         <td>ใบที่ 1</td><td>20</td><td>100</td><td>สีแดงส้ม เข้ม</td>
-        <td style="font-weight:700;color:#2e7d32">(20 ÷ 100) × 100 = <strong>20%</strong></td>
+        <td style="font-weight:700;color:#2e7d32"><span class="frac-eq"><span class="frac"><span class="num">20</span><span class="den">100</span></span> × 100 = <strong>20%</strong></span></td>
       </tr>
       <tr>
         <td>ใบที่ 2</td><td>10</td><td>100</td><td>สีแดงส้ม อ่อน</td>
-        <td style="font-weight:700;color:#2e7d32">(10 ÷ 100) × 100 = <strong>10%</strong></td>
+        <td style="font-weight:700;color:#2e7d32"><span class="frac-eq"><span class="frac"><span class="num">10</span><span class="den">100</span></span> × 100 = <strong>10%</strong></span></td>
       </tr>
     </tbody>
   </table>
@@ -937,29 +934,231 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 <h4 style="color:var(--lime);margin:20px 0 12px">🍶 ตัวอย่าง: น้ำส้มสายชู</h4>
 <div class="formula-box" style="font-size:1rem">
   กรดน้ำส้ม 5 cm³ ในสารละลาย 100 cm³<br>
-  %v/v = (5 ÷ 100) × 100 = <strong style="color:#e64a19">5 %v/v</strong>
+  <span class="frac-eq">%v/v = <span class="frac"><span class="num">5</span><span class="den">100</span></span> × 100 = <strong style="color:#e64a19">5 %v/v</strong></span>
 </div>
 
 <h4 style="color:var(--lime);margin:20px 0 12px">🔥 ตัวอย่าง: แก๊สหุงต้ม (LPG)</h4>
 <div class="formula-box" style="font-size:1rem">
   แก๊สบิวเทน 30 L ในแก๊สหุงต้ม 100 L<br>
-  %v/v = (30 ÷ 100) × 100 = <strong style="color:#e64a19">30 %v/v</strong>
+  <span class="frac-eq">%v/v = <span class="frac"><span class="num">30</span><span class="den">100</span></span> × 100 = <strong style="color:#e64a19">30 %v/v</strong></span>
 </div>
 </div>
 </div>
 
-<!-- ตารางเปรียบเทียบ %w/v vs %v/v -->
+<!-- %w/w -->
 <div class="card">
-<h3 style="color:var(--purple)">🔁 เปรียบเทียบ %w/v กับ %v/v</h3>
+<h3 style="color:var(--amber)">3️⃣ ร้อยละโดยมวลต่อมวล (%w/w)</h3>
+<div class="card-body">
+<div class="hbox info">
+  <p><strong>ใช้เมื่อ:</strong> ตัวละลายและตัวทำละลาย<span class="hl">เป็นของแข็งทั้งคู่</span> — นิยมใช้กับ<strong>โลหะผสม</strong>และสารละลายของแข็ง</p>
+  <p style="margin-top:8px">บอกมวลตัวละลายที่อยู่ใน<strong>สารละลาย 100 หน่วยมวล</strong>เดียวกัน</p>
+</div>
+
+<p style="margin:16px 0 8px"><strong>สูตร:</strong></p>
+<div class="formula-box" style="margin:0 0 16px;font-size:1.2rem">
+  <span class="frac-eq"><strong>%w/w</strong> = <span class="frac"><span class="num">มวลของตัวละลาย (g)</span><span class="den">มวลของสารละลาย (g)</span></span> × 100</span>
+</div>
+
+<div class="hbox warn" style="margin-bottom:16px">
+  <p>💡 ใช้หน่วย <strong>กิโลกรัม (kg)</strong> แทนกรัมก็ได้ ผลลัพธ์ยังคงเท่ากัน</p>
+  <div class="formula-box" style="margin:10px 0 0;font-size:1rem;background:rgba(245,127,23,0.05);border-color:rgba(245,127,23,0.2)">
+    <span class="frac-eq">%w/w = <span class="frac"><span class="num">มวลของตัวละลาย (kg)</span><span class="den">มวลของสารละลาย (kg)</span></span> × 100</span>
+  </div>
+</div>
+
+<div class="hbox good">
+  <p><strong>📌 ตัวอย่าง: สังกะสีในทองเหลือง</strong></p>
+  <p style="margin-top:10px">ละลายสังกะสี <strong>30 กรัม</strong> ในทองเหลือง <strong>100 กรัม</strong></p>
+  <div class="formula-box" style="margin:12px 0 4px;background:rgba(46,125,50,0.06);border-color:rgba(46,125,50,0.2)">
+    <span class="frac-eq">%w/w = <span class="frac"><span class="num">30 (g)</span><span class="den">100 (g)</span></span> × 100 = <strong style="color:#2e7d32;font-size:1.2rem">30 %w/w</strong></span>
+  </div>
+  <p style="margin-top:8px">→ กล่าวได้ว่า สังกะสีในทองเหลืองนี้มีความเข้มข้น <span class="kt">ร้อยละ 30 โดยมวลต่อมวล</span></p>
+</div>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">📐 สูตรจัดรูปใหม่เพื่อหาค่าต่างๆ</h4>
+<table class="t">
+  <thead><tr><th>ต้องการหา</th><th>สูตร</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>%w/w</strong></td>
+      <td><span class="frac-eq">%w/w = <span class="frac"><span class="num">มวลตัวละลาย</span><span class="den">มวลสารละลาย</span></span> × 100</span></td>
+    </tr>
+    <tr>
+      <td><strong>มวลตัวละลาย</strong></td>
+      <td><span class="frac-eq">มวลตัวละลาย = <span class="frac"><span class="num">%w/w × มวลสารละลาย</span><span class="den">100</span></span></span></td>
+    </tr>
+    <tr>
+      <td><strong>มวลสารละลาย</strong></td>
+      <td><span class="frac-eq">มวลสารละลาย = <span class="frac"><span class="num">มวลตัวละลาย × 100</span><span class="den">%w/w</span></span></span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<!-- เหรียญกษาปณ์ไทย -->
+<div class="card">
+<h3 style="color:var(--amber)">💰 กรณีศึกษา: เหรียญกษาปณ์ไทย (Thai Baht Coin)</h3>
+<div class="card-body">
+<p style="margin-bottom:16px">เหรียญกษาปณ์เป็น<strong>สารละลายของแข็ง</strong> ทำจากโลหะผสม (alloy) ซึ่งประกอบด้วยทองแดง นิกเกิล และอะลูมิเนียม สามารถใช้ <span class="kt">%w/w</span> ระบุปริมาณโลหะแต่ละชนิดในเหรียญได้</p>
+
+<h4 style="color:var(--cyan);margin-bottom:12px">📊 องค์ประกอบโลหะในเหรียญบาท (มวลเหรียญ 1 เหรียญ = 4 กรัม)</h4>
+<table class="t">
+  <thead>
+    <tr>
+      <th>โลหะ</th>
+      <th>ร้อยละโดยมวลต่อมวล (%w/w)</th>
+      <th>สถานะ</th>
+      <th>บทบาท</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>ทองแดง (Cu)</strong></td>
+      <td style="text-align:center;font-weight:700;color:var(--coral)">92%</td>
+      <td>ของแข็ง</td>
+      <td><span class="kt">ตัวทำละลาย</span> (มีมากที่สุด)</td>
+    </tr>
+    <tr>
+      <td><strong>นิกเกิล (Ni)</strong></td>
+      <td style="text-align:center;font-weight:700;color:var(--cyan)">2%</td>
+      <td>ของแข็ง</td>
+      <td>ตัวละลาย</td>
+    </tr>
+    <tr>
+      <td><strong>อะลูมิเนียม (Al)</strong></td>
+      <td style="text-align:center;font-weight:700;color:var(--lime)">6%</td>
+      <td>ของแข็ง</td>
+      <td>ตัวละลาย</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="hbox info" style="margin:20px 0 12px">
+  <p><strong>🔍 สังเกต:</strong> ทุกองค์ประกอบในเหรียญมีสถานะเป็น<strong>ของแข็ง</strong>เหมือนกัน → ใช้เกณฑ์ปริมาณ → ทองแดง (92%) เป็นตัวทำละลาย</p>
+</div>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">🔢 โจทย์ที่ 1: หามวลนิกเกิลใน 1 เหรียญ</h4>
+<div class="hbox info">
+  <p><strong>กำหนดให้:</strong> %w/w นิกเกิล = 2% · มวลเหรียญ (สารละลาย) = 4 กรัม</p>
+  <p style="margin-top:10px"><strong>จาก:</strong> มวลตัวละลาย = <span class="frac-eq"><span class="frac"><span class="num">%w/w × มวลสารละลาย</span><span class="den">100</span></span></span></p>
+  <div class="formula-box" style="margin:12px 0 0;background:rgba(2,136,209,0.06);border-color:rgba(2,136,209,0.2);font-size:1.05rem">
+    <span class="frac-eq">มวลนิกเกิล = <span class="frac"><span class="num">2 × 4</span><span class="den">100</span></span> = <strong style="color:var(--cyan);font-size:1.2rem">0.08 กรัม</strong></span>
+  </div>
+  <p style="margin-top:8px">→ เหรียญ 1 เหรียญมีนิกเกิล <strong>0.08 กรัม</strong></p>
+</div>
+
+<h4 style="color:var(--lime);margin:20px 0 12px">🔢 โจทย์ที่ 2: หามวลอะลูมิเนียมใน 1 เหรียญ</h4>
+<div class="hbox good">
+  <p><strong>กำหนดให้:</strong> %w/w อะลูมิเนียม = 6% · มวลเหรียญ = 4 กรัม</p>
+  <p style="margin-top:10px"><strong>จาก:</strong> มวลตัวละลาย = <span class="frac-eq"><span class="frac"><span class="num">%w/w × มวลสารละลาย</span><span class="den">100</span></span></span></p>
+  <div class="formula-box" style="margin:12px 0 0;background:rgba(46,125,50,0.06);border-color:rgba(46,125,50,0.2);font-size:1.05rem">
+    <span class="frac-eq">มวลอะลูมิเนียม = <span class="frac"><span class="num">6 × 4</span><span class="den">100</span></span> = <strong style="color:#2e7d32;font-size:1.2rem">0.24 กรัม</strong></span>
+  </div>
+  <p style="margin-top:8px">→ เหรียญ 1 เหรียญมีอะลูมิเนียม <strong>0.24 กรัม</strong></p>
+</div>
+
+<h4 style="color:var(--purple);margin:20px 0 12px">🏭 โจทย์ที่ 3: ผลิตเหรียญได้กี่เหรียญ?</h4>
+<div class="hbox warn">
+  <p><strong>โจทย์:</strong> ถ้ามีอะลูมิเนียม <strong>1,500 กรัม</strong> สามารถผลิตเหรียญบาทได้กี่เหรียญ?</p>
+  <p style="margin-top:12px"><strong>วิธีคิด:</strong></p>
+  <ul style="padding-left:20px;margin-top:8px">
+    <li style="margin:6px 0">อะลูมิเนียม <strong>0.24 กรัม</strong> ใช้ผลิตได้ <strong>1 เหรียญ</strong></li>
+    <li style="margin:6px 0">อะลูมิเนียม 1,500 กรัม ใช้ผลิตได้ = = <span class="frac-eq"><span class="frac"><span class="num">1,500</span><span class="den">0.24</span></span></span></li>
+  </ul>
+  <div class="formula-box" style="margin:12px 0 0;background:rgba(245,127,23,0.06);border-color:rgba(245,127,23,0.2);font-size:1.05rem">
+    <span class="frac-eq">จำนวนเหรียญ = <span class="frac"><span class="num">1,500</span><span class="den">0.24</span></span> = <strong style="color:var(--coral);font-size:1.2rem">6,250 เหรียญ</strong></span>
+  </div>
+</div>
+
+<div class="hbox info" style="margin-top:16px">
+  <p>💡 สามารถสืบค้นข้อมูลองค์ประกอบโลหะในเหรียญกษาปณ์ไทยเพิ่มเติมได้ที่กรมธนารักษ์: <strong>www.royalthaimint.net</strong></p>
+</div>
+</div>
+</div>
+
+<!-- ตัวอย่างทองเหลือง -->
+<div class="card">
+<h3 style="color:var(--amber)">🔧 ตัวอย่างการคำนวณ %w/w: ทองเหลือง</h3>
+<div class="card-body">
+<div class="hbox warn" style="margin-bottom:16px">
+  <p><strong>โจทย์:</strong> นำทองเหลือง <strong>5 กรัม</strong> มาแยกองค์ประกอบ พบว่ามีสังกะสีเป็นองค์ประกอบ <strong>1.2 กรัม</strong></p>
+  <p style="margin-top:8px">ทองเหลืองชิ้นนี้มีความเข้มข้นของสังกะสีในหน่วยร้อยละโดยมวลต่อมวลเป็นเท่าใด?</p>
+</div>
+
+<h4 style="color:var(--cyan);margin-bottom:12px">วิธีทำ:</h4>
+<table class="t">
+  <thead><tr><th>ขั้นตอน</th><th>รายละเอียด</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>1. ระบุตัวละลาย</td>
+      <td>สังกะสี มวล = <strong>1.2 กรัม</strong></td>
+    </tr>
+    <tr>
+      <td>2. ระบุสารละลาย</td>
+      <td>ทองเหลือง มวล = <strong>5 กรัม</strong></td>
+    </tr>
+    <tr>
+      <td>3. แทนค่าในสูตร</td>
+      <td><span class="frac-eq">%w/w = <span class="frac"><span class="num">1.2</span><span class="den">5</span></span> × 100</span></td>
+    </tr>
+    <tr>
+      <td>4. คำตอบ</td>
+      <td><strong style="color:var(--coral);font-size:1.05rem">= 24 %w/w</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="hbox good" style="margin-top:16px">
+  <p><strong>✓ สรุป:</strong> ทองเหลืองชิ้นนี้มีความเข้มข้นของสังกะสี <span class="kt">ร้อยละ 24 โดยมวลต่อมวล</span></p>
+  <p style="margin-top:8px">หมายความว่าในทองเหลือง 100 กรัม จะมีสังกะสีอยู่ <strong>24 กรัม</strong></p>
+</div>
+</div>
+</div>
+
+<!-- ตารางเปรียบเทียบทั้ง 3 แบบ -->
+<div class="card">
+<h3 style="color:var(--purple)">🔁 เปรียบเทียบหน่วยความเข้มข้นทั้ง 3 แบบ</h3>
 <div class="card-body">
 <table class="t">
-  <thead><tr><th>หัวข้อ</th><th>%w/v</th><th>%v/v</th></tr></thead>
+  <thead><tr><th>หัวข้อ</th><th>%w/v</th><th>%v/v</th><th>%w/w</th></tr></thead>
   <tbody>
-    <tr><td><strong>ตัวละลาย</strong></td><td>ของแข็ง</td><td>ของเหลว หรือ แก๊ส</td></tr>
-    <tr><td><strong>ตัวทำละลาย</strong></td><td>ของเหลว</td><td>ของเหลว หรือ แก๊ส</td></tr>
-    <tr><td><strong>หน่วยตัวเลข</strong></td><td>มวล (g)</td><td>ปริมาตร (cm³ หรือ L)</td></tr>
-    <tr><td><strong>หน่วยส่วน</strong></td><td>ปริมาตร (cm³)</td><td>ปริมาตร (cm³ หรือ L)</td></tr>
-    <tr><td><strong>ตัวอย่าง</strong></td><td>น้ำเกลือ, แอลกอฮอล์ล้างแผล</td><td>น้ำส้มสายชู, แก๊สหุงต้ม</td></tr>
+    <tr>
+      <td><strong>ตัวละลาย</strong></td>
+      <td>ของแข็ง</td>
+      <td>ของเหลว หรือ แก๊ส</td>
+      <td>ของแข็ง</td>
+    </tr>
+    <tr>
+      <td><strong>สารละลาย / ตัวทำละลาย</strong></td>
+      <td>ของเหลว</td>
+      <td>ของเหลว หรือ แก๊ส</td>
+      <td>ของแข็ง</td>
+    </tr>
+    <tr>
+      <td><strong>ตัวเศษ (numerator)</strong></td>
+      <td>มวล (g)</td>
+      <td>ปริมาตร (cm³ หรือ L)</td>
+      <td>มวล (g หรือ kg)</td>
+    </tr>
+    <tr>
+      <td><strong>ตัวส่วน (denominator)</strong></td>
+      <td>ปริมาตร (cm³)</td>
+      <td>ปริมาตร (cm³ หรือ L)</td>
+      <td>มวล (g หรือ kg)</td>
+    </tr>
+    <tr>
+      <td><strong>ตัวอย่าง</strong></td>
+      <td>น้ำเกลือ, แอลกอฮอล์ล้างแผล</td>
+      <td>น้ำส้มสายชู, แก๊สหุงต้ม, แอลกอฮอล์</td>
+      <td>ทองเหลือง, เหรียญกษาปณ์, โลหะผสม</td>
+    </tr>
+    <tr>
+      <td><strong>สัญลักษณ์</strong></td>
+      <td><span class="kt">%w/v</span> หรือ <span class="kt">%W/V</span></td>
+      <td><span class="kt">%v/v</span> หรือ <span class="kt">%V/V</span></td>
+      <td><span class="kt">%w/w</span> หรือ <span class="kt">%W/W</span></td>
+    </tr>
   </tbody>
 </table>
 
@@ -967,8 +1166,18 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
   <p><strong>💡 จำง่าย:</strong></p>
   <ul style="padding-left:20px;margin-top:8px">
     <li style="margin:6px 0"><span class="kt">w</span> = weight (มวล) · <span class="kt">v</span> = volume (ปริมาตร)</li>
-    <li style="margin:6px 0"><strong>%w/v</strong> = ของแข็งละลายของเหลว → ใช้มวลหาร</li>
-    <li style="margin:6px 0"><strong>%v/v</strong> = ของเหลวหรือแก๊สผสมกัน → ใช้ปริมาตรหาร</li>
+    <li style="margin:6px 0"><strong>%w/v</strong> = ของแข็งละลายในของเหลว → <strong>มวล</strong>หาร<strong>ปริมาตร</strong></li>
+    <li style="margin:6px 0"><strong>%v/v</strong> = ของเหลวหรือแก๊สผสมกัน → <strong>ปริมาตร</strong>หาร<strong>ปริมาตร</strong></li>
+    <li style="margin:6px 0"><strong>%w/w</strong> = ของแข็งผสมในของแข็ง (โลหะผสม) → <strong>มวล</strong>หาร<strong>มวล</strong></li>
+  </ul>
+</div>
+
+<div class="hbox info" style="margin-top:16px">
+  <p><strong>📌 สรุปความเชื่อมโยงกับสถานะสารละลาย:</strong></p>
+  <ul style="padding-left:20px;margin-top:8px">
+    <li style="margin:6px 0">สารละลาย<strong>ของเหลว</strong> ที่มีตัวละลายเป็นของแข็ง → ใช้ <span class="kt">%w/v</span></li>
+    <li style="margin:6px 0">สารละลาย<strong>ของเหลว หรือแก๊ส</strong> ที่มีตัวละลายเป็นของเหลว/แก๊ส → ใช้ <span class="kt">%v/v</span></li>
+    <li style="margin:6px 0">สารละลาย<strong>ของแข็ง</strong> (โลหะผสม) → ใช้ <span class="kt">%w/w</span></li>
   </ul>
 </div>
 </div>
@@ -994,6 +1203,33 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
   <p><strong>เฉลย:</strong> %v/v = ปริมาตรตัวละลาย / ปริมาตรสารละลาย × 100<br>
   &nbsp;&nbsp;&nbsp;5 = ปริมาตร / 200 × 100<br>
   &nbsp;&nbsp;&nbsp;ปริมาตร = 5 × 200 / 100 = <strong>10 cm³</strong></p>
+</div>
+
+<div class="hbox warn" style="margin:16px 0">
+  <p><strong>โจทย์ 3 (%w/w):</strong> นำทองเหลือง <strong>5 กรัม</strong> มาแยกองค์ประกอบ พบว่ามีสังกะสี <strong>1.2 กรัม</strong></p>
+  <p style="margin-top:8px">ความเข้มข้นของสังกะสีในหน่วย %w/w เป็นเท่าใด?</p>
+</div>
+<div class="hbox good">
+  <p><strong>เฉลย:</strong> %w/w = มวลตัวละลาย / มวลสารละลาย × 100<br>
+  &nbsp;&nbsp;&nbsp;= 1.2 / 5 × 100 = <strong>24 %w/w</strong></p>
+</div>
+
+<div class="hbox warn" style="margin:16px 0">
+  <p><strong>โจทย์ 4 (%w/w):</strong> เหรียญบาทมีอะลูมิเนียม 6% โดยมวลต่อมวล เหรียญหนัก <strong>4 กรัม</strong></p>
+  <p style="margin-top:8px">เหรียญ 1 เหรียญมีอะลูมิเนียมกี่กรัม?</p>
+</div>
+<div class="hbox good">
+  <p><strong>เฉลย:</strong> มวลตัวละลาย = <span class="frac-eq"><span class="frac"><span class="num">%w/w × มวลสารละลาย</span><span class="den">100</span></span></span><br>
+  &nbsp;&nbsp;&nbsp;= <span class="frac-eq"><span class="frac"><span class="num">6 × 4</span><span class="den">100</span></span> = <strong>0.24 กรัม</strong></span></p>
+</div>
+
+<div class="hbox warn" style="margin:16px 0">
+  <p><strong>โจทย์ 5 (%w/w — ระดับยาก):</strong> ถ้ามีอะลูมิเนียม <strong>1,500 กรัม</strong> และในเหรียญบาทแต่ละเหรียญมีอะลูมิเนียม 0.24 กรัม</p>
+  <p style="margin-top:8px">สามารถผลิตเหรียญได้กี่เหรียญ?</p>
+</div>
+<div class="hbox good">
+  <p><strong>เฉลย:</strong> จำนวนเหรียญ = <span class="frac-eq"><span class="frac"><span class="num">ปริมาณอะลูมิเนียมทั้งหมด</span><span class="den">อะลูมิเนียมต่อเหรียญ</span></span></span><br>
+  &nbsp;&nbsp;&nbsp;= <span class="frac-eq"><span class="frac"><span class="num">1,500</span><span class="den">0.24</span></span> = <strong>6,250 เหรียญ</strong></span></p>
 </div>
 </div>
 </div>
@@ -1226,6 +1462,48 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 <button class="quiz-opt" data-correct="false">ทองแดง</button>
 </div><div class="quiz-fb"></div></div>
 
+<div class="quiz-q"><h4>9. ร้อยละโดยมวลต่อมวล (%w/w) ใช้กับสารละลายชนิดใด?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">ตัวละลายของแข็ง ในตัวทำละลายของเหลว</button>
+<button class="quiz-opt" data-correct="false">ตัวละลายของเหลว ในตัวทำละลายของเหลว</button>
+<button class="quiz-opt" data-correct="true">ตัวละลายของแข็ง ในสารละลายที่เป็นของแข็ง (โลหะผสม)</button>
+<button class="quiz-opt" data-correct="false">ตัวละลายแก๊ส ในตัวทำละลายของเหลว</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>10. สังกะสี 30 กรัม ละลายในทองเหลือง 100 กรัม มีความเข้มข้น %w/w เท่าใด?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">3%</button>
+<button class="quiz-opt" data-correct="false">10%</button>
+<button class="quiz-opt" data-correct="true">30%</button>
+<button class="quiz-opt" data-correct="false">300%</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>11. เหรียญบาทมี Al 6% %w/w เหรียญหนัก 4 กรัม มีอะลูมิเนียมกี่กรัม?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">0.06 กรัม</button>
+<button class="quiz-opt" data-correct="true">0.24 กรัม</button>
+<button class="quiz-opt" data-correct="false">0.40 กรัม</button>
+<button class="quiz-opt" data-correct="false">2.40 กรัม</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>12. ทองเหลือง 5 กรัม มีสังกะสี 1.2 กรัม ความเข้มข้นของสังกะสีใน %w/w คือ?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">1.2%</button>
+<button class="quiz-opt" data-correct="false">12%</button>
+<button class="quiz-opt" data-correct="true">24%</button>
+<button class="quiz-opt" data-correct="false">60%</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>13. อะลูมิเนียม 1,500 กรัม ถ้าเหรียญ 1 เหรียญต้องใช้ Al 0.24 กรัม ผลิตได้กี่เหรียญ?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">360 เหรียญ</button>
+<button class="quiz-opt" data-correct="false">3,600 เหรียญ</button>
+<button class="quiz-opt" data-correct="true">6,250 เหรียญ</button>
+<button class="quiz-opt" data-correct="false">62,500 เหรียญ</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>14. ข้อใดถูกต้องเกี่ยวกับหน่วยความเข้มข้น?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">%w/v ใช้กับโลหะผสมเสมอ</button>
+<button class="quiz-opt" data-correct="false">%v/v ใช้กับของแข็งละลายในของเหลว</button>
+<button class="quiz-opt" data-correct="true">%w/w ใช้กับสารละลายที่เป็นของแข็ง เช่น โลหะผสม</button>
+<button class="quiz-opt" data-correct="false">ทั้ง 3 หน่วยใช้ตัวส่วนเป็น ปริมาตร</button>
+</div><div class="quiz-fb"></div></div>
+
 </div>
 </div>
 
@@ -1244,15 +1522,17 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 <li style="margin:10px 0"><strong>สารละลายมี 3 สถานะ:</strong> ของแข็ง ของเหลว แก๊ส</li>
 <li style="margin:10px 0"><strong>สารละลาย</strong>เป็นสารเนื้อเดียวเสมอ</li>
 <li style="margin:10px 0"><strong>ความเข้มข้น (Concentration)</strong> = อัตราส่วนปริมาณตัวละลายต่อปริมาณสารละลาย</li>
-<li style="margin:10px 0"><strong>%w/v</strong> ใช้กับตัวละลาย<strong>ของแข็ง</strong> ÷ ปริมาตรสารละลาย(cm³) × 100</li>
-<li style="margin:10px 0"><strong>%v/v</strong> ใช้กับตัวละลาย<strong>ของเหลว/แก๊ส</strong> ÷ ปริมาตรสารละลาย × 100</li>
+<li style="margin:10px 0"><strong>%w/v</strong> ใช้กับตัวละลาย<strong>ของแข็ง</strong>/ ปริมาตรสารละลาย (cm³) × 100</li>
+<li style="margin:10px 0"><strong>%v/v</strong> ใช้กับตัวละลาย<strong>ของเหลว/แก๊ส</strong>/ ปริมาตรสารละลาย × 100</li>
+<li style="margin:10px 0"><strong>%w/w</strong> ใช้กับสารละลาย<strong>ของแข็ง (โลหะผสม)</strong> = <span class="frac-eq"><span class="frac"><span class="num">มวลตัวละลาย</span><span class="den">มวลสารละลาย</span></span> × 100</span></li>
+<li style="margin:10px 0"><strong>สูตรจัดรูป:</strong> มวลตัวละลาย = <span class="frac-eq"><span class="frac"><span class="num">%w/w × มวลสารละลาย</span><span class="den">100</span></span></span></li>
 </ul>
 </div>
 
 <div class="hbox good" style="margin-top:20px">
 <p><strong>💡 เคล็ดลับจำง่าย:</strong></p>
 <p style="margin-top:8px">"<span class="hl">ตัวทำละลาย</span>มี<strong>มากกว่า</strong> · <span class="hl">ตัวละลาย</span>มี<strong>น้อยกว่า</strong>"</p>
-<p style="margin-top:8px">"<span class="hl">w</span> = weight ของแข็ง · <span class="hl">v/v</span> = ของเหลวหรือแก๊สทั้งคู่"</p>
+<p style="margin-top:8px">"<span class="hl">w/v</span> = ของแข็งหารปริมาตร · <span class="hl">v/v</span> = ของเหลว/แก๊สผสมกัน · <span class="hl">w/w</span> = โลหะผสม (ของแข็งหารมวล)"</p>
 </div>
 </div>
 
@@ -1339,6 +1619,69 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.section').forEach(section => {
   observer.observe(section);
+});
+
+// ===== ENHANCED ANIMATIONS =====
+// Apply slide-in classes to hboxes alternating left/right
+document.querySelectorAll('.hbox').forEach((el, i) => {
+  el.classList.add(i % 2 === 0 ? 'anim-left' : 'anim-right');
+});
+document.querySelectorAll('.formula-box').forEach(el => {
+  el.classList.add('anim-pop');
+});
+document.querySelectorAll('table.t').forEach(el => {
+  el.classList.add('anim-up');
+});
+
+const animObs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const delay = parseInt(el.dataset.animDelay || 0);
+      setTimeout(() => el.classList.add('anim-in'), delay);
+      animObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.anim-left, .anim-right, .anim-up, .anim-pop').forEach((el, i) => {
+  el.dataset.animDelay = (i % 6) * 70;
+  animObs.observe(el);
+});
+
+// Stagger list items inside cards
+document.querySelectorAll('.card').forEach(card => {
+  card.querySelectorAll('li').forEach((li, i) => {
+    li.style.opacity = '0';
+    li.style.transform = 'translateX(-12px)';
+    li.style.transition = `opacity .35s ease ${i*0.06}s, transform .35s ease ${i*0.06}s`;
+  });
+});
+
+// Animate list items when card opens
+document.querySelectorAll('.card h3').forEach(h3 => {
+  h3.addEventListener('click', function () {
+    const card = this.parentElement;
+    requestAnimationFrame(() => {
+      const isOpen = card.classList.contains('open');
+      card.querySelectorAll('li').forEach((li, i) => {
+        li.style.opacity = isOpen ? '1' : '0';
+        li.style.transform = isOpen ? 'translateX(0)' : 'translateX(-12px)';
+      });
+      // Re-observe formula-boxes and hboxes inside opened card
+      if (isOpen) {
+        card.querySelectorAll('.formula-box, .hbox').forEach((el, i) => {
+          el.style.animation = 'none';
+          setTimeout(() => {
+            el.style.animation = '';
+            el.classList.remove('anim-in');
+            void el.offsetWidth;
+            el.classList.add('anim-in');
+          }, i * 80 + 100);
+        });
+      }
+    });
+  });
 });
 
 // Smooth scroll
