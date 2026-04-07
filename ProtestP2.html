@@ -1,630 +1,1308 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบทดสอบคณิตศาสตร์ ค12101</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧪 องค์ประกอบของสารละลาย — Solutions Components</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap');
 
-        body {
-            font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+:root{
+--bg:#f5f7fa;--card:#ffffff;--card-border:rgba(0,0,0,0.08);
+--cyan:#0288d1;--lime:#2e7d32;--amber:#f57f17;--coral:#e64a19;--pink:#c2185b;
+--purple:#5e35b1;--text:#2c3e50;--text-dim:#78909c;
+--shadow:0 2px 12px rgba(0,0,0,0.06);
+--shadow-hover:0 8px 30px rgba(0,0,0,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sarabun','TH SarabunPSK',sans-serif;background:var(--bg);color:var(--text);line-height:1.85;overflow-x:hidden;scroll-behavior:smooth;font-size:17px}
 
-        .flower {
-            position: fixed;
-            font-size: 30px;
-            animation: float 3s ease-in-out infinite;
-            opacity: 0.6;
-            z-index: 0;
-        }
+/* ===== PARTICLES ===== */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:linear-gradient(135deg,#e8f5e9 0%,#e3f2fd 40%,#f3e5f5 70%,#fff8e1 100%)}
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
+/* ===== NAV ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.06);box-shadow:0 1px 8px rgba(0,0,0,0.04)}
+.nav-inner{max-width:1000px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:1.15rem;font-weight:800;color:var(--cyan);cursor:pointer}
+.nav-links{display:flex;gap:12px;align-items:center}
+.nav-link{padding:6px 14px;border-radius:16px;font-size:.85rem;color:var(--text);text-decoration:none;transition:.3s;border:1px solid transparent;font-weight:600}
+.nav-link:hover{background:rgba(2,136,209,0.1);border-color:rgba(2,136,209,0.25);color:var(--cyan)}
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
-        }
+/* ===== HERO ===== */
+.hero{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 20px 40px}
+.hero-icon{font-size:80px;animation:pulse 2.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.hero-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;color:var(--text);margin:20px 0 12px}
+.hero-sub{font-size:clamp(1rem,2vw,1.25rem);color:var(--text-dim);margin-bottom:30px}
+.hero-badge{display:inline-block;padding:10px 24px;border-radius:25px;background:linear-gradient(135deg,rgba(2,136,209,0.12),rgba(46,125,50,0.08));border:1px solid rgba(2,136,209,0.2);color:var(--cyan);font-size:.95rem;font-weight:700;margin-bottom:20px}
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+/* ===== CONTENT ===== */
+.content{max-width:960px;margin:0 auto;padding:40px 20px}
+.section{margin-bottom:60px;opacity:0;transform:translateY(30px);animation:fadeUp .8s ease forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.section-label{font-size:.8rem;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.section-title{font-size:clamp(1.4rem,3vw,2rem);font-weight:800;margin-bottom:20px;color:var(--text)}
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
+/* ===== CARDS ===== */
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;transition:.3s}
+.card:hover{box-shadow:var(--shadow-hover)}
+.card h3{font-size:1.15rem;font-weight:700;cursor:pointer;padding:20px 50px 20px 24px;margin:0;position:relative;user-select:none;transition:color .3s}
+.card h3:hover{color:var(--cyan)}
+.card h3::after{content:'＋';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--text-dim);transition:transform .3s,color .3s}
+.card.open h3::after{content:'－';color:var(--cyan)}
+.card-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1),padding .3s;padding:0 24px}
+.card.open .card-body{max-height:5000px;padding:0 24px 24px}
 
-        .header p {
-            font-size: 1.2em;
-            color: #666;
-            -webkit-text-fill-color: #666;
-        }
+/* ===== IMAGES ===== */
+.img-wrap{text-align:center;margin:20px 0}
+.img-wrap img{max-width:100%;height:auto;border-radius:12px;border:1px solid rgba(0,0,0,0.08);box-shadow:0 4px 16px rgba(0,0,0,0.08);transition:transform .3s}
+.img-wrap img:hover{transform:scale(1.02)}
+.img-wrap .cap{margin-top:8px;font-size:.85rem;color:var(--text-dim);font-style:italic}
 
-        .question-card {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+/* ===== TABLES ===== */
+table.t{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0;border-radius:12px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.04)}
+table.t thead th{background:linear-gradient(135deg,#e3f2fd,#e8eaf6);padding:12px 14px;text-align:center;color:var(--cyan);font-weight:700;font-size:.92rem;border-bottom:2px solid rgba(2,136,209,0.15)}
+table.t tbody td{padding:10px 14px;border-bottom:1px solid rgba(0,0,0,0.04);background:#fff;font-size:.95rem;color:#37474f}
+table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 
-        .question-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+/* ===== BOXES ===== */
+.hbox{border-left:4px solid var(--coral);border-radius:0 12px 12px 0;padding:16px 20px;margin:16px 0;background:linear-gradient(135deg,rgba(230,74,25,0.05),#fff)}
+.hbox.info{border-left-color:var(--cyan);background:linear-gradient(135deg,rgba(2,136,209,0.06),#fff)}
+.hbox.good{border-left-color:var(--lime);background:linear-gradient(135deg,rgba(46,125,50,0.05),#fff)}
+.hbox.warn{border-left-color:var(--amber);background:linear-gradient(135deg,rgba(245,127,23,0.06),#fff)}
 
-        .question-card:nth-child(odd) {
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-        }
+.formula-box{background:linear-gradient(135deg,rgba(94,53,177,0.06),rgba(2,136,209,0.04));border:1px solid rgba(94,53,177,0.15);border-radius:12px;padding:18px;margin:16px 0;text-align:center;font-size:1.1rem;font-weight:700;color:#37474f}
 
-        .question-card:nth-child(3n) {
-            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-        }
+.kt{display:inline-block;background:rgba(2,136,209,0.1);color:var(--cyan);padding:3px 12px;border-radius:6px;font-weight:700;font-size:.92rem}
+.hl{background:linear-gradient(120deg,rgba(255,193,7,0.3),rgba(255,152,0,0.2));padding:2px 8px;border-radius:4px;font-weight:700}
 
-        .question-card:nth-child(4n) {
-            background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);
-        }
+/* ===== QUIZ ===== */
+.quiz-section{margin:30px 0;padding:24px;background:linear-gradient(135deg,rgba(94,53,177,0.04),#fff);border:1px solid rgba(94,53,177,0.12);border-radius:16px;box-shadow:var(--shadow)}
+.quiz-section h3{color:var(--purple);font-size:1.2rem;margin-bottom:20px;font-weight:700;cursor:pointer;position:relative;padding-right:40px}
+.quiz-section h3::after{content:'📝';position:absolute;right:0;top:0}
+.quiz-section .quiz-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
+.quiz-section.open .quiz-body{max-height:5000px}
+.quiz-q{background:#fdfdff;border:1px solid rgba(0,0,0,0.06);border-radius:12px;padding:20px;margin-bottom:14px}
+.quiz-q h4{color:var(--cyan);margin-bottom:12px;font-size:1rem;font-weight:700}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{padding:10px 16px;border:1px solid rgba(0,0,0,0.08);border-radius:10px;cursor:pointer;transition:.25s;font-family:'Sarabun';font-size:.95rem;color:var(--text);background:#fff;text-align:left;font-weight:600}
+.quiz-opt:hover{border-color:var(--cyan);background:rgba(2,136,209,0.05)}
+.quiz-opt.correct{border-color:#2e7d32;background:rgba(46,125,50,0.1);color:#2e7d32}
+.quiz-opt.wrong{border-color:#c62828;background:rgba(198,40,40,0.08);color:#c62828}
+.quiz-opt.disabled{pointer-events:none;opacity:.7}
+.quiz-fb{margin-top:10px;padding:10px;border-radius:8px;display:none;font-weight:700;font-size:.92rem}
+.quiz-fb.show{display:block;animation:fadeUp .35s ease}
 
-        .question-card:nth-child(5n) {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-        }
+/* ===== EXPAND BTN ===== */
+.expand-all-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:20px;border:1px solid var(--card-border);background:#fff;color:var(--text-dim);font-size:.85rem;font-weight:700;cursor:pointer;transition:.3s;font-family:inherit;margin-bottom:16px;box-shadow:var(--shadow)}
+.expand-all-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(2,136,209,0.04)}
 
-        .question-number {
-            display: inline-block;
-            background: white;
-            color: #764ba2;
-            font-weight: bold;
-            padding: 5px 15px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
+/* ===== TREE DIAGRAM ===== */
+.tree-container{background:#fff;border:1px solid var(--card-border);border-radius:16px;padding:40px 20px;box-shadow:var(--shadow);overflow-x:auto;margin:20px 0}
+.tree{display:flex;flex-direction:column;align-items:center;min-width:800px}
+.tree-level{display:flex;justify-content:center;margin:20px 0;gap:20px;position:relative}
+.tree-node{
+  background:linear-gradient(135deg,#e3f2fd,#f3e5f5);
+  border:2px solid var(--cyan);
+  border-radius:12px;
+  padding:12px 20px;
+  min-width:140px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .3s;
+  position:relative;
+  font-weight:700;
+  font-size:.95rem;
+  opacity:0;
+  transform:scale(0.8) translateY(-20px);
+}
+.tree-node.show{
+  animation:nodeAppear .5s ease forwards;
+}
+@keyframes nodeAppear{
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.tree-node:hover{
+  transform:scale(1.05) translateY(-2px);
+  box-shadow:var(--shadow-hover);
+  border-color:var(--purple);
+}
+.tree-node.active{
+  background:linear-gradient(135deg,#0288d1,#5e35b1);
+  color:#fff;
+  border-color:var(--cyan);
+}
+.tree-node.clickable::after{
+  content:'▼';
+  display:block;
+  font-size:.7rem;
+  margin-top:4px;
+  color:var(--cyan);
+}
+.tree-node.active::after{
+  color:#fff;
+}
+.tree-lines{
+  position:relative;
+  height:40px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.tree-line{
+  position:absolute;
+  background:var(--cyan);
+  opacity:0;
+  transition:opacity .3s;
+}
+.tree-line.show{
+  opacity:0.4;
+  animation:lineGrow .4s ease forwards;
+}
+@keyframes lineGrow{
+  from{transform:scaleY(0)}
+  to{transform:scaleY(1);opacity:0.4}
+}
+.tree-line.vertical{
+  width:2px;
+  height:100%;
+  top:0;
+}
+.tree-line.horizontal{
+  height:2px;
+  top:50%;
+}
+.tree-controls{
+  text-align:center;
+  margin:20px 0;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.tree-btn{
+  padding:8px 16px;
+  border-radius:20px;
+  border:1px solid var(--cyan);
+  background:#fff;
+  color:var(--cyan);
+  font-family:'Sarabun';
+  font-size:.85rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+.tree-btn:hover{
+  background:var(--cyan);
+  color:#fff;
+}
 
-        .question-text {
-            font-size: 1.15em;
-            margin-bottom: 15px;
-            color: #333;
-            font-weight: 500;
-        }
+/* ===== CHART ===== */
+.chart-container{text-align:center;margin:30px 0}
+.pie-chart{display:inline-block;width:300px;height:300px;border-radius:50%;background:conic-gradient(
+  from 0deg,
+  #1e88e5 0deg 97.2deg,
+  #e53935 97.2deg 277.2deg,
+  #43a047 277.2deg 327.6deg,
+  #8e24aa 327.6deg 356.4deg,
+  #00acc1 356.4deg 360deg
+);box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+.legend{margin-top:20px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.9rem}
+.legend-color{width:16px;height:16px;border-radius:3px}
 
-        .options {
-            margin-left: 10px;
-        }
+/* ===== FOOTER ===== */
+.footer{text-align:center;padding:40px 20px;border-top:1px solid rgba(0,0,0,0.06);color:var(--text-dim);font-size:.85rem;margin-top:60px}
 
-        .option {
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-        }
-
-        input[type="radio"] {
-            margin-right: 10px;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        label {
-            cursor: pointer;
-            font-size: 1.05em;
-            color: #333;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.3em;
-            border-radius: 50px;
-            cursor: pointer;
-            display: block;
-            margin: 30px auto;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.6);
-        }
-
-        .result {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 20px;
-            color: white;
-            font-size: 1.5em;
-            margin-top: 20px;
-        }
-
-        .emoji {
-            font-size: 3em;
-            margin: 10px 0;
-        }
-    </style>
+@media(max-width:768px){
+  .nav-links{flex-direction:column;gap:6px}
+  .card h3{padding:16px 44px 16px 18px}
+  .card.open .card-body{padding:0 18px 18px}
+}
+</style>
 </head>
 <body>
-    <div class="flower" style="top: 10%; left: 5%;">🌸</div>
-    <div class="flower" style="top: 20%; right: 10%; animation-delay: 0.5s;">🌺</div>
-    <div class="flower" style="top: 60%; left: 8%; animation-delay: 1s;">🌼</div>
-    <div class="flower" style="top: 80%; right: 15%; animation-delay: 1.5s;">🌻</div>
-    <div class="flower" style="top: 40%; right: 5%; animation-delay: 2s;">🌷</div>
 
-    <div class="container">
-        <div class="header">
-            <h1>🌸 แบบทดสอบคณิตศาสตร์ 🌸</h1>
-            <p>วิชา ค12101 | ทำได้เท่าไหร่เอาเท่านั้น 💕</p>
-        </div>
+<div id="particles"></div>
 
-        <form id="quizForm">
-            <div class="question-card">
-                <span class="question-number">ข้อ 1</span>
-                <div class="question-text">25 + 13 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q1" value="a" id="q1a">
-                        <label for="q1a">38</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q1" value="b" id="q1b">
-                        <label for="q1b">37</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q1" value="c" id="q1c">
-                        <label for="q1c">36</label>
-                    </div>
-                </div>
-            </div>
+<!-- NAV -->
+<nav class="nav">
+<div class="nav-inner">
+<div class="nav-logo" onclick="scrollTo({top:0,behavior:'smooth'})">🧪 วิทย์ ม.2</div>
+<div class="nav-links">
+<a href="#intro" class="nav-link">บทนำ</a>
+<a href="#classification" class="nav-link">การจำแนก</a>
+<a href="#components" class="nav-link">องค์ประกอบ</a>
+<a href="#examples" class="nav-link">ตัวอย่าง</a>
+<a href="#quiz" class="nav-link">แบบฝึกหัด</a>
+</div>
+</div>
+</nav>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 2</span>
-                <div class="question-text">47 - 21 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q2" value="a" id="q2a">
-                        <label for="q2a">25</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q2" value="b" id="q2b">
-                        <label for="q2b">26</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q2" value="c" id="q2c">
-                        <label for="q2c">27</label>
-                    </div>
-                </div>
-            </div>
+<!-- HERO -->
+<section class="hero">
+<div class="hero-icon">🧪</div>
+<h1 class="hero-title">องค์ประกอบของสารละลาย</h1>
+<p class="hero-sub">Components of Solutions — Grade 8 Science</p>
+<div class="hero-badge">📚 หน่วยที่ 2 สารละลาย · บทที่ 1</div>
+</section>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 3</span>
-                <div class="question-text">3 × 7 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q3" value="a" id="q3a">
-                        <label for="q3a">20</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q3" value="b" id="q3b">
-                        <label for="q3b">21</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q3" value="c" id="q3c">
-                        <label for="q3c">24</label>
-                    </div>
-                </div>
-            </div>
+<!-- CONTENT -->
+<div class="content" id="intro">
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 4</span>
-                <div class="question-text">16 ÷ 4 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q4" value="a" id="q4a">
-                        <label for="q4a">3</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q4" value="b" id="q4b">
-                        <label for="q4b">4</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q4" value="c" id="q4c">
-                        <label for="q4c">5</label>
-                    </div>
-                </div>
-            </div>
+<!-- จุดประสงค์ -->
+<div class="section" style="animation-delay:.1s">
+<div class="section-label">Learning Objectives</div>
+<h2 class="section-title">🎯 จุดประสงค์การเรียนรู้</h2>
+<div class="hbox info">
+<p><strong>เมื่อจบบทเรียนนี้ นักเรียนจะสามารถ:</strong></p>
+<ol style="padding-left:20px;margin-top:12px">
+<li style="margin:8px 0">ระบุองค์ประกอบของสารละลายได้ว่าสารใดเป็นตัวละลายหรือตัวทำละลาย</li>
+<li style="margin:8px 0">อธิบายผลของชนิดตัวละลาย ชนิดตัวทำละลาย อุณหภูมิ และความดันที่มีต่อสภาพละลายได้ของสาร</li>
+</ol>
+</div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 5</span>
-                <div class="question-text">52 + 36 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q5" value="a" id="q5a">
-                        <label for="q5a">88</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q5" value="b" id="q5b">
-                        <label for="q5b">87</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q5" value="c" id="q5c">
-                        <label for="q5c">86</label>
-                    </div>
-                </div>
-            </div>
+<!-- แผนภูมิจำแนกสาร -->
+<div class="section" style="animation-delay:.15s" id="classification">
+<div class="section-label">Classification</div>
+<h2 class="section-title">🌳 การจำแนกชนิดของสาร</h2>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 6</span>
-                <div class="question-text">6 × 5 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q6" value="a" id="q6a">
-                        <label for="q6a">25</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q6" value="b" id="q6b">
-                        <label for="q6b">30</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q6" value="c" id="q6c">
-                        <label for="q6c">35</label>
-                    </div>
-                </div>
-            </div>
+<div class="tree-container">
+<div class="tree-controls">
+<button class="tree-btn" onclick="showNextLevel()">▶️ แสดงระดับถัดไป</button>
+<button class="tree-btn" onclick="showAllLevels()">📋 แสดงทั้งหมด</button>
+<button class="tree-btn" onclick="resetTree()">🔄 เริ่มใหม่</button>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 7</span>
-                <div class="question-text">83 - 57 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q7" value="a" id="q7a">
-                        <label for="q7a">26</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q7" value="b" id="q7b">
-                        <label for="q7b">27</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q7" value="c" id="q7c">
-                        <label for="q7c">25</label>
-                    </div>
-                </div>
-            </div>
+<div class="tree" id="matterTree">
+<!-- Level 1: Root -->
+<div class="tree-level" data-level="0">
+<div class="tree-node show active clickable" data-id="root" onclick="expandNode('root')">
+ชนิดของสาร<br><small style="font-size:.75rem;font-weight:400">Matter</small>
+</div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 8</span>
-                <div class="question-text">20 ÷ 5 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q8" value="a" id="q8a">
-                        <label for="q8a">4</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q8" value="b" id="q8b">
-                        <label for="q8b">5</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q8" value="c" id="q8c">
-                        <label for="q8c">3</label>
-                    </div>
-                </div>
-            </div>
+<!-- Lines Level 1 to 2 -->
+<div class="tree-lines" id="lines-1" style="display:none">
+<div class="tree-line vertical" style="left:50%"></div>
+<div class="tree-line horizontal" style="width:300px;left:calc(50% - 150px)"></div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 9</span>
-                <div class="question-text">9 × 3 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q9" value="a" id="q9a">
-                        <label for="q9a">27</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q9" value="b" id="q9b">
-                        <label for="q9b">24</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q9" value="c" id="q9c">
-                        <label for="q9c">28</label>
-                    </div>
-                </div>
-            </div>
+<!-- Level 2: Pure vs Mixture -->
+<div class="tree-level" data-level="1" style="display:none" id="level-1">
+<div class="tree-node clickable" data-id="pure" data-parent="root" onclick="expandNode('pure')">
+สารเนื้อเดียว<br><small style="font-size:.75rem;font-weight:400">Pure Substance</small>
+</div>
+<div class="tree-node clickable" data-id="mixture" data-parent="root" onclick="expandNode('mixture')">
+สารเนื้อผสม<br><small style="font-size:.75rem;font-weight:400">Mixture</small>
+</div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 10</span>
-                <div class="question-text">64 + 25 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q10" value="a" id="q10a">
-                        <label for="q10a">89</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q10" value="b" id="q10b">
-                        <label for="q10b">88</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q10" value="c" id="q10c">
-                        <label for="q10c">90</label>
-                    </div>
-                </div>
-            </div>
+<!-- Lines Level 2 to 3 (Pure) -->
+<div class="tree-lines" id="lines-2-pure" style="display:none;width:300px;margin-left:calc(25% - 150px)">
+<div class="tree-line vertical" style="left:50%"></div>
+<div class="tree-line horizontal" style="width:200px;left:calc(50% - 100px)"></div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 11</span>
-                <div class="question-text">12 ÷ 2 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q11" value="a" id="q11a">
-                        <label for="q11a">6</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q11" value="b" id="q11b">
-                        <label for="q11b">5</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q11" value="c" id="q11c">
-                        <label for="q11c">7</label>
-                    </div>
-                </div>
-            </div>
+<!-- Level 3: Element & Solution -->
+<div class="tree-level" data-level="2" style="display:none;width:300px;margin-left:calc(25% - 150px)" id="level-2-pure">
+<div class="tree-node" data-parent="pure">
+สารบริสุทธิ์<br><small style="font-size:.75rem;font-weight:400">Element</small>
+</div>
+<div class="tree-node clickable" data-id="solution" data-parent="pure" onclick="expandNode('solution')">
+สารละลาย<br><small style="font-size:.75rem;font-weight:400">Solution</small>
+</div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 12</span>
-                <div class="question-text">90 - 34 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q12" value="a" id="q12a">
-                        <label for="q12a">56</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q12" value="b" id="q12b">
-                        <label for="q12b">55</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q12" value="c" id="q12c">
-                        <label for="q12c">57</label>
-                    </div>
-                </div>
-            </div>
+<!-- Lines Level 2 to 3 (Mixture) -->
+<div class="tree-lines" id="lines-2-mixture" style="display:none;width:300px;margin-left:calc(75% - 150px)">
+<div class="tree-line vertical" style="left:50%"></div>
+<div class="tree-line horizontal" style="width:200px;left:calc(50% - 100px)"></div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 13</span>
-                <div class="question-text">7 × 8 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q13" value="a" id="q13a">
-                        <label for="q13a">56</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q13" value="b" id="q13b">
-                        <label for="q13b">54</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q13" value="c" id="q13c">
-                        <label for="q13c">58</label>
-                    </div>
-                </div>
-            </div>
+<!-- Level 3: Colloid, Suspension -->
+<div class="tree-level" data-level="2" style="display:none;width:300px;margin-left:calc(75% - 150px)" id="level-2-mixture">
+<div class="tree-node" data-parent="mixture">
+คอลลอยด์<br><small style="font-size:.75rem;font-weight:400">Colloid</small>
+</div>
+<div class="tree-node" data-parent="mixture">
+สารแขวนลอย<br><small style="font-size:.75rem;font-weight:400">Suspension</small>
+</div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 14</span>
-                <div class="question-text">18 ÷ 3 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q14" value="a" id="q14a">
-                        <label for="q14a">6</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q14" value="b" id="q14b">
-                        <label for="q14b">5</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q14" value="c" id="q14c">
-                        <label for="q14c">7</label>
-                    </div>
-                </div>
-            </div>
+<!-- Lines Level 3 to 4 (Solution) -->
+<div class="tree-lines" id="lines-3-solution" style="display:none;width:200px;margin-left:calc(25% - 100px)">
+<div class="tree-line vertical" style="left:50%"></div>
+<div class="tree-line horizontal" style="width:180px;left:calc(50% - 90px)"></div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 15</span>
-                <div class="question-text">ไม้บรรทัดใช้วัดอะไร?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q15" value="a" id="q15a">
-                        <label for="q15a">ความยาว</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q15" value="b" id="q15b">
-                        <label for="q15b">น้ำหนัก</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q15" value="c" id="q15c">
-                        <label for="q15c">เวลา</label>
-                    </div>
-                </div>
-            </div>
+<!-- Level 4: Element & Compound under Solution -->
+<div class="tree-level" data-level="3" style="display:none;width:220px;margin-left:calc(25% - 110px)" id="level-3-solution">
+<div class="tree-node" data-parent="solution">
+ธาตุ<br><small style="font-size:.7rem;font-weight:400">Element</small>
+</div>
+<div class="tree-node" data-parent="solution">
+สารประกอบ<br><small style="font-size:.7rem;font-weight:400">Compound</small>
+</div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 16</span>
-                <div class="question-text">45 + 38 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q16" value="a" id="q16a">
-                        <label for="q16a">83</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q16" value="b" id="q16b">
-                        <label for="q16b">82</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q16" value="c" id="q16c">
-                        <label for="q16c">84</label>
-                    </div>
-                </div>
-            </div>
+</div>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 17</span>
-                <div class="question-text">1 กิโลกรัม มีกี่กรัม?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q17" value="a" id="q17a">
-                        <label for="q17a">1,000 กรัม</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q17" value="b" id="q17b">
-                        <label for="q17b">100 กรัม</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q17" value="c" id="q17c">
-                        <label for="q17c">500 กรัม</label>
-                    </div>
-                </div>
-            </div>
+<div class="hbox info" style="margin:20px 0">
+<p><strong>💡 วิธีใช้:</strong> คลิกที่กล่องที่มีเครื่องหมาย ▼ เพื่อแสดงประเภทย่อยของสารนั้นๆ หรือคลิก "แสดงระดับถัดไป" เพื่อดูทีละขั้น</p>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 18</span>
-                <div class="question-text">4 × 9 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q18" value="a" id="q18a">
-                        <label for="q18a">36</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q18" value="b" id="q18b">
-                        <label for="q18b">35</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q18" value="c" id="q18c">
-                        <label for="q18c">32</label>
-                    </div>
-                </div>
-            </div>
+<table class="t" style="margin-top:20px">
+<thead><tr><th>ประเภทสาร</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr></thead>
+<tbody>
+<tr>
+<td><strong>สารเนื้อเดียว</strong></td>
+<td>สารที่มีองค์ประกอบสม่ำเสมอทั่วทั้งสาร</td>
+<td>น้ำกลั่น, เกลือบริสุทธิ์, ทองคำ</td>
+</tr>
+<tr>
+<td><strong>สารบริสุทธิ์</strong></td>
+<td>ธาตุที่ไม่สามารถแยกเป็นสารที่เรียบง่ายกว่าได้</td>
+<td>ทองคำ, เงิน, ออกซิเจน</td>
+</tr>
+<tr>
+<td><strong>สารละลาย</strong></td>
+<td>สารที่เป็นเนื้อเดียว ประกอบด้วยธาตุและสารประกอบ</td>
+<td>น้ำเกลือ, น้ำหวาน, น้ำส้มสายชู</td>
+</tr>
+<tr>
+<td><strong>ธาตุ</strong></td>
+<td>สารบริสุทธิ์ที่ประกอบด้วยอะตอมชนิดเดียว</td>
+<td>โซเดียม, คลอรีน, คาร์บอน</td>
+</tr>
+<tr>
+<td><strong>สารประกอบ</strong></td>
+<td>สารที่เกิดจากธาตุตั้งแต่ 2 ชนิดขึ้นไปรวมกัน</td>
+<td>น้ำ (H₂O), เกลือ (NaCl)</td>
+</tr>
+<tr>
+<td><strong>สารเนื้อผสม</strong></td>
+<td>สารที่ประกอบด้วยสารตั้งแต่ 2 ชนิดขึ้นไป ผสมกัน</td>
+<td>อากาศ, น้ำทะเล, นม</td>
+</tr>
+<tr>
+<td><strong>คอลลอยด์</strong></td>
+<td>สารเนื้อผสมที่อนุภาคกระจายขนาด 1-100 nm</td>
+<td>นม, เจล, ควัน</td>
+</tr>
+<tr>
+<td><strong>สารแขวนลอย</strong></td>
+<td>สารเนื้อผสมที่อนุภาคใหญ่ มองเห็นได้</td>
+<td>น้ำโคลน, น้ำส้ม</td>
+</tr>
+</tbody>
+</table>
+</div>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 19</span>
-                <div class="question-text">72 - 46 = ?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q19" value="a" id="q19a">
-                        <label for="q19a">26</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q19" value="b" id="q19b">
-                        <label for="q19b">27</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q19" value="c" id="q19c">
-                        <label for="q19c">25</label>
-                    </div>
-                </div>
-            </div>
+<!-- ทบทวนความรู้ -->
+<div class="section" style="animation-delay:.2s">
+<div class="section-label">Review</div>
+<h2 class="section-title">📖 ทบทวนความรู้ก่อนเรียน</h2>
 
-            <div class="question-card">
-                <span class="question-number">ข้อ 20</span>
-                <div class="question-text">นาฬิกาใช้วัดอะไร?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q20" value="a" id="q20a">
-                        <label for="q20a">เวลา</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q20" value="b" id="q20b">
-                        <label for="q20b">ความยาว</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q20" value="c" id="q20c">
-                        <label for="q20c">น้ำหนัก</label>
-                    </div>
-                </div>
-            </div>
+<button class="expand-all-btn" onclick="toggleAllCards(this)">📖 เปิดทั้งหมด</button>
 
-            <button type="submit" class="submit-btn">ส่งคำตอบ 🌸</button>
-        </form>
+<div class="card">
+<h3 style="color:var(--cyan)">❓ สารละลายเป็นสารเนื้อเดียวหรือเนื้อผสม?</h3>
+<div class="card-body">
+<div class="hbox good">
+<p><strong>✓ คำตอบ:</strong> สารละลายเป็น<span class="hl">สารเนื้อเดียวเสมอ</span></p>
+<p style="margin-top:10px">สารละลายที่ได้จากการผสมสาร 2 ชนิดเข้าด้วยกันจะมีสมบัติสม่ำเสมอและเป็นเนื้อเดียวกันทั่วทั้งสารละลาย ไม่สามารถแยกองค์ประกอบออกจากกันโดยวิธีกลได้</p>
+</div>
+<p style="margin-top:16px"><strong>ตัวอย่างสารละลาย:</strong> น้ำชา น้ำหวาน น้ำโซดา</p>
+<p style="margin-top:8px"><strong>ไม่ใช่สารละลาย:</strong> น้ำส้ม น้ำผลไม้ (เป็นสารเนื้อผสม)</p>
+</div>
+</div>
 
-        <div id="result" class="result"></div>
-    </div>
+<div class="card">
+<h3 style="color:var(--cyan)">❓ การผสมสาร 2 ชนิดเสมอเกิดการละลายหรือไม่?</h3>
+<div class="card-body">
+<div class="hbox warn">
+<p><strong>✗ ไม่เสมอไป!</strong></p>
+<p style="margin-top:10px">สาร 2 ชนิดเมื่อผสมเป็นเนื้อเดียวกันอาจ<strong>ไม่เกิดการละลายกันเสมอไป</strong> แต่อาจเกิด<span class="hl">ปฏิกิริยาเคมี</span>ก็ได้</p>
+</div>
+<p style="margin-top:16px"><strong>ตัวอย่าง:</strong></p>
+<ul style="padding-left:20px;margin-top:8px">
+<li>กรด + เบส → เกิดปฏิกิริยาเคมี ไม่ใช่การละลาย</li>
+<li>น้ำตาล + น้ำ → เกิดการละลาย</li>
+</ul>
+</div>
+</div>
 
-    <script>
-        const answers = {
-            q1: 'a', q2: 'b', q3: 'b', q4: 'b', q5: 'a',
-            q6: 'b', q7: 'a', q8: 'a', q9: 'a', q10: 'a',
-            q11: 'a', q12: 'a', q13: 'a', q14: 'a', q15: 'a',
-            q16: 'a', q17: 'a', q18: 'a', q19: 'a', q20: 'a'
-        };
+<div class="card">
+<h3 style="color:var(--cyan)">❓ น้ำแข็งเปลี่ยนเป็นน้ำคือการละลายหรือไม่?</h3>
+<div class="card-body">
+<div class="hbox warn">
+<p><strong>✗ ไม่ใช่การละลาย!</strong></p>
+<p style="margin-top:10px">น้ำแข็งเปลี่ยนเป็นน้ำเป็นการ<span class="hl">เปลี่ยนสถานะ</span>จากของแข็งเป็นของเหลว เรียกว่า <span class="kt">การหลอมเหลว (Melting)</span> ไม่ใช่การละลาย</p>
+</div>
+<table class="t" style="margin-top:16px">
+<thead><tr><th>การเปลี่ยนสถานะ</th><th>การละลาย</th></tr></thead>
+<tbody>
+<tr><td>สารชนิดเดียว</td><td>สาร 2 ชนิดขึ้นไป</td></tr>
+<tr><td>สถานะเปลี่ยน</td><td>สถานะอาจไม่เปลี่ยน</td></tr>
+<tr><td>ตัวอย่าง: น้ำแข็ง→น้ำ</td><td>ตัวอย่าง: เกลือ+น้ำ</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 
-        document.getElementById('quizForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let score = 0;
-            let total = 20;
-            
-            for (let q in answers) {
-                const selected = document.querySelector(`input[name="${q}"]:checked`);
-                if (selected && selected.value === answers[q]) {
-                    score++;
-                }
-            }
-            
-            let emoji = '';
-            let message = '';
-            let percentage = (score / total) * 100;
-            
-            if (percentage >= 90) {
-                emoji = '🌟🎉🏆';
-                message = 'เก่งมาก! คุณเป็นดาวเด่นเลยค่ะ!';
-            } else if (percentage >= 80) {
-                emoji = '😊🌸✨';
-                message = 'เยี่ยมมาก! ทำได้ดีมากเลยค่ะ!';
-            } else if (percentage >= 70) {
-                emoji = '👍💐🌼';
-                message = 'ดีมากเลยค่ะ! พัฒนาต่อไปนะ!';
-            } else if (percentage >= 60) {
-                emoji = '😊🌺';
-                message = 'ผ่านแล้วค่ะ เก่งมาก!';
-            } else {
-                emoji = '💪🌻';
-                message = 'สู้ต่อไปนะคะ คุณทำได้!';
-            }
-            
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `
-                <div class="emoji">${emoji}</div>
-                <div>คะแนนของคุณ: ${score} / ${total}</div>
-                <div style="font-size: 1.2em; margin-top: 10px;">${message}</div>
-                <div style="font-size: 0.9em; margin-top: 15px; opacity: 0.9;">
-                    ${percentage.toFixed(0)}% 🎯
-                </div>
-            `;
-            resultDiv.style.display = 'block';
-            
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
+</div>
+
+<!-- องค์ประกอบของสารละลาย -->
+<div class="section" style="animation-delay:.3s" id="components">
+<div class="section-label">Components</div>
+<h2 class="section-title">⚗️ องค์ประกอบของสารละลาย</h2>
+
+<div class="card">
+<h3 style="color:var(--lime)">1. สารละลายคืออะไร?</h3>
+<div class="card-body">
+<div class="formula-box">
+<strong>สารละลาย (Solution)</strong> = ตัวทำละลาย (Solvent) + ตัวละลาย (Solute)
+</div>
+
+<p><span class="kt">สารละลาย</span> คือ สารผสมที่<strong>เป็นเนื้อเดียว</strong>ซึ่งเกิดจากการละลายของสารอย่างน้อย <strong>2 ชนิด</strong>เข้าด้วยกัน</p>
+
+<table class="t" style="margin-top:20px">
+<thead><tr><th>คำศัพท์</th><th>ภาษาอังกฤษ</th><th>ความหมาย</th></tr></thead>
+<tbody>
+<tr><td><strong>ตัวทำละลาย</strong></td><td>Solvent</td><td>สารที่มีปริมาณ<strong>มากกว่า</strong> ทำหน้าที่ละลายสาร</td></tr>
+<tr><td><strong>ตัวละลาย</strong></td><td>Solute</td><td>สารที่มีปริมาณ<strong>น้อยกว่า</strong> ถูกละลายโดยตัวทำละลาย</td></tr>
+<tr><td><strong>สารละลาย</strong></td><td>Solution</td><td>ผลลัพธ์ที่ได้จากการละลาย เป็นเนื้อเดียว</td></tr>
+</tbody>
+</table>
+
+<div class="img-wrap">
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 300'%3E%3Crect fill='%23e3f2fd' width='600' height='300'/%3E%3Ccircle cx='150' cy='150' r='80' fill='%230288d1' opacity='0.3'/%3E%3Ccircle cx='450' cy='150' r='80' fill='%238e24aa' opacity='0.8'/%3E%3Ctext x='150' y='260' font-size='24' text-anchor='middle' font-family='Arial' fill='%230288d1' font-weight='bold'%3Eตัวละลาย%3C/text%3E%3Ctext x='150' y='285' font-size='18' text-anchor='middle' font-family='Arial' fill='%23666'%3ESolute%3C/text%3E%3Ctext x='450' y='260' font-size='24' text-anchor='middle' font-family='Arial' fill='%238e24aa' font-weight='bold'%3Eตัวทำละลาย%3C/text%3E%3Ctext x='450' y='285' font-size='18' text-anchor='middle' font-family='Arial' fill='%23666'%3ESolvent%3C/text%3E%3Cpath d='M 230 150 L 370 150' stroke='%23333' stroke-width='3' marker-end='url(%23arrow)'/%3E%3Cdefs%3E%3Cmarker id='arrow' markerWidth='10' markerHeight='10' refX='5' refY='3' orient='auto'%3E%3Cpath d='M0,0 L0,6 L9,3 z' fill='%23333'/%3E%3C/marker%3E%3C/defs%3E%3Ctext x='300' y='135' font-size='20' text-anchor='middle' font-family='Arial' fill='%23333' font-weight='bold'%3Eผสม%3C/text%3E%3C/svg%3E" alt="Solute + Solvent">
+<div class="cap">ตัวละลาย + ตัวทำละลาย = สารละลาย</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--lime)">2. เกณฑ์การระบุตัวละลายและตัวทำละลาย</h3>
+<div class="card-body">
+<div class="hbox good">
+<p><strong>📌 กฎ 1: สารละลายประกอบ ด้วยสาร<u>ต่างสถานะ</u>กัน</strong></p>
+<p style="margin-top:8px">👉 <span class="hl">ตัวทำละลายมีสถานะเดียวกันกับสารละลาย</span></p>
+</div>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">📊 ตารางวิเคราะห์สถานะและปริมาณองค์ประกอบ</h4>
+<p style="margin-bottom:12px;font-size:.95rem;color:var(--text-dim)">วิเคราะห์ข้อมูลในตารางเพื่อระบุตัวละลายและตัวทำละลาย</p>
+
+<table class="t" style="margin-top:16px">
+<thead>
+<tr>
+<th rowspan="2">สารละลาย</th>
+<th colspan="2">องค์ประกอบของสารละลาย</th>
+</tr>
+<tr>
+<th style="background:#e8f5e9">ตัวทำละลาย (Solvent)</th>
+<th style="background:#fff3e0">ตัวละลาย (Solute)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>น้ำหวาน</strong> (ของเหลว)</td>
+<td style="background:#e8f5e9">น้ำ (ของเหลว) <strong>ร้อยละ 86</strong></td>
+<td style="background:#fff3e0">
+• น้ำตาลทราย (ของแข็ง) ร้อยละ 12<br>
+• สารปรุงแต่ง (ของแข็ง) ร้อยละ 2
+</td>
+</tr>
+<tr>
+<td><strong>น้ำเชื่อมเมเปิล</strong> (ของเหลว)</td>
+<td style="background:#e8f5e9">น้ำ (ของเหลว) <strong>ร้อยละ 33</strong></td>
+<td style="background:#fff3e0">
+• น้ำตาลทราย (ของแข็ง) ร้อยละ 60<br>
+• น้ำตาลอื่นๆ (ของแข็ง) ร้อยละ 7
+</td>
+</tr>
+<tr>
+<td><strong>น้ำโซดา</strong> (ของเหลว)</td>
+<td style="background:#e8f5e9">น้ำ (ของเหลว) <strong>ร้อยละ 99.5</strong></td>
+<td style="background:#fff3e0">
+แก๊สคาร์บอนไดออกไซด์ (แก๊ส) ร้อยละ 0.5
+</td>
+</tr>
+</tbody>
+</table>
+
+<div class="hbox info" style="margin-top:20px">
+<p><strong>🔍 สังเกต:</strong> แม้น้ำมีปริมาณน้อยกว่าน้ำตาล (33% < 60%) ในน้ำเชื่อมเมเปิล แต่<span class="hl">น้ำยังคงเป็นตัวทำละลาย</span>เพราะมีสถานะเดียวกับสารละลาย (ของเหลว)</p>
+</div>
+
+<div class="hbox good" style="margin-top:24px">
+<p><strong>📌 กฎ 2: สารละลายประกอบด้วยสาร<u>สถานะเหมือนกัน</u></strong></p>
+<p style="margin-top:8px">👉 <span class="hl">สารที่มีปริมาณมากที่สุดจัดเป็นตัวทำละลาย</span> ส่วนองค์ประกอบที่เหลือจัดเป็นตัวละลาย</p>
+</div>
+
+<table class="t" style="margin-top:16px">
+<thead>
+<tr>
+<th rowspan="2">สารละลาย</th>
+<th colspan="2">องค์ประกอบของสารละลาย</th>
+</tr>
+<tr>
+<th style="background:#e8f5e9">ตัวทำละลาย (Solvent)</th>
+<th style="background:#fff3e0">ตัวละลาย (Solute)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ทองชมพู 18K</strong> (ของแข็ง)</td>
+<td style="background:#e8f5e9">ทองคำ (ของแข็ง) <strong>ร้อยละ 75</strong></td>
+<td style="background:#fff3e0">
+• ทองแดง (ของแข็ง) ร้อยละ 16<br>
+• เงิน (ของแข็ง) ร้อยละ 9
+</td>
+</tr>
+<tr>
+<td><strong>น้ำส้มสายชู</strong> (ของเหลว)</td>
+<td style="background:#e8f5e9">น้ำ (ของเหลว) <strong>ร้อยละ 95</strong></td>
+<td style="background:#fff3e0">
+กรดน้ำส้ม (ของเหลว) ร้อยละ 5
+</td>
+</tr>
+<tr>
+<td><strong>อากาศ</strong> (แก๊ส)</td>
+<td style="background:#e8f5e9">ไนโตรเจน (แก๊ส) <strong>ร้อยละ 78</strong></td>
+<td style="background:#fff3e0">
+• ออกซิเจน (แก๊ส) ร้อยละ 21<br>
+• อาร์กอน (แก๊ส) ร้อยละ 0.93<br>
+• คาร์บอนไดออกไซด์ (แก๊ส) ร้อยละ 0.03<br>
+• แก๊สอื่นๆ (แก๊ส) ร้อยละ 0.04
+</td>
+</tr>
+</tbody>
+</table>
+
+<div class="hbox info" style="margin-top:20px">
+<p><strong>💡 เคล็ดลับจำง่าย:</strong></p>
+<ul style="padding-left:20px;margin-top:8px">
+<li style="margin:6px 0">ถ้า<strong>ต่างสถานะ</strong> → ตัวทำละลายมีสถานะ<span class="hl">เดียวกับสารละลาย</span></li>
+<li style="margin:6px 0">ถ้า<strong>เหมือนสถานะ</strong> → ตัวทำละลายมีปริมาณ<span class="hl">มากที่สุด</span></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--lime)">3. ตัวอย่างการวิเคราะห์ภาพแผนภูมิ</h3>
+<div class="card-body">
+<h4 style="color:var(--purple);margin-bottom:16px">🦷 อะมัลกัมอุดฟัน (Dental Amalgam)</h4>
+<p style="margin-bottom:16px">วิเคราะห์องค์ประกอบจากแผนภูมิวงกลม:</p>
+
+<div class="chart-container">
+<div class="pie-chart"></div>
+<div class="legend">
+<div class="legend-item"><div class="legend-color" style="background:#1e88e5"></div> <strong>เงิน</strong> (ของแข็ง) 27%</div>
+<div class="legend-item"><div class="legend-color" style="background:#e53935"></div> <strong>ปรอท</strong> (ของเหลว) 50%</div>
+<div class="legend-item"><div class="legend-color" style="background:#43a047"></div> <strong>ดีบุก</strong> (ของแข็ง) 14%</div>
+<div class="legend-item"><div class="legend-color" style="background:#8e24aa"></div> <strong>ทองแดง</strong> (ของแข็ง) 8%</div>
+<div class="legend-item"><div class="legend-color" style="background:#00acc1"></div> <strong>โลหะอื่นๆ</strong> (ของแข็ง) 1%</div>
+</div>
+</div>
+
+<div class="hbox good" style="margin-top:20px">
+<p><strong>✓ การวิเคราะห์:</strong></p>
+<ul style="padding-left:20px;margin-top:10px">
+<li style="margin:8px 0"><strong>สถานะสารละลาย:</strong> ของแข็ง (อะมัลกัมแข็ง)</li>
+<li style="margin:8px 0"><strong>องค์ประกอบต่างสถานะกัน:</strong> มีทั้งของแข็ง (โลหะ) และของเหลว (ปรอท)</li>
+<li style="margin:8px 0"><strong>ตัวทำละลาย:</strong> <span class="kt">ปรอท 50%</span> (มีสถานะเป็นของเหลว แต่มีปริมาณมากที่สุด)</li>
+<li style="margin:8px 0"><strong>ตัวละลาย:</strong> เงิน 27%, ดีบุก 14%, ทองแดง 8%, โลหะอื่นๆ 1%</li>
+</ul>
+</div>
+
+<div class="hbox warn" style="margin-top:16px">
+<p><strong>⚠️ ข้อควรระวัง:</strong> แม้ปรอทเป็นของเหลว แต่เมื่อผสมกับโลหะอื่นจะแข็งตัวเป็นอะมัลกัม (ของแข็ง) ซึ่งใช้อุดฟันได้</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- ตัวอย่าง -->
+<div class="hbox good">
+<p><strong>📌 กฎ 1: สารละลายประกอบด้วยสาร<u>ต่างสถานะ</u>กัน</strong></p>
+<p style="margin-top:8px">👉 <span class="hl">ตัวทำละลายมีสถานะเดียวกันกับสารละลาย</span></p>
+</div>
+
+<table class="t" style="margin-top:16px">
+<thead><tr><th>สารละลาย</th><th>องค์ประกอบ</th><th>ตัวทำละลาย</th><th>ตัวละลาย</th></tr></thead>
+<tbody>
+<tr>
+<td>น้ำหวาน (ของเหลว)</td>
+<td>น้ำ (ของเหลว) 86%<br>น้ำตาล (ของแข็ง) 12%<br>สารปรุงแต่ง 2%</td>
+<td><strong>น้ำ</strong> (ของเหลว)</td>
+<td>น้ำตาล, สารปรุงแต่ง</td>
+</tr>
+<tr>
+<td>น้ำโซดา (ของเหลว)</td>
+<td>น้ำ (ของเหลว) 99.5%<br>CO₂ (แก๊ส) 0.5%</td>
+<td><strong>น้ำ</strong> (ของเหลว)</td>
+<td>แก๊ส CO₂</td>
+</tr>
+<tr>
+<td>น้ำเชื่อมเมเปิล (ของเหลว)</td>
+<td>น้ำ (ของเหลว) 33%<br>น้ำตาล (ของแข็ง) 67%</td>
+<td><strong>น้ำ</strong> (ของเหลว)</td>
+<td>น้ำตาล</td>
+</tr>
+</tbody>
+</table>
+
+<div class="hbox good" style="margin-top:24px">
+<p><strong>📌 กฎ 2: สารละลายประกอบด้วยสาร<u>สถานะเหมือนกัน</u></strong></p>
+<p style="margin-top:8px">👉 <span class="hl">สารที่มีปริมาณมากกว่าจัดเป็นตัวทำละลาย</span> ส่วนองค์ประกอบที่เหลือจัดเป็นตัวละลาย</p>
+</div>
+
+<table class="t" style="margin-top:16px">
+<thead><tr><th>สารละลาย</th><th>องค์ประกอบ</th><th>ตัวทำละลาย</th><th>ตัวละลาย</th></tr></thead>
+<tbody>
+<tr>
+<td>ทองชมพู 18K (ของแข็ง)</td>
+<td>ทองคำ (ของแข็ง) 75%<br>ทองแดง (ของแข็ง) 16%<br>เงิน (ของแข็ง) 9%</td>
+<td><strong>ทองคำ</strong> (75%)</td>
+<td>ทองแดง, เงิน</td>
+</tr>
+<tr>
+<td>น้ำส้มสายชู (ของเหลว)</td>
+<td>น้ำ (ของเหลว) 95%<br>กรดน้ำส้ม (ของเหลว) 5%</td>
+<td><strong>น้ำ</strong> (95%)</td>
+<td>กรดน้ำส้ม</td>
+</tr>
+<tr>
+<td>อากาศ (แก๊ส)</td>
+<td>N₂ (แก๊ส) 78%<br>O₂ (แก๊ส) 21%<br>แก๊สอื่นๆ 1%</td>
+<td><strong>ไนโตรเจน</strong> (78%)</td>
+<td>ออกซิเจน, แก๊สอื่นๆ</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<!-- ตัวอย่าง -->
+<div class="section" style="animation-delay:.4s" id="examples">
+<div class="section-label">Examples</div>
+<h2 class="section-title">🔍 ตัวอย่างสารละลายในชีวิตประจำวัน</h2>
+
+<div class="card">
+<h3 style="color:var(--purple)">สารละลายของแข็ง (Solid Solutions)</h3>
+<div class="card-body">
+<h4 style="color:var(--cyan);margin-bottom:12px">1. เหล็กกล้าไร้สนิม (Stainless Steel)</h4>
+<p>องค์ประกอบ: <strong>เหล็ก</strong> + โครเมียม + นิกเกิล + โมลิบดีนัม + คาร์บอน</p>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">เหล็ก</span> (มีมากที่สุด)</li>
+<li>ตัวละลาย: โครเมียม นิกเกิล ฯลฯ</li>
+<li>ประโยชน์: ทำช้อน ส้อม หม้อ เครื่องครัว (ไม่เป็นสนิม)</li>
+</ul>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">2. ทองเหลือง (Brass)</h4>
+<p>องค์ประกอบ: <strong>สังกะสี 95%</strong> + ทองแดง 5%</p>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">สังกะสี</span></li>
+<li>ตัวละลาย: ทองแดง</li>
+<li>ประโยชน์: ทำข้อต่อ ก๊อกน้ำ เครื่องดนตรี</li>
+</ul>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">3. อะมัลกัมอุดฟัน (Dental Amalgam)</h4>
+<p>องค์ประกอบ: <strong>ปรอท 50%</strong> + เงิน 27% + ดีบุก 14% + ทองแดง 8% + โลหะอื่นๆ 1%</p>
+<div class="chart-container">
+<div class="pie-chart"></div>
+<div class="legend">
+<div class="legend-item"><div class="legend-color" style="background:#1e88e5"></div> เงิน 27%</div>
+<div class="legend-item"><div class="legend-color" style="background:#e53935"></div> ปรอท 50%</div>
+<div class="legend-item"><div class="legend-color" style="background:#43a047"></div> ดีบุก 14%</div>
+<div class="legend-item"><div class="legend-color" style="background:#8e24aa"></div> ทองแดง 8%</div>
+<div class="legend-item"><div class="legend-color" style="background:#00acc1"></div> อื่นๆ 1%</div>
+</div>
+</div>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">ปรอท</span> (ของเหลว แต่มีมากที่สุด)</li>
+<li>ตัวละลาย: เงิน ดีบุก ทองแดง โลหะอื่นๆ (ของแข็ง)</li>
+<li>ประโยชน์: อุดฟัน (แข็งแรง ทนทาน)</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--purple)">สารละลายของเหลว (Liquid Solutions)</h3>
+<div class="card-body">
+<h4 style="color:var(--cyan);margin-bottom:12px">1. น้ำหวาน</h4>
+<p>องค์ประกอบ: <strong>น้ำ 86%</strong> + น้ำตาลทราย 12% + สารแต่งสีและกลิ่น 2%</p>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">น้ำ</span> (ของเหลว)</li>
+<li>ตัวละลาย: น้ำตาล สารปรุงแต่ง (ของแข็ง)</li>
+</ul>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">2. แอลกอฮอล์ล้างแผล 75%</h4>
+<p>องค์ประกอบ: <strong>เอทิลแอลกอฮอล์ 75%</strong> + น้ำ 25%</p>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">เอทิลแอลกอฮอล์</span> (ของเหลว มีมากกว่า)</li>
+<li>ตัวละลาย: น้ำ (ของเหลว)</li>
+<li>ประโยชน์: ฆ่าเชื้อโรค ทำความสะอาด</li>
+</ul>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">3. น้ำส้มสายชู</h4>
+<p>องค์ประกอบ: <strong>น้ำ 95%</strong> + กรดน้ำส้ม (กรดอะซิติก) 5%</p>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">น้ำ</span></li>
+<li>ตัวละลาย: กรดน้ำส้ม</li>
+<li>ประโยชน์: ปรุงอาหาร ทำความสะอาด</li>
+</ul>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">4. น้ำโซดา (Soda Water)</h4>
+<p>องค์ประกอบ: <strong>น้ำ 99.5%</strong> + CO₂ (แก๊ส) 0.5%</p>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">น้ำ</span> (ของเหลว)</li>
+<li>ตัวละลาย: คาร์บอนไดออกไซด์ (แก๊ส)</li>
+<li>ประโยชน์: เครื่องดื่ม ให้ความซ่า</li>
+<li>หมายเหตุ: CO₂ ละลายในน้ำภายใต้ความดัน</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--purple)">สารละลายแก๊ส (Gas Solutions)</h3>
+<div class="card-body">
+<h4 style="color:var(--cyan);margin-bottom:12px">1. อากาศ</h4>
+<p>องค์ประกอบ: <strong>N₂ 78%</strong> + O₂ 21% + Ar 0.93% + CO₂ 0.03% + แก๊สอื่นๆ 0.04%</p>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">ไนโตรเจน (N₂)</span> (มีมากที่สุด)</li>
+<li>ตัวละลาย: ออกซิเจน อาร์กอน คาร์บอนไดออกไซด์ ฯลฯ</li>
+<li>ความสำคัญ: สิ่งมีชีวิตใช้หายใจ</li>
+</ul>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">2. แก๊สหุงต้ม (LPG)</h4>
+<p>องค์ประกอบ: <strong>โพรเพน 70%</strong> + บิวเทน 30%</p>
+<ul style="padding-left:20px;margin:10px 0">
+<li>ตัวทำละลาย: <span class="kt">โพรเพน</span> (มีมากกว่า)</li>
+<li>ตัวละลาย: บิวเทน</li>
+<li>ประโยชน์: เชื้อเพลิงสำหรับหุงต้ม</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<!-- ปัจจัยที่ส่งผลต่อการละลาย -->
+<div class="section" style="animation-delay:.5s">
+<div class="section-label">Factors</div>
+<h2 class="section-title">🔬 ปัจจัยที่ส่งผลต่อการละลาย</h2>
+
+<div class="card">
+<h3 style="color:var(--amber)">1. ชนิดของตัวละลายและตัวทำละลาย</h3>
+<div class="card-body">
+<div class="formula-box" style="background:linear-gradient(135deg,rgba(245,127,23,0.08),#fff)">
+<strong>"Like dissolves like"</strong><br>
+<span style="font-size:.9rem;font-weight:400">สารที่มีสมบัติคล้ายกันจะละลายกันได้ดี</span>
+</div>
+
+<table class="t">
+<thead><tr><th>ตัวทำละลาย</th><th>ละลายได้ดี</th><th>ละลายได้ไม่ดี</th></tr></thead>
+<tbody>
+<tr>
+<td><strong>น้ำ</strong> (ขั้วโมเลกุล)</td>
+<td>เกลือ น้ำตาล แอลกอฮอล์</td>
+<td>น้ำมัน ไขมัน ขี้ผึ้ง</td>
+</tr>
+<tr>
+<td><strong>น้ำมัน/เบนซิน</strong> (ไม่ขั้ว)</td>
+<td>ไขมัน ขี้ผึ้ง ยาง</td>
+<td>เกลือ น้ำตาล</td>
+</tr>
+</tbody>
+</table>
+
+<div class="hbox info">
+<p><strong>💡 ตัวอย่างในชีวิตประจำวัน:</strong></p>
+<ul style="padding-left:20px;margin-top:8px">
+<li>น้ำตาลละลายน้ำได้ แต่ละลายน้ำมันไม่ได้</li>
+<li>น้ำมันผสมน้ำไม่ได้ แต่ผสมเบนซินได้</li>
+<li>สบู่ช่วยให้น้ำมันละลายน้ำได้ (สบู่เป็นตัวกลาง)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--amber)">2. อุณหภูมิ (Temperature)</h3>
+<div class="card-body">
+<div class="hbox good">
+<p><strong>✓ ของแข็ง + ของเหลว:</strong> <span class="hl">อุณหภูมิสูง → ละลายได้มากขึ้น</span></p>
+<p style="margin-top:8px">ตัวอย่าง: น้ำตาลละลายน้ำร้อนได้เร็วกว่าน้ำเย็น</p>
+</div>
+
+<div class="hbox warn" style="margin-top:16px">
+<p><strong>⚠️ แก๊ส + ของเหลว:</strong> <span class="hl">อุณหภูมิสูง → ละลายได้น้อยลง</span></p>
+<p style="margin-top:8px">ตัวอย่าง: โซดาร้อนจะมีฟองน้อยกว่าโซดาเย็น (CO₂ ออกจากน้ำ)</p>
+</div>
+
+<table class="t" style="margin-top:20px">
+<thead><tr><th>ชนิด</th><th>อุณหภูมิ ↑</th><th>การละลาย</th><th>เหตุผล</th></tr></thead>
+<tbody>
+<tr>
+<td>ของแข็ง→ของเหลว</td>
+<td>เพิ่มขึ้น</td>
+<td style="color:#2e7d32;font-weight:700">↑ มากขึ้น</td>
+<td>พลังงานช่วยทำลายโครงสร้าง</td>
+</tr>
+<tr>
+<td>แก๊ส→ของเหลว</td>
+<td>เพิ่มขึ้น</td>
+<td style="color:#c62828;font-weight:700">↓ น้อยลง</td>
+<td>แก๊สหลุดออกจากของเหลว</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--amber)">3. ความดัน (Pressure)</h3>
+<div class="card-body">
+<div class="hbox info">
+<p><strong>📌 ใช้กับแก๊สเท่านั้น:</strong> <span class="hl">ความดันสูง → แก๊สละลายได้มากขึ้น</span></p>
+</div>
+
+<p style="margin-top:16px"><strong>ตัวอย่าง: น้ำอัดลม (Carbonated Drinks)</strong></p>
+<ul style="padding-left:20px;margin-top:8px">
+<li><strong>ในขวดปิด:</strong> ความดันสูง → CO₂ ละลายในน้ำได้มาก → ไม่มีฟอง</li>
+<li><strong>เปิดขวด:</strong> ความดันลด → CO₂ หลุดออกมา → เกิดฟอง</li>
+<li><strong>เขย่าขวด:</strong> เร่งให้ CO₂ ออกเร็วขึ้น → ฟองมาก</li>
+</ul>
+
+<div class="hbox warn" style="margin-top:16px">
+<p><strong>⚠️ หมายเหตุ:</strong> ความดัน<strong>ไม่มีผล</strong>ต่อการละลายของของแข็งและของเหลว</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--amber)">4. การกวนหรือเขย่า (Stirring)</h3>
+<div class="card-body">
+<div class="hbox good">
+<p><strong>✓ การกวนช่วยให้:</strong></p>
+<ul style="padding-left:20px;margin-top:10px">
+<li style="margin:6px 0">ตัวละลาย<strong>กระจายตัว</strong>สัมผัสตัวทำละลายได้มากขึ้น</li>
+<li style="margin:6px 0">ละลาย<strong>เร็วขึ้น</strong> (แต่ไม่ทำให้ละลายได้มากขึ้น)</li>
+<li style="margin:6px 0">สารละลาย<strong>สม่ำเสมอ</strong>ทั่วทั้งภาชนะ</li>
+</ul>
+</div>
+
+<p style="margin-top:16px"><strong>💡 เปรียบเทียบ:</strong></p>
+<table class="t">
+<thead><tr><th>สภาวะ</th><th>ความเร็วการละลาย</th><th>ปริมาณที่ละลายได้สูงสุด</th></tr></thead>
+<tbody>
+<tr>
+<td>ไม่กวน</td>
+<td style="color:#c62828">ช้า ⏱️</td>
+<td>เท่ากัน</td>
+</tr>
+<tr>
+<td>กวน</td>
+<td style="color:#2e7d32">เร็ว ⚡</td>
+<td>เท่ากัน</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<!-- Quiz -->
+<div class="section" style="animation-delay:.5s" id="quiz">
+<div class="section-label">Quiz</div>
+<h2 class="section-title">✏️ แบบฝึกหัด</h2>
+
+<div class="quiz-section" data-group="q1">
+<h3 onclick="this.parentElement.classList.toggle('open')">แบบทดสอบความเข้าใจ</h3>
+<div class="quiz-body">
+
+<div class="quiz-q"><h4>1. ข้อใดเป็นสารละลาย?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">น้ำส้ม</button>
+<button class="quiz-opt" data-correct="true">น้ำชา</button>
+<button class="quiz-opt" data-correct="false">น้ำนม</button>
+<button class="quiz-opt" data-correct="false">น้ำผลไม้ปั่น</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>2. น้ำตาล 20 กรัม ละลายในน้ำ 80 mL ตัวทำละลายคืออะไร?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">น้ำตาล</button>
+<button class="quiz-opt" data-correct="true">น้ำ</button>
+<button class="quiz-opt" data-correct="false">น้ำหวาน</button>
+<button class="quiz-opt" data-correct="false">ไม่สามารถระบุได้</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>3. เกณฑ์ใดใช้ระบุตัวทำละลายเมื่อสารมีสถานะเดียวกัน?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">สถานะของสาร</button>
+<button class="quiz-opt" data-correct="true">ปริมาณที่มากกว่า</button>
+<button class="quiz-opt" data-correct="false">ความหนาแน่น</button>
+<button class="quiz-opt" data-correct="false">อุณหภูมิเดือด</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>4. อากาศมีตัวทำละลายคืออะไร?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">ออกซิเจน (O₂)</button>
+<button class="quiz-opt" data-correct="true">ไนโตรเจน (N₂)</button>
+<button class="quiz-opt" data-correct="false">คาร์บอนไดออกไซด์ (CO₂)</button>
+<button class="quiz-opt" data-correct="false">อาร์กอน (Ar)</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>5. น้ำแข็งละลายเป็นน้ำเป็นการเปลี่ยนแปลงแบบใด?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">การละลาย (Dissolving)</button>
+<button class="quiz-opt" data-correct="true">การหลอมเหลว (Melting)</button>
+<button class="quiz-opt" data-correct="false">การระเหิด (Sublimation)</button>
+<button class="quiz-opt" data-correct="false">การควบแน่น (Condensation)</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>6. เหล็กกล้าไร้สนิมมีตัวทำละลายคืออะไร?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">โครเมียม</button>
+<button class="quiz-opt" data-correct="false">นิกเกิล</button>
+<button class="quiz-opt" data-correct="true">เหล็ก</button>
+<button class="quiz-opt" data-correct="false">คาร์บอน</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>7. น้ำโซดา (Soda) ประกอบด้วยอะไรบ้าง?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">น้ำ + น้ำตาล</button>
+<button class="quiz-opt" data-correct="true">น้ำ + แก๊ส CO₂</button>
+<button class="quiz-opt" data-correct="false">น้ำ + เกลือ</button>
+<button class="quiz-opt" data-correct="false">น้ำ + กรด</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>8. อะมัลกัมอุดฟันมีตัวทำละลายคืออะไร?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">เงิน</button>
+<button class="quiz-opt" data-correct="true">ปรอท</button>
+<button class="quiz-opt" data-correct="false">ดีบุก</button>
+<button class="quiz-opt" data-correct="false">ทองแดง</button>
+</div><div class="quiz-fb"></div></div>
+
+</div>
+</div>
+
+</div>
+
+<!-- สรุป -->
+<div class="section" style="animation-delay:.6s">
+<div class="section-label">Summary</div>
+<h2 class="section-title">📝 สรุป</h2>
+<div class="hbox info">
+<h3 style="margin-bottom:12px;color:var(--cyan)">สิ่งที่ได้เรียนรู้</h3>
+<ul style="padding-left:20px">
+<li style="margin:10px 0"><strong>สารละลาย</strong> = ตัวทำละลาย (Solvent) + ตัวละลาย (Solute)</li>
+<li style="margin:10px 0"><strong>ถ้าสารต่างสถานะกัน:</strong> ตัวทำละลายมีสถานะเดียวกับสารละลาย</li>
+<li style="margin:10px 0"><strong>ถ้าสารสถานะเหมือนกัน:</strong> สารที่มีปริมาณมากกว่าจัดเป็นตัวทำละลาย</li>
+<li style="margin:10px 0"><strong>สารละลายมี 3 สถานะ:</strong> ของแข็ง ของเหลว แก๊ส</li>
+<li style="margin:10px 0"><strong>สารละลาย</strong>เป็นสารเนื้อเดียวเสมอ</li>
+</ul>
+</div>
+
+<div class="hbox good" style="margin-top:20px">
+<p><strong>💡 เคล็ดลับจำง่าย:</strong></p>
+<p style="margin-top:8px">"<span class="hl">ตัวทำละลาย</span>มี<strong>มากกว่า</strong> · <span class="hl">ตัวละลาย</span>มี<strong>น้อยกว่า</strong>"</p>
+</div>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+<p>🧪 สื่อการสอนวิทยาศาสตร์ ม.2 — หน่วยที่ 2 สารละลาย</p>
+<p style="margin-top:8px;font-size:.8rem">เนื้อหาจัดทำโดยอิงจาก สสวท. (สถาบันส่งเสริมการสอนวิทยาศาสตร์และเทคโนโลยี)</p>
+<p style="margin-top:12px;font-size:.75rem;opacity:.7">Created: April 2026</p>
+</div>
+
+<script>
+// Accordion for cards
+document.querySelectorAll('.card h3').forEach(h3 => {
+  h3.addEventListener('click', function() {
+    this.parentElement.classList.toggle('open');
+  });
+});
+
+// Toggle all cards
+function toggleAllCards(btn) {
+  const section = btn.closest('.section');
+  const cards = section.querySelectorAll('.card');
+  const anyOpen = Array.from(cards).some(card => card.classList.contains('open'));
+  
+  cards.forEach(card => {
+    if (anyOpen) {
+      card.classList.remove('open');
+    } else {
+      card.classList.add('open');
+    }
+  });
+  
+  btn.textContent = anyOpen ? '📖 เปิดทั้งหมด' : '📕 ปิดทั้งหมด';
+}
+
+// Quiz system
+document.querySelectorAll('.quiz-opt').forEach(opt => {
+  opt.addEventListener('click', function() {
+    const isCorrect = this.dataset.correct === 'true';
+    const parent = this.closest('.quiz-q');
+    const fb = parent.querySelector('.quiz-fb');
+    const allOpts = parent.querySelectorAll('.quiz-opt');
+    
+    allOpts.forEach(o => o.classList.add('disabled'));
+    
+    if (isCorrect) {
+      this.classList.add('correct');
+      fb.textContent = '✓ ถูกต้อง! เยี่ยมมาก';
+      fb.style.background = 'rgba(46,125,50,0.1)';
+      fb.style.color = '#2e7d32';
+      fb.style.borderLeft = '4px solid #2e7d32';
+    } else {
+      this.classList.add('wrong');
+      fb.textContent = '✗ ไม่ถูกต้อง ลองใหม่อีกครั้ง';
+      fb.style.background = 'rgba(198,40,40,0.08)';
+      fb.style.color = '#c62828';
+      fb.style.borderLeft = '4px solid #c62828';
+      
+      // Show correct answer
+      allOpts.forEach(o => {
+        if (o.dataset.correct === 'true') {
+          o.classList.add('correct');
+        }
+      });
+    }
+    
+    fb.classList.add('show');
+  });
+});
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, index) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }, index * 100);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.section').forEach(section => {
+  observer.observe(section);
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Tree Diagram System
+let currentLevel = 0;
+const maxLevel = 3;
+const expandedNodes = new Set(['root']);
+
+function showNextLevel() {
+  if (currentLevel >= maxLevel) {
+    alert('แสดงครบทุกระดับแล้ว! 🎉');
+    return;
+  }
+  
+  currentLevel++;
+  
+  // Show lines
+  const lines = document.querySelectorAll('.tree-lines');
+  lines.forEach((line, idx) => {
+    if (idx < currentLevel) {
+      line.style.display = 'flex';
+      setTimeout(() => {
+        line.querySelectorAll('.tree-line').forEach(l => l.classList.add('show'));
+      }, 100);
+    }
+  });
+  
+  // Show level
+  const levels = document.querySelectorAll('[id^="level-"]');
+  levels.forEach(level => {
+    const levelNum = parseInt(level.getAttribute('data-level'));
+    if (levelNum === currentLevel) {
+      level.style.display = 'flex';
+      setTimeout(() => {
+        level.querySelectorAll('.tree-node').forEach((node, idx) => {
+          setTimeout(() => {
+            node.classList.add('show');
+          }, idx * 150);
         });
+      }, 200);
+    }
+  });
+}
+
+function showAllLevels() {
+  for (let i = currentLevel; i <= maxLevel; i++) {
+    setTimeout(() => {
+      currentLevel = i;
+      showNextLevel();
+    }, i * 600);
+  }
+}
+
+function resetTree() {
+  currentLevel = 0;
+  expandedNodes.clear();
+  expandedNodes.add('root');
+  
+  // Hide all lines
+  document.querySelectorAll('.tree-lines').forEach(line => {
+    line.style.display = 'none';
+    line.querySelectorAll('.tree-line').forEach(l => l.classList.remove('show'));
+  });
+  
+  // Hide all levels except root
+  document.querySelectorAll('[id^="level-"]').forEach(level => {
+    level.style.display = 'none';
+    level.querySelectorAll('.tree-node').forEach(node => {
+      node.classList.remove('show', 'active');
+    });
+  });
+  
+  // Reset root
+  document.querySelector('[data-id="root"]').classList.add('active');
+}
+
+function expandNode(nodeId) {
+  const node = document.querySelector(`[data-id="${nodeId}"]`);
+  
+  if (!node || !node.classList.contains('clickable')) return;
+  
+  // Toggle active
+  node.classList.toggle('active');
+  
+  if (expandedNodes.has(nodeId)) {
+    expandedNodes.delete(nodeId);
+    // Hide children
+    hideNodeChildren(nodeId);
+  } else {
+    expandedNodes.add(nodeId);
+    // Show children
+    showNodeChildren(nodeId);
+  }
+}
+
+function showNodeChildren(parentId) {
+  // Map of parent to their children elements
+  const childMap = {
+    'root': {
+      lines: 'lines-1',
+      level: 'level-1'
+    },
+    'pure': {
+      lines: 'lines-2-pure',
+      level: 'level-2-pure'
+    },
+    'mixture': {
+      lines: 'lines-2-mixture',
+      level: 'level-2-mixture'
+    },
+    'solution': {
+      lines: 'lines-3-solution',
+      level: 'level-3-solution'
+    }
+  };
+  
+  const children = childMap[parentId];
+  if (!children) return;
+  
+  // Show lines
+  const linesEl = document.getElementById(children.lines);
+  if (linesEl) {
+    linesEl.style.display = 'flex';
+    setTimeout(() => {
+      linesEl.querySelectorAll('.tree-line').forEach(l => l.classList.add('show'));
+    }, 100);
+  }
+  
+  // Show level
+  const levelEl = document.getElementById(children.level);
+  if (levelEl) {
+    levelEl.style.display = 'flex';
+    setTimeout(() => {
+      levelEl.querySelectorAll('.tree-node').forEach((node, idx) => {
+        setTimeout(() => {
+          node.classList.add('show');
+        }, idx * 150);
+      });
+    }, 200);
+  }
+}
+
+function hideNodeChildren(parentId) {
+  const childMap = {
+    'root': {
+      lines: 'lines-1',
+      level: 'level-1'
+    },
+    'pure': {
+      lines: 'lines-2-pure',
+      level: 'level-2-pure'
+    },
+    'mixture': {
+      lines: 'lines-2-mixture',
+      level: 'level-2-mixture'
+    },
+    'solution': {
+      lines: 'lines-3-solution',
+      level: 'level-3-solution'
+    }
+  };
+  
+  const children = childMap[parentId];
+  if (!children) return;
+  
+  // Hide recursively all descendants first
+  const levelEl = document.getElementById(children.level);
+  if (levelEl) {
+    levelEl.querySelectorAll('[data-id]').forEach(node => {
+      const childId = node.getAttribute('data-id');
+      if (childId && expandedNodes.has(childId)) {
+        hideNodeChildren(childId);
+        expandedNodes.delete(childId);
+        node.classList.remove('active');
+      }
+    });
+  }
+  
+  // Hide lines
+  const linesEl = document.getElementById(children.lines);
+  if (linesEl) {
+    linesEl.querySelectorAll('.tree-line').forEach(l => l.classList.remove('show'));
+    setTimeout(() => {
+      linesEl.style.display = 'none';
+    }, 300);
+  }
+  
+  // Hide level
+  if (levelEl) {
+    levelEl.querySelectorAll('.tree-node').forEach(node => {
+      node.classList.remove('show');
+    });
+    setTimeout(() => {
+      levelEl.style.display = 'none';
+    }, 300);
+  }
+}
+</script>
+
+</body>
+</html>
