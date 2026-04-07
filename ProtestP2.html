@@ -234,6 +234,7 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 <a href="#classification" class="nav-link">การจำแนก</a>
 <a href="#components" class="nav-link">องค์ประกอบ</a>
 <a href="#examples" class="nav-link">ตัวอย่าง</a>
+<a href="#concentration" class="nav-link">ความเข้มข้น</a>
 <a href="#quiz" class="nav-link">แบบฝึกหัด</a>
 </div>
 </div>
@@ -407,6 +408,53 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 <h2 class="section-title">📖 ทบทวนความรู้ก่อนเรียน</h2>
 
 <button class="expand-all-btn" onclick="toggleAllCards(this)">📖 เปิดทั้งหมด</button>
+
+<div class="card">
+<h3 style="color:var(--coral)">✎ ถูกหรือผิด? — ทองรูปพรรณมีทองคำเป็นตัวทำละลาย</h3>
+<div class="card-body">
+<div class="hbox good">
+  <p><strong>✓ ถูกต้อง!</strong> ทองรูปพรรณ 18K มีทองคำ 75% (มากที่สุด) ดังนั้นทองคำจึงเป็น<span class="hl">ตัวทำละลาย</span> ส่วนโลหะผสมอื่น (เงิน ทองแดง) เป็นตัวละลาย</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--coral)">✎ ถูกหรือผิด? — สารละลายอิ่มตัวมีอัตราส่วนตัวละลายต่อสารละลายสูงสุด</h3>
+<div class="card-body">
+<div class="hbox good">
+  <p><strong>✓ ถูกต้อง!</strong> <span class="kt">สารละลายอิ่มตัว (Saturated Solution)</span> คือสารละลายที่มีอัตราส่วนปริมาณตัวละลายต่อสารละลาย<span class="hl">สูงสุด</span>ที่อุณหภูมิหนึ่ง ๆ ไม่สามารถละลายตัวละลายเพิ่มได้อีก</p>
+</div>
+<table class="t" style="margin-top:14px">
+  <thead><tr><th>ประเภท</th><th>ความหมาย</th></tr></thead>
+  <tbody>
+    <tr><td><strong>สารละลายไม่อิ่มตัว</strong></td><td>ยังละลายตัวละลายเพิ่มได้อีก</td></tr>
+    <tr><td><strong>สารละลายอิ่มตัว</strong></td><td>ละลายตัวละลายได้สูงสุดแล้วที่อุณหภูมินั้น</td></tr>
+    <tr><td><strong>สารละลายอิ่มตัวยิ่งยวด</strong></td><td>มีตัวละลายละลายอยู่มากกว่าปกติ (ไม่เสถียร)</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h3 style="color:var(--coral)">✎ ถูกหรือผิด? — สารมวล 100 g มีปริมาตร 100 cm³ เสมอ</h3>
+<div class="card-body">
+<div class="hbox">
+  <p><strong>✗ ไม่ถูกต้อง!</strong> มวล 100 g <strong>ไม่ได้มีปริมาตร 100 cm³ เสมอไป</strong> ปริมาตรขึ้นอยู่กับ<span class="hl">ความหนาแน่น</span>ของสาร</p>
+</div>
+<div class="formula-box" style="margin:14px 0">
+  <strong>ความหนาแน่น (ρ)</strong> = มวล (m) ÷ ปริมาตร (V)<br>
+  <span style="font-size:.85rem;font-weight:400">ถ้า ρ ≠ 1 g/cm³ → มวล 100 g ≠ ปริมาตร 100 cm³</span>
+</div>
+<table class="t">
+  <thead><tr><th>สาร</th><th>ความหนาแน่น</th><th>มวล 100 g → ปริมาตร</th></tr></thead>
+  <tbody>
+    <tr><td>น้ำ</td><td>1.00 g/cm³</td><td>100 cm³</td></tr>
+    <tr><td>เหล็ก</td><td>7.87 g/cm³</td><td>≈ 12.7 cm³</td></tr>
+    <tr><td>น้ำมัน</td><td>0.85 g/cm³</td><td>≈ 117.6 cm³</td></tr>
+  </tbody>
+</table>
+</div>
+</div>
 
 <div class="card">
 <h3 style="color:var(--cyan)">❓ สารละลายเป็นสารเนื้อเดียวหรือเนื้อผสม?</h3>
@@ -795,6 +843,163 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 
 </div>
 
+<!-- ความเข้มข้นของสารละลาย -->
+<div class="section" style="animation-delay:.45s" id="concentration">
+<div class="section-label">Concentration</div>
+<h2 class="section-title">📊 ความเข้มข้นของสารละลาย</h2>
+
+<div class="formula-box">
+  <strong>ความเข้มข้น (Concentration)</strong><br>
+  <span style="font-size:.9rem;font-weight:400">= อัตราส่วนระหว่างปริมาณ<strong>ตัวละลาย</strong>กับปริมาณ<strong>สารละลาย</strong></span>
+</div>
+
+<div class="hbox info" style="margin-bottom:24px">
+  <p><strong>💡 สารละลายสองชนิดที่มีสีเหมือนกัน</strong> แสดงว่ามีความเข้มข้น<span class="hl">เท่ากัน</span> แม้ปริมาณตัวละลายและตัวทำละลายจะต่างกัน</p>
+</div>
+
+<!-- %w/v -->
+<div class="card">
+<h3 style="color:var(--cyan)">1️⃣ ร้อยละโดยมวลต่อปริมาตร (%w/v)</h3>
+<div class="card-body">
+<div class="hbox info">
+  <p><strong>ใช้เมื่อ:</strong> ตัวละลายเป็น<span class="hl">ของแข็ง</span> · ตัวทำละลาย/สารละลายเป็น<span class="hl">ของเหลว</span></p>
+</div>
+
+<div class="formula-box" style="margin:16px 0;font-size:1.2rem">
+  <strong>%w/v</strong> = <span style="border-bottom:2px solid #5e35b1">มวลตัวละลาย (g)</span> &divide; <span style="border-bottom:2px solid #5e35b1">ปริมาตรสารละลาย (cm³)</span> &times; 100
+</div>
+
+<div class="hbox good">
+  <p><strong>📌 ตัวอย่างกิจกรรม: จุนสี (CuSO₄·5H₂O) + น้ำ</strong></p>
+  <table class="t" style="margin-top:14px">
+    <thead><tr><th>บีกเกอร์</th><th>มวลจุนสี (g)</th><th>ปริมาตรสารละลาย (cm³)</th><th>สีสารละลาย</th><th>%w/v</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>ใบที่ 1</td><td>2</td><td>100</td><td>สีเขียวอมฟ้า</td>
+        <td style="font-weight:700;color:#0288d1">(2 ÷ 100) × 100 = <strong>2%</strong></td>
+      </tr>
+      <tr>
+        <td>ใบที่ 2</td><td>4</td><td>200</td><td>สีเขียวอมฟ้า</td>
+        <td style="font-weight:700;color:#0288d1">(4 ÷ 200) × 100 = <strong>2%</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:10px">→ สีเหมือนกัน แสดงว่าความเข้มข้น<strong>เท่ากัน</strong> ทั้งสองบีกเกอร์</p>
+</div>
+
+<h4 style="color:var(--cyan);margin:20px 0 12px">🧂 ตัวอย่างเพิ่มเติม: เกลือแกง</h4>
+<table class="t">
+  <thead><tr><th>มวลเกลือแกง (g)</th><th>ปริมาตรสารละลาย (cm³)</th><th>ความเข้มข้น %w/v</th></tr></thead>
+  <tbody>
+    <tr><td>10</td><td>100</td><td style="font-weight:700;color:#2e7d32">10 %w/v</td></tr>
+    <tr><td>20</td><td>200</td><td style="font-weight:700;color:#2e7d32">10 %w/v</td></tr>
+    <tr><td>30</td><td>500</td><td style="font-weight:700;color:#2e7d32">6 %w/v</td></tr>
+  </tbody>
+</table>
+
+<div class="hbox warn" style="margin-top:16px">
+  <p><strong>⚠️ ข้อสังเกตสำคัญ:</strong> สาร 100 g <strong>ไม่ได้มีปริมาตร 100 cm³ เสมอไป</strong> เพราะขึ้นอยู่กับความหนาแน่นของสาร<br>
+  ตัวอย่าง: น้ำ 100 g = 100 cm³ · เหล็ก 100 g ≈ 12.7 cm³</p>
+</div>
+</div>
+</div>
+
+<!-- %v/v -->
+<div class="card">
+<h3 style="color:var(--lime)">2️⃣ ร้อยละโดยปริมาตรต่อปริมาตร (%v/v)</h3>
+<div class="card-body">
+<div class="hbox info">
+  <p><strong>ใช้เมื่อ:</strong> ตัวละลายและตัวทำละลาย<span class="hl">ทั้งคู่เป็นของเหลว</span> หรือ<span class="hl">ทั้งคู่เป็นแก๊ส</span></p>
+</div>
+
+<div class="formula-box" style="margin:16px 0;font-size:1.2rem">
+  <strong>%v/v</strong> = <span style="border-bottom:2px solid #2e7d32">ปริมาตรตัวละลาย (cm³)</span> &divide; <span style="border-bottom:2px solid #2e7d32">ปริมาตรสารละลาย (cm³)</span> &times; 100
+</div>
+
+<div class="hbox good">
+  <p><strong>📌 ตัวอย่างกิจกรรม: เอทานอลผสมสี + น้ำ</strong></p>
+  <table class="t" style="margin-top:14px">
+    <thead><tr><th>บีกเกอร์</th><th>ปริมาตรเอทานอล (cm³)</th><th>ปริมาตรสารละลาย (cm³)</th><th>สีสารละลาย</th><th>%v/v</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>ใบที่ 1</td><td>20</td><td>100</td><td>สีแดงส้ม เข้ม</td>
+        <td style="font-weight:700;color:#2e7d32">(20 ÷ 100) × 100 = <strong>20%</strong></td>
+      </tr>
+      <tr>
+        <td>ใบที่ 2</td><td>10</td><td>100</td><td>สีแดงส้ม อ่อน</td>
+        <td style="font-weight:700;color:#2e7d32">(10 ÷ 100) × 100 = <strong>10%</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:10px">→ บีกเกอร์ 1 มีความเข้มข้น<strong>มากกว่า</strong> สีจึงเข้มกว่า</p>
+</div>
+
+<h4 style="color:var(--lime);margin:20px 0 12px">🍶 ตัวอย่าง: น้ำส้มสายชู</h4>
+<div class="formula-box" style="font-size:1rem">
+  กรดน้ำส้ม 5 cm³ ในสารละลาย 100 cm³<br>
+  %v/v = (5 ÷ 100) × 100 = <strong style="color:#e64a19">5 %v/v</strong>
+</div>
+
+<h4 style="color:var(--lime);margin:20px 0 12px">🔥 ตัวอย่าง: แก๊สหุงต้ม (LPG)</h4>
+<div class="formula-box" style="font-size:1rem">
+  แก๊สบิวเทน 30 L ในแก๊สหุงต้ม 100 L<br>
+  %v/v = (30 ÷ 100) × 100 = <strong style="color:#e64a19">30 %v/v</strong>
+</div>
+</div>
+</div>
+
+<!-- ตารางเปรียบเทียบ %w/v vs %v/v -->
+<div class="card">
+<h3 style="color:var(--purple)">🔁 เปรียบเทียบ %w/v กับ %v/v</h3>
+<div class="card-body">
+<table class="t">
+  <thead><tr><th>หัวข้อ</th><th>%w/v</th><th>%v/v</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ตัวละลาย</strong></td><td>ของแข็ง</td><td>ของเหลว หรือ แก๊ส</td></tr>
+    <tr><td><strong>ตัวทำละลาย</strong></td><td>ของเหลว</td><td>ของเหลว หรือ แก๊ส</td></tr>
+    <tr><td><strong>หน่วยตัวเลข</strong></td><td>มวล (g)</td><td>ปริมาตร (cm³ หรือ L)</td></tr>
+    <tr><td><strong>หน่วยส่วน</strong></td><td>ปริมาตร (cm³)</td><td>ปริมาตร (cm³ หรือ L)</td></tr>
+    <tr><td><strong>ตัวอย่าง</strong></td><td>น้ำเกลือ, แอลกอฮอล์ล้างแผล</td><td>น้ำส้มสายชู, แก๊สหุงต้ม</td></tr>
+  </tbody>
+</table>
+
+<div class="hbox good" style="margin-top:16px">
+  <p><strong>💡 จำง่าย:</strong></p>
+  <ul style="padding-left:20px;margin-top:8px">
+    <li style="margin:6px 0"><span class="kt">w</span> = weight (มวล) · <span class="kt">v</span> = volume (ปริมาตร)</li>
+    <li style="margin:6px 0"><strong>%w/v</strong> = ของแข็งละลายของเหลว → ใช้มวลหาร</li>
+    <li style="margin:6px 0"><strong>%v/v</strong> = ของเหลวหรือแก๊สผสมกัน → ใช้ปริมาตรหาร</li>
+  </ul>
+</div>
+</div>
+</div>
+
+<!-- คำถามท้าให้คิด -->
+<div class="card">
+<h3 style="color:var(--coral)">💡 คำถามท้าให้คิด</h3>
+<div class="card-body">
+<div class="hbox warn" style="margin-bottom:16px">
+  <p><strong>โจทย์ 1:</strong> แอลกอฮอล์ล้างแผลมีเอทานอล 75% โดยมวลต่อปริมาตร (%w/v) ถ้าต้องการแอลกอฮอล์ 500 cm³ ต้องใช้เอทานอลกี่กรัม?</p>
+</div>
+<div class="hbox good">
+  <p><strong>เฉลย:</strong> %w/v = มวลตัวละลาย / ปริมาตรสารละลาย × 100<br>
+  &nbsp;&nbsp;&nbsp;75 = มวล / 500 × 100<br>
+  &nbsp;&nbsp;&nbsp;มวล = 75 × 500 / 100 = <strong>375 กรัม</strong></p>
+</div>
+
+<div class="hbox warn" style="margin:16px 0">
+  <p><strong>โจทย์ 2:</strong> น้ำส้มสายชูมีกรดน้ำส้ม 5 %v/v ถ้ามีน้ำส้มสายชู 200 cm³ มีกรดน้ำส้มกี่ cm³?</p>
+</div>
+<div class="hbox good">
+  <p><strong>เฉลย:</strong> %v/v = ปริมาตรตัวละลาย / ปริมาตรสารละลาย × 100<br>
+  &nbsp;&nbsp;&nbsp;5 = ปริมาตร / 200 × 100<br>
+  &nbsp;&nbsp;&nbsp;ปริมาตร = 5 × 200 / 100 = <strong>10 cm³</strong></p>
+</div>
+</div>
+</div>
+
+</div>
+
 <!-- ปัจจัยที่ส่งผลต่อการละลาย -->
 <div class="section" style="animation-delay:.5s">
 <div class="section-label">Factors</div>
@@ -930,7 +1135,42 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 <h3 onclick="this.parentElement.classList.toggle('open')">แบบทดสอบความเข้าใจ</h3>
 <div class="quiz-body">
 
-<div class="quiz-q"><h4>1. ข้อใดเป็นสารละลาย?</h4><div class="quiz-opts">
+<div class="quiz-q"><h4>1. ความเข้มข้น %w/v ใช้ในกรณีใด?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">ตัวละลายและตัวทำละลายเป็นของเหลวทั้งคู่</button>
+<button class="quiz-opt" data-correct="true">ตัวละลายเป็นของแข็ง ตัวทำละลายเป็นของเหลว</button>
+<button class="quiz-opt" data-correct="false">ตัวละลายเป็นแก๊ส ตัวทำละลายเป็นของเหลว</button>
+<button class="quiz-opt" data-correct="false">ตัวละลายและตัวทำละลายเป็นแก๊สทั้งคู่</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>2. เกลือแกง 20 g ละลายในน้ำได้สารละลาย 200 cm³ มีความเข้มข้น %w/v เท่าใด?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">5%</button>
+<button class="quiz-opt" data-correct="true">10%</button>
+<button class="quiz-opt" data-correct="false">20%</button>
+<button class="quiz-opt" data-correct="false">40%</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>3. แอลกอฮอล์ล้างแผล 75%v/v หมายความว่าอะไร?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">มีน้ำ 75 g ในสารละลาย 100 cm³</button>
+<button class="quiz-opt" data-correct="false">มีเอทานอล 75 g ในสารละลาย 100 g</button>
+<button class="quiz-opt" data-correct="true">มีเอทานอล 75 cm³ ในสารละลาย 100 cm³</button>
+<button class="quiz-opt" data-correct="false">มีน้ำ 75 cm³ ในสารละลาย 100 cm³</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>4. น้ำส้มสายชู 5%v/v 500 cm³ มีกรดน้ำส้มกี่ cm³?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">5 cm³</button>
+<button class="quiz-opt" data-correct="false">10 cm³</button>
+<button class="quiz-opt" data-correct="true">25 cm³</button>
+<button class="quiz-opt" data-correct="false">50 cm³</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>5. สาร 100 g จะมีปริมาตรเท่าใด?</h4><div class="quiz-opts">
+<button class="quiz-opt" data-correct="false">100 cm³ เสมอ</button>
+<button class="quiz-opt" data-correct="true">ขึ้นอยู่กับความหนาแน่นของสาร</button>
+<button class="quiz-opt" data-correct="false">มากกว่าหรือน้อยกว่า 100 cm³ เสมอ</button>
+<button class="quiz-opt" data-correct="false">ขึ้นอยู่กับอุณหภูมิเท่านั้น</button>
+</div><div class="quiz-fb"></div></div>
+
+<div class="quiz-q"><h4>6. ข้อใดเป็นสารละลาย?</h4><div class="quiz-opts">
 <button class="quiz-opt" data-correct="false">น้ำส้ม</button>
 <button class="quiz-opt" data-correct="true">น้ำชา</button>
 <button class="quiz-opt" data-correct="false">น้ำนม</button>
@@ -1003,12 +1243,16 @@ table.t tbody tr:hover td{background:rgba(2,136,209,0.04)}
 <li style="margin:10px 0"><strong>ถ้าสารสถานะเหมือนกัน:</strong> สารที่มีปริมาณมากกว่าจัดเป็นตัวทำละลาย</li>
 <li style="margin:10px 0"><strong>สารละลายมี 3 สถานะ:</strong> ของแข็ง ของเหลว แก๊ส</li>
 <li style="margin:10px 0"><strong>สารละลาย</strong>เป็นสารเนื้อเดียวเสมอ</li>
+<li style="margin:10px 0"><strong>ความเข้มข้น (Concentration)</strong> = อัตราส่วนปริมาณตัวละลายต่อปริมาณสารละลาย</li>
+<li style="margin:10px 0"><strong>%w/v</strong> ใช้กับตัวละลาย<strong>ของแข็ง</strong> ÷ ปริมาตรสารละลาย(cm³) × 100</li>
+<li style="margin:10px 0"><strong>%v/v</strong> ใช้กับตัวละลาย<strong>ของเหลว/แก๊ส</strong> ÷ ปริมาตรสารละลาย × 100</li>
 </ul>
 </div>
 
 <div class="hbox good" style="margin-top:20px">
 <p><strong>💡 เคล็ดลับจำง่าย:</strong></p>
 <p style="margin-top:8px">"<span class="hl">ตัวทำละลาย</span>มี<strong>มากกว่า</strong> · <span class="hl">ตัวละลาย</span>มี<strong>น้อยกว่า</strong>"</p>
+<p style="margin-top:8px">"<span class="hl">w</span> = weight ของแข็ง · <span class="hl">v/v</span> = ของเหลวหรือแก๊สทั้งคู่"</p>
 </div>
 </div>
 
