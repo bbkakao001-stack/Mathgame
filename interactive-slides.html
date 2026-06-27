@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Stage 7 — Indices & Expressions (Math in English)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c1:#6C5CE7; --c2:#00CEC9; --c3:#FD79A8; --c4:#FDCB6E; --c5:#55EFC4; --c6:#74B9FF;
+  --ink:#2D3436; --soft:#636e72; --paper:#ffffff; --line:#e9e9ff;
+  --ok:#00B894; --bad:#FF7675;
+  --shadow:0 10px 30px rgba(45,52,54,.18);
+  --shadow-sm:0 4px 14px rgba(45,52,54,.14);
+  --radius:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font-family:'Mali',system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(135deg,#dFe7ff 0%,#fbe2ff 50%,#e3fff4 100%);
+  overflow:hidden;position:fixed;inset:0;}
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(40px);opacity:.5;animation:float 16s ease-in-out infinite}
+.blob.b1{width:42vmin;height:42vmin;background:var(--c6);top:-8vmin;left:-6vmin}
+.blob.b2{width:38vmin;height:38vmin;background:var(--c3);bottom:-10vmin;right:-6vmin;animation-delay:-4s}
+.blob.b3{width:30vmin;height:30vmin;background:var(--c4);top:40%;right:12%;animation-delay:-8s}
+.blob.b4{width:26vmin;height:26vmin;background:var(--c5);bottom:14%;left:14%;animation-delay:-12s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(4vmin,-3vmin) scale(1.08)}66%{transform:translate(-3vmin,4vmin) scale(.95)}}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:12px;
+  padding:10px 14px;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border-bottom:2px solid rgba(108,92,231,.18)}
+.menu-btn{flex:0 0 auto;width:42px;height:42px;border:none;border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,var(--c1),var(--c6));color:#fff;font-size:20px;display:grid;place-items:center;
+  box-shadow:var(--shadow-sm);transition:transform .12s}
+.menu-btn:active{transform:scale(.9)}
+.prog-wrap{flex:1 1 auto;height:16px;background:rgba(108,92,231,.14);border-radius:20px;overflow:hidden;position:relative}
+.prog{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,var(--c3),var(--c1),var(--c2));
+  transition:width .45s cubic-bezier(.2,.8,.2,1);position:relative}
+.prog::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+  animation:shine 2s linear infinite}
+@keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.page-num{flex:0 0 auto;font-weight:700;font-size:13px;color:var(--c1);background:#fff;padding:6px 12px;border-radius:20px;
+  box-shadow:var(--shadow-sm);white-space:nowrap}
+.page-num b{font-size:16px}
+.menu{position:fixed;inset:0;z-index:60;background:rgba(45,52,54,.55);backdrop-filter:blur(4px);
+  display:flex;justify-content:flex-end;opacity:0;visibility:hidden;transition:opacity .3s}
+.menu.open{opacity:1;visibility:visible}
+.menu-panel{width:min(360px,86vw);height:100%;background:#fff;box-shadow:-10px 0 40px rgba(0,0,0,.25);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.menu.open .menu-panel{transform:translateX(0)}
+.menu-head{padding:18px;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,var(--c1),var(--c3));color:#fff}
+.menu-head h2{margin:0;font-size:19px}
+.menu-close{border:none;background:rgba(255,255,255,.25);color:#fff;width:34px;height:34px;border-radius:10px;font-size:18px;cursor:pointer}
+.menu-list{overflow-y:auto;padding:8px 10px 24px}
+.menu-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:14px;cursor:pointer;margin-bottom:3px;
+  border:2px solid transparent;transition:background .15s,border-color .15s}
+.menu-item:hover{background:#f4f1ff}
+.menu-item.cur{background:#eef0ff;border-color:var(--c6)}
+.menu-item.locked{opacity:.55}
+.mi-num{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px}
+.mi-txt{flex:1 1 auto;font-size:13.5px;line-height:1.25}
+.mi-txt small{display:block;color:var(--soft);font-size:11px;font-weight:400}
+.mi-lock{font-size:15px}
+.part-label{font-weight:700;color:var(--c1);font-size:12px;margin:14px 10px 4px;display:flex;align-items:center;gap:8px}
+.part-label::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--c1),transparent)}
+.stage{position:absolute;inset:64px 0 0 0;z-index:10}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;overflow-y:auto;overflow-x:hidden;
+  padding:18px clamp(14px,5vw,60px) 110px;display:flex;flex-direction:column;justify-content:center}
+.slide.active{opacity:1;visibility:visible}
+.slide.active.fx-slide{animation:enterSlide .55s cubic-bezier(.2,.8,.2,1) both}
+.slide.active.fx-fade{animation:enterFade .55s ease both}
+.slide.active.fx-zoom{animation:enterZoom .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes enterSlide{from{opacity:0;transform:translateX(8%)}to{opacity:1;transform:translateX(0)}}
+@keyframes enterFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes enterZoom{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.card-shell{max-width:920px;margin:0 auto;width:100%}
+.badge{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;color:#fff;padding:6px 14px;
+  border-radius:30px;box-shadow:var(--shadow-sm);margin-bottom:10px}
+.s-title{font-size:clamp(24px,5.4vw,42px);font-weight:700;line-height:1.15;margin:2px 0;color:var(--c1)}
+.s-title em{font-style:normal;background:linear-gradient(120deg,var(--c3),var(--c4));-webkit-background-clip:text;background-clip:text;color:transparent}
+.s-subth{font-size:clamp(15px,3.4vw,21px);color:var(--soft);font-weight:500;margin:0 0 16px}
+.block{background:var(--paper);border:2px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin-bottom:12px;
+  box-shadow:var(--shadow-sm);opacity:0}
+.slide.active .block{animation:fadeUp .55s ease forwards;animation-delay:calc(var(--i)*.12s + .12s)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.block .en{font-size:clamp(16px,3.6vw,21px);font-weight:600;line-height:1.45}
+.block .th{font-size:clamp(12.5px,2.9vw,15.5px);color:var(--soft);font-weight:400;margin-top:5px;line-height:1.4}
+.block.example{border-left:8px solid var(--c2);background:linear-gradient(100deg,#f3fffd,#fff)}
+.block.tip{border-left:8px solid var(--c4);background:linear-gradient(100deg,#fffaf0,#fff);font-style:italic}
+.block.tip .en{color:#b7791f}
+.block.math{background:linear-gradient(135deg,#6c5ce714,#00cec914);text-align:center}
+.block.math .en{font-size:clamp(20px,5vw,30px);font-weight:700;color:var(--c1)}
+.vocab{background:linear-gradient(120deg,var(--c4),#ffe08a);color:#7a5a00;font-weight:700;padding:1px 7px;border-radius:8px;
+  cursor:pointer;box-shadow:0 2px 0 #e0b341;transition:transform .12s,box-shadow .12s;position:relative}
+.vocab:hover{transform:translateY(-2px);box-shadow:0 4px 0 #e0b341}
+.vocab:active{transform:scale(.94)}
+.vocab::after{content:"🔊";font-size:.7em;margin-left:3px;filter:grayscale(.2)}
+.popup{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:rgba(45,52,54,.5);
+  backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:opacity .25s;padding:20px}
+.popup.open{opacity:1;visibility:visible}
+.popup-card{background:#fff;border-radius:26px;padding:22px 24px;max-width:380px;width:100%;text-align:center;
+  box-shadow:var(--shadow);transform:scale(.8) translateY(20px);transition:transform .3s cubic-bezier(.2,.9,.3,1.3);
+  border:4px solid var(--c4)}
+.popup.open .popup-card{transform:scale(1) translateY(0)}
+.popup-word{font-size:30px;font-weight:700;color:var(--c1)}
+.popup-th{font-size:18px;color:var(--soft);margin:6px 0 14px}
+.speak-big{border:none;width:64px;height:64px;border-radius:50%;cursor:pointer;font-size:28px;color:#fff;
+  background:linear-gradient(135deg,var(--c2),var(--c6));box-shadow:var(--shadow-sm);transition:transform .12s}
+.speak-big:active{transform:scale(.88)}
+.speak-big.wiggle{animation:wig .5s ease}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.popup-close{margin-top:14px;border:none;background:var(--c1);color:#fff;padding:9px 22px;border-radius:14px;
+  font-family:inherit;font-weight:700;cursor:pointer;font-size:14px}
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:6px}
+.flip{perspective:800px;height:96px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;display:grid;place-items:center;border-radius:16px;font-weight:700;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:var(--shadow-sm);text-align:center;padding:6px}
+.flip-front{color:#fff;font-size:24px}
+.flip-back{transform:rotateY(180deg);background:#fff;border:3px solid;color:var(--c1);font-size:20px}
+.tbl{width:100%;border-collapse:collapse;margin-top:6px;font-size:clamp(12px,2.6vw,15px)}
+.tbl th,.tbl td{border:2px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:linear-gradient(135deg,var(--c1),var(--c6));color:#fff;font-weight:700}
+.tbl tr:nth-child(even) td{background:#f7f8ff}
+.tbl .en{font-weight:600}
+.tbl .th{color:var(--soft);font-size:.92em}
+.nav{position:fixed;bottom:18px;left:0;right:0;z-index:25;display:flex;align-items:center;justify-content:center;gap:14px;pointer-events:none}
+.nav-btn{pointer-events:auto;border:none;width:58px;height:58px;border-radius:50%;cursor:pointer;font-size:24px;color:#fff;
+  box-shadow:var(--shadow);display:grid;place-items:center;transition:transform .12s,opacity .2s;font-family:inherit}
+.nav-btn.prev{background:linear-gradient(135deg,var(--c6),var(--c2))}
+.nav-btn.next{background:linear-gradient(135deg,var(--c1),var(--c3))}
+.nav-btn:active{transform:scale(.85)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-hint{position:fixed;bottom:24px;right:16px;z-index:24;font-size:11px;color:var(--soft);background:rgba(255,255,255,.7);
+  padding:5px 10px;border-radius:12px;pointer-events:none}
+/* ===== QUIZ ===== */
+.qz{position:absolute;inset:0;z-index:12;opacity:0;visibility:hidden;overflow-y:auto;padding:18px clamp(14px,5vw,40px) 110px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center}
+.qz.active{opacity:1;visibility:visible;animation:enterZoom .5s both}
+.qz-box{max-width:620px;width:100%;background:#fff;border-radius:26px;padding:22px 22px 18px;box-shadow:var(--shadow);
+  border:3px solid var(--c1)}
+.qz-prog{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.qz-dots{display:flex;gap:6px;flex-wrap:wrap}
+.qz-dot{width:14px;height:14px;border-radius:50%;background:#e3e3f5;transition:.25s}
+.qz-dot.done{background:var(--c5)}
+.qz-dot.wrong{background:var(--bad)}
+.qz-dot.cur{background:var(--c1);transform:scale(1.3)}
+.qz-qnum{font-weight:700;color:var(--c1);font-size:14px;margin-left:auto}
+.qz-q{font-size:clamp(18px,4vw,24px);font-weight:700;line-height:1.4;margin:4px 0 4px}
+.qz-qth{color:var(--soft);font-size:14px;margin-bottom:14px}
+.qz-input-row{display:flex;gap:10px;align-items:stretch;margin-top:6px}
+.qz-input{flex:1;font-family:inherit;font-size:28px;font-weight:700;text-align:center;color:var(--c1);
+  border:3px solid var(--c6);border-radius:16px;padding:10px;outline:none;background:#f7fbff;min-width:0;
+  -moz-appearance:textfield}
+.qz-input::-webkit-outer-spin-button,.qz-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.qz-input.ok{border-color:var(--ok);background:#e6fff6}
+.qz-input.bad{border-color:var(--bad);background:#fff0f0;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.qz-go{border:none;background:linear-gradient(135deg,var(--c1),var(--c6));color:#fff;font-family:inherit;font-weight:700;
+  font-size:18px;padding:0 22px;border-radius:16px;cursor:pointer;transition:transform .12s;white-space:nowrap}
+.qz-go:active{transform:scale(.92)}
+.qz-fb{margin-top:14px;border-radius:14px;padding:12px 14px;font-weight:700;display:none;animation:fadeUp .35s}
+.qz-fb.show{display:block}
+.qz-fb.ok{background:#e6fff6;color:#00795a;border:2px solid var(--ok)}
+.qz-fb.bad{background:#fff0f0;color:#c0392b;border:2px solid var(--bad)}
+.qz-next{margin-top:14px;border:none;background:var(--c1);color:#fff;font-family:inherit;font-weight:700;
+  padding:11px 26px;border-radius:14px;cursor:pointer;font-size:16px;display:none}
+.qz-next.show{display:inline-block;animation:fadeUp .35s}
+.qz-result{text-align:center}
+.qz-score{font-size:clamp(40px,10vw,64px);font-weight:700;line-height:1}
+.qz-msg{font-size:18px;margin:8px 0 16px;font-weight:600}
+.qz-bar{height:14px;background:#eee;border-radius:20px;overflow:hidden;margin:6px 0 16px}
+.qz-bar i{display:block;height:100%;border-radius:20px;transition:width 1s}
+#confetti{position:fixed;inset:0;z-index:80;pointer-events:none}
+.qz-lock-note{font-size:13px;color:var(--soft);text-align:center;margin-top:10px}
+.cover{text-align:center}
+.cover .bigicon{font-size:clamp(56px,16vw,120px);display:inline-block;animation:bob 3s ease-in-out infinite;
+  filter:drop-shadow(0 8px 14px rgba(108,92,231,.35))}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.cover h1{font-size:clamp(30px,8vw,58px);font-weight:700;margin:6px 0;line-height:1.1}
+.cover .sub{font-size:clamp(15px,3.6vw,20px);color:var(--soft);font-weight:500;margin-bottom:18px}
+.cover .tags{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.cover .tag{background:#fff;padding:8px 16px;border-radius:30px;font-weight:700;font-size:14px;box-shadow:var(--shadow-sm);color:var(--c1)}
+.emoji-wig{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+.kbd{display:inline-block;background:#fff;border:2px solid var(--line);border-bottom-width:4px;border-radius:8px;
+  padding:1px 8px;font-weight:700;font-size:.85em;color:var(--c1);margin:0 2px}
+@media(max-width:640px){
+  .slide{padding:14px 14px 104px}
+  .nav-btn{width:52px;height:52px;font-size:21px}
+  .flip{height:84px}
+  .nav-hint{display:none}
+  .page-num{font-size:12px}
+}
+@media(max-width:380px){.s-title{font-size:24px}.qz-input{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="bg"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
+
+<div class="topbar">
+  <button class="menu-btn" id="menuBtn" title="เมนู">☰</button>
+  <div class="prog-wrap"><div class="prog" id="prog"></div></div>
+  <div class="page-num"><b id="curPage">1</b>/<span id="totPage">1</span></div>
+</div>
+
+<div class="menu" id="menu">
+  <div class="menu-panel">
+    <div class="menu-head"><h2>📚 เมนูบทเรียน</h2><button class="menu-close" id="menuClose">✕</button></div>
+    <div class="menu-list" id="menuList"></div>
+  </div>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<div class="nav">
+  <button class="nav-btn prev" id="prevBtn">‹</button>
+  <button class="nav-btn next" id="nextBtn">›</button>
+</div>
+<div class="nav-hint">← → หรือปัดนิ้ว • กดคำที่ <span style="background:var(--c4);padding:0 4px;border-radius:5px">ไฮไลต์</span></div>
+
+<div class="popup" id="popup">
+  <div class="popup-card">
+    <div class="popup-word" id="popWord">word</div>
+    <div class="popup-th" id="popTh">คำแปล</div>
+    <button class="speak-big" id="popSpeak">🔊</button>
+    <div><button class="popup-close" id="popClose">ปิด</button></div>
+  </div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+"use strict";
+/* ============ VOCAB DICTIONARY (English -> Thai) ============ */
+const VOCAB = {
+"estimate":"ประมาณค่า","estimation":"การประมาณค่า","rounding":"การปัดเลข","rounded":"ปัดเลขแล้ว",
+"square":"กำลังสอง","squaring":"การยกกำลังสอง","square root":"รากที่สอง",
+"cube":"กำลังสาม","cubing":"การยกกำลังสาม","cube root":"รากที่สาม",
+"square number":"จำนวนกำลังสอง","cube number":"จำนวนกำลังสาม",
+"perfect square":"จำนวนกำลังสองสมบูรณ์","perfect cube":"จำนวนกำลังสามสมบูรณ์",
+"index":"ดัชนี","power":"กำลัง","indices":"ดัชนี (พหูพจน์)","integer":"จำนวนเต็ม","integers":"จำนวนเต็ม",
+"product":"ผลคูณ","multiply":"คูณ","consecutive":"ต่อเนื่องกัน","ascending order":"เรียงจากน้อยไปมาก",
+"area":"พื้นที่","volume":"ปริมาตร","negative number":"จำนวนลบ","negative numbers":"จำนวนลบ",
+"expression":"นิพจน์","algebraic":"เกี่ยวกับพีชคณิต","algebra":"พีชคณิต","term":"พจน์","terms":"พจน์",
+"variable":"ตัวแปร","constant":"ค่าคงที่","equation":"สมการ","coefficient":"สัมประสิทธิ์",
+"substitute":"แทนค่า","substitution":"การแทนค่า","perimeter":"เส้นรอบรูป",
+"equals sign":"เครื่องหมายเท่ากับ","order of operations":"ลำดับการคำนวณ","unknown":"ไม่ทราบค่า",
+"represent":"แทน","laws of arithmetic":"กฎเกณฑ์เลขคณิต","commutative":"สมบัติการสลับที่",
+"incorrect":"ไม่ถูกต้อง","calculate":"คำนวณ","explain":"อธิบาย","differences":"ผลต่าง","pattern":"รูปแบบ"
+};
+/* ============ SLIDE CONTENT ============ */
+const SLIDES = [
+/* 0 — COVER */
+{t:'title',fx:'zoom',icon:'🔢',ti:'Indices & Negative Numbers',tt:'ดัชนีและจำนวนลบ',
+ sub:'Chapter 4 · Stage 7 Mathematics · หน้า 42–47',
+ tags:['✖️ การประมาณค่า','🔢 กำลังสอง/กำลังสาม','√ รากของจำนวน']},
+/* 1 — ESTIMATION */
+{fx:'slide',b:'📐',bc:'#00CEC9',ti:'Estimation',tt:'การประมาณค่า',
+ c:[
+ {e:`Jon wants to estimate 328 × (−211). His working is: 328 × (−211) ≈ 330 × (−210).`,
+  h:`จอนต้องการประมาณ 328 × (−211) งานของเขาคือ: 328 × (−211) ≈ 330 × (−210)`,w:['estimate']},
+ {e:`We can use rounding to estimate the answer to a calculation quickly.`,
+  h:`เราใช้การปัดเลข เพื่อประมาณคำตอบของการคำนวณได้อย่างรวดเร็ว`,w:['rounding','estimate']},
+ {cls:'tip',e:`Tip: round each number to its easiest value first, then calculate.`,
+  h:`เคล็ดลับ: ปัดเลขแต่ละตัวให้ง่ายก่อน แล้วค่อยคำนวณ`}
+ ]},
+/* 2 — INDICES KEY TERMS */
+{fx:'fade',b:'🔑',bc:'#FDCB6E',ti:'Indices — Key Terms',tt:'ดัชนี — คำสำคัญ',
+ c:[
+ {e:`Squaring a number means multiplying the number by itself. The result is the square of the number.`,
+  h:`การยกกำลังสอง คือการคูณจำนวนนั้นกับตัวมันเอง ผลลัพธ์เรียกว่า กำลังสอง ของจำนวนนั้น`,w:['Squaring','square']},
+ {cls:'example',e:`Example: the square of 5 (called "5 squared", written 5²) is 5 × 5 = 25.`,
+  h:`ตัวอย่าง: กำลังสองของ 5 (เรียก "ห้ากำลังสอง" เขียน 5²) คือ 5 × 5 = 25`},
+ {e:`The square root of a number squares to make the number.`,
+  h:`รากที่สอง ของจำนวนหนึ่ง คือจำนวนที่เมื่อยกกำลังสองแล้วจะได้จำนวนนั้น`,w:['square root']},
+ {cls:'example',e:`Example: √9 = 3 because 3 × 3 = 9.`,h:`ตัวอย่าง: √9 = 3 เพราะ 3 × 3 = 9`},
+ {cls:'tip',e:`Square roots do not have to be integers — √2 is about 1.414.`,
+  h:`รากที่สองไม่จำเป็นต้องเป็นจำนวนเต็ม เช่น √2 ประมาณ 1.414`,w:['integers']}
+ ]},
+/* 3 — SQUARE NUMBERS (flip cards) */
+{fx:'zoom',b:'🟪',bc:'#FD79A8',ti:'Square Numbers',tt:'จำนวนกำลังสอง (perfect square)',
+ c:[
+ {e:`A square number (or perfect square) is the product of two copies of an integer.`,
+  h:`จำนวนกำลังสอง คือผลคูณของจำนวนเต็มสองตัวที่เหมือนกัน`,w:['square number','perfect square','product','integer']},
+ {cls:'example',e:`36 is a square number because 6 × 6 = 36.`,h:`36 เป็นจำนวนกำลังสอง เพราะ 6 × 6 = 36`},
+ {type:'flip',intro:{e:`👆 Tap each card to flip and see the value!`,h:`แตะการ์ดแต่ละใบเพื่อพลิกดูค่า`},
+  items:[
+  {f:'1²',b:'1',c:'#74B9FF'},{f:'2²',b:'4',c:'#00CEC9'},{f:'3²',b:'9',c:'#55EFC4'},
+  {f:'4²',b:'16',c:'#FDCB6E'},{f:'5²',b:'25',c:'#FD79A8'},{f:'6²',b:'36',c:'#6C5CE7'},
+  {f:'7²',b:'49',c:'#74B9FF'},{f:'8²',b:'64',c:'#00CEC9'},{f:'9²',b:'81',c:'#55EFC4'},
+  {f:'10²',b:'100',c:'#FDCB6E'}]}
+ ]},
+/* 4 — CUBING & CUBE NUMBERS */
+{fx:'slide',b:'🧊',bc:'#00CEC9',ti:'Cubing & Cube Numbers',tt:'การยกกำลังสามและจำนวนกำลังสาม',
+ c:[
+ {e:`Cubing a number means multiplying three copies of the number together. The result is the cube of the number.`,
+  h:`การยกกำลังสาม คือการคูณจำนวนนั้นสามตัวเข้าด้วยกัน ผลลัพธ์เรียกว่า กำลังสาม`,w:['Cubing','cube']},
+ {cls:'example',e:`2³ = 2 × 2 × 2 = 8.`,h:`2³ = 2 × 2 × 2 = 8`},
+ {e:`A cube number (or perfect cube) is the product of three copies of an integer.`,
+  h:`จำนวนกำลังสาม คือผลคูณของจำนวนเต็มสามตัวที่เหมือนกัน`,w:['cube number','perfect cube','product','integer']},
+ {cls:'example',e:`125 = 5 × 5 × 5, so 125 is a cube number.`,h:`125 = 5 × 5 × 5 ดังนั้น 125 เป็นจำนวนกำลังสาม`}
+ ]},
+/* 5 — CUBE ROOT */
+{fx:'fade',b:'∛',bc:'#55EFC4',ti:'Cube Root',tt:'รากที่สาม (cube root)',
+ c:[
+ {e:`The cube root of a number cubes to make the number. The symbol is ∛.`,
+  h:`รากที่สาม ของจำนวนหนึ่ง คือจำนวนที่เมื่อยกกำลังสามแล้วจะได้จำนวนนั้น สัญลักษณ์คือ ∛`,w:['cube root']},
+ {cls:'example',e:`∛27 = 3 because 3 × 3 × 3 = 27.`,h:`∛27 = 3 เพราะ 3 × 3 × 3 = 27`},
+ {cls:'example',e:`∛64 = 4 because 4 × 4 × 4 = 64.`,h:`∛64 = 4 เพราะ 4 × 4 × 4 = 64`},
+ {cls:'tip',e:`Cube roots do not have to be integers either.`,
+  h:`รากที่สามก็ไม่จำเป็นต้องเป็นจำนวนเต็มเช่นกัน`,w:['integers']}
+ ]},
+/* 6 — INDEX / POWER */
+{fx:'zoom',b:'⚡',bc:'#6C5CE7',ti:'Index or Power',tt:'ดัชนี (index) หรือ กำลัง (power)',
+ c:[
+ {e:`An index or power shows how many copies of a number to multiply together. It is written small, to the upper right of the number.`,
+  h:`ดัชนี หรือ กำลัง บอกว่าต้องคูณจำนวนนั้นกี่ตัวเข้าด้วยกัน เขียนไว้เล็กๆ ที่มุมขวาบน`,w:['index','power']},
+ {cls:'example',e:`In 10³ the index is 3. It means 10 × 10 × 10 = 1000.`,h:`ใน 10³ ดัชนีคือ 3 หมายถึง 10 × 10 × 10 = 1000`},
+ {e:`The plural of index is indices.`,h:`รูปพหูพจน์ของ index คือ indices`,w:['index','indices']}
+ ]},
+/* 7 — DID YOU KNOW */
+{fx:'fade',b:'💡',bc:'#FDCB6E',ti:'Did you know?',tt:'รู้หรือไม่?',
+ c:[
+ {e:`Squaring is so called because it is the same as finding the area of a square: multiply a number (the side length) by itself.`,
+  h:`เรียก ยกกำลังสอง เพราะมันเหมือนกับการหาพื้นที่ของสี่เหลี่ยมจัตุรัส คือคูณจำนวน (ความยาวด้าน) กับตัวมันเอง`,w:['Squaring','area','square']},
+ {e:`Why do you think cubing is so called? 🤔`,h:`แล้วทำไมถึงเรียก ยกกำลังสาม? ลองคิดดูสิ`,w:['cubing']},
+ {cls:'tip',e:`Answer: cubing is the same as finding the volume of a cube — side × side × side!`,
+  h:`คำตอบ: ยกกำลังสามเหมือนการหาปริมาตรของลูกบาศก์ — ด้าน × ด้าน × ด้าน!`,w:['volume','cube']}
+ ]},
+/* 8 — WORKED EXAMPLE 5 */
+{fx:'zoom',b:'✏️',bc:'#FD79A8',ti:'Worked Example 5',tt:'ตัวอย่างการคำนวณ 5',
+ c:[
+ {cls:'math',e:`a) 4² = 4 × 4 = 16`,h:`4² แปลว่า "สี่กำลังสอง" คือคูณ 4 กับตัวมันเอง`},
+ {cls:'math',e:`b) 5³ = 5 × 5 × 5 = 125`,h:`5³ แปลว่า "ห้ากำลังสาม" คือผลคูณของ 5 สามตัว`},
+ {cls:'math',e:`c) √81 = 9`,h:`√81 หมายถึง "รากที่สองของ 81" ตอบ 9 เพราะ 9 × 9 = 81`},
+ {cls:'math',e:`d) ∛64 = 4`,h:`∛64 หมายถึง "รากที่สามของ 64" ตอบ 4 เพราะ 4 × 4 × 4 = 64`}
+ ]},
+/* 9 — SQUARE ROOT BETWEEN INTEGERS */
+{fx:'slide',b:'🔍',bc:'#00CEC9',ti:'Square Root Between Integers',tt:'รากที่สองอยู่ระหว่างจำนวนเต็ม',
+ c:[
+ {e:`The square root of 26 lies between 5 and 6, because 26 lies between 5² and 6² (25 and 36).`,
+  h:`√26 อยู่ระหว่าง 5 และ 6 เพราะ 26 อยู่ระหว่าง 5² และ 6² (25 และ 36)`,w:['square root','integers']},
+ {cls:'example',e:`√26 is more than 5 (because 5² = 25) and less than 6 (because 6² = 36).`,
+  h:`√26 มากกว่า 5 (เพราะ 5² = 25) และน้อยกว่า 6 (เพราะ 6² = 36)`},
+ {cls:'tip',e:`Find the nearest square numbers above and below your number first.`,
+  h:`หาจำนวนกำลังสองที่ใกล้ที่สุดเหนือและใต้จำนวนของคุณก่อน`}
+ ]},
+/* 10 — BOTH SQUARE AND CUBE */
+{fx:'fade',b:'🎯',bc:'#6C5CE7',ti:'Both Square and Cube',tt:'ทั้งกำลังสองและกำลังสาม',
+ c:[
+ {e:`64 is both a square number and a cube number: 8² = 64 and 4³ = 64.`,
+  h:`64 เป็นทั้งจำนวนกำลังสองและจำนวนกำลังสาม เพราะ 8² = 64 และ 4³ = 64`,w:['square number','cube number']},
+ {e:`729 and 4096 are also both square and cube numbers.`,
+  h:`729 และ 4096 ก็เป็นทั้งจำนวนกำลังสองและกำลังสามเช่นกัน`},
+ {cls:'tip',e:`Pattern: these numbers are all "sixth powers" — n⁶ = (n³)² = (n²)³.`,
+  h:`รูปแบบ: จำนวนเหล่านี้เป็น "กำลังที่หก" เพราะ n⁶ = (n³)² = (n²)³`}
+ ]},
+/* 11 — NEGATIVE NUMBERS RECAP */
+{fx:'slide',b:'➖',bc:'#74B9FF',ti:'Negative Numbers — Recap',tt:'จำนวนลบ — ทบทวน',
+ c:[
+ {e:`Adding a negative number is the same as subtracting.`,
+  h:`การบวกจำนวนลบ เหมือนกับการลบ`,w:['negative number']},
+ {cls:'example',e:`7 + (−6) = 1`,h:`7 + (−6) = 1`},
+ {e:`Subtracting a negative number is the same as adding.`,
+  h:`การลบจำนวนลบ เหมือนกับการบวก`},
+ {cls:'example',e:`4 − (−2) = 6`,h:`4 − (−2) = 6`},
+ {e:`The product of a positive number and a negative number is a negative number.`,
+  h:`ผลคูณของจำนวนบวกและจำนวนลบ คือจำนวนลบ`,w:['product','negative number']},
+ {cls:'example',e:`6 × (−8) = −48`,h:`6 × (−8) = −48`},
+ {e:`A positive number divided by a negative number gives a negative answer.`,
+  h:`จำนวนบวกหารด้วยจำนวนลบ ได้คำตอบเป็นลบ`},
+ {cls:'example',e:`28 ÷ (−4) = −7`,h:`28 ÷ (−4) = −7`}
+ ]},
+/* 12 — END OF CHAPTER REFLECTION */
+{fx:'zoom',b:'📝',bc:'#00CEC9',ti:'End of Chapter Reflection',tt:'สรุปบทเรียน — บทที่ 4',
+ c:[
+ {type:'table',head:['You should know…','รู้จัก…','ตัวอย่าง'],
+  rows:[
+   ['square root','รากที่สอง','8² = 64'],
+   ['cube root','รากที่สาม','4³ = 64'],
+   ['estimation','การประมาณค่า','330 × (−210)'],
+   ['square numbers to 100','จำนวนกำลังสองถึง 100','1,4,9,…,100'],
+   ['cube numbers to 125','จำนวนกำลังสามถึง 125','1,8,27,64,125']
+  ]}
+ ]},
+/* 13 — QUIZ 1 GATE */
+{t:'quiz',fx:'fade',quiz:'q1',icon:'🧠',ti:'Quiz Time — Chapter 4',tt:'แบบทดสอบ — บทที่ 4',
+ gate:'ต้องได้อย่างน้อย 7/10 จึงจะไปบทถัดไปได้'},
+/* 14 — COVER CHAPTER 5 */
+{t:'title',fx:'zoom',icon:'🔤',ti:'Expressions',tt:'นิพจน์พีชคณิต',
+ sub:'Chapter 5 · Stage 7 Mathematics · หน้า 48–57',
+ tags:['🔤 ใช้ตัวอักษรแทนจำนวน','➕ สร้างนิพจน์','🔄 แทนค่าลงในนิพจน์']},
+/* 15 — GETTING STARTED */
+{fx:'slide',b:'🎩',bc:'#FD79A8',ti:'Getting Started — Number Trick',tt:'เริ่มต้น — เล่นกลตัวเลข',
+ c:[
+ {e:`Think of a number. Add 3. Double it. Add 4. Subtract 10. Tell me your final answer.`,
+  h:`นึกเลขขึ้นมา บวก 3 คูณ 2 บวก 4 ลบ 10 แล้วบอกคำตอบสุดท้าย`},
+ {cls:'example',e:`Divide their answer by 2 — it is their original number!`,
+  h:`นำคำตอบมาหารด้วย 2 — จะได้เลขที่นึกไว้ตั้งแต่แรก!`},
+ {cls:'tip',e:`This works because of algebra — letters and rules of arithmetic. You will learn how!`,
+  h:`กลนี้ได้ผลเพราะพีชคณิต คือตัวอักษรและกฎเกณฑ์เลขคณิต คุณจะได้เรียนวิธีทำ!`,w:['algebra']}
+ ]},
+/* 16 — 5.1 LETTERS FOR NUMBERS */
+{fx:'fade',b:'🔑',bc:'#FDCB6E',ti:'5.1 Letters for Numbers',tt:'5.1 ใช้ตัวอักษรแทนจำนวน',
+ c:[
+ {e:`In algebra, a letter can represent an unknown number. So "a number plus 3" can be written: m + 3.`,
+  h:`ในพีชคณิต ตัวอักษรสามารถแทนจำนวนที่ไม่ทราบค่าได้ เช่น "จำนวนบวก 3" เขียนเป็น m + 3`,w:['algebra','unknown']},
+ {e:`m + 3 is an expression. m and 3 are both terms of the expression.`,
+  h:`m + 3 เรียกว่า นิพจน์ ส่วน m และ 3 เป็น พจน์ ของนิพจน์`,w:['expression','terms']},
+ {e:`m is a variable (its value can change). 3 is a constant (its value stays the same).`,
+  h:`m เป็น ตัวแปร (ค่าเปลี่ยนได้) ส่วน 3 เป็น ค่าคงที่ (ค่าไม่เปลี่ยน)`,w:['variable','constant']},
+ {e:`An equation has an equals sign linking two equal expressions. Example: m + 3 = 11.`,
+  h:`สมการ มี เครื่องหมายเท่ากับ เชื่อมนิพจน์เท่ากันสองนิพจน์ เช่น m + 3 = 11`,w:['equation','equals sign','expression']},
+ {e:`In 4t, the 4 is the coefficient — the number you multiply the variable by.`,
+  h:`ใน 4t เลข 4 คือ สัมประสิทธิ์ คือจำนวนที่คูณกับตัวแปร`,w:['coefficient','variable']},
+ {cls:'tip',e:`In algebra you don't write the × sign: 4t means 4 × t.`,
+  h:`ในพีชคณิตไม่ต้องเขียนเครื่องหมาย × ก็ได้: 4t หมายถึง 4 × t`}
+ ]},
+/* 17 — VARIABLE vs CONSTANT (flip) */
+{fx:'zoom',b:'🔄',bc:'#00CEC9',ti:'Variable vs Constant',tt:'ตัวแปร กับ ค่าคงที่',
+ c:[
+ {type:'flip',intro:{e:`👆 Tap a card to compare the two ideas.`,h:`แตะการ์ดเพื่อเปรียบเทียบสองแนวคิด`},
+  items:[
+  {f:'m',b:'variable\nตัวแปร (เปลี่ยนได้)',c:'#74B9FF'},
+  {f:'3',b:'constant\nค่าคงที่ (เท่าเดิม)',c:'#FDCB6E'},
+  {f:'7d',b:'coefficient = 7\nสัมประสิทธิ์ = 7',c:'#FD79A8'},
+  {f:'3m+4=19',b:'equation\nสมการ (มี =)',c:'#55EFC4'}
+  ]}
+ ]},
+/* 18 — EXPRESSION vs EQUATION */
+{fx:'fade',b:'⚖️',bc:'#6C5CE7',ti:'Expression vs Equation',tt:'นิพจน์ กับ สมการ',
+ c:[
+ {e:`An expression has no equals sign. Example: 7d + 4.`,
+  h:`นิพจน์ ไม่มีเครื่องหมายเท่ากับ เช่น 7d + 4`,w:['expression','equals sign']},
+ {e:`An equation has an equals sign. Example: 7d + 4 = 18.`,
+  h:`สมการ มีเครื่องหมายเท่ากับ เช่น 7d + 4 = 18`,w:['equation','equals sign']},
+ {cls:'example',e:`7d means 7 × d. The expression 7d + 4 is equal to 18, so we write 7d + 4 = 18.`,
+  h:`7d หมายถึง 7 × d นิพจน์ 7d + 4 มีค่าเท่ากับ 18 จึงเขียนเป็น 7d + 4 = 18`}
+ ]},
+/* 19 — WORKED EXAMPLE 1 */
+{fx:'zoom',b:'✏️',bc:'#FD79A8',ti:'Worked Example 1',tt:'ตัวอย่างการคำนวณ 1',
+ c:[
+ {e:`Look at the expression 7d + 4. What does "7d" mean?`,
+  h:`พิจารณานิพจน์ 7d + 4 "7d" หมายความว่าอย่างไร?`,w:['expression']},
+ {cls:'example',e:`7d means 7 × d. A number next to a letter always means multiply.`,h:`7d หมายถึง 7 × d ตัวเลขที่อยู่ติดกับตัวอักษรหมายถึงการคูณเสมอ`},
+ {e:`Write the equation that shows this expression is equal to 18.`,
+  h:`เขียนสมการที่แสดงว่านิพจน์นี้มีค่าเท่ากับ 18`,w:['equation','expression']},
+ {cls:'example',e:`7d + 4 = 18.`,h:`7d + 4 = 18 (เพราะมีเครื่องหมาย = จึงเป็นสมการ)`}
+ ]},
+/* 20 — 5.2 FORMING EXPRESSIONS */
+{fx:'slide',b:'🎀',bc:'#00CEC9',ti:'5.2 Forming Expressions',tt:'5.2 การสร้างนิพจน์',
+ c:[
+ {e:`A ribbon of length n cm is joined to a ribbon of length m cm and 7 cm. Form an expression for the total length.`,
+  h:`ริบบอนยาว n ซม. ต่อกับริบบอนยาว m ซม. และ 7 ซม. จงสร้างนิพจน์แทนความยาวรวม`,w:['expression']},
+ {cls:'example',e:`Total length = (n + m + 7) cm. You can add in any order.`,h:`ความยาวรวม = (n + m + 7) ซม. บวกในลำดับใดก็ได้`},
+ {e:`Anna has three lengths of ribbon n cm each, plus 7 cm. Find an expression.`,
+  h:`แอนนามีริบบอนยาว n ซม. อยู่ 3 ท่อน บวกอีก 7 ซม. จงหานิพจน์`,w:['expression']},
+ {cls:'example',e:`(3n + 7) cm — three lots of n is 3 × n = 3n.`,h:`(3n + 7) ซม. — สามเท่าของ n คือ 3 × n = 3n`}
+ ]},
+/* 21 — PERIMETER EXPRESSIONS */
+{fx:'fade',b:'📐',bc:'#FDCB6E',ti:'Perimeter Expressions',tt:'เส้นรอบรูปเป็นนิพจน์',
+ c:[
+ {e:`The perimeter is the total length around a shape. Add all the side lengths.`,
+  h:`เส้นรอบรูป คือความยาวรอบรูปร่าง ให้บวกความยาวด้านทั้งหมด`,w:['perimeter']},
+ {cls:'example',e:`A rectangle with sides a and b: perimeter = a + a + b + b = 2a + 2b.`,
+  h:`สี่เหลี่ยมผืนผ้าด้าน a และ b: เส้นรอบรูป = a + a + b + b = 2a + 2b`},
+ {cls:'tip',e:`Collecting like terms helps: a + a + b + b + b = 2a + 3b.`,
+  h:`การจัดพจน์ที่เหมือนกันช่วยได้: a + a + b + b + b = 2a + 3b`,w:['terms']}
+ ]},
+/* 22 — REAL-WORLD: CAFE MENU */
+{fx:'zoom',b:'☕',bc:'#FD79A8',ti:'Expressions in Real Life',tt:'นิพจน์ในชีวิตจริง',
+ c:[
+ {e:`In a cafe: tea = t cents, coffee = c cents, muffin = m cents. Two teas and a muffin costs (2t + m) cents.`,
+  h:`ในคาเฟ่: ชา = t เซนต์, กาแฟ = c เซนต์, มัฟฟิน = m เซนต์ ชา 2 แก้วและมัฟฟิน 1 ชิ้น ราคา (2t + m) เซนต์`,w:['cents']},
+ {cls:'example',e:`Three coffees and two sandwiches: (3c + 2s) cents.`,h:`กาแฟ 3 แก้วและแซนด์วิช 2 ชิ้น: (3c + 2s) เซนต์`},
+ {cls:'example',e:`One juice, two sandwiches and a muffin: (j + 2s + m) cents.`,h:`น้ำผลไม้ 1 แก้ว แซนด์วิช 2 ชิ้น และมัฟฟิน 1 ชิ้น: (j + 2s + m) เซนต์`}
+ ]},
+/* 23 — 5.3 ORDER OF OPERATIONS & SUBSTITUTION */
+{fx:'slide',b:'🔄',bc:'#6C5CE7',ti:'5.3 Substitution',tt:'5.3 การแทนค่าและลำดับการคำนวณ',
+ c:[
+ {e:`The four operations in algebra work the same way as with ordinary numbers.`,
+  h:`การดำเนินการทั้งสี่ในพีชคณิต ทำงานเหมือนเลขธรรมดา`,w:['algebra']},
+ {e:`To substitute, replace the letter with its value, then calculate using the correct order of operations.`,
+  h:`การแทนค่า คือแทนตัวอักษรด้วยค่าของมัน แล้วคำนวณตาม ลำดับการคำนวณ ที่ถูกต้อง`,w:['substitute','order of operations']},
+ {cls:'example',e:`Basil is b years old. Aimee is b + 4. Zak is 2b + 3. If b = 5: Aimee = 9, Zak = 13.`,
+  h:`บาซิลอายุ b ปี แอมี อายุ b + 4 แซค อายุ 2b + 3 ถ้า b = 5: แอมี = 9 แซค = 13`,w:['substitute']}
+ ]},
+/* 24 — WORKED EXAMPLE 4 */
+{fx:'fade',b:'✏️',bc:'#00CEC9',ti:'Worked Example 4',tt:'ตัวอย่างการคำนวณ 4',
+ c:[
+ {e:`Is 7 + p the same as p + 7?`,h:`7 + p เหมือนกับ p + 7 หรือไม่?`},
+ {cls:'example',e:`Yes! Adding is commutative, so the order does not change the answer.`,
+  h:`ใช่! การบวกสลับที่ได้ ดังนั้นลำดับไม่เปลี่ยนคำตอบ`,w:['commutative']},
+ {e:`Find the value of 5t − 7v when t = 4 and v = 2.`,h:`หาค่าของ 5t − 7v เมื่อ t = 4 และ v = 2`,w:['value']},
+ {cls:'example',e:`5t − 7v = (5 × 4) − (7 × 2) = 20 − 14 = 6.`,h:`5t − 7v = (5 × 4) − (7 × 2) = 20 − 14 = 6`},
+ {cls:'example',e:`Find 12 − w/3 when w = 21: 12 − (21 ÷ 3) = 12 − 7 = 5.`,
+  h:`หา 12 − w/3 เมื่อ w = 21: 12 − (21 ÷ 3) = 12 − 7 = 5`}
+ ]},
+/* 25 — END OF CHAPTER REFLECTION (Ch5) */
+{fx:'zoom',b:'📝',bc:'#00CEC9',ti:'End of Chapter Reflection',tt:'สรุปบทเรียน — บทที่ 5',
+ c:[
+ {type:'table',head:['You should know…','รู้จัก…','ตัวอย่าง'],
+  rows:[
+   ['letters for unknowns','ตัวอักษรแทนจำนวน','m + 3'],
+   ['expression','นิพจน์','7d + 4'],
+   ['equation','สมการ','3n + 1 = 19'],
+   ['coefficient','สัมประสิทธิ์','the 3 in 3n'],
+   ['substitution','การแทนค่า','5t − 7v = 6']
+  ]}
+ ]},
+/* 26 — QUIZ 2 GATE */
+{t:'quiz',fx:'fade',quiz:'q2',icon:'🧠',ti:'Quiz Time — Chapter 5',tt:'แบบทดสอบ — บทที่ 5',
+ gate:'ต้องได้อย่างน้อย 7/10 จึงจะจบหลักสูตรได้'},
+/* 27 — CELEBRATION */
+{t:'done',fx:'zoom',icon:'🏆',ti:'You did it!',tt:'ยอดเยี่ยม! จบหลักสูตรแล้ว',
+ sub:'คุณเรียนจบ Indices (บท 4) และ Expressions (บท 5) แล้ว',
+ tags:['🎉 ขอแสดงความยินดี','📘 Stage 7 Mathematics','กดเมนู ☰ เพื่อทบทวน']}
+];
+/* ============ QUIZZES (typed input, no choices) ============ */
+const QUIZZES = {
+q1:[
+ {q:'What is 4²?',th:'4 กำลังสอง เท่ากับเท่าไร?',a:'16',fb:'4² = 4 × 4 = 16'},
+ {q:'What is 5³?',th:'5 กำลังสาม เท่ากับเท่าไร?',a:'125',fb:'5³ = 5 × 5 × 5 = 125'},
+ {q:'√81 = ?',th:'รากที่สองของ 81 เท่ากับเท่าไร?',a:'9',fb:'√81 = 9 เพราะ 9 × 9 = 81'},
+ {q:'∛64 = ?',th:'รากที่สามของ 64 เท่ากับเท่าไร?',a:'4',fb:'∛64 = 4 เพราะ 4 × 4 × 4 = 64'},
+ {q:'What is 10³?',th:'10 กำลังสาม เท่ากับเท่าไร?',a:'1000',fb:'10³ = 10 × 10 × 10 = 1000'},
+ {q:'What is 7²?',th:'7 กำลังสอง เท่ากับเท่าไร?',a:'49',fb:'7² = 7 × 7 = 49'},
+ {q:'√144 = ?',th:'รากที่สองของ 144 เท่ากับเท่าไร?',a:'12',fb:'√144 = 12 เพราะ 12 × 12 = 144'},
+ {q:'∛125 = ?',th:'รากที่สามของ 125 เท่ากับเท่าไร?',a:'5',fb:'∛125 = 5 เพราะ 5 × 5 × 5 = 125'},
+ {q:'Round 48 to the nearest 10.',th:'ปัด 48 ให้เป็นทศที่ใกล้ที่สุด (สิบ)',a:'50',fb:'48 ปัดเป็น 50'},
+ {q:'√64 = ?',th:'64 เป็นทั้งกำลังสองและกำลังสาม รากที่สองของ 64 คือ?',a:'8',fb:'√64 = 8 เพราะ 8 × 8 = 64'}
+],
+q2:[
+ {q:'In 3m + 4, how many terms are there?',th:'ใน 3m + 4 มีกี่พจน์?',a:'2',fb:'มี 2 พจน์ คือ 3m และ 4'},
+ {q:'If t = 4, what is 5t?',th:'ถ้า t = 4 แล้ว 5t เท่ากับเท่าไร?',a:'20',fb:'5t = 5 × 4 = 20'},
+ {q:'If t = 4 and v = 2, what is 5t − 7v?',th:'ถ้า t = 4, v = 2 แล้ว 5t − 7v เท่าไร?',a:'6',fb:'20 − 14 = 6'},
+ {q:'In 7d, what is the coefficient?',th:'ใน 7d สัมประสิทธิ์คือเท่าไร?',a:'7',fb:'สัมประสิทธิ์คือ 7'},
+ {q:'If n = 3, what is 3n + 1?',th:'ถ้า n = 3 แล้ว 3n + 1 เท่าไร?',a:'10',fb:'3×3 + 1 = 10'},
+ {q:'How many terms are in 4t + 5z?',th:'4t + 5z มีกี่พจน์?',a:'2',fb:'2 พจน์ คือ 4t และ 5z'},
+ {q:'If p = 2, what is 3 + 2p?',th:'ถ้า p = 2 แล้ว 3 + 2p เท่าไร?',a:'7',fb:'3 + 2×2 = 7'},
+ {q:'If b = 5, what is b + 4?',th:'ถ้า b = 5 แล้ว b + 4 เท่าไร?',a:'9',fb:'5 + 4 = 9'},
+ {q:'In 2b + 3, what is the coefficient of b?',th:'ใน 2b + 3 สัมประสิทธิ์ของ b คือเท่าไร?',a:'2',fb:'สัมประสิทธิ์ของ b คือ 2'},
+ {q:'If w = 21, what is 12 − w ÷ 3?',th:'ถ้า w = 21 แล้ว 12 − w ÷ 3 เท่าไร?',a:'5',fb:'12 − (21÷3) = 12 − 7 = 5'}
+]
+};
+/* ============ APP LOGIC ============ */
+VOCAB.cents='เซนต์ (หน่วยเงิน)'; VOCAB.value='ค่า';
+const $=s=>document.querySelector(s);
+const STAGE=$('#stage'),PROG=$('#prog'),CUR=$('#curPage'),TOT=$('#totPage'),
+      NEXT=$('#nextBtn'),PREV=$('#prevBtn'),MENU=$('#menu'),MENU_LIST=$('#menuList'),
+      POP=$('#popup'),POPW=$('#popWord'),POPTH=$('#popTh'),POPS=$('#popSpeak'),POPC=$('#popClose');
+TOT.textContent=SLIDES.length;
+let cur=0;
+const PASSED={q1:false,q2:false};
+const GATE={q1:14,q2:27}; // first index each quiz unlocks
+const quizState={active:null,idx:0,score:0,answers:[]};
+
+function isLocked(i){return (i>=GATE.q1&&!PASSED.q1)||(i>=GATE.q2&&!PASSED.q2);}
+let toastT;
+function toast(msg){
+  let t=$('#toast'); if(!t){t=document.createElement('div');t.id='toast';
+    t.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#2d3436;color:#fff;padding:12px 20px;border-radius:14px;z-index:90;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:opacity .3s;font-size:14px;max-width:80vw;text-align:center';
+    document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';clearTimeout(toastT);
+  toastT=setTimeout(()=>t.style.opacity='0',1900);
+}
+function escReg(s){return s.replace(/[.*+?^${}()|[\]\\]/g,function(m){return '\\'+m;});}
+function highlight(en,words){
+  if(!words||!words.length)return en;
+  const sorted=[...new Set(words.map(w=>w.trim()))].filter(Boolean).sort((a,b)=>b.length-a.length);
+  const re=new RegExp('('+sorted.map(escReg).join('|')+')','gi');
+  return en.replace(re,m=>`<span class="vocab" data-w="${m.toLowerCase()}">${m}</span>`);
+}
+/* ---- speech ---- */
+let voices=[];
+function loadVoices(){voices=window.speechSynthesis?speechSynthesis.getVoices():[];}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+function speak(text){
+  if(!('speechSynthesis' in window)){toast('เบราว์เซอร์นี้ไม่รองรับเสียง');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.lang='en-US';
+  const v=voices.find(x=>/en[-_]?(US|GB)/i.test(x.lang))||voices.find(x=>/^en/i.test(x.lang));
+  if(v)u.voice=v;u.rate=0.9;u.pitch=1.05;
+  speechSynthesis.speak(u);
+}
+/* ---- popup ---- */
+function openPopup(word){
+  const key=word.toLowerCase().trim();
+  POPW.textContent=word;
+  POPTH.textContent=VOCAB[key]||('คำศัพท์: '+word);
+  POP.classList.add('open');
+  speak(word);
+}
+POPC.onclick=()=>POP.classList.remove('open');
+POP.addEventListener('click',e=>{if(e.target===POP)POP.classList.remove('open');});
+POPS.onclick=function(){this.classList.remove('wiggle');void this.offsetWidth;this.classList.add('wiggle');speak(POPW.textContent);};
+document.addEventListener('click',e=>{
+  const v=e.target.closest('.vocab');
+  if(v)openPopup(v.getAttribute('data-w'));
+});
+/* ---- rendering ---- */
+function blockHTML(blk,i){
+  if(blk.type==='flip'){
+    let h='<div class="block" style="--i:'+i+'">';
+    if(blk.intro)h+='<div class="en">'+highlight(blk.intro.e,blk.intro.w||[])+'</div>'+(blk.intro.h?'<div class="th">'+blk.intro.h+'</div>':'');
+    h+='<div class="flip-grid">';
+    blk.items.forEach(it=>{
+      h+='<div class="flip"><div class="flip-inner"><div class="flip-face flip-front" style="background:'+it.c+'">'+it.f+'</div><div class="flip-face flip-back" style="border-color:'+it.c+'">'+(it.b||'').replace(/\n/g,'<br>')+'</div></div></div>';
+    });
+    return h+'</div></div>';
+  }
+  if(blk.type==='table'){
+    let h='<div class="block" style="--i:'+i+'"><table class="tbl"><thead><tr>';
+    blk.head.forEach(x=>h+='<th>'+x+'</th>');
+    h+='</tr></thead><tbody>';
+    blk.rows.forEach(r=>{h+='<tr>'+r.map((c,ci)=>'<td><div class="'+(ci===1?'th':'en')+'">'+c+'</div></td>').join('')+'</tr>';});
+    return h+'</tbody></table></div>';
+  }
+  return '<div class="block'+(blk.cls?' '+blk.cls:'')+'" style="--i:'+i+'"><div class="en">'+highlight(blk.e||'',blk.w||[])+'</div>'+(blk.h?'<div class="th">'+blk.h+'</div>':'')+'</div>';
+}
+function renderSlide(i){
+  const s=SLIDES[i];
+  const slide=document.createElement('div');
+  slide.className='slide fx-'+(s.fx||'fade');
+  let html='';
+  if(s.t==='title'||s.t==='done'){
+    html='<div class="card-shell cover"><div class="bigicon">'+(s.icon||'📘')+'</div>'+
+      '<h1 class="s-title">'+(s.t==='done'?'<em>'+s.ti+'</em>':s.ti)+'</h1>'+
+      '<div class="s-subth">'+(s.tt||'')+'</div>'+
+      (s.sub?'<div class="s-subth" style="margin-top:-8px;font-size:16px">'+s.sub+'</div>':'')+
+      '<div class="tags">'+(s.tags||[]).map(t=>'<span class="tag">'+t+'</span>').join('')+'</div></div>';
+  } else if(s.t==='quiz'){html=renderQuizShell(s);}
+  else {
+    html='<div class="card-shell">';
+    if(s.b)html+='<span class="badge" style="background:'+(s.bc||'#6C5CE7')+'">'+s.b+'</span>';
+    html+='<h2 class="s-title">'+s.ti+'</h2>'+(s.tt?'<div class="s-subth">'+s.tt+'</div>':'');
+    (s.c||[]).forEach((b,k)=>html+=blockHTML(b,k));
+    html+='</div>';
+  }
+  slide.innerHTML=html;STAGE.innerHTML='';STAGE.appendChild(slide);
+  if(s.t==='quiz'){const st=document.getElementById('qzStart');if(st)st.onclick=()=>startQuiz(s.quiz);}
+  requestAnimationFrame(()=>requestAnimationFrame(()=>slide.classList.add('active')));
+  STAGE.scrollTop=0;
+}
+/* ---- quiz shell ---- */
+function renderQuizShell(s){
+  const passed=PASSED[s.quiz];let body;
+  if(passed){
+    body='<div style="text-align:center;padding:6px"><div style="font-size:54px">✅</div>'+
+      '<div class="qz-q">ทำแบบทดสอบผ่านแล้ว!</div>'+
+      '<div class="qz-qth">กดปุ่มลูกศร › ที่มุมจอเพื่อไปบทถัดไป</div></div>';
+  } else {
+    body='<div style="text-align:center;padding:6px"><div style="font-size:54px">'+(s.icon||'🧠')+'</div>'+
+      '<div class="qz-q">พร้อมหรือยัง? แบบทดสอบ '+QUIZZES[s.quiz].length+' ข้อ</div>'+
+      '<div class="qz-qth">พิมพ์คำตอบลงในช่อง แล้วกด Enter (บนมือถือจะขึ้นแป้นตัวเลข)</div>'+
+      '<div class="qz-lock-note">🔒 '+(s.gate||'')+'</div>'+
+      '<button class="popup-close" id="qzStart" style="margin-top:8px;font-size:16px">เริ่มทำ 🚀</button></div>';
+  }
+  return '<div class="card-shell"><span class="badge" style="background:#6C5CE7">'+(s.icon||'🧠')+'</span>'+
+    '<h2 class="s-title">'+s.ti+'</h2><div class="s-subth">'+(s.tt||'')+'</div>'+
+    '<div class="qz-box" id="qzBox">'+body+'</div></div>';
+}
+function startQuiz(id){quizState.active=id;quizState.idx=0;quizState.score=0;quizState.answers=[];renderQuizQ();}
+function renderQuizQ(){
+  const Q=QUIZZES[quizState.active],q=Q[quizState.idx],box=document.getElementById('qzBox');
+  let dots=Q.map((_,i)=>{let c=i===quizState.idx?'cur':(i<quizState.idx?(quizState.answers[i]?'done':'wrong'):'');return '<span class="qz-dot '+c+'"></span>';}).join('');
+  box.innerHTML='<div class="qz-prog"><div class="qz-dots">'+dots+'</div><div class="qz-qnum">'+(quizState.idx+1)+'/'+Q.length+'</div></div>'+
+    '<div class="qz-q">'+q.q+'</div><div class="qz-qth">'+q.th+'</div>'+
+    '<div class="qz-input-row"><input class="qz-input" id="qzIn" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="done" placeholder="พิมพ์คำตอบ..."><button class="qz-go" id="qzGo">ตรวจ</button></div>'+
+    '<div class="qz-fb" id="qzFb"></div><button class="qz-next" id="qzNext">ถัดไป →</button>';
+  const inp=document.getElementById('qzIn'),fb=document.getElementById('qzFb'),nx=document.getElementById('qzNext'),go=document.getElementById('qzGo');
+  setTimeout(()=>inp.focus(),60);
+  function check(){
+    if(inp.dataset.checked==='1')return;
+    const val=inp.value.trim();if(val===''){inp.focus();return;}
+    const ok=val===q.a;quizState.answers[quizState.idx]=ok;
+    if(ok){quizState.score++;inp.classList.add('ok');fb.className='qz-fb show ok';fb.innerHTML='✅ ถูกต้อง! '+q.fb;}
+    else{inp.classList.add('bad');fb.className='qz-fb show bad';fb.innerHTML='❌ คำตอบที่ถูกคือ <b>'+q.a+'</b> — '+q.fb;}
+    inp.dataset.checked='1';inp.disabled=true;go.disabled=true;nx.classList.add('show');
+    const ds=document.querySelectorAll('.qz-dot');if(ds[quizState.idx])ds[quizState.idx].classList.add(ok?'done':'wrong');
+    nx.focus();
+  }
+  function nxt(){quizState.idx++;if(quizState.idx>=Q.length)finishQuiz();else renderQuizQ();}
+  go.onclick=check;nx.onclick=nxt;
+  inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();if(inp.dataset.checked==='1')nxt();else check();}};
+}
+function finishQuiz(){
+  const Q=QUIZZES[quizState.active],sc=quizState.score,pass=sc>=7;
+  if(pass)PASSED[quizState.active]=true;
+  const box=document.getElementById('qzBox');
+  box.innerHTML='<div class="qz-result"><div class="qz-score" style="color:'+(pass?'var(--ok)':'var(--c1)')+'">'+sc+
+    '<span style="font-size:.45em;color:var(--soft)">/'+Q.length+'</span></div>'+
+    '<div class="qz-msg">'+(pass?'🎉 ผ่านแล้ว เก่งมาก!':'ยังไม่ผ่าน ลองใหม่อีกครั้งนะ สู้ๆ!')+'</div>'+
+    '<div class="qz-bar"><i style="width:'+(sc/Q.length*100)+'%;background:linear-gradient(90deg,var(--c3),var(--c1))"></i></div>'+
+    (pass?'<button class="popup-close" id="qzCont" style="background:var(--ok)">ไปต่อ →</button>':'<button class="popup-close" id="qzRetry">ทำใหม่ 🔄</button>')+'</div>';
+  if(pass){fireConfetti();document.getElementById('qzCont').onclick=()=>{updateChrome();next();};}
+  else{document.getElementById('qzRetry').onclick=()=>startQuiz(quizState.active);}
+  updateChrome();
+}
+/* ---- chrome / nav ---- */
+function updateChrome(){
+  PROG.style.width=(SLIDES.length<=1?'100':(cur/(SLIDES.length-1)*100))+'%';
+  CUR.textContent=cur+1;
+  PREV.disabled=cur<=0;
+  NEXT.disabled=(cur>=SLIDES.length-1)||isLocked(cur+1);
+  renderMenu();
+}
+function go(n){
+  if(n<0||n>=SLIDES.length)return;
+  if(n>cur&&isLocked(n)){toast('🔒 ทำแบบทดสอบให้ผ่านก่อน จึงจะไปต่อได้');return;}
+  cur=n;renderSlide(cur);updateChrome();
+}
+function next(){go(cur+1);}
+function prev(){go(cur-1);}
+function partColor(i){return i<14?'#6C5CE7':'#00CEC9';}
+function renderMenu(){
+  let h='<div class="part-label">PART 1 · Indices (บท 4)</div>';
+  SLIDES.forEach((s,i)=>{
+    if(i===14)h+='<div class="part-label">PART 2 · Expressions (บท 5)</div>';
+    const locked=isLocked(i);
+    const ico=s.t==='quiz'?'❓':((s.t==='title'||s.t==='done')?'⭐':(i+1));
+    const label=(s.t==='quiz'?'Quiz — ':'')+(s.ti||('สไลด์ '+(i+1)));
+    h+='<div class="menu-item '+(i===cur?'cur':'')+(locked?' locked':'')+'" data-i="'+i+'">'+
+      '<div class="mi-num" style="background:'+partColor(i)+'">'+ico+'</div>'+
+      '<div class="mi-txt">'+label+'<small>'+(s.tt||'')+'</small></div>'+(locked?'<span class="mi-lock">🔒</span>':'')+'</div>';
+  });
+  MENU_LIST.innerHTML=h;
+  MENU_LIST.querySelectorAll('.menu-item').forEach(el=>{
+    el.onclick=()=>{const i=+el.dataset.i;if(isLocked(i)){toast('🔒 ยังเข้าไม่ได้ ทำควิซก่อนหน้าให้ผ่าน');return;}MENU.classList.remove('open');go(i);};
+  });
+}
+$('#menuBtn').onclick=()=>{MENU.classList.add('open');renderMenu();};
+$('#menuClose').onclick=()=>MENU.classList.remove('open');
+MENU.addEventListener('click',e=>{if(e.target===MENU)MENU.classList.remove('open');});
+NEXT.onclick=next;PREV.onclick=prev;
+document.addEventListener('keydown',e=>{
+  if(POP.classList.contains('open')){if(e.key==='Escape')POP.classList.remove('open');return;}
+  if(e.target&&e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'){next();}
+  else if(e.key==='ArrowLeft'){prev();}
+  else if(e.key==='Escape'){MENU.classList.remove('open');}
+});
+/* swipe + flip */
+let sx=0,sy=0,track=false;
+STAGE.addEventListener('touchstart',e=>{const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='BUTTON')){track=false;return;}const c=e.touches[0];sx=c.clientX;sy=c.clientY;track=true;},{passive:true});
+STAGE.addEventListener('touchend',e=>{if(!track)return;track=false;const c=e.changedTouches[0],dx=c.clientX-sx,dy=c.clientY-sy;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.4){if(dx<0)next();else prev();}},{passive:true});
+STAGE.addEventListener('click',e=>{const fl=e.target.closest('.flip');if(fl)fl.classList.toggle('flipped');});
+/* ---- confetti ---- */
+const cf=$('#confetti'),cfx=cf.getContext('2d');
+function resizeCF(){cf.width=innerWidth;cf.height=innerHeight;}
+addEventListener('resize',resizeCF);resizeCF();
+let cfAnim=null;
+function fireConfetti(){
+  const cols=['#6C5CE7','#00CEC9','#FD79A8','#FDCB6E','#55EFC4','#74B9FF'];const P=[];
+  for(let i=0;i<170;i++)P.push({x:innerWidth/2+(Math.random()-.5)*240,y:innerHeight*0.32,vx:(Math.random()-.5)*13,vy:Math.random()*-13-5,g:0.32+Math.random()*0.18,s:6+Math.random()*9,c:cols[i%cols.length],rot:Math.random()*6,l:1});
+  if(cfAnim)cancelAnimationFrame(cfAnim);
+  (function loop(){cfx.clearRect(0,0,cf.width,cf.height);let alive=false;
+    P.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.vx*=0.99;p.l-=0.006;if(p.y<cf.height+30&&p.l>0){alive=true;cfx.save();cfx.translate(p.x,p.y);cfx.rotate(p.rot+=0.12);cfx.globalAlpha=Math.max(0,p.l);cfx.fillStyle=p.c;cfx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.62);cfx.restore();}});
+    if(alive)cfAnim=requestAnimationFrame(loop);else cfx.clearRect(0,0,cf.width,cf.height);})();
+}
+/* ---- init ---- */
+renderSlide(0);updateChrome();
+
+</script>
+</body>
+</html>
