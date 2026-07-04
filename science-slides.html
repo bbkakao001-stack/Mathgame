@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Classification — Science (Cambridge Stage 7)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c1:#0BA37F; --c2:#36BFFA; --c3:#FF7A45; --c4:#FFC93C; --c5:#7BD389; --c6:#A0E7E5;
+  --ink:#22333B; --soft:#5b6b72; --paper:#ffffff; --line:#e2f3ef;
+  --ok:#16A085; --bad:#E74C3C;
+  --shadow:0 10px 30px rgba(34,51,59,.18);
+  --shadow-sm:0 4px 14px rgba(34,51,59,.14);
+  --radius:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font-family:'Mali',system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(135deg,#e3fff4 0%,#e0f3ff 50%,#fff6e0 100%);
+  overflow:hidden;position:fixed;inset:0;}
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(40px);opacity:.5;animation:float 16s ease-in-out infinite}
+.blob.b1{width:42vmin;height:42vmin;background:var(--c5);top:-8vmin;left:-6vmin}
+.blob.b2{width:38vmin;height:38vmin;background:var(--c2);bottom:-10vmin;right:-6vmin;animation-delay:-4s}
+.blob.b3{width:30vmin;height:30vmin;background:var(--c4);top:40%;right:12%;animation-delay:-8s}
+.blob.b4{width:26vmin;height:26vmin;background:var(--c6);bottom:14%;left:14%;animation-delay:-12s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(4vmin,-3vmin) scale(1.08)}66%{transform:translate(-3vmin,4vmin) scale(.95)}}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:12px;
+  padding:10px 14px;background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border-bottom:2px solid rgba(11,163,127,.18)}
+.menu-btn{flex:0 0 auto;width:42px;height:42px;border:none;border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-size:20px;display:grid;place-items:center;
+  box-shadow:var(--shadow-sm);transition:transform .12s}
+.menu-btn:active{transform:scale(.9)}
+.prog-wrap{flex:1 1 auto;height:16px;background:rgba(11,163,127,.14);border-radius:20px;overflow:hidden;position:relative}
+.prog{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,var(--c3),var(--c4),var(--c1));
+  transition:width .45s cubic-bezier(.2,.8,.2,1);position:relative}
+.prog::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+  animation:shine 2s linear infinite}
+@keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.page-num{flex:0 0 auto;font-weight:700;font-size:13px;color:var(--c1);background:#fff;padding:6px 12px;border-radius:20px;
+  box-shadow:var(--shadow-sm);white-space:nowrap}
+.page-num b{font-size:16px}
+.menu{position:fixed;inset:0;z-index:60;background:rgba(34,51,59,.55);backdrop-filter:blur(4px);
+  display:flex;justify-content:flex-end;opacity:0;visibility:hidden;transition:opacity .3s}
+.menu.open{opacity:1;visibility:visible}
+.menu-panel{width:min(360px,86vw);height:100%;background:#fff;box-shadow:-10px 0 40px rgba(0,0,0,.25);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.menu.open .menu-panel{transform:translateX(0)}
+.menu-head{padding:18px;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
+.menu-head h2{margin:0;font-size:19px}
+.menu-close{border:none;background:rgba(255,255,255,.25);color:#fff;width:34px;height:34px;border-radius:10px;font-size:18px;cursor:pointer}
+.menu-list{overflow-y:auto;padding:8px 10px 24px}
+.menu-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:14px;cursor:pointer;margin-bottom:3px;
+  border:2px solid transparent;transition:background .15s,border-color .15s}
+.menu-item:hover{background:#eafaf4}
+.menu-item.cur{background:#e7f7f0;border-color:var(--c5)}
+.menu-item.locked{opacity:.55}
+.mi-num{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px}
+.mi-txt{flex:1 1 auto;font-size:13.5px;line-height:1.25}
+.mi-txt small{display:block;color:var(--soft);font-size:11px;font-weight:400}
+.mi-lock{font-size:15px}
+.part-label{font-weight:700;color:var(--c1);font-size:12px;margin:14px 10px 4px;display:flex;align-items:center;gap:8px}
+.part-label::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--c1),transparent)}
+.stage{position:absolute;inset:64px 0 0 0;z-index:10}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;overflow-y:auto;overflow-x:hidden;
+  padding:18px clamp(14px,5vw,60px) 110px;display:flex;flex-direction:column;justify-content:center}
+.slide.active{opacity:1;visibility:visible}
+.slide.active.fx-slide{animation:enterSlide .55s cubic-bezier(.2,.8,.2,1) both}
+.slide.active.fx-fade{animation:enterFade .55s ease both}
+.slide.active.fx-zoom{animation:enterZoom .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes enterSlide{from{opacity:0;transform:translateX(8%)}to{opacity:1;transform:translateX(0)}}
+@keyframes enterFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes enterZoom{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.card-shell{max-width:980px;margin:0 auto;width:100%}
+.badge{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;color:#fff;padding:6px 14px;
+  border-radius:30px;box-shadow:var(--shadow-sm);margin-bottom:10px}
+.s-title{font-size:clamp(24px,5.4vw,42px);font-weight:700;line-height:1.15;margin:2px 0;color:var(--c1)}
+.s-title em{font-style:normal;background:linear-gradient(120deg,var(--c3),var(--c4));-webkit-background-clip:text;background-clip:text;color:transparent}
+.s-subth{font-size:clamp(15px,3.4vw,21px);color:var(--soft);font-weight:500;margin:0 0 16px}
+.block{background:var(--paper);border:2px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin-bottom:12px;
+  box-shadow:var(--shadow-sm);opacity:0}
+.slide.active .block{animation:fadeUp .55s ease forwards;animation-delay:calc(var(--i)*.12s + .12s)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.block .en{font-size:clamp(16px,3.6vw,21px);font-weight:600;line-height:1.45}
+.block .th{font-size:clamp(12.5px,2.9vw,15.5px);color:var(--soft);font-weight:400;margin-top:5px;line-height:1.4}
+.block.example{border-left:8px solid var(--c2);background:linear-gradient(100deg,#f0fbff,#fff)}
+.block.tip{border-left:8px solid var(--c4);background:linear-gradient(100deg,#fffbeb,#fff);font-style:italic}
+.block.tip .en{color:#b7791f}
+.vocab{background:linear-gradient(120deg,var(--c4),#ffe08a);color:#7a5a00;font-weight:700;padding:1px 7px;border-radius:8px;
+  cursor:pointer;box-shadow:0 2px 0 #e0b341;transition:transform .12s,box-shadow .12s}
+.vocab:hover{transform:translateY(-2px);box-shadow:0 4px 0 #e0b341}
+.vocab:active{transform:scale(.94)}
+.vocab::after{content:"🔊";font-size:.7em;margin-left:3px;filter:grayscale(.2)}
+.popup{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:rgba(34,51,59,.5);
+  backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:opacity .25s;padding:20px}
+.popup.open{opacity:1;visibility:visible}
+.popup-card{background:#fff;border-radius:26px;padding:22px 24px;max-width:380px;width:100%;text-align:center;
+  box-shadow:var(--shadow);transform:scale(.8) translateY(20px);transition:transform .3s cubic-bezier(.2,.9,.3,1.3);border:4px solid var(--c4)}
+.popup.open .popup-card{transform:scale(1) translateY(0)}
+.popup-word{font-size:30px;font-weight:700;color:var(--c1)}
+.popup-th{font-size:18px;color:var(--soft);margin:6px 0 14px}
+.speak-big{border:none;width:64px;height:64px;border-radius:50%;cursor:pointer;font-size:28px;color:#fff;
+  background:linear-gradient(135deg,var(--c2),var(--c1));box-shadow:var(--shadow-sm);transition:transform .12s}
+.speak-big:active{transform:scale(.88)}
+.speak-big.wiggle{animation:wig .5s ease}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.popup-close{margin-top:14px;border:none;background:var(--c1);color:#fff;padding:9px 22px;border-radius:14px;
+  font-family:inherit;font-weight:700;cursor:pointer;font-size:14px}
+.photo-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:6px}
+.org-photo{width:100%;height:120px;object-fit:cover;border-radius:16px;box-shadow:var(--shadow-sm);
+  border:3px solid #fff;background:#eef7f3;transition:transform .25s,box-shadow .25s;cursor:pointer}
+.org-photo:hover{transform:translateY(-5px) scale(1.03);box-shadow:var(--shadow)}
+.org-photo.spin-in{animation:spinIn .6s ease both}
+@keyframes spinIn{from{opacity:0;transform:rotate(-8deg) scale(.8)}to{opacity:1;transform:rotate(0) scale(1)}}
+.photo-cap{font-size:12px;text-align:center;color:var(--soft);margin-top:4px;font-weight:600}
+.svg-box{background:#fff;border-radius:var(--radius);border:2px solid var(--line);box-shadow:var(--shadow-sm);
+  padding:10px;margin-top:6px;display:flex;justify-content:center}
+.svg-box svg{width:100%;max-width:560px;height:auto;display:block}
+.svg-cap{font-size:12.5px;color:var(--soft);text-align:center;margin-top:4px;font-weight:600}
+.tbl{width:100%;border-collapse:collapse;margin-top:6px;font-size:clamp(12px,2.6vw,15px)}
+.tbl th,.tbl td{border:2px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.tbl th{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-weight:700}
+.tbl tr:nth-child(even) td{background:#f3faf7}
+.tbl .en{font-weight:600}
+.tbl .th{color:var(--soft);font-size:.92em}
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:6px}
+.flip{perspective:800px;height:150px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;display:grid;place-items:center;border-radius:16px;font-weight:700;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:var(--shadow-sm);text-align:center;padding:6px;overflow:hidden}
+.flip-front img{width:100%;height:100%;object-fit:cover}
+.flip-front .lab{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:14px;padding:4px}
+.flip-back{transform:rotateY(180deg);background:#fff;border:3px solid;color:var(--c1);font-size:14px}
+.flip-back small{display:block;color:var(--soft);font-weight:400;font-size:11px;margin-top:2px}
+.nav{position:fixed;bottom:18px;left:0;right:0;z-index:25;display:flex;align-items:center;justify-content:center;gap:14px;pointer-events:none}
+.nav-btn{pointer-events:auto;border:none;width:58px;height:58px;border-radius:50%;cursor:pointer;font-size:24px;color:#fff;
+  box-shadow:var(--shadow);display:grid;place-items:center;transition:transform .12s,opacity .2s;font-family:inherit}
+.nav-btn.prev{background:linear-gradient(135deg,var(--c2),var(--c6))}
+.nav-btn.next{background:linear-gradient(135deg,var(--c1),var(--c3))}
+.nav-btn:active{transform:scale(.85)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-hint{position:fixed;bottom:24px;right:16px;z-index:24;font-size:11px;color:var(--soft);background:rgba(255,255,255,.7);
+  padding:5px 10px;border-radius:12px;pointer-events:none}
+.cover{text-align:center}
+.cover .bigicon{font-size:clamp(56px,16vw,120px);display:inline-block;animation:bob 3s ease-in-out infinite;
+  filter:drop-shadow(0 8px 14px rgba(11,163,127,.35))}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.cover h1{font-size:clamp(30px,8vw,58px);font-weight:700;margin:6px 0;line-height:1.1}
+.cover .sub{font-size:clamp(15px,3.6vw,20px);color:var(--soft);font-weight:500;margin-bottom:18px}
+.cover .hero{width:min(280px,60vw);height:180px;object-fit:cover;border-radius:24px;box-shadow:var(--shadow);
+  border:5px solid #fff;margin:0 auto 10px;display:block}
+.cover .tags{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.cover .tag{background:#fff;padding:8px 16px;border-radius:30px;font-weight:700;font-size:14px;box-shadow:var(--shadow-sm);color:var(--c1)}
+.kbd{display:inline-block;background:#fff;border:2px solid var(--line);border-bottom-width:4px;border-radius:8px;
+  padding:1px 8px;font-weight:700;font-size:.85em;color:var(--c1);margin:0 2px}
+/* ===== QUIZ ===== */
+.qz{position:absolute;inset:0;z-index:12;opacity:0;visibility:hidden;overflow-y:auto;padding:18px clamp(14px,5vw,40px) 110px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center}
+.qz.active{opacity:1;visibility:visible;animation:enterZoom .5s both}
+.qz-box{max-width:680px;width:100%;background:#fff;border-radius:26px;padding:22px 22px 18px;box-shadow:var(--shadow);border:3px solid var(--c1)}
+.qz-prog{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.qz-dots{display:flex;gap:6px;flex-wrap:wrap}
+.qz-dot{width:14px;height:14px;border-radius:50%;background:#e3f0ec;transition:.25s}
+.qz-dot.done{background:var(--c5)}
+.qz-dot.wrong{background:var(--bad)}
+.qz-dot.cur{background:var(--c1);transform:scale(1.3)}
+.qz-qnum{font-weight:700;color:var(--c1);font-size:14px;margin-left:auto}
+.qz-q{font-size:clamp(18px,4vw,24px);font-weight:700;line-height:1.4;margin:4px 0 4px}
+.qz-qth{color:var(--soft);font-size:14px;margin-bottom:14px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.choice{display:flex;align-items:center;gap:10px;background:#f5fbf8;border:3px solid var(--line);border-radius:16px;
+  padding:10px 12px;cursor:pointer;transition:transform .12s,border-color .15s,background .15s;font-family:inherit;
+  text-align:left;font-size:15px;font-weight:600;color:var(--ink);min-height:54px}
+.choice:hover{transform:translateY(-2px);border-color:var(--c2);background:#eafaf4}
+.choice:active{transform:scale(.97)}
+.choice .k{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:700;
+  background:linear-gradient(135deg,var(--c1),var(--c2));font-size:15px}
+.choice img{width:64px;height:54px;object-fit:cover;border-radius:10px;flex:0 0 auto;background:#eef7f3}
+.choice .txt{flex:1 1 auto}
+.choice.correct{border-color:var(--ok);background:#e6fff6}
+.choice.correct .k{background:var(--ok)}
+.choice.wrong{border-color:var(--bad);background:#fff0f0;animation:shake .4s}
+.choice.wrong .k{background:var(--bad)}
+.choice.dim{opacity:.5}
+.choice:disabled{cursor:default}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.qz-fb{margin-top:14px;border-radius:14px;padding:12px 14px;font-weight:700;display:none;animation:fadeUp .35s}
+.qz-fb.show{display:block}
+.qz-fb.ok{background:#e6fff6;color:#00795a;border:2px solid var(--ok)}
+.qz-fb.bad{background:#fff0f0;color:#c0392b;border:2px solid var(--bad)}
+.qz-next{margin-top:14px;border:none;background:var(--c1);color:#fff;font-family:inherit;font-weight:700;
+  padding:11px 26px;border-radius:14px;cursor:pointer;font-size:16px;display:none}
+.qz-next.show{display:inline-block;animation:fadeUp .35s}
+.qz-result{text-align:center}
+.qz-score{font-size:clamp(40px,10vw,64px);font-weight:700;line-height:1}
+.qz-msg{font-size:18px;margin:8px 0 16px;font-weight:600}
+.qz-bar{height:14px;background:#eee;border-radius:20px;overflow:hidden;margin:6px 0 16px}
+.qz-bar i{display:block;height:100%;border-radius:20px;transition:width 1s}
+#confetti{position:fixed;inset:0;z-index:80;pointer-events:none}
+.qz-lock-note{font-size:13px;color:var(--soft);text-align:center;margin-top:10px}
+@media(max-width:640px){
+  .slide{padding:14px 14px 104px}
+  .nav-btn{width:52px;height:52px;font-size:21px}
+  .choices{grid-template-columns:1fr}
+  .org-photo{height:96px}
+  .nav-hint{display:none}
+  .page-num{font-size:12px}
+}
+@media(max-width:380px){.s-title{font-size:24px}}
+.gallery{display:grid;gap:12px;margin-top:6px}
+.gallery.g2{grid-template-columns:1fr 1fr}
+.gallery.g3{grid-template-columns:repeat(3,1fr)}
+.gallery.g4{grid-template-columns:repeat(2,1fr)}
+@media(min-width:620px){.gallery.g4{grid-template-columns:repeat(4,1fr)}}
+.g-item{display:flex;flex-direction:column;align-items:center;text-align:center}
+.g-item .org-photo{width:100%;height:128px}
+.g-item .photo-cap{font-size:12.5px;font-weight:700;color:var(--ink);margin-top:6px}
+.g-item .photo-cap small{display:block;color:var(--soft);font-weight:400;font-size:11px;margin-top:1px}
+.photo-hero{display:block;width:100%;max-width:420px;height:200px;object-fit:cover;border-radius:18px;
+  box-shadow:var(--shadow);border:5px solid #fff;margin:6px auto}
+.split{display:grid;grid-template-columns:1fr;gap:12px;align-items:center}
+@media(min-width:680px){.split.two{grid-template-columns:1fr 1fr}}
+.split .lbl{font-size:12px;font-weight:700;color:var(--c1);text-align:center;margin-bottom:4px}
+</style>
+</head>
+<body>
+<div class="bg"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
+
+<div class="topbar">
+  <button class="menu-btn" id="menuBtn" title="เมนู">☰</button>
+  <div class="prog-wrap"><div class="prog" id="prog"></div></div>
+  <div class="page-num"><b id="curPage">1</b>/<span id="totPage">1</span></div>
+</div>
+
+<div class="menu" id="menu">
+  <div class="menu-panel">
+    <div class="menu-head"><h2>🔬 เมนูบทเรียน</h2><button class="menu-close" id="menuClose">✕</button></div>
+    <div class="menu-list" id="menuList"></div>
+  </div>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<div class="nav">
+  <button class="nav-btn prev" id="prevBtn">‹</button>
+  <button class="nav-btn next" id="nextBtn">›</button>
+</div>
+<div class="nav-hint">← → หรือปัดนิ้ว • กดคำที่ <span style="background:var(--c4);padding:0 4px;border-radius:5px">ไฮไลต์</span></div>
+
+<div class="popup" id="popup">
+  <div class="popup-card">
+    <div class="popup-word" id="popWord">word</div>
+    <div class="popup-th" id="popTh">คำแปล</div>
+    <button class="speak-big" id="popSpeak">🔊</button>
+    <div><button class="popup-close" id="popClose">ปิด</button></div>
+  </div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+"use strict";
+const IMG = {
+platypus:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Platypus.jpg/500px-Platypus.jpg",
+lion:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Lion_%28Panthera_leo%29_male_6y.jpg/500px-Lion_%28Panthera_leo%29_male_6y.jpg",
+tiger:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3.jpg/500px-Bengal_tiger_%28Panthera_tigris_tigris%29_female_3.jpg",
+mushroom:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Fly_Agaric_mushroom_04.jpg/500px-Fly_Agaric_mushroom_04.jpg",
+yeast:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Baking_yeast_cells_under_40x_microscope_objective.jpg/500px-Baking_yeast_cells_under_40x_microscope_objective.jpg",
+butterfly:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Monarch_butterfly_with_its_pupa_case.jpg/500px-Monarch_butterfly_with_its_pupa_case.jpg",
+frog:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/European_Common_Frog_Rana_temporaria.jpg/500px-European_Common_Frog_Rana_temporaria.jpg",
+snake:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Green_Vine_snake-Wynaad.jpg/500px-Green_Vine_snake-Wynaad.jpg",
+spider:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Araneus_diadematus_%28Clerck%2C_1757%29.JPG/500px-Araneus_diadematus_%28Clerck%2C_1757%29.JPG",
+earthworm:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Bioturbation_of_nanoplastics_by_earthworms.jpg/500px-Bioturbation_of_nanoplastics_by_earthworms.jpg",
+snail:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Snail-wiki-120-Zachi-Evenor.jpg/500px-Snail-wiki-120-Zachi-Evenor.jpg",
+fish:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Amphiprion_ocellaris_%28Clown_anemonefish%29_by_Nick_Hobgood.jpg/500px-Amphiprion_ocellaris_%28Clown_anemonefish%29_by_Nick_Hobgood.jpg",
+bird:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Scarlet_macaw_%28Ara_macao_cyanopterus%29_Copan.jpg/500px-Scarlet_macaw_%28Ara_macao_cyanopterus%29_Copan.jpg",
+mule:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Equidae_E._africanus_asinus_x_E._ferus_caballus_%28Mule%29.jpg/500px-Equidae_E._africanus_asinus_x_E._ferus_caballus_%28Mule%29.jpg",
+bacteria:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/E_coli_at_10000x%2C_original.jpg/500px-E_coli_at_10000x%2C_original.jpg",
+rose:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Red_rose_with_black_background.jpg/500px-Red_rose_with_black_background.jpg",
+fern:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Emerging_fern_frond_-_geograph.org.uk_-_6144254.jpg/500px-Emerging_fern_frond_-_geograph.org.uk_-_6144254.jpg",
+pinecone:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Whitebark_Pine_%28Pinus_albicaulis%29_Cone_%2844961456254%29.jpg/500px-Whitebark_Pine_%28Pinus_albicaulis%29_Cone_%2844961456254%29.jpg",
+moss:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Muschio_Bryophyta_in_Val_Vigezzo_-_Toceno_VCO%2C_Piedmont%2C_Italy_2020-09-12.jpg/500px-Muschio_Bryophyta_in_Val_Vigezzo_-_Toceno_VCO%2C_Piedmont%2C_Italy_2020-09-12.jpg",
+woodlouse:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Porcellio_scaber_1.jpg/500px-Porcellio_scaber_1.jpg",
+moth:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Noctua_pronuba_%28Narrow-bordered_five-spot_burnet_moth%29.jpg/500px-Noctua_pronuba_%28Narrow-bordered_five-spot_burnet_moth%29.jpg",
+penguin:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Aptenodytes_patagonicus_Schythe.jpg/500px-Aptenodytes_patagonicus_Schythe.jpg",
+toucan:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Toco_Toucan_Ramphastos_toco.jpg/500px-Toco_Toucan_Ramphastos_toco.jpg",
+flamingo:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/American_Flamingo_-_Phoenicopterus_ruber.jpg/500px-American_Flamingo_-_Phoenicopterus_ruber.jpg",
+mapleleaf:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Acer_pseudoplatanus_%28aka%29.jpg/500px-Acer_pseudoplatanus_%28aka%29.jpg",
+oakleaf:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Quercus_robur1.jpg/500px-Quercus_robur1.jpg"
+};
+const VOCAB = {
+"sort":"จัดเรียง","sorting":"การจัดเรียง","organisms":"สิ่งมีชีวิต","organism":"สิ่งมีชีวิต",
+"groups":"กลุ่ม","similarities":"ความเหมือน","differences":"ความแตกต่าง",
+"classify":"จำแนก","classification":"การจำแนก","characteristic":"ลักษณะเฉพาะ","characteristics":"ลักษณะเฉพาะ",
+"variation":"ความหลากหลาย/ความแตกต่าง","feature":"ลักษณะ","features":"ลักษณะ",
+"kingdom":"อาณาจักร (การจำแนก)","kingdoms":"อาณาจักร","plant kingdom":"อาณาจักรพืช","animal kingdom":"อาณาจักรสัตว์",
+"fungus kingdom":"อาณาจักรเชื้อรา","prokaryote kingdom":"อาณาจักรโพรแคริโอต","fungi":"เชื้อรา","bacteria":"แบคทีเรีย",
+"cell":"เซลล์","cells":"เซลล์","cell wall":"ผนังเซลล์","cellulose":"เซลลูโลส","nucleus":"นิวเคลียส","nuclei":"นิวเคลียส",
+"microscope":"กล้องจุลทรรศน์","vertebrate":"สัตว์มีกระดูกสันหลัง","vertebrates":"สัตว์มีกระดูกสันหลัง",
+"invertebrate":"สัตว์ไม่มีกระดูกสันหลัง","invertebrates":"สัตว์ไม่มีกระดูกสันหลัง","backbone":"กระดูกสันหลัง",
+"mammals":"สัตว์เลี้ยงลูกด้วยนม","reptiles":"สัตว์เลื้อยคลาน","fish":"ปลา","amphibians":"สัตว์ครึ่งบกครึ่งน้ำ",
+"birds":"นก","feathers":"ขน","scales":"เกล็ด","fur":"ขนสัตว์","lay eggs":"ออกไข่",
+"scientific name":"ชื่อวิทยาศาสตร์","species":"สปีชีส์/ชนิด","fertile":"เจริญพันธุ์ได้","infertile":"เจริญพันธุ์ไม่ได้",
+"offspring":"ลูกหลาน","hybrid":"ลูกผสม","reproduce":"สืบพันธุ์","reproduction":"การสืบพันธุ์",
+"virus":"ไวรัส","viruses":"ไวรัส","living":"มีชีวิต","alive":"มีชีวิต","host cell":"เซลล์โฮสต์",
+"replication":"การจำลองแบบ","life processes":"กระบวนการดำรงชีวิต","movement":"การเคลื่อนไหว",
+"sensitivity":"การตอบสนอง","growth":"การเจริญเติบโต","respiration":"การหายใจ","excretion":"การขับถ่าย",
+"nutrition":"การได้รับสารอาหาร","dichotomous key":"กุญแจจำแนกแบบแตกแขนง",
+"flowering plants":"พืชดอก","conifers":"พืชตระกูลสน","ferns":"เฟิร์น","mosses":"มอสส์",
+"leaves":"ใบไม้","roots":"ราก","seeds":"เมล็ด","biodiversity":"ความหลากหลายทางชีวภาพ",
+"observation":"การสังเกต","evaluate":"ประเมิน","sources":"แหล่งข้อมูล",
+"research":"ค้นคว้า","reference books":"หนังสืออ้างอิง","search terms":"คำค้นหน้า","internet":"อินเทอร์เน็ต",
+"construct":"สร้าง/สร้างกุญแจ","rare":"หายาก","natural habitats":"ถิ่นที่อยู่ตามธรรมชาติ",
+"biodiversity hotspot":"จุด hotspot ความหลากหลาย","bird watchers":"นักเลี้ยงนก",
+"protein coat":"เปลือกโปรตีน","fat envelope":"เปลือกไขมัน","strand of genes":"สายพันธุกรรม",
+"dead materials":"วัสดุที่ตายแล้ว","yeasts":"ยีสต์","hierarchy":"ลำดับชั้น",
+"biological classification":"การจำแนกทางชีววิทยา","two-word":"สองคำ","Latin":"ละติน"
+};
+function photo(key,cap,cls){return '<div class="photo-wrap'+(cls?' '+cls:'')+'"><img class="org-photo spin-in" src="'+IMG[key]+'" alt="'+(cap||key)+'" loading="lazy" onerror="this.style.opacity=.35"><div class="photo-cap">'+(cap||key)+'</div></div>';}
+function photoRow(items){return '<div class="photo-row">'+items.map(it=>photo(it.k,it.c)).join('')+'</div>';}
+const SVG = {
+ kingdoms:'<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg"><g font-family="Mali,sans-serif" font-weight="700"><rect x="150" y="6" width="160" height="34" rx="12" fill="#7BD389" stroke="#0BA37F"/><text x="230" y="29" text-anchor="middle" fill="#fff" font-size="14">PLANTS 🌿</text><rect x="6" y="56" width="130" height="34" rx="12" fill="#FF7A45" stroke="#c75630"/><text x="71" y="79" text-anchor="middle" fill="#fff" font-size="14">ANIMALS 🦁</text><rect x="165" y="56" width="130" height="34" rx="12" fill="#FFC93C" stroke="#d4a017"/><text x="230" y="79" text-anchor="middle" fill="#7a5a00" font-size="14">FUNGI 🍄</text><rect x="324" y="56" width="130" height="34" rx="12" fill="#A0E7E5" stroke="#36BFFA"/><text x="389" y="79" text-anchor="middle" fill="#22333B" font-size="13">PROKARYOTES 🦠</text><rect x="150" y="106" width="160" height="34" rx="12" fill="#dFe7ff" stroke="#6C5CE7" stroke-dasharray="5 4"/><text x="230" y="129" text-anchor="middle" fill="#6C5CE7" font-size="14">NOT a kingdom</text><text x="230" y="155" text-anchor="middle" fill="#6C5CE7" font-size="14">VIRUSES 🦠❓</text></g></svg>',
+ virus:'<svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg"><g font-family="Mali,sans-serif"><circle cx="150" cy="110" r="78" fill="#ffd1c2" stroke="#FF7A45" stroke-width="3"/><circle cx="150" cy="110" r="56" fill="#36BFFA" stroke="#1b8fc7" stroke-width="2" opacity=".55"/><path d="M104 78 q20 8 0 22 M150 60 q10 16 0 24 M196 78 q-20 8 0 22 M104 142 q20 -8 0 -22 M150 160 q10 -16 0 -24 M196 142 q-20 -8 0 -22" fill="none" stroke="#1b8fc7" stroke-width="3" stroke-linecap="round"/><line x1="20" y1="200" x2="150" y2="110" stroke="#888" stroke-dasharray="4 3"/><text x="6" y="212" font-size="12" fill="#888">protein coat</text><line x1="150" y1="110" x2="280" y2="40" stroke="#FF7A45" stroke-dasharray="4 3"/><text x="220" y="34" font-size="12" fill="#FF7A45">fat envelope</text><circle cx="150" cy="110" r="8" fill="#6C5CE7"/><line x1="150" y1="110" x2="280" y2="180" stroke="#6C5CE7" stroke-dasharray="4 3"/><text x="232" y="196" font-size="12" fill="#6C5CE7">strand of genes</text></g></svg>',
+ cells:'<svg viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg"><g font-family="Mali,sans-serif"><rect x="14" y="20" width="190" height="160" rx="24" fill="#7BD389" stroke="#0BA37F" stroke-width="4"/><ellipse cx="109" cy="100" rx="62" ry="56" fill="#dff5d8" stroke="#0BA37F" stroke-width="2"/><circle cx="92" cy="92" r="22" fill="#36BFFA" stroke="#1b8fc7" stroke-width="2"/><ellipse cx="92" cy="92" rx="6" ry="10" fill="#1b8fc7"/><circle cx="138" cy="70" r="9" fill="#0BA37F"/><circle cx="150" cy="120" r="9" fill="#0BA37F"/><circle cx="120" cy="132" r="8" fill="#0BA37F"/><text x="109" y="196" text-anchor="middle" font-size="14" font-weight="700" fill="#0BA37F">PLANT CELL</text><rect x="236" y="20" width="190" height="160" rx="34" fill="#ffd1c2" stroke="#FF7A45" stroke-width="4"/><ellipse cx="331" cy="100" rx="60" ry="54" fill="#fff0e8" stroke="#FF7A45" stroke-width="2"/><circle cx="316" cy="92" r="22" fill="#36BFFA" stroke="#1b8fc7" stroke-width="2"/><ellipse cx="316" cy="92" rx="6" ry="10" fill="#1b8fc7"/><text x="331" y="196" text-anchor="middle" font-size="14" font-weight="700" fill="#FF7A45">ANIMAL CELL</text></g></svg>',
+ key:'<svg viewBox="0 0 460 250" xmlns="http://www.w3.org/2000/svg"><g font-family="Mali,sans-serif" font-size="12" font-weight="700"><rect x="160" y="8" width="140" height="32" rx="10" fill="#0BA37F"/><text x="230" y="29" text-anchor="middle" fill="#fff">Has legs?</text><path d="M200 40 L80 80 M260 40 L380 80" stroke="#888" stroke-width="2" fill="none"/><text x="120" y="58" font-size="11" fill="#0BA37F">YES</text><text x="320" y="58" font-size="11" fill="#E74C3C">NO</text><rect x="10" y="80" width="140" height="32" rx="10" fill="#36BFFA"/><text x="80" y="101" text-anchor="middle" fill="#fff">Has wings?</text><rect x="310" y="80" width="140" height="32" rx="10" fill="#FFC93C"/><text x="380" y="101" text-anchor="middle" fill="#7a5a00">Has a shell?</text><path d="M80 112 L40 150 M120 112 L120 150" stroke="#aaa" stroke-width="2" fill="none"/><rect x="6" y="150" width="70" height="30" rx="10" fill="#7BD389"/><text x="41" y="170" text-anchor="middle" font-size="11" fill="#fff">Butterfly</text><rect x="92" y="150" width="70" height="30" rx="10" fill="#A0E7E5"/><text x="127" y="170" text-anchor="middle" font-size="11" fill="#22333B">Spider</text><path d="M350 112 L350 150 M410 112 L410 150" stroke="#aaa" stroke-width="2" fill="none"/><rect x="320" y="150" width="60" height="30" rx="10" fill="#7BD389"/><text x="350" y="170" text-anchor="middle" font-size="11" fill="#fff">Snail</text><rect x="382" y="150" width="68" height="30" rx="10" fill="#FF7A45"/><text x="416" y="170" text-anchor="middle" font-size="11" fill="#fff">Earthworm</text><text x="230" y="226" text-anchor="middle" font-size="13" fill="#888">A dichotomous key: each step splits in TWO.</text></g></svg>'
+};
+/* ============ APP LOGIC ============ */
+const $=s=>document.querySelector(s);
+const STAGE=$('#stage'),PROG=$('#prog'),CUR=$('#curPage'),TOT=$('#totPage'),
+      NEXT=$('#nextBtn'),PREV=$('#prevBtn'),MENU=$('#menu'),MENU_LIST=$('#menuList'),
+      POP=$('#popup'),POPW=$('#popWord'),POPTH=$('#popTh'),POPS=$('#popSpeak'),POPC=$('#popClose');
+TOT.textContent='?';
+let cur=0;
+const PASSED={q1:false,q2:false};
+const GATE={q1:15,q2:24};
+const quizState={active:null,idx:0,score:0,answers:[]};
+function isLocked(i){return (i>=GATE.q1&&!PASSED.q1)||(i>=GATE.q2&&!PASSED.q2);}
+let toastT;
+function toast(msg){
+  let t=$('#toast');if(!t){t=document.createElement('div');t.id='toast';
+    t.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#22333B;color:#fff;padding:12px 20px;border-radius:14px;z-index:90;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:opacity .3s;font-size:14px;max-width:80vw;text-align:center';
+    document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';clearTimeout(toastT);toastT=setTimeout(function(){t.style.opacity='0';},1900);
+}
+function escReg(s){return s.replace(/[.*+?^${}()|[\]\\]/g,function(m){return '\\'+m;});}
+function highlight(en,words){
+  if(!words||!words.length)return en;
+  const sorted=[...new Set(words.map(function(w){return w.trim();}))].filter(Boolean).sort(function(a,b){return b.length-a.length;});
+  const re=new RegExp('('+sorted.map(escReg).join('|')+')','gi');
+  return en.replace(re,function(m){return '<span class="vocab" data-w="'+m.toLowerCase()+'">'+m+'</span>';});
+}
+let voices=[];
+function loadVoices(){voices=window.speechSynthesis?speechSynthesis.getVoices():[];}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+function speak(text){
+  if(!('speechSynthesis' in window)){toast('เบราว์เซอร์นี้ไม่รองรับเสียง');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.lang='en-US';
+  const v=voices.find(function(x){return /en[-_]?(US|GB)/i.test(x.lang);})||voices.find(function(x){return /^en/i.test(x.lang);});
+  if(v)u.voice=v;u.rate=0.88;u.pitch=1.05;speechSynthesis.speak(u);
+}
+function openPopup(word){
+  const key=word.toLowerCase().trim();POPW.textContent=word;
+  POPTH.textContent=VOCAB[key]||('คำศัพท์: '+word);POP.classList.add('open');speak(word);
+}
+POPC.onclick=function(){POP.classList.remove('open');};
+POP.addEventListener('click',function(e){if(e.target===POP)POP.classList.remove('open');});
+POPS.onclick=function(){this.classList.remove('wiggle');void this.offsetWidth;this.classList.add('wiggle');speak(POPW.textContent);};
+document.addEventListener('click',function(e){const v=e.target.closest('.vocab');if(v)openPopup(v.getAttribute('data-w'));});
+/* ============ SLIDE CONTENT ============ */
+const SLIDES = [
+/* 0 — COVER */
+{t:'title',fx:'zoom',icon:'🦣',hero:'platypus',ti:'Classification',tt:'การจำแนกสิ่งมีชีวิต',
+ sub:'Chapter 3 · Cambridge Lower Secondary Science',
+ tags:['🦁 อาณาจักร & สปีชีส์','🦠 ไวรัสมีชีวิตไหม?','🔑 กุญแจจำแนก']},
+/* 1 — WHAT IS CLASSIFICATION */
+{fx:'slide',b:'🔍',bc:'#0BA37F',ti:'What is Classification?',tt:'การจำแนกคืออะไร?',
+ c:[
+ {type:'photos',items:[{k:'platypus',c:'Platypus — beak + eggs like a bird, fur like a mammal!'}]},
+ {e:`Some organisms are difficult to classify. The platypus has a beak and lays eggs like a bird, but has fur like a mammal!`,
+  h:`สิ่งมีชีวิตบางชนิดจำแนกยาก ตุ่นมีจะงอยปากและออกไข่เหมือนนก แต่มีขนเหมือนสัตว์เลี้ยงลูกด้วยนม!`,w:['organisms','classify','mammal']},
+ {e:`We sort organisms into groups based on their similarities and differences. This is classification.`,
+  h:`เราจัดสิ่งมีชีวิตเป็นกลุ่มตามความเหมือนและความแตกต่าง นี่คือการจำแนก`,w:['sort','organisms','groups','similarities','differences','classification']},
+ {e:`Every organism has features or characteristics. For example, humans have two legs and hair on our heads.`,
+  h:`สิ่งมีชีวิตทุกชนิดมีลักษณะเฉพาะ เช่น มนุษย์มีสองขาและมีผมบนหัว`,w:['characteristics','features']},
+ {e:`One characteristic often looks different in different organisms — this is variation.`,
+  h:`ลักษณะหนึ่งมักดูต่างกันในสิ่งมีชีวิตต่างชนิด — นี่คือความแตกต่าง`,w:['variation','organisms']},
+ {type:'photos',items:[{k:'lion',c:'Lion 🦁'},{k:'tiger',c:'Tiger 🐯'}]},
+ {cls:'tip',e:`Tip: tigers and lions both have fur, but the colour of the fur varies!`,
+  h:`เคล็ดลับ: เสือทั้งสองชนิดมีขน แต่สีขนต่างกัน!`,w:['fur','varies']}
+ ]},
+/* 2 — THE KINGDOMS */
+{fx:'zoom',b:'🌍',bc:'#FF7A45',ti:'The Kingdoms',tt:'อาณาจักร (Kingdoms)',
+ c:[
+ {e:`Kingdoms are the biggest groups of organisms. The main kingdoms are: plants, animals, fungi and prokaryotes.`,
+  h:`อาณาจักรเป็นกลุ่มใหญ่ที่สุดของสิ่งมีชีวิต อาณาจักรหลักคือ พืช สัตว์ เชื้อรา และโพรแคริโอต`,w:['Kingdoms','organisms','fungi','prokaryotes']},
+ {type:'gallery',cols:'4',items:[
+  {k:'rose',c:'Plants 🌿',s:'พืช'},{k:'lion',c:'Animals 🦁',s:'สัตว์'},
+  {k:'mushroom',c:'Fungi 🍄',s:'เชื้อรา'},{k:'bacteria',c:'Prokaryotes 🦠',s:'แบคทีเรีย'}
+ ]},
+ {type:'svg',key:'kingdoms'},
+ {e:`The plant kingdom makes its own food. The animal kingdom eats other organisms and can move.`,
+  h:`อาณาจักรพืชสร้างอาหารเองได้ อาณาจักรสัตว์กินสิ่งมีชีวิตอื่นและเคลื่อนไหวได้`,w:['plant kingdom','animal kingdom','organisms']}
+ ]},
+/* 3 — PLANT vs ANIMAL CELLS */
+{fx:'fade',b:'🔬',bc:'#36BFFA',ti:'Plant vs Animal Cells',tt:'เซลล์พืชเทียบกับเซลล์สัตว์',
+ c:[
+ {e:`Some characteristics are found in cells — the tiny building blocks that all organisms are made from. You need a microscope to see them.`,
+  h:`ลักษณะบางอย่างอยู่ในเซลล์ — หน่วยเล็กๆ ที่สิ่งมีชีวิตทุกชนิดสร้างขึ้น ต้องใช้กล้องจุลทรรศน์ดู`,w:['cells','organisms','microscope']},
+ {type:'svg',key:'cells',cap:'Plant cells have a cell wall + green parts. Animal cells do not.'},
+ {e:`Plant cells have a cell wall made of cellulose, and they make their own food.`,
+  h:`เซลล์พืชมีผนังเซลล์ที่ทำจากเซลลูโลส และสร้างอาหารเองได้`,w:['cell wall','cellulose']},
+ {e:`Animal cells have no cell walls and the animals are able to move from place to place.`,
+  h:`เซลล์สัตว์ไม่มีผนังเซลล์ และสัตว์สามารถเคลื่อนที่จากที่หนึ่งไปยังอีกที่หนึ่งได้`,w:['cell wall']}
+ ]},
+/* 4 — FUNGI & PROKARYOTES */
+{fx:'slide',b:'🍄',bc:'#FFC93C',ti:'Fungi & Prokaryotes',tt:'เชื้อราและโพรแคริโอต',
+ c:[
+ {type:'photos',items:[{k:'mushroom',c:'Mushroom (fungus)'}]},
+ {e:`The fungus kingdom contains mushrooms and yeasts. Fungi grow on dead materials and get their food from them.`,
+  h:`อาณาจักรเชื้อรามีเห็ดและยีสต์ เชื้อราเจริญบนวัสดุที่ตายแล้วและได้อาหารจากมัน`,w:['fungus kingdom','fungi']},
+ {e:`The prokaryote kingdom contains bacteria. All bacteria are made of just one cell, with no nucleus.`,
+  h:`อาณาจักรโพรแคริโอตมีแบคทีเรีย แบคทีเรียทุกชนิดมีเพียงหนึ่งเซลล์ ไม่มีนิวเคลียส`,w:['prokaryote kingdom','bacteria','cell','nucleus']},
+ {type:'gallery',cols:'2',items:[
+  {k:'bacteria',c:'Bacteria 🦠',s:'แบคทีเรีย — 1 cell, no nucleus'},
+  {k:'yeast',c:'Yeast 🧫',s:'ยีสต์ — เชื้อราเซลล์เดียว'}
+ ]},
+ {cls:'tip',e:`The cells of organisms in all other kingdoms have a nucleus (the control centre).`,
+  h:`เซลล์ของสิ่งมีชีวิตในอาณาจักรอื่นทั้งหมดมีนิวเคลียส (ศูนย์ควบคุม)`,w:['cells','nucleus']}
+ ]},
+/* 5 — VERTEBRATES & INVERTEBRATES */
+{fx:'fade',b:'🦴',bc:'#0BA37F',ti:'Vertebrates & Invertebrates',tt:'สัตว์มีกระดูกสันหลัง & ไม่มี',
+ c:[
+ {e:`The animal kingdom is divided into vertebrates (animals with a backbone) and invertebrates (animals without a backbone).`,
+  h:`อาณาจักรสัตว์แบ่งเป็น สัตว์มีกระดูกสันหลัง และ สัตว์ไม่มีกระดูกสันหลัง`,w:['animal kingdom','vertebrates','invertebrates','backbone']},
+ {type:'photos',items:[{k:'spider',c:'Spider (invertebrate)'},{k:'earthworm',c:'Earthworm (invertebrate)'},{k:'butterfly',c:'Butterfly (invertebrate)'}]}
+ ]},
+/* 6 — FIVE VERTEBRATE GROUPS (flip cards) */
+{fx:'zoom',b:'🐾',bc:'#FF7A45',ti:'The 5 Vertebrate Groups',tt:'5 กลุ่มของสัตว์มีกระดูกสันหลัง',
+ c:[
+ {e:`Vertebrates are divided into five groups. Tap each card to learn what makes each group special! 👆`,
+  h:`สัตว์มีกระดูกสันหลังแบ่งเป็น 5 กลุ่ม แตะการ์ดแต่ละใบเพื่อดูว่าแต่ละกลุ่มพิเศษอย่างไร!`,w:['Vertebrates']},
+ {type:'flip',items:[
+  {img:'lion',col:'#FF7A45',name:'MAMMALS',desc:'have hair / fur<br>give birth to live young<br>produce milk',th:'สัตว์เลี้ยงลูกด้วยนม'},
+  {img:'snake',col:'#7BD389',name:'REPTILES',desc:'have dry scales<br>lay leathery eggs',th:'สัตว์เลื้อยคลาน'},
+  {img:'fish',col:'#36BFFA',name:'FISH',desc:'have slimy scales<br>lay jelly eggs in water',th:'ปลา'},
+  {img:'frog',col:'#A0E7E5',name:'AMPHIBIANS',desc:'thin, moist skin<br>lay jelly eggs in water',th:'สัตว์ครึ่งบกครึ่งน้ำ'},
+  {img:'bird',col:'#FFC93C',name:'BIRDS',desc:'have feathers<br>have a beak<br>lay hard-shelled eggs',th:'นก'}
+ ]}
+ ]},
+/* 7 — CARL LINNAEUS & HIERARCHY */
+{fx:'fade',b:'👨‍🔬',bc:'#0BA37F',ti:'Carl Linnaeus',tt:'คาร์ล ลินเนียส และการจำแนก',
+ c:[
+ {e:`In the 18th century, Carl Linnaeus developed a system for separating living things into smaller and smaller groups.`,
+  h:`ในคริสต์ศตวรรษที่ 18 คาร์ล ลินเนียส พัฒนาระบบแบ่งสิ่งมีชีวิตเป็นกลุ่มย่อยที่เล็กลงเรื่อยๆ`,w:['classification']},
+ {type:'table',head:['Largest group ↓','กลุ่ม','Smallest group ↓'],
+  rows:[['kingdom','อาณาจักร','⬇ biggest'],['phylum','ไฟลัม',''],['class','คลาส',''],['order','ออร์เดอร์',''],['family','วงศ์',''],['genus','สกุล',''],['species','สปีชีส์','⬆ smallest']]},
+ {e:`The smallest group is a species. Each species has a two-word scientific name, e.g. Homo sapiens (humans).`,
+  h:`กลุ่มเล็กที่สุดคือสปีชีส์ แต่ละสปีชีส์มีชื่อวิทยาศาสตร์สองคำ เช่น Homo sapiens (มนุษย์)`,w:['species','scientific name']}
+ ]},
+/* 8 — USING SOURCES & RESEARCH (Activity 3.1) */
+{fx:'fade',b:'📚',bc:'#36BFFA',ti:'Using Sources & Research',tt:'การใช้แหล่งข้อมูลและค้นคว้า',
+ c:[
+ {e:`When you do research, you use the index in reference books to find appropriate material. On the internet, you use relevant search terms.`,
+  h:`เวลาค้นคว้า ใช้ดัชนีในหนังสืออ้างอิงเพื่อหาข้อมูลที่เหมาะสม บนอินเทอร์เน็ตใช้คำค้นหน้าที่เกี่ยวข้อง`,w:['research','reference books','search terms','internet']},
+ {e:`Record the details of your sources (title of book, author, date of publication, publisher) so others can check your work.`,
+  h:`บันทึกรายละเอียดแหล่งข้อมูล (ชื่อหนังสือ, ผู้แต่ง, วันที่พิมพ์, สำนักพิมพ์) เพื่อให้ผู้อื่นตรวจสอบงานของคุณได้`,w:['sources']},
+ {cls:'example',e:`Example: a good search term for this topic would be "Carl Linnaeus".`,
+  h:`ตัวอย่าง: คำค้นหน้าที่ดีสำหรับหัวข้อนี้คือ "Carl Linnaeus"`,w:['search terms']},
+ {cls:'tip',e:`Answer the question in your own words — never copy and paste! Include only relevant information.`,
+  h:`ตอบคำถามด้วยคำพูดของตัวเอง — อย่าก็อปปี้! ใส่เฉพาะข้อมูลที่เกี่ยวข้อง`,w:['sources']}
+ ]},
+/* 9 — WHAT IS A SPECIES */
+{fx:'slide',b:'🧬',bc:'#FF7A45',ti:'What is a Species?',tt:'สปีชีส์คืออะไร?',
+ c:[
+ {type:'photos',items:[{k:'lion',c:'Lion'},{k:'tiger',c:'Tiger'}]},
+ {e:`A species is a group of very similar organisms that can reproduce to produce fertile offspring.`,
+  h:`สปีชีส์ คือกลุ่มของสิ่งมีชีวิตที่คล้ายกันมาก สามารถสืบพันธุ์และให้ลูกหลานที่เจริญพันธุ์ได้`,w:['species','organisms','reproduce','fertile','offspring']},
+ {e:`Members of the same species can reproduce with one another, and their offspring are fertile.`,
+  h:`สมาชิกของสปีชีส์เดียวกันสืบพันธุ์ด้วยกันได้ และลูกหลานของพวกมันเจริญพันธุ์ได้`,w:['species','reproduce','fertile','offspring']},
+ {cls:'tip',e:`Organisms from two different species usually cannot reproduce together.`,
+  h:`สิ่งมีชีวิตจากคนละสปีชีส์มักจะสืบพันธุ์ด้วยกันไม่ได้`,w:['species','reproduce']}
+ ]},
+/* 10 — HYBRIDS */
+{fx:'zoom',b:'🐴',bc:'#FFC93C',ti:'Hybrids',tt:'ลูกผสม (Hybrid)',
+ c:[
+ {type:'photos',items:[{k:'mule',c:'Mule = horse 🐴 × donkey 🫏'}]},
+ {e:`When two different species do reproduce, their offspring are called hybrids, and they are usually infertile.`,
+  h:`เมื่อสปีชีส์ต่างกันสองชนิดสืบพันธุ์ได้ ลูกหลานเรียกว่าลูกผสม และมักเจริญพันธุ์ไม่ได้`,w:['species','hybrids','infertile']},
+ {cls:'example',e:`A mule is the offspring of a horse and a donkey. A mule cannot have offspring of its own.`,
+  h:`ลูกล่อเป็นลูกผสมของม้าและลา ลูกล่อไม่สามารถมีลูกหลานของตัวเองได้`,w:['offspring']},
+ {cls:'example',e:`A liger is the offspring of a male lion and a female tiger. Ligers cannot reproduce.`,
+  h:`ไทเกอร์ไลอ้อนเป็นลูกผสมของสิงโตตัวผู้และเสือตัวเมีย ไทเกอร์ไลอ้อนสืบพันธุ์ไม่ได้`,w:['reproduce']}
+ ]},
+/* 11 — RARE SPECIES (Activity 3.2) */
+{fx:'fade',b:'🐼',bc:'#FFC93C',ti:'Rare Species',tt:'สปีชีส์หายาก',
+ c:[
+ {e:`What rare species live in your country? Use books and the internet to find the names of ten rare species, including at least one plant and one animal.`,
+  h:`สปีชีส์หายากใดที่อาศัยอยู่ในประเทศของคุณ? ใช้หนังสือและอินเทอร์เน็ตหาชื่อสปีชีส์หายาก 10 ชนิด รวมถึงพืชอย่างน้อยหนึ่งและสัตว์อย่างน้อยหนึ่ง`,w:['rare','species','internet']},
+ {e:`Present your information as a table, showing the name of each species and how it is classified. You could try to use the scientific names!`,
+  h:`นำเสนอข้อมูลเป็นตาราง แสดงชื่อและการจำแนกของแต่ละสปีชีส์ ลองใช้ชื่อวิทยาศาสตร์ดูสิ!`,w:['species','classified']},
+ {cls:'tip',e:`Tip: Scientists protect rare species by studying them and protecting their natural habitats.`,
+  h:`เคล็ดลับ: นักวิทยาศาสตร์ปกป้องสปีชีส์หายากโดยการศึกษาและปกป้องถิ่นที่อยู่ตามธรรมชาติของพวกมัน`,w:['rare','species','natural habitats']}
+ ]},
+/* 12 — VIRUSES & LIFE PROCESSES */
+{fx:'slide',b:'🦠',bc:'#0BA37F',ti:'Viruses & Life Processes',tt:'ไวรัสกับกระบวนการดำรงชีวิต',
+ c:[
+ {e:`All living organisms show seven life processes: Movement, Reproduction, Sensitivity, Growth, Respiration, Excretion, Nutrition.`,
+  h:`สิ่งมีชีวิตทุกชนิดมีกระบวนการดำรงชีวิต 7 อย่าง: เคลื่อนไหว สืบพันธุ์ ตอบสนอง เจริญเติบโต หายใจ ขับถ่าย และได้สารอาหาร`,w:['living','organisms','life processes','movement','reproduction','sensitivity','growth','respiration','excretion','nutrition']},
+ {type:'svg',key:'virus',cap:'Diagram of a virus particle: a protein coat, a fat envelope and a strand of genes.'},
+ {e:`A virus can make copies of itself, but only inside a living host cell. This is called replication.`,
+  h:`ไวรัสสามารถสำเนาตัวเองได้ แต่ต้องอยู่ในเซลล์โฮสต์ที่มีชีวิต เรียกว่าการจำลองแบบ`,w:['virus','host cell','replication']}
+ ]},
+/* 13 — IS A VIRUS ALIVE */
+{fx:'fade',b:'❓',bc:'#FF7A45',ti:'Is a Virus Alive?',tt:'ไวรัสมีชีวิตไหม?',
+ c:[
+ {e:`Viruses cannot move, grow, excrete, or get their own food. They need a host cell for everything.`,
+  h:`ไวรัสเคลื่อนไหว เจริญเติบโต ขับถ่าย หรือหาอาหารเองไม่ได้ ต้องพึ่งเซลล์โฮสต์ในทุกอย่าง`,w:['Viruses','host cell']},
+ {e:`There is no virus kingdom, and viruses are not part of any other kingdom. Many scientists do not think virus particles are alive.`,
+  h:`ไม่มีอาณาจักรของไวรัส และไวรัสไม่อยู่ในอาณาจักรอื่น นักวิทยาศาสตร์หลายคนไม่ถือว่าอนุภาคไวรัสมีชีวิต`,w:['virus','kingdom','alive']},
+ {cls:'tip',e:`Some scientists think the virus + host cell together form a "living virus". The debate continues!`,
+  h:`นักวิทยาศาสตร์บางคนคิดว่าไวรัส+เซลล์โฮสต์รวมกันเป็น "ไวรัสที่มีชีวิต" ประเด็นนี้ยังเป็นที่ถกเถียง!`,w:['host cell','living','virus']}
+ ]},
+/* 14 — QUIZ 1 GATE */
+{t:'quiz',fx:'fade',quiz:'q1',icon:'🧠',ti:'Quiz — Classifying Organisms',tt:'แบบทดสอบ — การจำแนกสิ่งมีชีวิต',
+ gate:'ต้องได้อย่างน้อย 7/10 จึงจะไปพาที่ 2 ได้'},
+/* 15 — COVER PART 2 */
+{t:'title',fx:'zoom',icon:'🔑',ti:'Biological Keys',tt:'กุญแจจำแนกสิ่งมีชีวิต',
+ sub:'Chapter 3 · Topic 2',
+ tags:['🌳 กุญแจแบบแตกแขนง','🌿 จำแนกพืช','🌎 ความหลากหลายทางชีวภาพ']},
+/* 16 — DICHOTOMOUS KEYS */
+{fx:'slide',b:'🌳',bc:'#0BA37F',ti:'Dichotomous Keys',tt:'กุญแจจำแนกแบบแตกแขนง',
+ c:[
+ {e:`Scientists use a dichotomous key to identify things. "Dichotomous" means dividing in two.`,
+  h:`นักวิทยาศาสตร์ใช้กุญแจจำแนกเพื่อระบุสิ่งต่างๆ "แบบแตกแขนง" หมายถึงแบ่งเป็นสอง`,w:['dichotomous key']},
+ {e:`A dichotomous key uses a series of questions with only two possible answers to divide a large group into smaller groups.`,
+  h:`กุญแจจำแนกใช้คำถามที่มีคำตอบเพียงสองแบบ เพื่อแบ่งกลุ่มใหญ่เป็นกลุ่มย่อย`,w:['dichotomous key']},
+ {type:'gallery',cols:'4',items:[
+  {k:'butterfly',c:'Butterfly',s:'ขา + ปีก'},{k:'spider',c:'Spider',s:'ขา ไม่มีปีก'},
+  {k:'snail',c:'Snail',s:'มีเปลือก'},{k:'earthworm',c:'Earthworm',s:'ไม่มีขา/เปลือก'}
+ ]},
+ {type:'svg',key:'key'},
+ {cls:'tip',e:`Work from the top, answering each question in turn until you reach the organism's name.`,
+  h:`ทำจากบนลงล่าง ตอบคำถามทีละข้อจนกว่าจะถึงชื่อสิ่งมีชีวิต`}
+ ]},
+/* 17 — USING A KEY */
+{fx:'fade',b:'🦜',bc:'#FFC93C',ti:'Using a Key',tt:'การใช้กุญแจจำแนก',
+ c:[
+ {type:'photos',items:[{k:'bird',c:'Scarlet macaw (a bird)'}]},
+ {e:`You can also write a key as a list. You choose which statement best describes the thing, then go to the next pair of choices.`,
+  h:`สามารถเขียนกุญแจเป็นรายการได้ เลือกข้อที่บรรยายสิ่งนั้นดีที่สุด แล้วไปยังคู่ตัวเลือกถัดไป`},
+ {cls:'example',e:`Example: "Bird has mainly black/white feathers → go to 2. Bird has brightly coloured feathers → go to 4."`,
+  h:`ตัวอย่าง: "นกที่มีขนดำ/ขาวเป็นหลัก → ไปข้อ 2 นกที่มีขนสีสด → ไปข้อ 4"`}
+ ]},
+/* 18 — CONSTRUCTING KEYS (Activity 3.3) */
+{fx:'slide',b:'🔧',bc:'#36BFFA',ti:'Constructing a Key',tt:'การสร้างกุญแจจำแนก',
+ c:[
+ {e:`To construct a key, first look carefully at the characteristics. Note which features some things have in common, and which features only one has.`,
+  h:`การสร้างกุญแจ เริ่มจากสังเกตลักษณะอย่างละเอียด สังเกตว่าลักษณะใดเหมือนกัน และลักษณะใดมีเฉพาะบางสิ่ง`,w:['construct','characteristics']},
+ {e:`Write questions or pairs of choices. Begin with a broad question to split the group into just two smaller groups, e.g. "Does it have leaves?"`,
+  h:`เขียนคำถามหรือคู่ตัวเลือก เริ่มด้วยคำถามกว้างๆ เพื่อแบ่งกลุ่มใหญ่เป็นสองกลุ่มย่อย เช่น "มีใบไม้ไหม?"`,w:['construct']},
+ {cls:'example',e:`Example: leaves can have smooth or spiky edges, be needle-shaped or flat, or be single or made of many leaflets.`,
+  h:`ตัวอย่าง: ใบไม้อาจมีขอบเรียบหรือมีหนาม รูปเข็มหรือแบน หรือเป็นใบเดี่ยวหรือใบประกอบ`,w:['leaves']},
+ {cls:'tip',e:`Tip: each question splits a group into exactly TWO. Keep splitting until each small group contains just one thing.`,
+  h:`เคล็ดลับ: แต่ละคำถามแบ่งกลุ่มเป็นสองส่วนพอดี ทำต่อไปจนกว่าแต่ละกลุ่มย่อยจะมีเพียงหนึ่งสิ่ง`,w:['construct']}
+ ]},
+/* 19 — CLASSIFYING PLANTS */
+{fx:'zoom',b:'🌿',bc:'#7BD389',ti:'Classifying Plants',tt:'การจำแนกพืช',
+ c:[
+ {e:`Within the plant kingdom there are many groups: flowering plants, conifers, ferns and mosses.`,
+  h:`ในอาณาจักรพืชมีหลายกลุ่ม: พืชดอก พืชตระกูลสน เฟิร์น และมอสส์`,w:['plant kingdom','flowering plants','conifers','ferns','mosses']},
+ {type:'table',head:['Plant group','กลุ่มพืช','Key feature'],
+  rows:[
+   ['flowering plants','พืชดอก','make seeds in flowers 🌸'],
+   ['conifers','พืชตระกูลสน','make seeds in cones 🌲'],
+   ['ferns','เฟิร์น','have roots, no flowers/seeds'],
+   ['mosses','มอสส์','have NO roots']
+  ]},
+ {type:'gallery',cols:'4',items:[
+  {k:'rose',c:'Flowering plant 🌸',s:'พืชดอก'},{k:'pinecone',c:'Conifer 🌲',s:'พืชตระกูลสน'},
+  {k:'fern',c:'Fern 🌿',s:'เฟิร์น'},{k:'moss',c:'Moss 🟢',s:'มอสส์'}
+ ]},
+ {e:`Flowering plants, conifers and ferns have roots to take water out of the soil. Mosses have no roots.`,
+  h:`พืชดอก พืชตระกูลสน และเฟิร์นมีรากดูดน้ำจากดิน ส่วนมอสส์ไม่มีราก`,w:['roots','mosses']}
+ ]},
+/* 20 — LEAVES & BIODIVERSITY */
+{fx:'slide',b:'🍃',bc:'#FF7A45',ti:'Leaves & Biodiversity',tt:'ใบไม้และความหลากหลาย',
+ c:[
+ {e:`Leaves can have smooth or spiky edges, be needle-shaped or flat, or be made of many leaflets. This helps us identify a plant.`,
+  h:`ใบไม้มีขอบเรียบหรือมีหนาม รูปเข็มหรือแบน หรือประกอบด้วยใบย่อยหลายใบ ช่วยระบุพืชได้`,w:['leaves']},
+ {e:`Classification systems help scientists name organisms. Areas with huge numbers of species are called biodiversity hotspots, and are often protected.`,
+  h:`ระบบจำแนกช่วยนักวิทยาศาสตร์ตั้งชื่อสิ่งมีชีวิต พื้นที่ที่มีสปีชีส์มากมายเรียกว่าจุด hotspot ความหลากหลาย และมักได้รับการคุ้มครอง`,w:['classification','species','biodiversity']},
+ {cls:'tip',e:`Protecting biodiversity hotspots helps natural habitats and rare species survive into the future.`,
+  h:`การปกป้อง hotspot ความหลากหลายช่วยให้ถิ่นที่อยู่ตามธรรมชาติและสปีชีส์หายากอยู่รอดต่อไป`,w:['biodiversity','species']}
+ ]},
+/* 21 — USES OF CLASSIFICATION (Science in context) */
+{fx:'fade',b:'🌐',bc:'#FF7A45',ti:'Uses of Classification',tt:'ประโยชน์ของการจำแนก',
+ c:[
+ {e:`Scientists all over the world use Linnaeus's naming system and agree on a single two-word scientific name for each species, e.g. Homo sapiens.`,
+  h:`นักวิทยาศาสตร์ทั่วโลกใช้ระบบตั้งชื่อของลินเนียส และตกลงบนชื่อวิทยาศาสตร์สองคำเดียวสำหรับแต่ละสปีชีส์ เช่น Homo sapiens`,w:['scientific name','species','two-word']},
+ {e:`People use books or computer databases arranged by classification groups to find out an organism's name. This is useful for nature lovers such as bird watchers.`,
+  h:`ผู้คนใช้หนังสือหรือฐานข้อมูลคอมพิวเตอร์ที่จัดเรียงตามกลุ่มจำแนกเพื่อหาชื่อสิ่งมีชีวิต ซึ่งมีประโยชน์สำหรับนักธรรมชาติวิทยา เช่น นักเลี้ยงนก`,w:['classification','bird watchers']},
+ {e:`Biologists count the number of different species in different areas. If they find huge numbers of species in one area, they declare it a biodiversity hotspot.`,
+  h:`นักชีววิทยานับจำนวนสปีชีส์ที่แตกต่างกันในแต่ละพื้นที่ หากพบสปีชีส์จำนวนมากในพื้นที่หนึ่ง จะประกาศให้เป็นจุด hotspot ความหลากหลาย`,w:['species','biodiversity hotspot']}
+ ]},
+/* 22 — KEY FACTS SUMMARY */
+{fx:'zoom',b:'📝',bc:'#36BFFA',ti:'Key Facts',tt:'สรุปประเด็นสำคัญ',
+ c:[
+ {type:'table',head:['Key fact','ข้อเท็จจริง'],
+  rows:[
+   ['Scientists classify organisms in groups by their characteristics.','นักวิทยาศาสตร์จัดสิ่งมีชีวิตเป็นกลุ่มตามลักษณะ'],
+   ['The animal kingdom has vertebrates and invertebrates.','อาณาจักรสัตว์มีสัตว์มี/ไม่มีกระดูกสันหลัง'],
+   ['The fungus kingdom has mushrooms & yeasts; prokaryotes have bacteria.','อาณาจักรเชื้อรามีเห็ดและยีสต์; โพรแคริโอตมีแบคทีเรีย'],
+   ['The smallest group is the species.','กลุ่มเล็กที่สุดคือสปีชีส์'],
+   ['Hybrids (e.g. mules) are usually infertile.','ลูกผสม (เช่น ลูกล่อ) มักเจริญพันธุ์ไม่ได้'],
+   ['Viruses are not usually considered living.','ไวรัสมักไม่ถือว่ามีชีวิต'],
+   ['Use sources carefully — record details, write in your own words.','ใช้แหล่งข้อมูลอย่างระมัดระวัง — บันทึกรายละเอียด เขียนด้วยคำพูดของตัวเอง'],
+   ['Dichotomous keys identify and classify plants and animals.','กุญแจจำแนกใช้ระบุและจัดพืชสัตว์'],
+   ['Biodiversity hotspots have huge numbers of species & are protected.','จุด hotspot ความหลากหลายมีสปีชีส์มากมายและได้รับการคุ้มครอง']
+  ]}
+ ]},
+/* 23 — QUIZ 2 GATE */
+{t:'quiz',fx:'fade',quiz:'q2',icon:'🧠',ti:'Quiz — Biological Keys',tt:'แบบทดสอบ — กุญแจจำแนก',
+ gate:'ต้องได้อย่างน้อย 7/10 จึงจะจบหลักสูตรได้'},
+/* 24 — CELEBRATION */
+{t:'done',fx:'zoom',icon:'🏆',ti:'You did it!',tt:'ยอดเยี่ยม! จบหลักสูตรแล้ว',
+ sub:'คุณเรียนจบ Classification ทั้ง 2 พาที่ — เนื้อหาครบทุกส่วนแล้ว 🎉',
+ tags:['🌿 อาณาจักร & สปีชีส์','🔑 กุญแจจำแนก','🦠 ไวรัส','กดเมนู ☰ เพื่อทบทวน']}
+];
+/* ============ QUIZZES (multiple choice, some with images) ============ */
+const QUIZZES = {
+q1:[
+ {q:'A characteristic that ALL mammals have is…',th:'ลักษณะที่สัตว์เลี้ยงลูกด้วยนมทุกตัวมีคือ…',
+  opts:['hair / fur','laying hard eggs','slimy scales','feathers'],a:0,fb:'สัตว์เลี้ยงลูกด้วยนมมีขน/ผม'},
+ {q:'Grouping organisms with similar characteristics is called…',th:'การจัดสิ่งมีชีวิตที่มีลักษณะคล้ายกันเป็นกลุ่ม เรียกว่า…',
+  opts:['classification','reproduction','respiration','mutation'],a:0,fb:'classification = การจำแนก'},
+ {q:'An animal is a vertebrate if it has a…',th:'สัตว์ที่เป็น vertebrate จะต้องมี…',
+  opts:['backbone','fur','wings','flowers'],a:0,fb:'vertebrate มี backbone (กระดูกสันหลัง)'},
+ {q:'Which of these is NOT a kingdom?',th:'ข้อใดไม่ใช่อาณาจักร?',
+  opts:['invertebrates','plants','animals','fungi'],a:0,fb:'invertebrates เป็นกลุ่มย่อยของสัตว์ ไม่ใช่อาณาจักร'},
+ {q:'A group that can reproduce to produce FERTILE offspring is a…',th:'กลุ่มที่สืบพันธุ์แล้วให้ลูกที่เจริญพันธุ์ได้ คือ…',
+  opts:['species','kingdom','hybrid','phylum'],a:0,fb:'species ให้ลูกหลานที่เจริญพันธุ์ได้'},
+ {q:'The offspring of two different species is called a…',th:'ลูกที่เกิดจากสปีชีส์ต่างกันสองชนิด เรียกว่า…',
+  opts:['hybrid','bacterium','nucleus','virus'],a:0,fb:'hybrid = ลูกผสม (มักเจริญพันธุ์ไม่ได้)'},
+ {q:'Plant cells have a… (that animal cells do NOT have).',th:'เซลล์พืชมี…(ที่เซลล์สัตว์ไม่มี)',
+  opts:['cell wall','nucleus','fat envelope','backbone'],a:0,fb:'เซลล์พืชมีผนังเซลล์ (cell wall)'},
+ {q:'A virus can only copy itself inside a…',th:'ไวรัสสำเนาตัวเองได้เฉพาะใน…',
+  opts:['host cell','plant kingdom','mushroom','seed'],a:0,fb:'ไวรัสต้องเข้าเซลล์โฮสต์ถึงจะจำลองแบบได้'},
+ {q:'Which organism is a MAMMAL?',th:'สิ่งมีชีวิตใดเป็นสัตว์เลี้ยงลูกด้วยนม?',
+  opts:[{img:'lion'},{img:'fish'},{img:'butterfly'},{img:'frog'}],a:0,fb:'สิงโตเป็นสัตว์เลี้ยงลูกด้วยนม มีขน/ผม'},
+ {q:'Which organism is an INVERTEBRATE?',th:'สิ่งมีชีวิตใดเป็นสัตว์ไม่มีกระดูกสันหลัง?',
+  opts:[{img:'spider'},{img:'lion'},{img:'snake'},{img:'bird'}],a:0,fb:'แมงมุมเป็นสัตว์ไม่มีกระดูกสันหลัง'},
+ {q:'When doing research, you should NOT…',th:'เวลาค้นคว้า สิ่งที่ไม่ควรทำคือ…',
+  opts:['copy and paste information','record your sources','write in your own words','use relevant search terms'],a:0,fb:'ห้ามก็อปปี้! ต้องเขียนด้วยคำพูดของตัวเอง'},
+ {q:'The platypus is classified as a…',th:'ตุ่นถูกจำแนกเป็น…',
+  opts:['mammal','bird','reptile','fish'],a:0,fb:'ตุ่นมีขนและเลี้ยงลูกด้วยนม จึงเป็นสัตว์เลี้ยงลูกด้วยนม แม้ออกไข่ก็ตาม'}
+],
+q2:[
+ {q:'A dichotomous key divides things into how many groups each step?',th:'กุญแจจำแนกแบบแตกแขนงแบ่งเป็นกี่กลุ่มในแต่ละขั้น?',
+  opts:['two (2)','one (1)','five (5)','ten (10)'],a:0,fb:'dichotomous = แบ่งเป็นสอง'},
+ {q:'Which plant group makes seeds in CONES?',th:'พืชกลุ่มใดสร้างเมล็ดในโคน?',
+  opts:['conifers','mosses','mammals','butterflies'],a:0,fb:'conifers (พืชตระกูลสน) สร้างเมล็ดในโคน 🌲'},
+ {q:'Which plant group has NO roots?',th:'พืชกลุ่มใดไม่มีราก?',
+  opts:['mosses','ferns','conifers','flowering plants'],a:0,fb:'มอสส์ไม่มีราก'},
+ {q:'Carl Linnaeus is famous for developing…',th:'คาร์ล ลินเนียสมีชื่อเสียงจากการพัฒนา…',
+  opts:['the classification system','the microscope','the first virus','mosses'],a:0,fb:'ลินเนียสพัฒนาระบบจำแนกและการตั้งชื่อ'},
+ {q:'The SMALLEST group in classification is the…',th:'กลุ่มเล็กที่สุดในการจำแนกคือ…',
+  opts:['species','kingdom','phylum','family'],a:0,fb:'species เป็นกลุ่มเล็กที่สุด'},
+ {q:'An area with huge numbers of species is a…',th:'พื้นที่ที่มีสปีชีส์มากมายเรียกว่า…',
+  opts:['biodiversity hotspot','host cell','hybrid','cell wall'],a:0,fb:'biodiversity hotspot = จุด hotspot ความหลากหลาย'},
+ {q:'Homo sapiens is the scientific name for…',th:'Homo sapiens เป็นชื่อวิทยาศาสตร์ของ…',
+  opts:['humans','lions','mushrooms','mosses'],a:0,fb:'Homo sapiens = มนุษย์'},
+ {q:'Which plant has seeds in FLOWERS?',th:'พืชใดสร้างเมล็ดในดอก?',
+  opts:['flowering plants','conifers','mosses','bacteria'],a:0,fb:'พืชดอก (flowering plants) สร้างเมล็ดในดอก 🌸'},
+ {q:'Which of these is a FUNGUS?',th:'ข้อใดเป็นเชื้อรา?',
+  opts:[{img:'mushroom'},{img:'lion'},{img:'fish'},{img:'bird'}],a:0,fb:'เห็ดเป็นเชื้อรา (fungus kingdom)'},
+ {q:'Which animal has legs but NO wings?',th:'สัตว์ใดมีขาแต่ไม่มีปีก?',
+  opts:[{img:'spider'},{img:'butterfly'},{img:'bird'},{img:'snake'}],a:0,fb:'แมงมุมมีขา แต่ไม่มีปีก'},
+ {q:'To construct a dichotomous key, each question must split a group into…',th:'การสร้างกุญแจจำแนก แต่ละคำถามต้องแบ่งกลุ่มเป็น…',
+  opts:['two groups','three groups','five groups','ten groups'],a:0,fb:'กุญแจจำแนกแบ่งเป็นสองกลุ่มทุกครั้ง'},
+ {q:'A biodiversity hotspot is an area with…',th:'จุด hotspot ความหลากหลายคือพื้นที่ที่มี…',
+  opts:['huge numbers of different species','only one species','no living things','only viruses'],a:0,fb:'hotspot มีสปีชีส์ที่แตกต่างกันจำนวนมาก'},
+ {q:'Which part of a virus contains the instructions for making new particles?',th:'ส่วนใดของไวรัสเก็บคำสั่งสร้างอนุภาคใหม่?',
+  opts:['strand of genes','protein coat','fat envelope','host cell'],a:0,fb:'สายพันธุกรรม (strand of genes) เก็บคำสั่ง'}
+]
+};
+/* ---- rendering ---- */
+function gallery(items,cols){
+  let cls='gallery '+(cols==='3'?'g3':(cols==='4'?'g4':'g2'));
+  let cells=items.map(function(it){return '<div class="g-item"><img class="org-photo spin-in" src="'+IMG[it.k]+'" alt="'+(it.c||it.k)+'" loading="lazy" onerror="this.style.opacity=.35"><div class="photo-cap">'+(it.c||it.k)+(it.s?'<small>'+it.s+'</small>':'')+'</div></div>';}).join('');
+  return '<div class="'+cls+'">'+cells+'</div>';
+}
+function blockHTML(blk,i){
+  let st='--i:'+i;
+  if(blk.type==='photos'){return '<div class="block" style="'+st+'">'+photoRow(blk.items)+'</div>';}
+  if(blk.type==='gallery'){return '<div class="block" style="'+st+'">'+gallery(blk.items,blk.cols)+'</div>';}
+  if(blk.type==='hero'){return '<div class="block" style="'+st+'"><img class="photo-hero spin-in" src="'+IMG[blk.k]+'" alt="'+(blk.c||blk.k)+'" loading="lazy" onerror="this.style.opacity=.35"><div class="svg-cap" style="margin-top:6px">'+(blk.c||blk.k)+'</div></div>';}
+  if(blk.type==='split'){
+    let L='<div><div class="lbl">'+(blk.lc||'')+'</div>'+(blk.svg?('<div class="svg-box">'+SVG[blk.svg]+'</div>'):('<img class="photo-hero" style="height:160px" src="'+IMG[blk.lk]+'" alt="'+(blk.lc||'')+'" loading="lazy" onerror="this.style.opacity=.35">'))+'</div>';
+    let R='<div><div class="lbl">'+(blk.rc||'')+'</div>'+(blk.rsvg?('<div class="svg-box">'+SVG[blk.rsvg]+'</div>'):('<img class="photo-hero" style="height:160px" src="'+IMG[blk.rk]+'" alt="'+(blk.rc||'')+'" loading="lazy" onerror="this.style.opacity=.35">'))+'</div>';
+    return '<div class="block" style="'+st+'"><div class="split two">'+L+R+'</div></div>';
+  }
+  if(blk.type==='svg'){return '<div class="block" style="'+st+'"><div class="svg-box">'+SVG[blk.key]+'</div>'+(blk.cap?'<div class="svg-cap">'+blk.cap+'</div>':'')+'</div>';}
+  if(blk.type==='table'){let h='<div class="block" style="'+st+'"><table class="tbl"><thead><tr>';blk.head.forEach(function(x){h+='<th>'+x+'</th>';});h+='</tr></thead><tbody>';blk.rows.forEach(function(r){h+='<tr>'+r.map(function(c,ci){return '<td><div class="'+(ci===1?'th':'en')+'">'+c+'</div></td>';}).join('')+'</tr>';});return h+'</tbody></table></div>';}
+  if(blk.type==='flip'){let h='<div class="block" style="'+st+'"><div class="flip-grid">';blk.items.forEach(function(it){h+='<div class="flip"><div class="flip-inner"><div class="flip-face flip-front"><img src="'+IMG[it.img]+'" alt="'+it.name+'" loading="lazy" onerror="this.style.opacity=.35"><div class="lab">'+it.name+'</div></div><div class="flip-face flip-back" style="border-color:'+it.col+';color:'+it.col+'">'+it.desc+'<small>'+it.th+'</small></div></div></div>';});return h+'</div></div>';}
+  return '<div class="block'+(blk.cls?' '+blk.cls:'')+'" style="'+st+'"><div class="en">'+highlight(blk.e||'',blk.w||[])+'</div>'+(blk.h?'<div class="th">'+blk.h+'</div>':'')+'</div>';
+}
+function renderSlide(i){
+  const s=SLIDES[i];const slide=document.createElement('div');slide.className='slide fx-'+(s.fx||'fade');
+  let html='';
+  if(s.t==='title'||s.t==='done'){
+    html='<div class="card-shell cover">'+(s.hero?'<img class="hero" src="'+IMG[s.hero]+'" alt="'+s.ti+'" onerror="this.style.display=&#39;none&#39;">':'')+
+      '<div class="bigicon">'+(s.icon||'📘')+'</div><h1>'+(s.t==='done'?'<em>'+s.ti+'</em>':s.ti)+'</h1>'+
+      '<div class="s-subth">'+(s.tt||'')+'</div>'+(s.sub?'<div class="s-subth" style="margin-top:-8px;font-size:16px">'+s.sub+'</div>':'')+
+      '<div class="tags">'+(s.tags||[]).map(function(t){return '<span class="tag">'+t+'</span>';}).join('')+'</div></div>';
+  } else if(s.t==='quiz'){html=renderQuizShell(s);}
+  else {
+    html='<div class="card-shell">';
+    if(s.b)html+='<span class="badge" style="background:'+(s.bc||'#0BA37F')+'">'+s.b+'</span>';
+    html+='<h2 class="s-title">'+s.ti+'</h2>'+(s.tt?'<div class="s-subth">'+s.tt+'</div>':'');
+    (s.c||[]).forEach(function(b,k){html+=blockHTML(b,k);});
+    html+='</div>';
+  }
+  slide.innerHTML=html;STAGE.innerHTML='';STAGE.appendChild(slide);
+  if(s.t==='quiz'){const st=document.getElementById('qzStart');if(st)st.onclick=function(){startQuiz(s.quiz);}}
+  requestAnimationFrame(function(){requestAnimationFrame(function(){slide.classList.add('active');});});
+  STAGE.scrollTop=0;
+}
+function renderQuizShell(s){
+  const passed=PASSED[s.quiz];let body;
+  if(passed){
+    body='<div style="text-align:center;padding:6px"><div style="font-size:54px">✅</div>'+
+      '<div class="qz-q">ทำแบบทดสอบผ่านแล้ว!</div>'+
+      '<div class="qz-qth">กดปุ่มลูกศร › ที่มุมจอเพื่อไปต่อ</div></div>';
+  } else {
+    body='<div style="text-align:center;padding:6px"><div style="font-size:54px">'+(s.icon||'🧠')+'</div>'+
+      '<div class="qz-q">พร้อมหรือยัง? แบบทดสอบ '+QUIZZES[s.quiz].length+' ข้อ</div>'+
+      '<div class="qz-qth">กดปุ่มช้อยส์ A B C D หรือกดคีย์ 1–4 บนคีย์บอร์ด</div>'+
+      '<div class="qz-lock-note">🔒 '+(s.gate||'')+'</div>'+
+      '<button class="popup-close" id="qzStart" style="margin-top:8px;font-size:16px">เริ่มทำ 🚀</button></div>';
+  }
+  return '<div class="card-shell"><span class="badge" style="background:#0BA37F">'+(s.icon||'🧠')+'</span>'+
+    '<h2 class="s-title">'+s.ti+'</h2><div class="s-subth">'+(s.tt||'')+'</div>'+
+    '<div class="qz-box" id="qzBox">'+body+'</div></div>';
+}
+function startQuiz(id){quizState.active=id;quizState.idx=0;quizState.score=0;quizState.answers=[];renderQuizQ();}
+function renderQuizQ(){
+  const Q=QUIZZES[quizState.active],q=Q[quizState.idx],box=document.getElementById('qzBox');
+  let dots=Q.map(function(_,i){let c=i===quizState.idx?'cur':(i<quizState.idx?(quizState.answers[i]?'done':'wrong'):'');return '<span class="qz-dot '+c+'"></span>';}).join('');
+  const KEYS=['A','B','C','D'];
+  let choices=q.opts.map(function(o,oi){
+    let inner=o.img?'<img src="'+IMG[o.img]+'" alt="'+o.img+'" loading="lazy" onerror="this.style.opacity=.35">':'<span class="txt">'+o+'</span>';
+    return '<button class="choice" data-i="'+oi+'"><span class="k">'+KEYS[oi]+'</span>'+inner+'</button>';
+  }).join('');
+  box.innerHTML='<div class="qz-prog"><div class="qz-dots">'+dots+'</div><div class="qz-qnum">'+(quizState.idx+1)+'/'+Q.length+'</div></div>'+
+    '<div class="qz-q">'+q.q+'</div><div class="qz-qth">'+q.th+'</div>'+
+    '<div class="choices">'+choices+'</div>'+
+    '<div class="qz-fb" id="qzFb"></div><button class="qz-next" id="qzNext">ถัดไป →</button>';
+  const fb=document.getElementById('qzFb'),nx=document.getElementById('qzNext');
+  let answered=false;
+  function pick(oi){
+    if(answered)return;answered=true;
+    const ok=oi===q.a;quizState.answers[quizState.idx]=ok;
+    const btns=box.querySelectorAll('.choice');
+    btns.forEach(function(b){b.disabled=true;const bi=+b.dataset.i;if(bi===q.a)b.classList.add('correct');else if(bi===oi)b.classList.add('wrong');else b.classList.add('dim');});
+    if(ok){quizState.score++;fb.className='qz-fb show ok';fb.innerHTML='✅ ถูกต้อง! '+q.fb;}
+    else{fb.className='qz-fb show bad';fb.innerHTML='❌ เฉลย: '+q.fb;}
+    const ds=box.querySelectorAll('.qz-dot');if(ds[quizState.idx]){ds[quizState.idx].classList.remove('cur');ds[quizState.idx].classList.add(ok?'done':'wrong');}
+    nx.classList.add('show');nx.focus();
+  }
+  box.querySelectorAll('.choice').forEach(function(b){b.onclick=function(){pick(+b.dataset.i);};});
+  nx.onclick=function(){quizState.idx++;if(quizState.idx>=Q.length)finishQuiz();else renderQuizQ();};
+  quizState._pick=pick;
+}
+function finishQuiz(){
+  const Q=QUIZZES[quizState.active],sc=quizState.score,pass=sc>=7;
+  if(pass)PASSED[quizState.active]=true;
+  const box=document.getElementById('qzBox');
+  box.innerHTML='<div class="qz-result"><div class="qz-score" style="color:'+(pass?'var(--ok)':'var(--c1)')+'">'+sc+
+    '<span style="font-size:.45em;color:var(--soft)">/'+Q.length+'</span></div>'+
+    '<div class="qz-msg">'+(pass?'🎉 ผ่านแล้ว เก่งมาก!':'ยังไม่ผ่าน ลองใหม่อีกครั้งนะ สู้ๆ!')+'</div>'+
+    '<div class="qz-bar"><i style="width:'+(sc/Q.length*100)+'%;background:linear-gradient(90deg,var(--c3),var(--c4),var(--c1))"></i></div>'+
+    (pass?'<button class="popup-close" id="qzCont" style="background:var(--ok)">ไปต่อ →</button>':'<button class="popup-close" id="qzRetry">ทำใหม่ 🔄</button>')+'</div>';
+  if(pass){fireConfetti();document.getElementById('qzCont').onclick=function(){updateChrome();next();};}
+  else{document.getElementById('qzRetry').onclick=function(){startQuiz(quizState.active);};}
+  updateChrome();
+}
+function updateChrome(){
+  PROG.style.width=(SLIDES.length<=1?'100':(cur/(SLIDES.length-1)*100))+'%';
+  CUR.textContent=cur+1;TOT.textContent=SLIDES.length;
+  PREV.disabled=cur<=0;NEXT.disabled=(cur>=SLIDES.length-1)||isLocked(cur+1);renderMenu();
+}
+function go(n){if(n<0||n>=SLIDES.length)return;if(n>cur&&isLocked(n)){toast('🔒 ทำแบบทดสอบให้ผ่านก่อน จึงจะไปต่อได้');return;}cur=n;renderSlide(cur);updateChrome();}
+function next(){go(cur+1);}function prev(){go(cur-1);}
+function partColor(i){return i<15?'#0BA37F':'#FF7A45';}
+function renderMenu(){
+  let h='<div class="part-label">PART 1 · Classifying Organisms</div>';
+  SLIDES.forEach(function(s,i){
+    if(i===15)h+='<div class="part-label">PART 2 · Biological Keys</div>';
+    const locked=isLocked(i);const ico=s.t==='quiz'?'❓':((s.t==='title'||s.t==='done')?'⭐':(i+1));
+    const label=(s.t==='quiz'?'Quiz — ':'')+(s.ti||('สไลด์ '+(i+1)));
+    h+='<div class="menu-item '+(i===cur?'cur':'')+(locked?' locked':'')+'" data-i="'+i+'"><div class="mi-num" style="background:'+partColor(i)+'">'+ico+'</div><div class="mi-txt">'+label+'<small>'+(s.tt||'')+'</small></div>'+(locked?'<span class="mi-lock">🔒</span>':'')+'</div>';
+  });
+  MENU_LIST.innerHTML=h;
+  MENU_LIST.querySelectorAll('.menu-item').forEach(function(el){el.onclick=function(){const i=+el.dataset.i;if(isLocked(i)){toast('🔒 ยังเข้าไม่ได้ ทำควิซก่อนหน้าให้ผ่าน');return;}MENU.classList.remove('open');go(i);};});
+}
+$('#menuBtn').onclick=function(){MENU.classList.add('open');renderMenu();};
+$('#menuClose').onclick=function(){MENU.classList.remove('open');};
+MENU.addEventListener('click',function(e){if(e.target===MENU)MENU.classList.remove('open');});
+NEXT.onclick=next;PREV.onclick=prev;
+document.addEventListener('keydown',function(e){
+  if(POP.classList.contains('open')){if(e.key==='Escape')POP.classList.remove('open');return;}
+  if(/^[1-4]$/.test(e.key)&&quizState.active!==null&&typeof quizState._pick==='function'){quizState._pick(parseInt(e.key,10)-1);return;}
+  if(/^[a-dA-D]$/.test(e.key)&&quizState.active!==null&&typeof quizState._pick==='function'){quizState._pick('abcd'.indexOf(e.key.toLowerCase()));return;}
+  if(e.key==='ArrowRight'){next();}else if(e.key==='ArrowLeft'){prev();}else if(e.key==='Escape'){MENU.classList.remove('open');}
+});
+let sx=0,sy=0,track=false;
+STAGE.addEventListener('touchstart',function(e){const t=e.target;if(t&&(t.tagName==='BUTTON'||t.tagName==='INPUT')){track=false;return;}const c=e.touches[0];sx=c.clientX;sy=c.clientY;track=true;},{passive:true});
+STAGE.addEventListener('touchend',function(e){if(!track)return;track=false;const c=e.changedTouches[0],dx=c.clientX-sx,dy=c.clientY-sy;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.4){if(dx<0)next();else prev();}},{passive:true});
+STAGE.addEventListener('click',function(e){const fl=e.target.closest('.flip');if(fl)fl.classList.toggle('flipped');});
+const cf=$('#confetti'),cfx=cf.getContext('2d');
+function resizeCF(){cf.width=innerWidth;cf.height=innerHeight;}
+addEventListener('resize',resizeCF);resizeCF();
+let cfAnim=null;
+function fireConfetti(){
+  const cols=['#0BA37F','#36BFFA','#FF7A45','#FFC93C','#7BD389','#A0E7E5'];const P=[];
+  for(let i=0;i<170;i++)P.push({x:innerWidth/2+(Math.random()-.5)*240,y:innerHeight*0.32,vx:(Math.random()-.5)*13,vy:Math.random()*-13-5,g:0.32+Math.random()*0.18,s:6+Math.random()*9,c:cols[i%cols.length],rot:Math.random()*6,l:1});
+  if(cfAnim)cancelAnimationFrame(cfAnim);
+  (function loop(){cfx.clearRect(0,0,cf.width,cf.height);let alive=false;
+    P.forEach(function(p){p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.vx*=0.99;p.l-=0.006;if(p.y<cf.height+30&&p.l>0){alive=true;cfx.save();cfx.translate(p.x,p.y);cfx.rotate(p.rot+=0.12);cfx.globalAlpha=Math.max(0,p.l);cfx.fillStyle=p.c;cfx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.62);cfx.restore();}});
+    if(alive)cfAnim=requestAnimationFrame(loop);else cfx.clearRect(0,0,cf.width,cf.height);})();
+}
+renderSlide(0);updateChrome();
+
+</script>
+</body>
+</html>
