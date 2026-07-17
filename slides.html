@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chapter 4 — Structure & Properties of Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face{font-family:'Mali';src:url('./fonts/Mali-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'Mali';src:url('./fonts/Mali-Medium.ttf') format('truetype');font-weight:500;font-style:normal;font-display:swap}
+  @font-face{font-family:'Mali';src:url('./fonts/Mali-SemiBold.ttf') format('truetype');font-weight:600;font-style:normal;font-display:swap}
+  @font-face{font-family:'Mali';src:url('./fonts/Mali-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+  :root{
+    --c1:#5b8def; --c2:#7b6cf6; --c3:#f78ca0; --c4:#ffb86b; --c5:#46d399;
+    --ink:#2a2d4a; --ink2:#5a5f7d; --bg:#0f1226; --card:#ffffff; --hi:#fff3a3;
+    --ok:#2ec16b; --no:#ef5b6b; --shadow:0 10px 30px rgba(0,0,0,.18);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Mali',sans-serif!important}
+  html,body{margin:0;height:100%;overflow:hidden;font-family:'Mali',system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+  #stage{position:fixed;inset:0;overflow:hidden;background:
+     radial-gradient(1200px 800px at 80% -10%,#2a2f63 0,transparent 60%),
+     radial-gradient(900px 700px at -10% 110%,#3a2a63 0,transparent 55%),
+     linear-gradient(160deg,#15183a,#0c0f24 60%)}
+  .floater{position:absolute;border-radius:50%;opacity:.16;filter:blur(1px);pointer-events:none}
+  /* slide + multiple transitions */
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;padding:26px 30px 74px;opacity:0;visibility:hidden;transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .45s ease,visibility .45s}
+  .slide.active{opacity:1;visibility:visible;z-index:5}
+  .slide.prev{opacity:0}
+  /* transition variants (active/prev states) */
+  .t-slide{transform:translateX(60px) scale(.96)}
+  .t-slide.active{transform:translateX(0) scale(1)}
+  .t-slide.prev{transform:translateX(-60px) scale(.96)}
+  .t-fade{transform:scale(1.04);opacity:0}
+  .t-fade.active{transform:scale(1);opacity:1}
+  .t-fade.prev{transform:scale(.96);opacity:0}
+  .t-up{transform:translateY(50px) scale(.97)}
+  .t-up.active{transform:translateY(0) scale(1)}
+  .t-up.prev{transform:translateY(-50px) scale(.97)}
+  .t-zoom{transform:scale(.7);opacity:0}
+  .t-zoom.active{transform:scale(1);opacity:1}
+  .t-zoom.prev{transform:scale(1.2);opacity:0}
+  .t-flip{transform:rotateY(35deg) translateX(40px);transform-origin:left center}
+  .t-flip.active{transform:rotateY(0) translateX(0)}
+  .t-flip.prev{transform:rotateY(-35deg) translateX(-40px);transform-origin:right center}
+  .slide.no-anim{transition:none!important}
+  .slide.active .card{animation:cardIn .55s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes cardIn{from{opacity:.4;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .card{position:relative;flex:1;width:min(1120px,100%);margin:0 auto;border-radius:18px;background:var(--card);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  .card::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 38%,rgba(255,255,255,.22) 48%,transparent 58%);transform:translateX(-120%);opacity:.7}
+  .slide.active .card::after{animation:sheen 2.2s .35s ease-out both}
+  @keyframes sheen{to{transform:translateX(120%)}}
+  .topbar{display:flex;align-items:center;gap:10px;padding:13px 22px;color:#fff;background:linear-gradient(95deg,var(--c1),var(--c2));flex:0 0 auto}
+  .topic-2 .topbar{background:linear-gradient(95deg,#f78ca0,#ff9a6b)}
+  .topic-3 .topbar{background:linear-gradient(95deg,#46d399,#37b6c9)}
+  .topic-intro .topbar{background:linear-gradient(95deg,#7b6cf6,#c86cf6)}
+  .chip{font-size:12px;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;white-space:nowrap}
+  .topbar h2{font-size:18px;margin:0;flex:1;font-weight:600}
+  .body{padding:20px 26px 14px;overflow-y:auto;flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px}
+  .body h3{margin:.15em 0 .1em;font-size:20px;color:var(--ink)}
+  .body p{margin:.25em 0;line-height:1.5;font-size:15.5px}
+  .body ul{margin:.3em 0 .6em;padding-left:1.2em}
+  .body li{margin:.2em 0;font-size:14.5px;line-height:1.45}
+  .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+  .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch}
+  .mini{background:#f6f7ff;border:1px solid #e6e9ff;border-radius:10px;padding:12px 14px;min-height:78px}
+  .mini b{color:var(--c2)}
+  .thai{background:#fff7dc;border-top:1px solid #f0d06a;padding:7px 22px 9px;font-size:12.5px;line-height:1.35;color:#6b551a;flex:0 0 auto;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .thai b{color:#a86b00}
+  .thai .tag{display:inline-block;background:#ffb86b;color:#5a3500;border-radius:7px;padding:1px 7px;font-size:11px;margin-right:6px}
+  .v{background:linear-gradient(120deg,var(--hi),#ffe8a3);border-radius:6px;padding:0 4px;cursor:pointer;border-bottom:2px dotted #d9b800;font-weight:600;color:#3a2e00;transition:transform .15s}
+  .v:hover{transform:translateY(-1px)}
+  #nav{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;gap:8px;padding:8px 12px;background:linear-gradient(0deg,rgba(0,0,0,.55),transparent);z-index:50}
+  #nav button{border:0;background:rgba(255,255,255,.16);color:#fff;width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer;backdrop-filter:blur(6px)}
+  #nav button:active{transform:scale(.9)}
+  #nav .home{background:rgba(255,255,255,.22)}
+  #progwrap{flex:1;height:10px;background:rgba(255,255,255,.15);border-radius:10px;overflow:hidden;cursor:pointer}
+  #prog{height:100%;width:0;background:linear-gradient(90deg,var(--c1),var(--c3),var(--c5));transition:width .35s}
+  #counter{color:#fff;font-size:13px;min-width:64px;text-align:center;font-weight:600}
+  #menu{position:fixed;inset:0;z-index:100;background:rgba(8,10,28,.85);backdrop-filter:blur(8px);display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding:24px;overflow-y:auto}
+  #menu.open{display:flex}
+  #menu h2{color:#fff;margin:0 0 10px;font-size:22px}
+  .mitem{display:block;width:min(440px,90%);text-align:left;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:10px 14px;border-radius:12px;cursor:pointer;font-family:'Mali';font-size:14px}
+  .mitem:hover{background:rgba(255,255,255,.16)}
+  .mitem small{opacity:.7;font-size:11px;margin-left:6px}
+  .mhead{color:#ffd76b;font-weight:700;margin:8px 0 2px;font-size:14px;width:min(440px,90%)}
+  .flip{perspective:1000px;width:100%;max-width:680px;height:340px;margin:8px auto;cursor:pointer}
+  .flip .inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flip.on .inner{transform:rotateY(180deg)}
+  .flip .face{position:absolute;inset:0;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;text-align:center;backface-visibility:hidden;box-shadow:var(--shadow)}
+  .flip .front{background:linear-gradient(135deg,#fff,#eef1ff)}
+  .flip .back{background:linear-gradient(135deg,#46d399,#37b6c9);color:#fff;transform:rotateY(180deg)}
+  .flip .front .q{font-size:19px;font-weight:600;color:var(--ink);line-height:1.4}
+  .flip .front .hint{margin-top:14px;font-size:13px;color:var(--ink2)}
+  .flip .back .a{font-size:17px;font-weight:600;line-height:1.5}
+  .flip .front::after{content:'แตะเพื่อเปิดเฉลย 👆';position:absolute;bottom:12px;font-size:12px;color:var(--ink2)}
+  .mcq{background:#f6f7ff;border:1px solid #e6e9ff;border-radius:12px;padding:16px 18px;margin:4px auto;width:min(760px,100%)}
+  .mcq .stem{font-weight:600;margin-bottom:12px;font-size:18px;line-height:1.35}
+  .opts button{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border-radius:10px;border:2px solid #e0e4f5;background:#fff;cursor:pointer;font-family:'Mali';font-size:15px;transition:all .15s}
+  .opts button:hover{border-color:var(--c1)}
+  .opts button.correct{background:#dffbe8;border-color:var(--ok);color:#15692f;animation:pop .4s}
+  .opts button.wrong{background:#ffe0e4;border-color:var(--no);color:#921823;animation:shake .4s}
+  .explain{font-size:13px;color:var(--ink2);margin-top:6px;display:none}
+  .explain.show{display:block}
+  @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .scorebox{background:linear-gradient(135deg,#5b8def,#7b6cf6);color:#fff;border-radius:14px;padding:12px 16px;text-align:center;margin:0 auto 8px;width:min(760px,100%)}
+  .reveal{opacity:0;transform:translateY(14px)}
+  .slide.active .reveal{animation:revealIn .5s forwards}
+  .slide.active .reveal:nth-child(1){animation-delay:.08s}
+  .slide.active .reveal:nth-child(2){animation-delay:.18s}
+  .slide.active .reveal:nth-child(3){animation-delay:.28s}
+  .slide.active .reveal:nth-child(4){animation-delay:.38s}
+  .slide.active .reveal:nth-child(5){animation-delay:.48s}
+  .slide.active .reveal:nth-child(6){animation-delay:.58s}
+  @keyframes revealIn{to{opacity:1;transform:translateY(0)}}
+  .slide.active .body > *{animation:itemIn .48s cubic-bezier(.2,.8,.2,1) both}
+  .slide.active .body > *:nth-child(1){animation-delay:.08s}
+  .slide.active .body > *:nth-child(2){animation-delay:.16s}
+  .slide.active .body > *:nth-child(3){animation-delay:.24s}
+  .slide.active .body > *:nth-child(4){animation-delay:.32s}
+  .slide.active .body > *:nth-child(5){animation-delay:.4s}
+  @keyframes itemIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:26px 30px 92px;text-align:center}
+  .hero h1{font-size:clamp(26px,6vw,44px);margin:6px 0;text-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .hero p{font-size:15px;opacity:.85;max-width:560px}
+  .badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:5px 14px;border-radius:20px;font-size:13px}
+  #tip{position:fixed;z-index:200;background:#2a2d4a;color:#fff;border-radius:12px;padding:10px 14px;max-width:280px;box-shadow:0 8px 24px rgba(0,0,0,.4);display:none;font-size:14px;line-height:1.4}
+  #tip .en{font-weight:700;font-size:15px}
+  #tip .th{margin-top:4px;color:#ffd76b}
+  #tip .say{margin-top:6px;font-size:11px;color:#9aa0c8}
+  svg{display:block;margin:6px auto;max-width:100%}
+  .caption{font-size:12px;color:var(--ink2);text-align:center;margin-top:-2px}
+  .scan{width:100%;max-width:420px;border-radius:10px;border:1px solid #e6e9ff;box-shadow:var(--shadow);display:block;margin:4px auto}
+  .netimg{background:#fff;object-fit:cover}
+  .slide.active .netimg{animation:kenburns 8s ease-in-out infinite alternate}
+  @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.045)}}
+  .scanrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
+  .scanrow .scan{max-width:200px}
+  .scanstrip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:min(640px,94vw);margin:12px auto 0}
+  .scanstrip .scan{height:120px;object-fit:cover;margin:0;border-color:rgba(255,255,255,.45);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .scanfail{background:#fff8e6;border:2px dashed #f4d77a;border-radius:12px;color:#6b551a;padding:10px;font-size:12px;line-height:1.45}
+  .motion{position:relative;overflow:hidden;border-radius:14px;background:linear-gradient(135deg,#101735,#243a74);min-height:210px;box-shadow:var(--shadow);isolation:isolate}
+  .motion.light{background:linear-gradient(135deg,#eaf6ff,#fff8e6)}
+  .motion .label{position:absolute;left:14px;top:12px;background:rgba(255,255,255,.9);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--ink);z-index:2}
+  .bubble{position:absolute;bottom:-18px;border-radius:50%;background:rgba(255,255,255,.78);border:2px solid rgba(91,141,239,.6);animation:bubbleUp var(--dur,2.4s) linear infinite;left:var(--x);width:var(--s);height:var(--s)}
+  @keyframes bubbleUp{to{transform:translateY(-240px) scale(.45);opacity:0}}
+  .flameCore{position:absolute;left:50%;bottom:20px;width:110px;height:150px;transform:translateX(-50%);background:radial-gradient(circle at 50% 70%,#fff36b 0 18%,#ffb86b 35%,#ef5b6b 62%,transparent 64%);clip-path:polygon(50% 0,66% 28%,90% 52%,78% 100%,22% 100%,10% 52%,34% 28%);animation:flicker .42s ease-in-out infinite alternate}
+  @keyframes flicker{to{transform:translateX(-50%) scaleX(.9) scaleY(1.08) rotate(-2deg);filter:hue-rotate(12deg)}}
+  .phbar{position:absolute;left:24px;right:24px;bottom:40px;height:54px;border-radius:10px;background:linear-gradient(90deg,#ef4444,#fb923c,#facc15,#22c55e,#06b6d4,#3b82f6,#a855f7);box-shadow:inset 0 0 0 3px rgba(255,255,255,.75);animation:phPulse 2s ease-in-out infinite}
+  @keyframes phPulse{50%{filter:saturate(1.5);transform:scaleY(1.08)}}
+  .drop{position:absolute;top:34px;left:var(--x);width:18px;height:18px;border-radius:50% 50% 50% 0;background:var(--c);transform:rotate(-45deg);animation:dropFall var(--dur,1.8s) ease-in infinite}
+  @keyframes dropFall{80%,100%{top:135px;opacity:.15;transform:rotate(-45deg) scale(.55)}}
+  .particleStage{position:absolute;inset:34px 20px 18px;border:2px solid rgba(255,255,255,.35);border-radius:14px}
+  .dot{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--c5);left:var(--x);top:var(--y);animation:dash var(--dur,2.8s) ease-in-out infinite alternate}
+  @keyframes dash{to{transform:translate(var(--dx),var(--dy)) scale(.9)}}
+  .atom{position:absolute;left:50%;top:55%;width:96px;height:96px;margin:-48px;border-radius:50%;border:2px solid rgba(255,255,255,.7);animation:spin 3s linear infinite}
+  .atom::before,.atom::after{content:'';position:absolute;inset:12px;border-radius:50%;border:2px solid rgba(255,255,255,.45)}
+  .atom::before{transform:rotate(60deg)}.atom::after{transform:rotate(-60deg)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .videoBox{position:relative;min-height:210px;border-radius:14px;overflow:hidden;background:#111;box-shadow:var(--shadow)}
+  .videoBox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:150}
+  .body::-webkit-scrollbar{width:8px}
+  .body::-webkit-scrollbar-thumb{background:#c7ccf0;border-radius:8px}
+  .pager{display:flex;justify-content:center;gap:6px;margin:8px 0}
+  .pager button{border:0;background:#eef;border-radius:8px;padding:4px 10px;cursor:pointer;font-family:Mali;font-size:12px}
+  .pager button.cur{background:var(--c1);color:#fff}
+  @media (max-width:720px){
+    .slide{padding:14px 12px 70px}
+    .card{border-radius:14px}
+    .body{padding:14px 14px 10px;justify-content:flex-start}
+    .grid2,.grid3{grid-template-columns:1fr}
+    .thai{font-size:11.5px;padding:6px 12px 8px}
+    .scanstrip{grid-template-columns:1fr;max-width:280px}
+    .scanstrip .scan{height:96px}
+  }
+  /* Presentation-ready visual system */
+  :root{--bg:#07101f;--ink:#162033;--ink2:#58657a;--card:rgba(255,255,255,.97);--shadow:0 28px 90px rgba(0,0,0,.34)}
+  html,body{font-family:"Mali",sans-serif!important}
+  #stage{background:radial-gradient(circle at 12% 16%,rgba(56,189,248,.22),transparent 28%),radial-gradient(circle at 88% 78%,rgba(168,85,247,.2),transparent 30%),linear-gradient(145deg,#07101f,#111b3c 55%,#15113a)}
+  .slide{padding:clamp(68px,8vh,86px) clamp(14px,4vw,54px) 92px}
+  .slide{z-index:0;pointer-events:none}
+  .slide.active{z-index:10;pointer-events:auto}
+  .slide.prev{z-index:1;pointer-events:none}
+  .card{width:min(1180px,100%);max-height:100%;border-radius:28px;border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow);isolation:isolate}
+  .card>*{position:relative;z-index:2}
+  .card::after{z-index:1}
+  .topbar{min-height:64px;padding:14px clamp(18px,3vw,34px);background:linear-gradient(110deg,#2563eb,#7c3aed)}
+  .topbar h2{font-size:clamp(18px,2.1vw,27px);letter-spacing:-.02em}
+  .chip{font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(255,255,255,.25)}
+  .body{padding:clamp(20px,3.5vh,42px) clamp(20px,4vw,54px) max(26px,env(safe-area-inset-bottom));gap:clamp(12px,2vh,22px);overscroll-behavior:contain;scrollbar-gutter:stable}
+  .body h3{font-size:clamp(24px,3vw,38px);line-height:1.12;letter-spacing:-.035em}
+  .body p{font-size:clamp(16px,1.55vw,20px);line-height:1.6}
+  .body li{font-size:clamp(15px,1.3vw,18px);line-height:1.55;margin:.4em 0}
+  .mini,.mcq{border-radius:18px;border-color:#e5eaf5;background:linear-gradient(145deg,#fff,#f4f7ff);box-shadow:0 10px 30px rgba(34,55,110,.08)}
+  .mini{padding:18px 20px;min-height:104px}.grid2,.grid3{gap:18px}
+  .property-grid{gap:10px}
+  .prop-card{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;text-align:left;color:var(--ink);cursor:pointer;font:inherit;min-height:76px;padding:12px 14px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
+  .prop-card>span{grid-row:1/3;font-size:25px}.prop-card b{font-size:14px;line-height:1.2;color:#27345a}.prop-card small{font-size:10px;color:#7a8498}
+  .prop-card:hover{transform:translateY(-4px);border-color:#8b7cf6;box-shadow:0 14px 34px rgba(91,109,200,.18)}
+  .prop-card.active{color:#fff;border-color:transparent;background:linear-gradient(135deg,#5b8def,#7b6cf6);box-shadow:0 16px 36px rgba(91,109,200,.3)}
+  .prop-card.active b,.prop-card.active small{color:#fff}
+  .property-example{display:flex;align-items:center;gap:16px;min-height:104px;padding:16px 20px;border:2px solid #dfe4ff;border-radius:18px;background:linear-gradient(120deg,#f6f8ff,#fff9e9);box-shadow:0 10px 28px rgba(42,59,120,.09)}
+  .property-example.pop{animation:examplePop .38s cubic-bezier(.2,1.2,.4,1)}
+  .property-example .example-icon{font-size:38px}.property-example strong{display:block;color:#5a4bd8;font-size:18px;margin-bottom:3px}.property-example p{font-size:14px;margin:0;line-height:1.45}
+  @keyframes examplePop{0%{opacity:.25;transform:scale(.96) translateY(8px)}100%{opacity:1;transform:none}}
+  /* Keep vocabulary highlights behind text and readable on every topic colour. */
+  .v{position:relative!important;z-index:1!important;display:inline!important;color:#302500!important;background:#ffe681!important;border:1px solid #ffd84d!important;border-bottom:2px dotted #b88b00!important;border-radius:7px!important;padding:0 .28em!important;box-decoration-break:clone;-webkit-box-decoration-break:clone;isolation:isolate}
+  .v::before,.v::after{display:none!important}
+  h1 .v,h2 .v,h3 .v{color:#5142d6!important;background:transparent!important;border:0!important;border-bottom:3px solid #c9c2ff!important;border-radius:0!important;padding:0!important}
+  .hazard-grid{gap:10px}
+  .hazard-card{display:flex;align-items:center;gap:12px;text-align:left;color:var(--ink);cursor:pointer;font:inherit;min-height:78px;padding:12px 14px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
+  .hazard-card .hazard-icon{font-size:30px;flex:0 0 38px;text-align:center}.hazard-card b{display:block;font-size:15px;color:#27345a}.hazard-card small{display:block;font-size:10px;color:#778196;margin-top:2px}
+  .hazard-card:hover{transform:translateY(-4px);border-color:#ef5b8f;box-shadow:0 14px 34px rgba(220,50,120,.16)}
+  .hazard-card.active{color:#fff;border-color:transparent;background:linear-gradient(135deg,#ef3d8f,#f45b69);box-shadow:0 16px 36px rgba(220,50,120,.26)}
+  .hazard-card.active b,.hazard-card.active small{color:#fff}
+  .hazard-example{display:flex;align-items:center;gap:16px;min-height:96px;padding:15px 20px;border:2px solid #ffd3e5;border-radius:18px;background:linear-gradient(120deg,#fff5fa,#fff9e9);box-shadow:0 10px 28px rgba(100,35,75,.08)}
+  .hazard-example.pop{animation:examplePop .38s cubic-bezier(.2,1.2,.4,1)}
+  .hazard-example .example-icon{font-size:38px}.hazard-example strong{display:block;color:#d72f78;font-size:18px;margin-bottom:3px}.hazard-example p{font-size:14px;margin:0;line-height:1.45}
+  .litmus-visuals{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:14px;align-items:stretch;margin:10px 0}
+  .litmus-demo,.litmus-beaker{position:relative;min-height:150px;border:1px solid #e3e7f5;border-radius:18px;background:linear-gradient(145deg,#fff,#f5f7ff);box-shadow:0 10px 28px rgba(40,55,105,.09)}
+  .litmus-demo{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px}.litmus-demo svg{width:180px;height:82px;margin:3px auto}.litmus-demo p{font-size:12px;margin:2px 0}
+  .demo-label{position:absolute;top:8px;left:10px;padding:3px 8px;border-radius:999px;background:#eef1ff;color:#59627a;font-size:10px;font-weight:700}
+  .red-word{color:#e93558}.blue-word{color:#315de8}
+  .litmus-beaker{display:flex;align-items:center;justify-content:center;gap:13px;padding:18px 12px 10px}
+  .beaker{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px}.beaker i{display:block;width:62px;height:72px;border:4px solid #77819b;border-top:0;border-radius:0 0 16px 16px;box-shadow:inset 0 -38px 0 var(--liquid);position:relative}
+  .beaker i::after{content:'';position:absolute;left:8px;right:8px;bottom:30px;height:6px;border-radius:50%;background:rgba(255,255,255,.35)}
+  .beaker small{font-size:9px;color:#68738a}.acid-beaker{--liquid:#f15b75}.neutral-beaker{--liquid:#55c98e}.alkali-beaker{--liquid:#637bf2}
+  .acidity-hero{display:grid;grid-template-columns:1fr 1.6fr 1fr;align-items:center;gap:16px;width:min(900px,100%);margin:4px auto}
+  .acidity-side{min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;border-radius:22px;color:#fff;box-shadow:0 16px 34px rgba(40,55,105,.16)}
+  .acidity-side span{font-size:42px}.acidity-side strong{font-size:23px}.acidity-side small{font-size:11px;text-align:center}.acid-side{background:linear-gradient(135deg,#ef476f,#ff8a55)}.alkali-side{background:linear-gradient(135deg,#3977e9,#725ce8)}
+  .acidity-scale{text-align:center}.acidity-scale svg{width:100%;height:auto}.acidity-scale p{font-size:12px;color:#6b758a;margin:-5px 0 0}
+  .ph-example-top{display:grid;grid-template-columns:.8fr 1.2fr;align-items:center;gap:18px;width:min(860px,100%);margin:0 auto}.ph-example-top>svg{width:100%;height:auto}
+  .activity-prompt{text-align:center;font-weight:700;margin:0!important}
+  .ph-samples{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}.ph-samples button{border:1px solid #dfe4f5;border-radius:999px;background:#fff;padding:9px 14px;color:#33405a;font:700 13px 'Mali',sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(40,55,105,.08);transition:.18s}
+  .ph-samples button:hover{transform:translateY(-3px);border-color:#8b7cf6}.ph-samples button.active{background:#6658e8;color:#fff;border-color:#6658e8}
+  .ph-sample-result{display:flex;align-items:center;gap:15px;width:min(760px,100%);min-height:84px;margin:0 auto;padding:13px 18px;border:2px solid #ded9ff;border-radius:18px;background:linear-gradient(120deg,#f7f5ff,#fffaf0)}
+  .ph-sample-result>span{font-size:34px}.ph-sample-result strong{font-size:17px;color:#5649d3}.ph-sample-result p{font-size:13px;margin:2px 0 0}
+  .ph-sample-result.pop{animation:examplePop .38s cubic-bezier(.2,1.2,.4,1)}
+  .ph-quiz{width:min(850px,100%);margin:0 auto;padding:24px;border:1px solid #e0e5f5;border-radius:24px;background:linear-gradient(145deg,#fff,#f4f7ff);box-shadow:0 18px 50px rgba(40,55,105,.12)}
+  .phq-progress{display:flex;align-items:center;justify-content:space-between;color:#6d7890;font-size:12px;font-weight:700}.phq-bar{height:7px;flex:1;margin-left:14px;border-radius:9px;background:#e7eafb;overflow:hidden}.phq-bar i{display:block;height:100%;background:linear-gradient(90deg,#ef3d8f,#745be9);transition:width .3s}
+  .phq-prompt{text-align:center;font-size:clamp(22px,3vw,34px);font-weight:700;color:#202a43;margin:24px 0 18px}
+  .phq-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.phq-options button{min-height:52px;border:2px solid #e0e5f5;border-radius:14px;background:#fff;color:#34405a;font:600 14px 'Mali',sans-serif;cursor:pointer;transition:.16s}
+  .phq-options button:hover{border-color:#8b7cf6;transform:translateY(-2px)}.phq-options button.correct{background:#dff8e8;border-color:#35ba6f;color:#176737}.phq-options button.wrong{background:#ffe2e8;border-color:#ef5b6b;color:#902030}
+  .phq-feedback{min-height:30px;text-align:center;margin-top:14px;font-weight:700}.phq-next{display:none;margin:8px auto 0;border:0;border-radius:999px;background:#6658e8;color:#fff;padding:10px 24px;font:700 14px 'Mali',sans-serif;cursor:pointer}.phq-next.show{display:block}
+  /* Game-like visual treatment for every 15-question topic challenge. */
+  .slide:has(.quiz-shell) .card{background:linear-gradient(145deg,#fbfcff 0%,#f4f2ff 58%,#fff8fc 100%);overflow:hidden}
+  .slide:has(.quiz-shell) .card::before{content:'';position:absolute;z-index:0;inset:64px 0 0;background:radial-gradient(circle at 12% 18%,rgba(95,92,246,.10) 0 90px,transparent 92px),radial-gradient(circle at 88% 76%,rgba(239,61,143,.10) 0 120px,transparent 122px),linear-gradient(rgba(119,102,241,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(119,102,241,.035) 1px,transparent 1px);background-size:auto,auto,32px 32px,32px 32px;pointer-events:none}
+  .slide:has(.quiz-shell) .topbar{position:relative;overflow:hidden}
+  .slide:has(.quiz-shell) .topbar::after{content:'⚡ QUICK CHALLENGE';position:absolute;right:28px;top:50%;transform:translateY(-50%) rotate(-2deg);padding:7px 13px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);font-size:11px;font-weight:700;letter-spacing:.08em}
+  .slide:has(.quiz-shell) .body{position:relative;z-index:2;justify-content:center}
+  .slide:has(.quiz-shell) .scorebox{display:grid;grid-template-columns:auto 1fr;align-items:center;width:min(820px,100%);padding:14px 20px;border:0;border-radius:20px;text-align:left;background:linear-gradient(100deg,#315eea,#7c3aed 58%,#e93d8f);box-shadow:0 14px 38px rgba(83,69,201,.28);overflow:hidden}
+  .slide:has(.quiz-shell) .scorebox::before{content:'🏆';grid-row:1/3;margin-right:12px;font-size:30px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))}
+  .slide:has(.quiz-shell) .scorebox b{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.78}
+  .slide:has(.quiz-shell) .scorebox span{font-size:21px;font-weight:700}
+  .quiz-shell{position:relative;width:min(820px,100%);padding:26px 28px 28px;border:1px solid rgba(116,91,233,.18);border-left:0;background:rgba(255,255,255,.88);box-shadow:0 22px 60px rgba(57,48,124,.17);backdrop-filter:blur(8px);isolation:isolate}
+  .quiz-shell::before{content:'';position:absolute;left:0;top:0;bottom:0;width:8px;border-radius:18px 0 0 18px;background:linear-gradient(#3468ef,#7c3aed,#ef3d8f)}
+  .quiz-orbit{position:absolute;z-index:-1;border-radius:50%;filter:blur(.2px);opacity:.16;animation:quizFloat 4s ease-in-out infinite}.orbit-a{width:90px;height:90px;right:-30px;top:-36px;background:#7c3aed}.orbit-b{width:56px;height:56px;left:34px;bottom:-30px;background:#ef3d8f;animation-delay:-2s}
+  @keyframes quizFloat{50%{transform:translateY(-10px) rotate(12deg)}}
+  .question-kicker{display:flex;align-items:center;gap:9px;margin:0 0 8px;color:#7467a8;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .question-kicker b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;color:#fff;background:linear-gradient(135deg,#ef3d8f,#7c3aed);font-size:15px;box-shadow:0 7px 16px rgba(170,53,150,.25)}
+  .quiz-shell .stem{font-size:clamp(22px,2.7vw,32px);line-height:1.25;margin:4px 0 22px;color:#202840}
+  .quiz-shell .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .quiz-shell .opts button{display:flex;align-items:center;gap:13px;min-height:66px;margin:0;padding:10px 14px;border:2px solid #e3e6f5;border-radius:17px;background:#fff;color:#303a54;font-size:16px;box-shadow:0 7px 18px rgba(43,56,110,.07)}
+  .quiz-shell .opts button:hover{border-color:#8171ee;background:#f8f7ff;transform:translateY(-3px);box-shadow:0 13px 28px rgba(80,65,170,.14)}
+  .option-letter{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:12px;color:#fff;font-weight:700;background:#5b8def;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+  .quiz-shell .opts button:nth-child(2) .option-letter{background:#8b5cf6}.quiz-shell .opts button:nth-child(3) .option-letter{background:#ec4899}.quiz-shell .opts button:nth-child(4) .option-letter{background:#f59e42}
+  .quiz-shell .opts button.correct{background:#e4faec;border-color:#31bd6b;color:#146433}.quiz-shell .opts button.correct .option-letter{background:#27ae60}
+  .quiz-shell .opts button.wrong{background:#ffe7ec;border-color:#ef5b6b;color:#8d1d2b}.quiz-shell .opts button.wrong .option-letter{background:#e54858}
+  .quiz-shell .explain{margin-top:14px;padding:12px 16px;border-radius:14px;background:#fff7d9;color:#634d00;font-weight:600;box-shadow:0 7px 18px rgba(115,88,0,.08)}
+  .slide:has(.quiz-shell) .pager{gap:8px;margin:12px 0 0}.slide:has(.quiz-shell) .pager button{width:30px;height:30px;padding:0;border:1px solid #e1e4f3;border-radius:10px;background:#fff;color:#68728a;font-weight:700;transition:.16s}
+  .slide:has(.quiz-shell) .pager button:hover{transform:translateY(-2px);border-color:#7c6cf0}.slide:has(.quiz-shell) .pager button.cur{background:linear-gradient(135deg,#3567ef,#8b5cf6);color:#fff;border-color:transparent;box-shadow:0 7px 15px rgba(80,72,205,.25)}
+  .contents-slide .body>h3,.contents-slide .body>ul,.contents-slide .thai{display:none!important}
+  .contents-slide .body{justify-content:center;gap:24px}.contents-slide .scanrow{margin-top:4px!important}.contents-slide .scanrow .scan{max-width:210px}
+  .fact-card{background:linear-gradient(145deg,#fffef7,#f5f2ff);overflow:hidden}
+  .fact-card .topbar{background:linear-gradient(100deg,#f59e0b,#ef476f,#8b5cf6)}
+  .fact-body{position:relative;display:grid!important;grid-template-columns:.8fr 1.2fr;align-items:center;gap:34px;overflow:hidden!important}
+  .fact-visual{position:relative;display:grid;place-items:center;min-height:360px;border-radius:34px;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.8),transparent 28%),linear-gradient(145deg,#ffe38d,#ff8fa3 55%,#8b7cf6);box-shadow:0 24px 65px rgba(100,65,145,.25)}
+  .fact-emoji{font-size:clamp(90px,12vw,150px);filter:drop-shadow(0 16px 18px rgba(60,30,80,.25));animation:factBounce 3s ease-in-out infinite}
+  .fact-ring{position:absolute;width:72%;aspect-ratio:1;border:3px dashed rgba(255,255,255,.55);border-radius:50%;animation:factSpin 18s linear infinite}
+  .fact-copy .fact-label{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:#fff0b8;color:#855f00;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .fact-copy h3{font-size:clamp(30px,4vw,52px);line-height:1.1;margin:18px 0 14px;color:#262d4b}
+  .fact-copy p{font-size:clamp(17px,1.8vw,22px);line-height:1.65;color:#505b74}
+  .fact-copy .fact-th{margin:14px 0 0;padding:12px 15px;border-radius:14px;background:rgba(255,255,255,.78);border:1px solid #eee7ff;color:#5e4f87;font-size:clamp(14px,1.35vw,17px);line-height:1.55}
+  .fact-takeaway{margin-top:20px;padding:15px 18px;border-left:6px solid #8b5cf6;border-radius:0 16px 16px 0;background:#f0edff;color:#4f429e;font-size:15px;font-weight:600}
+  .real-card{background:#f8fafc}.real-card .topbar{background:linear-gradient(100deg,#0f766e,#0ea5a4,#2563eb)}
+  .real-body{display:grid!important;grid-template-columns:1.15fr .85fr;align-items:stretch;gap:26px;overflow:hidden!important}
+  .real-photo{position:relative;min-height:430px;border-radius:24px;overflow:hidden;background:#dbe6ef;box-shadow:0 22px 55px rgba(25,55,85,.22)}
+  .real-photo img{width:100%;height:100%;max-width:none;margin:0;border:0;border-radius:0;object-fit:cover;box-shadow:none;animation:none!important}
+  .real-badge{position:absolute;left:16px;top:16px;padding:8px 13px;border-radius:999px;background:rgba(8,25,40,.78);color:#fff;font-size:11px;font-weight:700;backdrop-filter:blur(8px)}
+  .real-copy{display:flex;flex-direction:column;justify-content:center}.real-copy h3{font-size:clamp(28px,3.6vw,46px);line-height:1.12;margin:0 0 14px;color:#18334a}.real-copy>p{font-size:clamp(16px,1.55vw,20px);line-height:1.6;color:#526477}
+  .real-observe{margin:16px 0 0;padding:17px 19px;border-radius:18px;background:#e6f7f5;border:1px solid #bce9e3}.real-observe b{display:block;color:#08766e;margin-bottom:5px}.real-observe p{margin:0;font-size:14px;line-height:1.5;color:#365e5b}
+  .real-th{margin-top:13px!important;padding:12px 15px;border-left:5px solid #0ea5a4;border-radius:0 14px 14px 0;background:#eef9ff;color:#31566b!important;font-size:14px!important}
+  @keyframes factBounce{50%{transform:translateY(-14px) rotate(3deg)}}@keyframes factSpin{to{transform:rotate(360deg)}}
+  .hero h1{font-size:clamp(38px,7vw,82px);line-height:1.02;letter-spacing:-.055em;max-width:1050px}
+  .hero p{font-size:clamp(16px,1.8vw,23px);line-height:1.55;max-width:760px}
+  .badge{font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:8px 18px}
+  /* Thai summary bar — visible at the bottom of each card, beautifully styled */
+  .thai{display:block!important;flex:0 0 auto;margin:0 clamp(20px,4vw,54px) clamp(10px,1.6vh,18px);padding:10px 16px 11px;border-radius:0 0 22px 22px;background:linear-gradient(135deg,#fff8e1,#fff3c4);border-top:2px solid #f5d77a;font-size:clamp(11.5px,1.15vw,13.5px);line-height:1.4;color:#7a5b15;-webkit-line-clamp:unset;line-clamp:unset;overflow:visible;box-shadow:0 -2px 14px rgba(240,190,80,.10) inset}.thai .tag{background:linear-gradient(135deg,#ffb74d,#ff9800);color:#3d2300;border-radius:8px;padding:2px 9px;font-size:clamp(10px,.95vw,11.5px);font-weight:700;box-shadow:0 2px 6px rgba(200,130,0,.25)}
+  .flip{height:min(390px,55vh)}.flip .face{border-radius:24px}
+  .flip .front .q{font-size:clamp(20px,2.4vw,30px)}.mcq .stem{font-size:clamp(18px,2vw,25px)}
+  .opts button{min-height:52px;font-family:inherit;font-size:clamp(15px,1.4vw,18px);border-radius:14px}
+  #nav{left:50%;right:auto;bottom:14px;transform:translateX(-50%);width:min(900px,calc(100% - 24px));padding:9px 12px;border:1px solid rgba(255,255,255,.15);border-radius:22px;background:rgba(8,14,32,.78);box-shadow:0 18px 55px rgba(0,0,0,.35);backdrop-filter:blur(18px)}
+  #nav button{flex:0 0 46px;width:46px;height:46px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.1);font:700 18px/1 inherit;transition:.18s ease}
+  #nav button:hover{background:#fff;color:#172044;transform:translateY(-2px)}
+  #progwrap{height:7px}#counter{font-variant-numeric:tabular-nums;min-width:76px}
+  #sectionNow{color:#dbeafe;font-size:12px;font-weight:800;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #topics{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:6px;max-width:calc(100% - 28px);padding:7px 9px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(8,14,32,.66);box-shadow:0 12px 38px rgba(0,0,0,.24);backdrop-filter:blur(16px)}
+  .topic-pill{border:0;border-radius:999px;padding:8px 14px;background:transparent;color:rgba(255,255,255,.68);font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;transition:transform .2s ease,background .2s ease,color .2s ease}
+  .topic-pill:hover{color:#fff;background:rgba(255,255,255,.12);transform:translateY(-2px)}
+  .topic-pill.active{color:#172044;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+  .slide.active .topbar{animation:barDrop .55s cubic-bezier(.2,.9,.25,1) both}
+  .slide.active .mini,.slide.active .mcq{animation:tileRise .55s cubic-bezier(.2,.9,.25,1) both}
+  .slide.active .grid2>*:nth-child(2),.slide.active .grid3>*:nth-child(2){animation-delay:.12s}
+  .slide.active .grid3>*:nth-child(3){animation-delay:.22s}
+  @keyframes barDrop{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes tileRise{from{opacity:0;transform:translateY(26px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+  #stage.forward .slide.active .card{animation:deckForward .58s cubic-bezier(.2,.9,.25,1) both}
+  #stage.backward .slide.active .card{animation:deckBackward .58s cubic-bezier(.2,.9,.25,1) both}
+  @keyframes deckForward{from{opacity:0;transform:translateX(70px) scale(.94) rotate(1deg)}to{opacity:1;transform:none}}
+  @keyframes deckBackward{from{opacity:0;transform:translateX(-70px) scale(.94) rotate(-1deg)}to{opacity:1;transform:none}}
+  .slide.active .hero h1,.slide.active .hero p,.slide.active .hero .badge{position:relative;z-index:3;opacity:1}
+  .slide.active .hero h1{color:#fff;text-shadow:0 5px 28px rgba(0,0,0,.55)}
+  #tip{z-index:300}
+  #menu{z-index:250}
+  #nav{z-index:200}
+  #topics{z-index:210}
+  #menu{background:rgba(5,10,25,.93)}.mitem{font-family:inherit;border-radius:14px;padding:12px 16px}
+  button:focus-visible,[tabindex]:focus-visible{outline:3px solid #facc15;outline-offset:3px}
+  @media(max-width:720px){.slide{padding:64px 10px 82px}.card{border-radius:20px}.topbar{min-height:54px;padding:10px 14px}.body{padding:18px 16px;justify-content:flex-start}.mini{min-height:auto}#sectionNow{display:none}#nav{bottom:8px}.hero h1{font-size:clamp(34px,12vw,56px)}#topics{left:8px;right:8px;transform:none;max-width:none;overflow-x:auto;justify-content:flex-start}.topic-pill{padding:7px 11px}.property-grid,.hazard-grid{grid-template-columns:1fr 1fr}.prop-card{min-height:72px}.property-example,.hazard-example{align-items:flex-start}.litmus-visuals,.acidity-hero,.ph-example-top,.fact-body,.real-body{grid-template-columns:1fr}.litmus-beaker{min-height:140px}.acidity-side{min-height:100px}.phq-options,.quiz-shell .opts{grid-template-columns:1fr}.slide:has(.quiz-shell) .topbar::after{display:none}.quiz-shell{padding:20px 16px}.quiz-shell .opts button{min-height:58px}.slide:has(.quiz-shell) .scorebox{padding:10px 14px}.fact-visual{min-height:190px}.fact-emoji{font-size:82px}.fact-copy h3{font-size:28px}.fact-copy p{font-size:16px}.real-photo{min-height:240px}.real-copy h3{font-size:28px}}
+
+  /* ===================== BEAUTY UPGRADE (visual polish only) ===================== */
+  /* richer stage atmosphere with ambient colour glows + focus vignette */
+  #stage{
+    background:
+      radial-gradient(circle at 15% 12%,rgba(96,165,250,.30),transparent 32%),
+      radial-gradient(circle at 86% 16%,rgba(167,139,250,.26),transparent 34%),
+      radial-gradient(circle at 82% 86%,rgba(244,114,182,.18),transparent 30%),
+      radial-gradient(circle at 12% 88%,rgba(52,211,153,.16),transparent 30%),
+      linear-gradient(150deg,#070d1f 0%,#0d1638 50%,#120f33 100%);
+    box-shadow:inset 0 0 220px rgba(0,0,0,.55);
+  }
+  .floater{opacity:.09;filter:blur(8px)}
+  /* card: gradient body + layered shadows + thin gradient accent edge */
+  .card{
+    background:linear-gradient(160deg,#ffffff 0%,#fbfcff 60%,#f3f6ff 100%);
+    border:1px solid rgba(255,255,255,.85);
+    box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 -2px 0 rgba(120,140,200,.06) inset,0 32px 80px rgba(2,6,23,.45),0 12px 30px rgba(2,6,23,.25);
+  }
+  .card::before{content:'';position:absolute;left:0;right:0;top:0;height:5px;z-index:4;border-radius:28px 28px 0 0;background:linear-gradient(90deg,#60a5fa,#a78bfa,#f472b6,#34d399);opacity:.95}
+  /* topbar — restore per-topic colour coding + subtle light sweep */
+  .topbar{background:linear-gradient(110deg,#7c3aed 0%,#8b5cf6 55%,#6366f1 100%);position:relative;overflow:hidden}
+  .topbar::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 130% at 0% 0%,rgba(255,255,255,.30),transparent 45%);pointer-events:none}
+  .topic-intro .topbar{background:linear-gradient(110deg,#7c3aed,#a855f7 55%,#6366f1)}
+  .topic-2 .topbar{background:linear-gradient(110deg,#2563eb,#4f46e5 55%,#6366f1)}      /* 4.1 blue/indigo */
+  .topic-3 .topbar{background:linear-gradient(110deg,#db2777,#ec4899 55%,#f43f5e)}       /* 4.2 rose */
+  .topic-1 .topbar{background:linear-gradient(110deg,#059669,#10b981 55%,#06b6d4)}       /* 4.3 emerald/teal */
+  .topbar h2{background:linear-gradient(90deg,#fff,#dbe4ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .chip{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.14)}
+  /* gradient accent headings */
+  .body h3{background:linear-gradient(92deg,#1e293b,#4f46e5 55%,#7c3aed);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;font-weight:700}
+  /* mini cards: accent left border + lift on hover, colour-coded per topic */
+  .mini{background:linear-gradient(150deg,#fff,#f5f8ff);border:1px solid #e7ecf7;border-left:4px solid #8b5cf6;box-shadow:0 4px 14px rgba(34,55,110,.06);transition:transform .25s ease,box-shadow .25s ease}
+  .mini:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(34,55,110,.15)}
+  .mini b{color:#7c3aed}
+  .topic-intro .mini{border-left-color:#a855f7}.topic-intro .mini b{color:#9333ea}
+  .topic-2 .mini{border-left-color:#4f46e5}.topic-2 .mini b{color:#4338ca}
+  .topic-3 .mini{border-left-color:#ec4899}.topic-3 .mini b{color:#be185d}
+  .topic-1 .mini{border-left-color:#10b981}.topic-1 .mini b{color:#047857}
+  /* vocab highlight pills pop */
+  .v{background:linear-gradient(120deg,#fff3a3,#ffe066);box-shadow:0 2px 0 #d9b800;border-bottom:0;border-radius:7px;padding:1px 6px}
+  /* hero: animated gradient title */
+  .hero h1{background:linear-gradient(120deg,#fff 0%,#a5b4fc 38%,#f0abfc 68%,#fff 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:heroShine 7s linear infinite}
+  @keyframes heroShine{to{background-position:200% center}}
+  .badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.38);box-shadow:0 4px 18px rgba(0,0,0,.22)}
+  /* glass controls */
+  #nav{box-shadow:0 22px 60px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08) inset}
+  #topics{box-shadow:0 14px 40px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.06) inset}
+  .topic-pill.active{background:linear-gradient(135deg,#fff,#e0e7ff);box-shadow:0 6px 20px rgba(99,102,241,.45)}
+  #prog{box-shadow:0 0 14px rgba(167,139,250,.65)}
+  /* flip + quiz polish */
+  .flip .front{background:linear-gradient(150deg,#fff,#eef2ff)}
+  .flip .back{background:linear-gradient(135deg,#10b981,#06b6d4 60%,#3b82f6)}
+  .mcq{background:linear-gradient(150deg,#fff,#f5f8ff);border-left:4px solid #6366f1}
+  .scorebox{background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 12px 30px rgba(37,99,235,.38)}
+  .opts button{transition:transform .15s ease,border-color .15s ease,background .15s ease}
+  .opts button:hover{transform:translateY(-2px)}
+  /* smoother scrollbar */
+  .body::-webkit-scrollbar{width:10px}
+  .body::-webkit-scrollbar-track{background:transparent}
+  .body::-webkit-scrollbar-thumb{background:linear-gradient(#a5b4fc,#818cf8);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<canvas id="confetti"></canvas>
+<div id="tip"></div>
+<nav id="topics" aria-label="Chapter topics"></nav>
+
+<div id="nav">
+  <button class="home" onclick="openMenu()" title="เมนู">☰</button>
+  <button onclick="go(-1)" title="ก่อนหน้า">‹</button>
+  <div id="progwrap" onclick="jumpClick(event)"><div id="prog"></div></div>
+  <div id="counter">0 / 0</div>
+  <button onclick="go(1)" title="ถัดไป">›</button>
+</div>
+
+<div id="menu">
+  <h2>📚 เมนูสไลด์</h2>
+  <div id="menuList"></div>
+  <button class="mitem" style="text-align:center;max-width:200px;margin-top:10px;background:rgba(255,255,255,.2)" onclick="closeMenu()">ปิด ✕</button>
+</div>
+
+<script>
+/* ===================== VOCAB DICTIONARY (expanded) ===================== */
+const DICT = {
+  "substance":"สาร — สิ่งของที่มีองค์ประกอบเฉพาะตัว","property":"คุณสมบัติ","properties":"คุณสมบัติ","physical":"ทางกายภาพ","chemical":"ทางเคมี",
+  "structure":"โครงสร้าง","observe":"สังเกต","measure":"วัด","mass":"มวล","hardness":"ความแข็ง",
+  "boiling":"การเดือด (กลายเป็นแก๊ส)","boiling point":"จุดเดือด — อุณหภูมิที่ของเหลวกลายเป็นแก๊ส",
+  "melting":"การหลอมเหลว (กลายเป็นของเหลว)","melting point":"จุดหลอมเหลว — อุณหภูมิที่ของแข็งกลายเป็นของเหลว",
+  "low melting point":"จุดหลอมเหลวต่ำ","electrical conductivity":"สมบัติการนำไฟฟ้า","thermal conductivity":"สมบัติการนำความร้อน","solubility":"ความสามารถในการละลาย",
+  "density":"ความหนาแน่น","thermometer":"เทอร์โมมิเตอร์ — เครื่องวัดอุณหภูมิ","anomalous results":"ผลที่ผิดปกติ — ไม่เข้ากับรูปแบบ",
+  "trend":"แนวโน้ม","pattern":"รูปแบบ","conclusion":"สรุปผล","interpret":"ตีความ","reactivity":"ความไวต่อปฏิกิริยา",
+  "flammability":"ความไวไฟ","flammable":"ติดไฟง่าย","non-flammable":"ไม่ติดไฟ","hydrogen":"ไฮโดรเจน","nitrogen":"ไนโตรเจน",
+  "sodium":"โซเดียม","iron":"เหล็ก","naphthalene":"นาฟทาลีน","oxygen":"ออกซิเจน","alchemy":"การเล่นแร่แปรธาตุ",
+  "acid":"กรด — สารที่มี pH น้อยกว่า 7","acidic":"เป็นกรด","alkali":"ด่าง — สารที่ละลายน้ำแล้วมี pH มากกว่า 7","alkaline":"เป็นด่าง",
+  "neutral":"เป็นกลาง — ไม่ใช่กรดหรือด่าง","corrosive":"กัดกร่อน — ทำลายผิวหนัง","harmful":"เป็นอันตราย","hazard":"อันตราย — ภัย",
+  "hazard symbol":"สัญลักษณ์แสดงอันตราย","toxic":"มีพิษ","irritate":"ระคายเคือง","precaution":"การระมัดระวัง","eye protection":"อุปกรณ์ป้องกันตา",
+  "indicator":"ตัวบ่งชี้ — สารที่เปลี่ยนสีในกรด/ด่าง","litmus":"ลิตมัส — ตัวบ่งชี้ชนิดหนึ่ง","Universal Indicator":"ยูนิเวอร์ซัลอินดิเคเตอร์ — ตัวบ่งชี้ที่เปลี่ยนหลายสี",
+  "pH scale":"มาตรา pH — วัดความเป็นกรด-ด่าง 0–14","range":"ช่วง — ระยะ","strongly acidic":"เป็นกรดจัด","weakly acidic":"เป็นกรดอ่อน",
+  "strongly alkaline":"เป็นด่างจัด","weakly alkaline":"เป็นด่างอ่อน","hydrochloric acid":"กรดไฮโดรคลอริก","sodium hydroxide":"โซเดียมไฮดรอกไซด์",
+  "particle":"อนุภาค","particles":"อนุภาค","atom":"อะตอม — อนุภาคเล็กที่สุดของสาร","model":"แบบจำลอง","state of matter":"สถานะของสาร","solid":"ของแข็ง",
+  "liquid":"ของเหลว","gas":"แก๊ส","vibrate":"สั่น","fixed":"ติดแน่น — ไม่ขยับ/คงตัว","compress":"อัด — บีบอัด","vacuum":"สุญญากาศ — ที่ว่างที่ไม่มีอนุภาค",
+  "strengths":"จุดเด่น — ข้อดี","limitations":"ข้อจำกัด","freezing":"การแข็งตัว","condensation":"การควบแน่น","evaporation":"การระเหย",
+  "apparatus":"อุปกรณ์","prediction":"การทำนาย","method":"วิธีการ","results table":"ตารางบันทึกผล","line graph":"กราฟเส้น",
+  "axis":"แกน","variable":"ตัวแปร","investigation":"การทดลอง — การสืบสวน","dissolve":"ละลาย","diamond":"เพชร"
+};
+/* say EN then TH */
+function say(en,th){
+  const s=window.speechSynthesis;s.cancel();
+  const u1=new SpeechSynthesisUtterance(en);u1.lang='en-US';u1.rate=.85;
+  s.speak(u1);
+  if(th){u1.onend=()=>{const u2=new SpeechSynthesisUtterance(th);u2.lang='th-TH';u2.rate=.95;s.speak(u2);};}
+}
+const tip=document.getElementById('tip');
+function showTip(e,en){
+  const th=DICT[en.toLowerCase()]||'(ไม่พบคำแปล)';
+  tip.innerHTML=`<div class="en">${en}</div><div class="th">${th}</div><div class="say">🔊 กำลังอ่าน...</div>`;
+  tip.style.display='block';
+  const r=e.currentTarget.getBoundingClientRect();
+  let x=r.left, y=r.bottom+6;
+  const tw=tip.offsetWidth;
+  if(x+tw>window.innerWidth-10) x=window.innerWidth-tw-10;
+  if(y+tip.offsetHeight>window.innerHeight-70) y=r.top-tip.offsetHeight-6;
+  tip.style.left=x+'px';tip.style.top=y+'px';
+  say(en,th);   /* auto-speak on click */
+}
+function hideTip(){tip.style.display='none';window.speechSynthesis.cancel();}
+document.addEventListener('click',e=>{if(!e.target.closest('.v')&&!e.target.closest('#tip'))hideTip();});
+function hydrateVocab(el){
+  el.querySelectorAll('.v').forEach(v=>{
+    /* Always restore the English word above its highlight background. */
+    v.textContent=v.dataset.w;
+    if(v.dataset.ready)return;
+    v.dataset.ready='1';
+    v.addEventListener('click',e=>{e.stopPropagation();showTip(e,v.dataset.w);});
+  });
+}
+function repairScanImages(el){
+  el.querySelectorAll('img.scan').forEach(img=>{
+    if(img.dataset.scanReady)return;
+    img.dataset.scanReady='1';
+    const m=(img.getAttribute('src')||'').match(/page_(\d+)\.png/i);
+    const page=img.dataset.page||m?.[1];
+    if(!page){
+      img.onerror=()=>{
+        const box=document.createElement('div');
+        box.className='scanfail';
+        box.textContent='โหลดรูปจากเน็ตไม่ได้ — ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต หรือ URL รูปภาพ';
+        img.replaceWith(box);
+      };
+      return;
+    }
+    const file='page_'+String(page).padStart(3,'0')+'.png';
+    const tries=['pages/'+file,'./pages/'+file];
+    let attempt=Math.max(0,tries.indexOf(img.getAttribute('src')));
+    img.onerror=()=>{
+      attempt++;
+      if(attempt<tries.length){
+        img.src=tries[attempt];
+        return;
+      }
+      const box=document.createElement('div');
+      box.className='scanfail';
+      box.textContent='ไม่พบรูป '+file+' — เปิดไฟล์ slides.html จากโฟลเดอร์ที่มีโฟลเดอร์ pages อยู่ข้างกัน';
+      img.replaceWith(box);
+    };
+  });
+}
+function compactThaiSummaries(el){
+  el.querySelectorAll('.thai').forEach(box=>{
+    if(box.dataset.compact)return;
+    box.dataset.compact='1';
+    const tag=box.querySelector('.tag');
+    const label=tag?tag.outerHTML:'<span class="tag">สรุป</span>';
+    let text=box.textContent.replace(tag?.textContent||'','').replace(/\s+/g,' ').trim();
+    text=text
+      .replace(/^คุณได้เรียนจบบทที่ 4 แล้ว\s*[—-]\s*/,'')
+      .replace(/^เลือกคำตอบแล้วเห็นถูก\/ผิดพร้อมคำอธิบาย\s*[—-]\s*/,'')
+      .replace(/^แตะคำศัพท์สีเหลืองเพื่อดูคำแปลและฟังเสียงทันที\s*[—-]\s*/,'');
+    if(text.length>105) text=text.slice(0,105).replace(/\s+\S*$/,'')+'...';
+    box.innerHTML=label+text;
+  });
+}
+function removeInlineThai(el){
+  if(el.dataset.enMainReady)return;
+  el.dataset.enMainReady='1';
+  const roots=el.querySelectorAll('.body, .topbar h2');
+  roots.forEach(root=>{
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+      acceptNode(node){
+        const parent=node.parentElement;
+        if(!parent || parent.closest('.thai,.fact-th,.real-th,#tip'))return NodeFilter.FILTER_REJECT;
+        return /[ก-๙]/.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;
+      }
+    });
+    const nodes=[];
+    while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(node=>{
+      node.nodeValue=node.nodeValue
+        .replace(/\([^)]*[ก-๙][^)]*\)/g,'')
+        .replace(/[·:：]\s*[ก-๙][^<\n]*/g,'')
+        .replace(/[ก-๙]+/g,'')
+        .replace(/\s+([,.;:!?])/g,'$1')
+        .replace(/\s{2,}/g,' ');
+    });
+    root.querySelectorAll('small').forEach(s=>{if(!s.textContent.trim())s.remove();});
+  });
+}
+
+/* ===================== SVG ASSETS ===================== */
+function svgBoilGraph(){
+  return `<svg viewBox="0 0 320 200" width="320" height="200">
+    <line x1="36" y1="170" x2="300" y2="170" stroke="#2a2d4a" stroke-width="2"/>
+    <line x1="36" y1="20" x2="36" y2="170" stroke="#2a2d4a" stroke-width="2"/>
+    <text x="160" y="194" text-anchor="middle" font-size="11" fill="#5a5f7d" font-family="Mali">Time (min)</text>
+    <text x="12" y="95" text-anchor="middle" font-size="11" fill="#5a5f7d" font-family="Mali" transform="rotate(-90 12 95)">Temp (°C)</text>
+    ${[0,50,100].map((t,i)=>`<text x="30" y="${174-i*60}" text-anchor="end" font-size="9" fill="#5a5f7d">${t}</text><line x1="34" y1="${170-i*60}" x2="36" y2="${170-i*60}" stroke="#2a2d4a"/>`).join('')}
+    ${[0,1,2,3,4,5].map((t,i)=>`<text x="${36+i*44}" y="184" text-anchor="middle" font-size="9" fill="#5a5f7d">${t}</text>`).join('')}
+    <polyline points="36,134 80,74 124,38 168,20 212,20 256,20" fill="none" stroke="#7b6cf6" stroke-width="3" stroke-dasharray="320" stroke-dashoffset="320">
+      <animate attributeName="stroke-dashoffset" from="320" to="0" dur="2.2s" fill="freeze"/></polyline>
+  </svg>`;
+}
+function svgCoolGraph(){
+  return `<svg viewBox="0 0 320 200" width="320" height="200">
+    <line x1="36" y1="170" x2="300" y2="170" stroke="#2a2d4a" stroke-width="2"/>
+    <line x1="36" y1="20" x2="36" y2="170" stroke="#2a2d4a" stroke-width="2"/>
+    <text x="160" y="194" text-anchor="middle" font-size="11" fill="#5a5f7d" font-family="Mali">Time (min)</text>
+    <text x="12" y="95" text-anchor="middle" font-size="11" fill="#5a5f7d" font-family="Mali" transform="rotate(-90 12 95)">Temp (°C)</text>
+    <polyline points="36,30 70,60 104,95 138,95 172,95 206,95 240,120 274,150" fill="none" stroke="#46d399" stroke-width="3" stroke-dasharray="320" stroke-dashoffset="320">
+      <animate attributeName="stroke-dashoffset" from="320" to="0" dur="2.4s" fill="freeze"/></polyline>
+    <rect x="100" y="88" width="80" height="18" fill="rgba(70,211,153,.15)"/>
+    <text x="140" y="82" text-anchor="middle" font-size="9" fill="#15692f">melting point (flat)</text>
+  </svg>`;
+}
+function svgThermometer(tempPct){
+  const y=160-tempPct*130;
+  return `<svg viewBox="0 0 80 200" width="80" height="200">
+    <rect x="32" y="20" width="16" height="140" rx="8" fill="#e6e9ff" stroke="#2a2d4a" stroke-width="2"/>
+    <circle cx="40" cy="168" r="16" fill="#ef5b6b" stroke="#2a2d4a" stroke-width="2"/>
+    <rect x="34" y="${y}" width="12" height="${168-y}" fill="#ef5b6b">
+      <animate attributeName="height" from="0" to="${168-y}" dur="1.5s" fill="freeze"/>
+      <animate attributeName="y" from="168" to="${y}" dur="1.5s" fill="freeze"/></rect>
+    <text x="56" y="${y+4}" font-size="10" fill="#2a2d4a">${Math.round(tempPct*100)}°</text>
+  </svg>`;
+}
+function svgParticles(state){
+  let rows='';
+  if(state==='solid'){
+    const pts=[];for(let r=0;r<3;r++)for(let c=0;c<5;c++)pts.push([30+c*24,40+r*24]);
+    rows=pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="8" fill="#5b8def"><animateTransform attributeName="transform" type="translate" values="0,0;1,-1;-1,1;0,0" dur="${0.4+i*0.02}s" repeatCount="indefinite"/></circle>`).join('');
+  }else if(state==='liquid'){
+    const pts=[];for(let i=0;i<14;i++)pts.push([20+Math.random()*120,40+Math.random()*70]);
+    rows=pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="#46d399"><animateTransform attributeName="transform" type="translate" values="0,0;${(i%2?1:-1)*8},0;0,0" dur="${1+i*0.05}s" repeatCount="indefinite"/></circle>`).join('');
+    rows+=`<path d="M10 120 Q80 110 150 120 L150 140 L10 140 Z" fill="#bfeee0" opacity=".5"/>`;
+  }else{
+    let s='';for(let i=0;i<8;i++){const x=20+Math.random()*120,y=20+Math.random()*100,dx=(Math.random()*40-20),dy=(Math.random()*40-20);s+=`<circle r="7" fill="#ffb86b"><animateMotion dur="${2+Math.random()*2}s" repeatCount="indefinite" path="M${x},${y} l${dx},${dy} l${-dx},${-dy}"/></circle>`;}
+    rows=s+`<rect x="8" y="10" width="144" height="130" fill="none" stroke="#2a2d4a" stroke-width="2" rx="8"/>`;
+  }
+  return `<svg viewBox="0 0 160 160" width="160" height="160">${rows}</svg>`;
+}
+function svgPH(){
+  const colors=['#ef5b6b','#f5785b','#ff9a3c','#ffc83c','#f0e63c','#cfe06b','#7bd88f','#37c9b0','#37b6c9','#37a0e0','#5b8def','#8a6cf6','#b66cf6','#d96cf6','#f06bd8'];
+  const bars=colors.map((c,i)=>`<rect x="${10+i*18}" y="40" width="16" height="50" fill="${c}"><animate attributeName="height" from="0" to="50" dur=".3s" begin="${i*0.05}s" fill="freeze"/><animate attributeName="y" from="90" to="40" dur=".3s" begin="${i*0.05}s" fill="freeze"/></rect><text x="${18+i*18}" y="106" text-anchor="middle" font-size="9" fill="#5a5f7d">${i}</text>`).join('');
+  return `<svg viewBox="0 0 290 130" width="290" height="120">${bars}<text x="40" y="22" font-size="11" fill="#ef5b6b" font-family="Mali">acidic</text><text x="130" y="22" font-size="11" fill="#46d399" font-family="Mali">neutral</text><text x="210" y="22" font-size="11" fill="#8a6cf6" font-family="Mali">alkaline</text></svg>`;
+}
+/* litmus that animates color change: startColor -> endColor */
+function svgLitmus(startColor,endColor,label){
+  return `<svg viewBox="0 0 200 110" width="220" height="120">
+    <rect x="40" y="15" width="30" height="80" rx="4" fill="${startColor}" stroke="#2a2d4a">
+      <animate attributeName="fill" values="${startColor};${startColor};${endColor}" dur="2s" fill="freeze"/>
+    </rect>
+    <text x="55" y="60" text-anchor="middle" font-size="9" fill="#fff">${label}</text>
+    <path d="M70 55 Q120 30 175 55" stroke="#aaa" stroke-width="2" fill="none" marker-end="url(#a2)"/>
+    <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#aaa"/></marker></defs>
+    <rect x="155" y="40" width="30" height="50" rx="6" fill="${endColor}" stroke="#2a2d4a" opacity=".3"><animate attributeName="opacity" values="0;0;1" dur="2s" fill="freeze"/></rect>
+  </svg>`;
+}
+function svgFlame(){return `<svg viewBox="0 0 120 120" width="100" height="100"><path d="M60 100 C30 80 35 50 60 20 C85 50 90 80 60 100 Z" fill="#ffb86b"><animate attributeName="d" values="M60 100 C30 80 35 50 60 20 C85 50 90 80 60 100 Z;M60 100 C25 78 40 48 60 16 C88 48 80 78 60 100 Z;M60 100 C30 80 35 50 60 20 C85 50 90 80 60 100 Z" dur="0.6s" repeatCount="indefinite"/></path><path d="M60 95 C45 80 48 60 60 40 C72 60 75 80 60 95 Z" fill="#ef5b6b"><animate attributeName="opacity" values="1;.6;1" dur=".4s" repeatCount="indefinite"/></path></svg>`;}
+function svgBubbles(){return `<svg viewBox="0 0 120 120" width="110" height="110"><rect x="20" y="40" width="80" height="70" rx="6" fill="#d4e8ff" stroke="#2a2d4a"/>${[0,1,2,3,4].map(i=>`<circle cx="${35+i*12}" cy="100" r="4" fill="#fff" stroke="#5b8def"><animate attributeName="cy" from="105" to="50" dur="${1.2+i*0.2}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="${1.2+i*0.2}s" repeatCount="indefinite"/></circle>`).join('')}</svg>`;}
+
+/* ===================== SLIDE DATA ===================== */
+const S=[];
+function add(cls,html,meta){S.push({cls,html,meta:meta||{}});}
+const V=(w)=>`<span class="v" data-w="${w}">${w}</span>`;
+/* transitions rotate */
+const TRANS=['t-slide','t-fade','t-up','t-zoom','t-flip'];
+function pickT(i){return TRANS[i%TRANS.length];}
+const MCQ_PAGE={};
+const IMG={
+  boiling:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Boilingkettle.jpg/500px-Boilingkettle.jpg',
+  uiPaper:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Universal_indicator_paper.jpg/500px-Universal_indicator_paper.jpg',
+  uiColors:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Skala_boja_2.JPG/500px-Skala_boja_2.JPG',
+  phase:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Phase_change_-_en.svg/500px-Phase_change_-_en.svg.png',
+  ghsFlame:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/GHS-pictogram-flamme.svg/250px-GHS-pictogram-flamme.svg.png',
+  ghsAcid:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/GHS-pictogram-acid.svg/250px-GHS-pictogram-acid.svg.png',
+  ghsSkull:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/GHS-pictogram-skull.svg/250px-GHS-pictogram-skull.svg.png',
+  ghsExclam:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/GHS-pictogram-exclam.svg/250px-GHS-pictogram-exclam.svg.png',
+  ghsHealth:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/GHS-pictogram-silhouette.svg/250px-GHS-pictogram-silhouette.svg.png',
+  ghsEnv:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/GHS-pictogram-pollu.svg/250px-GHS-pictogram-pollu.svg.png',
+  eva:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Volkov_during_Russian_EVA28.jpg/500px-Volkov_during_Russian_EVA28.jpg',
+  /* extra verified (2026-07) thumbnails from Wikipedia REST summary API */
+  diamond:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Rough_Diamond.jpg/330px-Rough_Diamond.jpg',
+  sodiumLump:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Na_%28Sodium%29.jpg/330px-Na_%28Sodium%29.jpg',
+  ironBlock:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Iron_electrolytic_and_1cm3_cube.jpg/330px-Iron_electrolytic_and_1cm3_cube.jpg',
+  hydrogenTube:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Hydrogen_discharge_tube.jpg/330px-Hydrogen_discharge_tube.jpg',
+  naphthaleneCrystal:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Naphthalene-from-xtal-3D-vdW.png/330px-Naphthalene-from-xtal-3D-vdW.png',
+  thermometerReal:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Mercury_Thermometer.jpg/330px-Mercury_Thermometer.jpg',
+  alchemyArt:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/E-codices_zbz-Ms-Rh-0172_044_max_copy.jpg/330px-E-codices_zbz-Ms-Rh-0172_044_max_copy.jpg',
+  litmusPhoto:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lackmus.jpg/330px-Lackmus.jpg',
+  naohCrystal:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Sodium-hydroxide-crystal-3D-vdW.png/330px-Sodium-hydroxide-crystal-3D-vdW.png',
+  hclBottle:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hydrochloric_acid_30_percent.jpg/330px-Hydrochloric_acid_30_percent.jpg',
+  iceBlock:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Ice_Block%2C_Canal_Park%2C_Duluth_%2832752478892%29.jpg/330px-Ice_Block%2C_Canal_Park%2C_Duluth_%2832752478892%29.jpg',
+  oxygenLiquid:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Liquid_oxygen_in_a_beaker_%28cropped_and_retouched%29.jpg/330px-Liquid_oxygen_in_a_beaker_%28cropped_and_retouched%29.jpg'
+  ,aircraftReal:'https://commons.wikimedia.org/wiki/Special:FilePath/Airbus%20A380%20blue%20sky.jpg?width=900'
+  ,galliumReal:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Gallium_metal.jpg/960px-Gallium_metal.jpg'
+  ,cabbageReal:'https://commons.wikimedia.org/wiki/Special:FilePath/Red%20cabbage.jpg?width=900'
+  ,stomachReal:'https://commons.wikimedia.org/wiki/Special:FilePath/Gray1050-stomach.png?width=900'
+  ,atomReal:'https://upload.wikimedia.org/wikipedia/commons/7/76/Graphite_ambient_STM.jpg'
+  ,perfumeReal:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Moscow._State_Historical_Museum._Perfume_bottle_P4151939_2600.jpg/960px-Moscow._State_Historical_Museum._Perfume_bottle_P4151939_2600.jpg'
+};
+function netImg(key,alt,style=''){
+  return `<img class="scan netimg" src="${IMG[key]}" alt="${alt}" referrerpolicy="no-referrer" loading="lazy" style="${style}">`;
+}
+function motion(kind,label=''){
+  if(kind==='boil'){
+    return `<div class="motion light"><span class="label">${label||'Boiling motion'}</span><div style="position:absolute;left:22%;right:22%;bottom:22px;height:120px;border:5px solid #5b8def;border-top:0;border-radius:0 0 18px 18px;background:linear-gradient(#d9f3ff,#7dd3fc)"></div>${Array.from({length:16}).map((_,i)=>`<i class="bubble" style="--x:${18+Math.random()*64}%;--s:${10+Math.random()*18}px;--dur:${1.4+Math.random()*1.8}s;animation-delay:-${Math.random()*2}s"></i>`).join('')}<div style="position:absolute;left:38%;bottom:2px;width:24%;height:18px;background:#ff9a3c;border-radius:50%;filter:blur(2px);animation:phPulse 1s infinite"></div></div>`;
+  }
+  if(kind==='ph'){
+    return `<div class="motion light"><span class="label">${label||'Indicator changes colour'}</span><div class="phbar"></div>${['#ef4444','#22c55e','#3b82f6'].map((c,i)=>`<i class="drop" style="--x:${26+i*22}%;--c:${c};--dur:${1.4+i*.25}s;animation-delay:-${i*.4}s"></i>`).join('')}<div style="position:absolute;left:24px;right:24px;bottom:20px;display:flex;justify-content:space-between;font-size:12px;color:#334155;font-weight:700"><span>acid</span><span>neutral</span><span>alkali</span></div></div>`;
+  }
+  if(kind==='particles'){
+    const dots=Array.from({length:18}).map((_,i)=>`<i class="dot" style="--x:${8+Math.random()*82}%;--y:${10+Math.random()*75}%;--dx:${-38+Math.random()*76}px;--dy:${-30+Math.random()*60}px;--dur:${1.2+Math.random()*2.2}s;background:${['#5b8def','#46d399','#ffb86b'][i%3]}"></i>`).join('');
+    return `<div class="motion"><span class="label">${label||'Particles never stop moving'}</span><div class="particleStage">${dots}</div></div>`;
+  }
+  if(kind==='flame'){
+    return `<div class="motion"><span class="label">${label||'Flammable'}</span><div class="flameCore"></div>${Array.from({length:8}).map((_,i)=>`<i class="bubble" style="--x:${18+i*8}%;--s:${6+i}px;--dur:${1+i*.12}s;background:rgba(255,184,107,.7);border-color:rgba(239,91,107,.5)"></i>`).join('')}</div>`;
+  }
+  return `<div class="motion"><span class="label">${label}</span><div class="atom"></div></div>`;
+}
+function videoCard(url,title){
+  return `<div class="videoBox"><iframe loading="lazy" allowfullscreen referrerpolicy="no-referrer" title="${title}" src="${url}"></iframe></div>`;
+}
+function videoSearch(query,title){
+  return videoCard('https://www.youtube.com/embed?listType=search&list='+encodeURIComponent(query),title);
+}
+
+/* ---------- INTRO (4) ---------- */
+add('topic-intro t-fade',`<div class="hero">
+  <div class="badge reveal">Science · Grade 7 (ม.1)</div>
+  <h1 class="reveal">Chapter 4</h1>
+  <h1 class="reveal" style="font-size:clamp(20px,4vw,30px)">Structure & Properties of Materials</h1>
+  <p class="reveal">โครงสร้างและคุณสมบัติของวัสดุ — สไลด์เรียนรู้แบบโต้ตอบ พร้อมคำศัพท์ อนิเมชัน และแบบทดสอบ</p>
+  <div class="grid3 reveal" style="margin-top:14px;max-width:520px">
+    <div class="mini" style="background:rgba(255,255,255,.1);color:#fff;border:0"><b>4.1</b><br><small>Physical & Chemical</small></div>
+    <div class="mini" style="background:rgba(255,255,255,.1);color:#fff;border:0"><b>4.2</b><br><small>Acidity & Indicators</small></div>
+    <div class="mini" style="background:rgba(255,255,255,.1);color:#fff;border:0"><b>4.3</b><br><small>Particle Model</small></div>
+  </div>
+  <div class="scanstrip reveal">
+    ${netImg('boiling','Boiling water preview')}
+    ${netImg('uiColors','Universal indicator colour preview')}
+    ${netImg('phase','Phase changes preview')}
+  </div>
+</div>`,{section:'intro',label:'หน้าปก'});
+
+add('topic-intro contents-slide t-up',`<div class="card reveal">
+  <div class="topbar"><span class="chip">สารบัญ</span><h2>Contents · สารบัญ</h2></div>
+  <div class="body">
+    <div class="grid3">
+      <div class="mini"><h3>4.1</h3><p>Physical & Chemical Properties</p><small>คุณสมบัติทางกายภาพและทางเคมี</small></div>
+      <div class="mini"><h3>4.2</h3><p>Acidity and Indicators</p><small>ความเป็นกรดและตัวบ่งชี้</small></div>
+      <div class="mini"><h3>4.3</h3><p>The Particle Model</p><small>แบบจำลองอนุภาค</small></div>
+    </div>
+    <div class="scanrow" style="margin-top:10px">
+      ${netImg('boiling','Boiling water image','max-width:180px')}
+      ${netImg('uiPaper','Universal indicator paper','max-width:180px')}
+      ${netImg('phase','Phase transition diagram','max-width:180px')}
+    </div>
+    <h3 style="margin-top:14px">🎯 สิ่งที่จะได้เรียนรู้</h3>
+    <ul>
+      <li>${V('observe')} สังเกต และ${V('measure')} วัดคุณสมบัติของ${V('substance')} สาร</li>
+      <li>${V('interpret')} ตีความ${V('trend')} แนวโน้ม และหา${V('anomalous results')} ผลที่ผิดปกติ</li>
+      <li>ใช้${V('indicator')} ตัวบ่งชี้ และ${V('pH scale')} มาตรา pH</li>
+      <li>ใช้${V('model')} แบบจำลองอนุภาคอธิบาย${V('state of matter')} สถานะของสาร</li>
+    </ul>
+  </div>
+  <div class="thai"><span class="tag">สรุป</span>บทนี้เรียนคุณสมบัติของสาร ทั้งทางกายภาพ (วัดได้) และทางเคมี (เกิดปฏิกิริยา), ความเป็นกรด-ด่าง และแบบจำลองอนุภาคที่อธิบายว่าทำไมของแข็ง/ของเหลว/แก๊สจึงต่างกัน</div>
+</div>`,{section:'intro',label:'สารบัญ'});
+
+add('topic-intro t-zoom',`<div class="card reveal">
+  <div class="topbar"><span class="chip">วิธีใช้</span><h2>How to use these slides</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="mini"><b>👉 เลื่อน</b><p>ใช้ปุ่ม ‹ ›, กดลูกศร ⬅️➡️ บนคีย์บอร์ด หรือปัดจอซ้าย-ขวา</p></div>
+      <div class="mini"><b>☰ เมนู</b><p>กดปุ่มเมนูเพื่อกระโดดไป Topic/หัวข้อที่ต้องการ</p></div>
+      <div class="mini"><b>🟡 คำศัพท์</b><p>คำที่ไฮไลท์สีเหลือง ให้คลิก → ดูคำแปล + ฟังเสียงอัตโนมัติ (อังกฤษ→ไทย)</p></div>
+      <div class="mini"><b>❓ แบบทดสอบ</b><p>flip card เปิดเฉลย และ MCQ 15 ข้อ/บท (ทีละข้อ/หน้า) พร้อมเฉลย เสียง และคะแนน</p></div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">Tip</span>แตะคำศัพท์สีเหลืองเพื่อดูคำแปลและฟังเสียงทันที — ช่วง ม.1 เน้นคำศัพท์ใหม่ ๆ เยอะ ฝึกออกเสียงไปด้วยนะครับ</div>
+</div>`,{section:'intro',label:'วิธีใช้งาน'});
+
+add('topic-intro t-slide',`<div class="card reveal">
+  <div class="topbar"><span class="chip">Source</span><h2>Online images used in this lesson</h2></div>
+  <div class="body">
+    <p>These slides use online science images for clearer classroom visuals, while the lesson content follows Chapter 4.</p>
+    <div class="scanrow">
+      ${netImg('boiling','Boiling water','max-width:210px')}
+      ${netImg('ghsFlame','GHS flammable pictogram','max-width:140px;object-fit:contain')}
+      ${netImg('uiColors','Universal indicator colours','max-width:210px')}
+      ${netImg('eva','Astronaut outside space station','max-width:210px')}
+    </div>
+  </div>
+  <div class="thai"><span class="tag">รูปจากเน็ต</span>ภาพประกอบดึงจาก Wikimedia/Wikipedia โดยตรง จึงต้องมีอินเทอร์เน็ตตอนเปิดสไลด์ ส่วนฟอนต์และโค้ดยังอยู่ในไฟล์นี้</div>
+</div>`,{section:'intro',label:'รูปจากเน็ต'});
+
+add('topic-intro t-up',`<div class="card reveal">
+  <div class="topbar"><span class="chip">Video</span><h2>Short clips for class discussion</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>${videoSearch('boiling point of water science experiment for kids','Boiling point video search')}<p class="caption">Use before Topic 4.1: ask students what happens to temperature while water boils.</p></div>
+      <div>${videoSearch('states of matter particle model animation for kids','Particle model video search')}<p class="caption">Use before Topic 4.3: ask students how particles move in solid, liquid and gas.</p></div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">วิดีโอ</span>เปิดคลิปสั้นก่อนเริ่มหัวข้อ เพื่อให้เด็กเห็นภาพการเดือดและการเคลื่อนที่ของอนุภาคก่อนเรียนเนื้อหา</div>
+</div>`,{section:'intro',label:'วิดีโอประกอบ'});
+
+/* ============ TOPIC 4.1 (content + flip cards + 15 MCQ slides) ============ */
+add('topic-2 '+pickT(0),`<div class="card reveal"><div class="topbar"><span class="chip">Topic 4.1</span><h2>Physical & Chemical Properties</h2></div>
+  <div class="body">
+    <h3>🎯 You will learn</h3>
+    <ul>
+      <li>To understand the ${V('chemical')} and ${V('physical')} ${V('property')} of a ${V('substance')}</li>
+      <li>To describe ${V('trend')} and ${V('pattern')} in results, including ${V('anomalous results')}</li>
+      <li>To make ${V('conclusion')} by ${V('interpret')}ing results</li>
+    </ul>
+    <div class="grid2" style="margin-top:6px">
+      <div class="mini"><b>🧠 You should know...</b><ul style="margin:6px 0 0"><li>Temperature when a substance changes state is a property</li><li>Gases have properties, including ${V('mass')}</li><li>${V('electrical conductivity')} & ${V('thermal conductivity')} are properties</li></ul></div>
+      <div class="mini"><b>✋ You should be able to...</b><ul style="margin:6px 0 0"><li>Sort, group & classify materials</li><li>Describe patterns & spot anomalous results</li></ul></div>
+    </div>
+    ${motion('atom','Materials are made of particles')}
+  </div>
+  <div class="thai"><span class="tag">4.1</span>คุณสมบัติแบ่ง 2 ประเภท คือทางกายภาพ (วัด/สังเกตได้) และทางเคมี (เกิดการเปลี่ยนแปลงทางเคมี) ใช้แยกแยะสารต่าง ๆ ได้</div></div>`,{section:'t41',label:'4.1 หน้าเนื้อหาแรก'});
+
+add('topic-2 '+pickT(1),`<div class="card reveal"><div class="topbar"><span class="chip">4.1</span><h2>Physical Properties</h2></div>
+  <div class="body">
+    <p>All materials have both physical and chemical properties. <b>Physical properties</b> are used to ${V('observe')} or ${V('measure')} a ${V('substance')} without changing what it is.</p>
+    <div class="grid3 property-grid">
+      <button class="mini prop-card" onclick="showPropertyExample(this,'mass')" aria-label="Show an example of mass"><span>⚖️</span><b>mass</b><small>Click for an example</small></button>
+      <button class="mini prop-card" onclick="showPropertyExample(this,'hardness')" aria-label="Show an example of hardness"><span>💎</span><b>hardness</b><small>Click for an example</small></button>
+      <button class="mini prop-card" onclick="showPropertyExample(this,'boiling point')" aria-label="Show an example of boiling point"><span>♨️</span><b>boiling point</b><small>Click for an example</small></button>
+      <button class="mini prop-card" onclick="showPropertyExample(this,'melting point')" aria-label="Show an example of melting point"><span>🧊</span><b>melting point</b><small>Click for an example</small></button>
+      <button class="mini prop-card" onclick="showPropertyExample(this,'electrical conductivity')" aria-label="Show an example of electrical conductivity"><span>⚡</span><b>electrical conductivity</b><small>Click for an example</small></button>
+      <button class="mini prop-card" onclick="showPropertyExample(this,'thermal conductivity')" aria-label="Show an example of thermal conductivity"><span>🔥</span><b>thermal conductivity</b><small>Click for an example</small></button>
+      <button class="mini prop-card" onclick="showPropertyExample(this,'solubility')" aria-label="Show an example of solubility"><span>🥄</span><b>solubility</b><small>Click for an example</small></button>
+      <button class="mini prop-card" onclick="showPropertyExample(this,'density')" aria-label="Show an example of density"><span>🛟</span><b>density</b><small>Click for an example</small></button>
+      <button class="mini prop-card" onclick="showPropertyExample(this,'state')" aria-label="Show an example of state"><span>💧</span><b>state</b><small>Click for an example</small></button>
+    </div>
+    <div class="property-example" aria-live="polite"><span class="example-icon">👆</span><div><strong>Choose a property</strong><p>Click a card to see a real-life example.</p></div></div>
+  </div>
+  <div class="thai"><span class="tag">จำ</span>คุณสมบัติทางกายภาพ = สังเกต/วัดได้โดยสารไม่เปลี่ยนตัว เช่น มวล ความแข็ง จุดเดือด/หลอมเหลว การนำไฟฟ้า/ความร้อน ความสามารถละลาย ความหนาแน่น</div></div>`,{section:'t41'});
+
+add('topic-2 t-zoom',factSlideHtml('Topic 4.1','✈️','Why are aeroplanes made from aluminium?','Aluminium has a low density, so it is light, but it is also strong enough for aircraft structures. Using a lighter metal means the aircraft needs less fuel to fly.','Engineers choose materials by comparing several physical properties, not by appearance alone.','เครื่องบินนิยมใช้อะลูมิเนียม เพราะมีความหนาแน่นต่ำจึงมีน้ำหนักเบา แต่ยังแข็งแรงพอสำหรับโครงสร้าง เครื่องบินที่เบาลงจะใช้เชื้อเพลิงน้อยลง'),{section:'t41',label:'4.1 Did you know? · Aluminium'});
+add('topic-2 t-slide',realSlideHtml('Topic 4.1','aircraftReal','Aluminium in a passenger aircraft','The outer skin and many structural parts of modern aircraft use aluminium alloys to combine low mass with useful strength.','Look at the enormous size of the aircraft. Reducing the density of its structure saves a large amount of total mass.','ภาพเครื่องบินโดยสารจริง โครงสร้างหลายส่วนใช้อะลูมิเนียมผสมเพื่อลดน้ำหนัก แต่ยังคงความแข็งแรงที่จำเป็น'),{section:'t41',label:'4.1 Real example · Aircraft'});
+
+add('topic-2 '+pickT(2),`<div class="card reveal"><div class="topbar"><span class="chip">4.1</span><h2>Melting & Boiling Point</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="mini"><h3>${V('melting point')}</h3><p>The temperature at which a material melts — turns from a ${V('solid')} into a ${V('liquid')}.</p></div>
+      <div class="mini"><h3>${V('boiling point')}</h3><p>The temperature at which a material boils — turns from a ${V('liquid')} into a ${V('gas')}.</p></div>
+    </div>
+    <h3>🧪 Method to measure</h3>
+    <ol>
+      <li>Place the material into a suitable container. Use a ${V('thermometer')} to measure its temperature.</li>
+      <li>Heat the material steadily.</li>
+      <li>Read the temperature every minute until it stops changing — that is the melting/boiling point.</li>
+    </ol>
+    <div class="grid2"><div style="display:flex;gap:14px;align-items:center;justify-content:center">${svgThermometer(.6)}${svgThermometer(1)}</div>${motion('boil','Heating: particles gain energy')}</div>
+  </div>
+  <div class="thai"><span class="tag">วิธี</span>เทสารใส่ภาชนะ → วัดอุณหภูมิเริ่มต้น → ให้ความร้อน → บันทึกทุกนาทีจนอุณหภูมิหยุดเปลี่ยน ค่านั้นคือจุดหลอมเหลว/จุดเดือด</div></div>`,{section:'t41'});
+
+add('topic-2 '+pickT(3),`<div class="card reveal"><div class="topbar"><span class="chip">Activity 4.1</span><h2>Boiling point of water — results table</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="mini">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <tr style="background:#eef"><th>Time (min)</th><th>Temp (°C)</th></tr>
+          <tr><td style="border:1px solid #ddd;padding:3px">0</td><td style="border:1px solid #ddd;padding:3px">45</td></tr>
+          <tr><td style="border:1px solid #ddd;padding:3px">1</td><td style="border:1px solid #ddd;padding:3px">84</td></tr>
+          <tr><td style="border:1px solid #ddd;padding:3px">2</td><td style="border:1px solid #ddd;padding:3px">98</td></tr>
+          <tr><td style="border:1px solid #ddd;padding:3px">3</td><td style="border:1px solid #ddd;padding:3px">100</td></tr>
+          <tr><td style="border:1px solid #ddd;padding:3px">4</td><td style="border:1px solid #ddd;padding:3px">100</td></tr>
+          <tr><td style="border:1px solid #ddd;padding:3px">5</td><td style="border:1px solid #ddd;padding:3px">100</td></tr>
+        </table>
+        <p class="caption">Table 4.1 — Results for boiling point of water</p>
+      </div>
+      <div>${motion('boil','Watch the boiling point')}<div class="mini">${svgBoilGraph()}<p class="caption">Temperature rises then stays flat at 100 °C</p></div></div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">ตาราง</span>ตัวแปรที่เปลี่ยน (เวลา) ในคอลัมน์แรก, ตัวแปรที่วัด (อุณหภูมิ) ในคอลัมน์ที่สอง คอลัมน์ต้องมีหัวข้อและหน่วยเสมอ</div></div>`,{section:'t41'});
+
+add('topic-2 '+pickT(4),`<div class="card reveal"><div class="topbar"><span class="chip">Activity 4.1</span><h2>Plot & read the graph</h2></div>
+  <div class="body">
+    <p>📝 <b>A1 Plot tips:</b> changed ${V('variable')} (time) on horizontal ${V('axis')}; measured variable on vertical axis; plot crosses, circle any ${V('anomalous results')}, join the crosses.</p>
+    <div class="grid2"><div>${svgBoilGraph()}</div>${motion('boil','Line stops rising at boiling point')}</div>
+    <p>📝 <b>A2 Describe the pattern — fill the sentences:</b></p>
+    <div class="mini">Between <b>0</b> and <b>2</b> minutes the temperature increased from <b>45 °C</b> to <b>98 °C</b>.<br>At <b>3</b> minutes the temperature stayed at <b>100 °C</b> and did not increase any more.</div>
+    <p>📝 <b>A3</b> Boiling point of water = <b>100 °C</b> — read from the flat part of the graph.</p>
+  </div>
+  <div class="thai"><span class="tag">สรุปกราฟ</span>อุณหภูมิน้ำเพิ่มขึ้นเรื่อย ๆ จนถึง 100°C แล้วหยุดนิ่ง — นั่นคือ<b>จุดเดือดของน้ำ = 100°C</b></div></div>`,{section:'t41'});
+
+add('topic-2 '+pickT(0),`<div class="card reveal"><div class="topbar"><span class="chip">4.1</span><h2>Cooling naphthalene</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>
+        <p>A scientist melted solid ${V('naphthalene')}, then cooled it in ice, measuring temperature every minute for 18 minutes.</p>
+        ${svgCoolGraph()}
+        <p class="caption">Graph 4.2 — temperature of liquid naphthalene as it cools.</p>
+      </div>
+      <div>
+        ${netImg('naphthaleneCrystal','A molecular model of a naphthalene crystal','max-width:240px;display:block;margin:0 auto 8px')}
+        <div class="mini"><b>❓ What is naphthalene?</b><p>White flakes once used in mothballs. It melts at about <b>80 °C</b> and gives a clear flat part on a cooling graph.</p></div>
+      </div>
+    </div>
+    <div class="grid3">
+      <div class="mini"><b>a)</b> Describe the ${V('pattern')} — falls, then flat, then falls again.</div>
+      <div class="mini"><b>b)</b> Between 4–11 min it stays flat = ${V('freezing')}/${V('melting point')} (changing state).</div>
+      <div class="mini"><b>c)</b> Melting point ≈ <b>80 °C</b> (read off the flat part).</div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">จุดสำคัญ</span>ตอนสารเปลี่ยนสถานะ อุณหภูมิจะ<b>คงที่</b> — ช่วงนี้ในกราฟเป็นเส้นนอน ใช้อ่านจุดหลอมเหลวได้</div></div>`,{section:'t41'});
+
+add('topic-2 '+pickT(1),`<div class="card reveal"><div class="topbar"><span class="chip">4.1</span><h2>Chemical Properties</h2></div>
+  <div class="body">
+    <p>Materials also have <b>chemical properties</b> — seen when a substance takes part in a chemical change.</p>
+    <div class="grid2">
+      <div class="mini"><h3>${V('reactivity')}</h3><p>How likely a substance will undergo a chemical reaction.</p><p style="font-size:12px">💡 ${V('sodium')} + ${V('oxygen')} → reacts fast. ${V('iron')} → barely reacts. So sodium is more reactive.</p></div>
+      <div class="mini"><h3>${V('flammability')}</h3><p>How easily a substance catches fire.</p>${motion('flame','Flammability test')}<span style="font-size:12px">${V('hydrogen')} = very ${V('flammable')}; ${V('nitrogen')} = ${V('non-flammable')}.</span></div>
+    </div>
+    <p>🧪 Knowing chemical properties helps scientists <b>identify</b> unknown materials by testing.</p>
+  </div>
+  <div class="thai"><span class="tag">เคมี</span>คุณสมบัติทางเคมีเกิดตอนทำปฏิกิริยา เช่น ความไวต่อปฏิกิริยา (โซเดียมไวกว่าเหล็ก) และความไวไฟ (ไฮโดรเจนติดไฟง่าย)</div></div>`,{section:'t41'});
+
+add('topic-2 t-flip',factSlideHtml('Topic 4.1','🖐️','A metal that melts in your hand','Gallium melts at about 29.8°C. A warm hand can turn a solid piece of gallium into a shiny liquid, even though it is still the same substance.','Melting point is a physical property because no new substance is formed.','แกลเลียมมีจุดหลอมเหลวประมาณ 29.8°C ความร้อนจากมือจึงทำให้โลหะแข็งกลายเป็นของเหลวเงาวาวได้ โดยยังเป็นสารชนิดเดิม'),{section:'t41',label:'4.1 Did you know? · Gallium'});
+add('topic-2 t-slide',realSlideHtml('Topic 4.1','galliumReal','Real gallium crystals','Solid gallium has a bright metallic surface. When warmed above its low melting point, the same sample becomes a silvery liquid.','Notice the metallic shine. The change from crystal to liquid is a change of state, not a chemical reaction.','ผลึกแกลเลียมจริงมีผิวเงาแบบโลหะ เมื่ออุ่นเกินจุดหลอมเหลวจะกลายเป็นของเหลวสีเงินโดยไม่เกิดสารใหม่'),{section:'t41',label:'4.1 Real example · Gallium'});
+
+add('topic-2 '+pickT(2),`<div class="card reveal"><div class="topbar"><span class="chip">4.1</span><h2>Sodium — physical & chemical</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>
+        <p>${V('sodium')} is a light grey metal. It is soft, has a ${V('low melting point')}, and reacts easily with ${V('oxygen')} and water.</p>
+        <div class="mini" style="margin-top:8px"><b>Physical properties</b><ul><li>Light grey</li><li>Soft</li><li>Low melting point</li></ul></div>
+        <div class="mini" style="margin-top:8px"><b>Chemical property</b><ul><li>Reactive with oxygen & water</li></ul></div>
+      </div>
+      <div>
+        ${netImg('sodiumLump','Lump of sodium stored under oil to stop it reacting with air','max-width:230px;display:block;margin:0 auto 10px')}
+        ${netImg('hydrogenTube','Hydrogen gas glowing in a discharge tube','max-width:230px;display:block;margin:0 auto')}
+      </div>
+    </div>
+    <p>❓ How could a scientist test if a collected gas is ${V('hydrogen')}? → Test its ${V('flammability')} (the "pop" test)!</p>
+  </div>
+  <div class="thai"><span class="tag">โซเดียม</span>โซเดียมเป็นโลหะสีเทาอ่อน นุ่ม จุดหลอมเหลวต่ำ (กายภาพ) และไวต่อปฏิกิริยามาก (เคมี) — เก็บในน้ำมันกันปฏิกิริยากับอากาศ</div></div>`,{section:'t41'});
+
+add('topic-2 '+pickT(3),`<div class="card reveal"><div class="topbar"><span class="chip">Science in context</span><h2>Alchemy · การเล่นแร่แปรธาตุ</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>
+        <p>Despite many incorrect ideas, medieval ${V('alchemy')} made useful discoveries — they studied ${V('substance')}s and made new materials by trial and error, even though they couldn't explain how.</p>
+        <p>The first true chemists started in the <b>17th century</b>, building on alchemists' work. Modern chemistry has important roots in the past.</p>
+      </div>
+      ${netImg('alchemyArt','A medieval alchemy manuscript page','max-width:300px;display:block;margin:0 auto')}
+    </div>
+  </div>
+  <div class="thai"><span class="tag">ประวัติ</span>นักเล่นแร่แปรธาตุสมัยก่อน ทดลองทำสารใหม่ ๆ จนเกิดเป็นวิชาเคมีสมัยใหม่ในศตวรรษที่ 17 — ความรู้เดิมเป็นรากฐานสำคัญ</div></div>`,{section:'t41'});
+
+add('topic-2 '+pickT(4),`<div class="card reveal"><div class="topbar"><span class="chip">4.1</span><h2>Key facts & skills</h2></div>
+  <div class="body">
+    <div class="mini" style="background:#eef1ff"><b>📌 Key facts</b><ul><li>All substances have chemical & physical properties.</li><li>Physical = observed/measured (mass, ${V('electrical conductivity')}, melting/boiling point).</li><li>Chemical = seen in a chemical change (${V('reactivity')}, ${V('flammability')}).</li></ul></div>
+    <div class="mini" style="margin-top:8px;background:#eafaf2"><b>✅ Check your skills</b><ul><li>I can present observations & measurements in a suitable way.</li><li>I can describe trends/patterns, including ${V('anomalous results')}.</li><li>I can ${V('interpret')} results and explain what they show.</li></ul></div>
+  </div>
+  <div class="thai"><span class="tag">ทบทวน</span>สารมีคุณสมบัติ 2 ประเภท — กายภาพวัดได้, เคมีเห็นตอนเกิดปฏิกิริยา ใช้คุณสมบัติเหล่านี้จำแนกและอธิบายสารได้</div></div>`,{section:'t41',label:'4.1 Key facts'});
+
+/* 4.1 flip cards — one per slide */
+const F41=[
+  ['Name five physical properties.','mass, hardness, boiling point, melting point, electrical conductivity, thermal conductivity, solubility, density'],
+  ['Use the cooling graph — what is the melting point of naphthalene?','About 80 °C — read from the flat part of the graph (where temperature stays constant while it changes state).'],
+  ['a) Name two physical properties of sodium.','Light grey colour, soft, low melting point (any two).'],
+  ['b) Name one chemical property of sodium.','Reactive — it reacts easily with oxygen and water.'],
+  ['How could a scientist test if a collected gas is hydrogen?','Test its flammability — hydrogen gives a loud "pop" when lit (the pop test).']
+];
+F41.forEach((f,i)=>add('topic-2 '+pickT(i),flipSlideHtml('4.1 · ถาม-ตอบ ('+(i+1)+'/'+F41.length+')','Book Questions · Topic 4.1',f[0],f[1],'Activities 4.1 — ฝึกคิดก่อนเปิดเฉลย'),{section:'t41q',label:i===0?'4.1 ถาม-ตอบ':undefined}));
+
+/* 4.1 MCQ — one question per slide */
+const M41=[
+  {q:`Which is a <b>physical</b> property?`,o:['Reactivity','Flammability','Boiling point','Burning'],a:2,e:'จุดเดือดวัดได้โดยสารไม่เปลี่ยนตัว → กายภาพ'},
+  {q:`Which is a <b>chemical</b> property?`,o:['Mass','Hardness','Reactivity','Colour'],a:2,e:'ความไวต่อปฏิกิริยาเกิดตอนทำปฏิกิริยา → เคมี'},
+  {q:`The melting point is the temperature where a substance changes from...`,o:['gas→liquid','solid→liquid','liquid→gas','liquid→solid'],a:1,e:'solid → liquid'},
+  {q:`The boiling point is the temperature where a substance changes from...`,o:['solid→liquid','liquid→gas','gas→liquid','solid→gas'],a:1,e:'liquid → gas'},
+  {q:`In a results table, the variable you <b>change</b> goes on the...`,o:['vertical axis','horizontal axis','title','legend'],a:1,e:'ตัวแปรที่เปลี่ยน → แกนนอน'},
+  {q:`A result that does not fit the pattern is called...`,o:['accurate','anomalous','average','constant'],a:1,e:'anomalous result = ผลที่ผิดปกติ'},
+  {q:`When plotting a line graph you should circle...`,o:['every point','anomalous results','the axes','the title'],a:1,e:'วงกลมรอบจุดที่ผิดปกติ'},
+  {q:`While water is boiling, its temperature...`,o:['keeps rising','stays the same','drops to zero','rises then drops'],a:1,e:'ตอนเดือด อุณหภูมิคงที่ที่ 100°C'},
+  {q:`The boiling point of water is about...`,o:['50 °C','100 °C','150 °C','0 °C'],a:1,e:'น้ำเดือดที่ 100°C (ระดับน้ำทะเล)'},
+  {q:`Sodium reacts easily with oxygen. This shows sodium is...`,o:['flammable','reactive','soft','dense'],a:1,e:'reactive = ไวต่อปฏิกิริยา'},
+  {q:`Hydrogen catches fire easily — it is very...`,o:['non-flammable','flammable','corrosive','dense'],a:1,e:'flammable = ไวไฟ'},
+  {q:`Naphthalene is cooled from liquid. The flat part of the graph shows...`,o:['evaporation','melting/freezing','sublimation','heating'],a:1,e:'ช่วงอุณหภูมิคงที่ = เปลี่ยนสถานะ'},
+  {q:`Which tool measures temperature?`,o:['ruler','thermometer','balance','timer'],a:1,e:'thermometer วัดอุณหภูมิ'},
+  {q:`Alchemy is the old name for early...`,o:['biology','chemistry','physics','geology'],a:1,e:'alchemy = ต้นกำเนิดเคมี'},
+  {q:`Which is NOT a physical property?`,o:['density','solubility','flammability','hardness'],a:2,e:'flammability เป็นคุณสมบัติทางเคมี'}
+];
+addMcqPages('topic-2','4.1',M41,'t41m');
+
+/* ============ TOPIC 4.2 (content + flip cards + 15 MCQ slides) ============ */
+add('topic-3 '+pickT(0),`<div class="card reveal"><div class="topbar"><span class="chip">Topic 4.2</span><h2>Acidity and Indicators</h2></div>
+  <div class="body">
+    <h3>🎯 You will learn</h3>
+    <ul><li>To understand ${V('acid')}ity and ${V('alkali')}nity and how it is measured</li><li>To recall and use ${V('hazard symbol')}s</li><li>To choose appropriate ${V('apparatus')} and use it correctly</li></ul>
+    <p>The ${V('acid')}ity or ${V('alkali')}nity of a ${V('substance')} is a <b>chemical property</b> — it affects how a substance reacts.</p>
+    <div class="acidity-hero">
+      <div class="acidity-side acid-side"><span>🍋</span><strong>Acid</strong><small>pH below 7 · sour examples</small></div>
+      <div class="acidity-scale">${svgPH()}<p>Strength changes across the pH scale</p></div>
+      <div class="acidity-side alkali-side"><span>🧼</span><strong>Alkali</strong><small>pH above 7 · cleaning examples</small></div>
+    </div>
+    <div class="grid2">
+      <div class="mini"><b>Weak & safe</b><p>Acids/alkalis in fruits, milk, toothpaste — harmless.</p></div>
+      <div class="mini"><b>Strong & dangerous</b><p>${V('hydrochloric acid')} (acid) & ${V('sodium hydroxide')} (alkali) in labs — handle with care.</p></div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">4.2</span>ความเป็นกรด/ด่างเป็นคุณสมบัติทางเคมี กรด-ด่างอ่อนในอาหารปลอดภัย แต่ของจัดในแล็บเป็นอันตราย ต้องระวังและดูสัญลักษณ์</div></div>`,{section:'t42',label:'4.2 หน้าเนื้อหาแรก'});
+
+add('topic-3 t-zoom',factSlideHtml('Topic 4.2','🥬','Red cabbage is a natural indicator','Red cabbage contains pigments that turn red or pink in acids, purple near neutral and blue-green in alkalis. You can make the indicator by soaking chopped leaves in warm water.','Some useful indicators come from plants rather than a laboratory bottle.','กะหล่ำปลีแดงมีสารสีที่เปลี่ยนเป็นแดงหรือชมพูในกรด เป็นม่วงเมื่อใกล้เป็นกลาง และเป็นฟ้าอมเขียวในด่าง จึงนำมาทำตัวบ่งชี้ธรรมชาติได้'),{section:'t42',label:'4.2 Did you know? · Red cabbage'});
+add('topic-3 t-slide',realSlideHtml('Topic 4.2','cabbageReal','A real red cabbage','The purple leaves contain anthocyanin pigments. Crushing and soaking the leaves releases a coloured solution that responds to acids and alkalis.','The deep purple colour is the source of the indicator. The leaf itself does not need to look red.','กะหล่ำปลีแดงจริงมีใบสีม่วงเข้ม สารแอนโทไซยานินในใบจะละลายออกมาและเปลี่ยนสีตามความเป็นกรด–ด่าง'),{section:'t42',label:'4.2 Real example · Red cabbage'});
+
+add('topic-3 '+pickT(1),`<div class="card reveal"><div class="topbar"><span class="chip">4.2</span><h2>Hazard Symbols (จากหนังสือ)</h2></div>
+  <div class="body">
+    <p>If a substance can cause harm, a <b>${V('hazard symbol')}</b> warns people to take ${V('precaution')}s (e.g. wear ${V('eye protection')}).</p>
+    <div class="scanrow">
+      ${netImg('ghsFlame','GHS flammable symbol','max-width:150px;object-fit:contain')}
+      ${netImg('ghsAcid','GHS corrosive symbol','max-width:150px;object-fit:contain')}
+      ${netImg('ghsSkull','GHS toxic symbol','max-width:150px;object-fit:contain')}
+      ${netImg('ghsExclam','GHS irritant symbol','max-width:150px;object-fit:contain')}
+      ${netImg('ghsHealth','GHS health hazard symbol','max-width:150px;object-fit:contain')}
+      ${netImg('ghsEnv','GHS environmental hazard symbol','max-width:150px;object-fit:contain')}
+    </div>
+    ${motion('flame','Hazard symbols warn before you touch')}
+    <p class="caption">รูปจริงจากหนังสือเล่น 4.3–4.9 (Moderate hazard, Corrosive, Toxic, Flammable, Environment, Health hazard)</p>
+  </div>
+  <div class="thai"><span class="tag">สัญลักษณ์ GHS</span>สัญลักษณ์รูปเพชรเตือนอันตราย — กัดกร่อน/พิษร้ายแรง/ไวไฟ/อันตรายต่อสุขภาพและสิ่งแวดล้อม ใช้แทนคำเข้าใจได้ทุกภาษา</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(2),`<div class="card reveal"><div class="topbar"><span class="chip">4.2</span><h2>Hazard symbol meanings</h2></div>
+  <div class="body">
+    <div class="grid3 hazard-grid">
+      <button class="mini hazard-card" onclick="showHazardExample(this,'moderate')"><span class="hazard-icon">⚠️</span><span><b>Moderate hazard</b><small>Click for an example</small></span></button>
+      <button class="mini hazard-card" onclick="showHazardExample(this,'corrosive')"><span class="hazard-icon">🧪</span><span><b>Corrosive</b><small>Click for an example</small></span></button>
+      <button class="mini hazard-card" onclick="showHazardExample(this,'toxic')"><span class="hazard-icon">☠️</span><span><b>Toxic</b><small>Click for an example</small></span></button>
+      <button class="mini hazard-card" onclick="showHazardExample(this,'flammable')"><span class="hazard-icon">🔥</span><span><b>Flammable</b><small>Click for an example</small></span></button>
+      <button class="mini hazard-card" onclick="showHazardExample(this,'environment')"><span class="hazard-icon">🌳</span><span><b>Environment</b><small>Click for an example</small></span></button>
+      <button class="mini hazard-card" onclick="showHazardExample(this,'health')"><span class="hazard-icon">🫁</span><span><b>Health hazard</b><small>Click for an example</small></span></button>
+    </div>
+    <div class="hazard-example" aria-live="polite"><span class="example-icon">👆</span><div><strong>Choose a hazard symbol</strong><p>Click a card to see a real-life situation and the correct safety action.</p></div></div>
+  </div>
+  <div class="thai"><span class="tag">จดจำ</span>กัดกร่อน = ไหม้ผิว, พิษ = อันตรายถึงชีวิต, ไวไฟ = ติดไฟง่าย — เลือกใช้ตัวบ่งชี้และอุปกรณ์ป้องกันให้เหมาะกับสัญลักษณ์</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(3),`<div class="card reveal"><div class="topbar"><span class="chip">Activity 4.2</span><h2>Find hazard labels at home</h2></div>
+  <div class="body">
+    <p>Find labels on chemicals at home (cleaning products, soaps, shampoo, food, DIY products). Present findings in a table.</p>
+    ${netImg('ghsAcid','Corrosive hazard symbol','max-width:180px;float:right;margin:0 0 8px 12px;object-fit:contain')}
+    <div class="grid2">
+      <div class="mini"><b>A1</b><p>What ${V('hazard symbol')}s, if any, does the label have? What if there is none?</p></div>
+      <div class="mini"><b>A2</b><p>Does it have acids or alkalis? (acid in name; 'soda'/'hydroxide' = alkali; ammonia solution is alkaline)</p></div>
+    </div>
+    <div class="mini"><b>A3</b><p>List harmful effects of your chosen substances (burns, irritation, harmful if swallowed...).</p></div>
+  </div>
+  <div class="thai"><span class="tag">ภาคปฏิบัติ</span>สำรวจขวดที่บ้าน — ดูสัญลักษณ์, ว่ามีกรด/ด่างไหม (ชื่อมี acid/soda/hydroxide), และระบุอันตราย</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(4),`<div class="card reveal"><div class="topbar"><span class="chip">4.2</span><h2>Indicators · ตัวบ่งชี้</h2></div>
+  <div class="body">
+    <p>How do you know if a substance is acidic or alkaline? Use an <b>${V('indicator')}</b> — a chemical that changes colour.</p>
+    <div class="grid2">
+      <div class="mini"><h3>${V('litmus')}</h3><ul><li>Red in an ${V('acid')}</li><li>Blue in an ${V('alkali')}</li><li>No change in ${V('neutral')}</li></ul>${svgLitmus('#4a6cf6','#ef5b6b','blue→acid')}</div>
+      <div class="mini"><h3>Litmus paper rules</h3><ul><li><b>Blue</b> litmus → turns <b>red</b> in acid</li><li><b>Red</b> litmus → turns <b>blue</b> in alkali</li><li>No change in neutral</li></ul>${svgLitmus('#ef5b6b','#4a6cf6','red→alkali')}</div>
+    </div>
+    <div class="grid2">${netImg('uiPaper','Universal indicator paper','max-width:260px;display:block;margin:6px auto')}${motion('ph','Indicator colour change')}</div>
+  </div>
+  <div class="thai"><span class="tag">ลิตมัส</span>ลิตมัสเป็นตัวบ่งชี้ — กรดจะแดง, ด่างจะน้ำเงิน, กลางไม่เปลี่ยนสี กระดาษลิตมัสน้ำเงินเป็นกรดจะกลายเป็นแดง กระดาษแดงเป็นด่างจะกลายเป็นน้ำเงิน</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(0),`<div class="card reveal"><div class="topbar"><span class="chip">4.2</span><h2>Litmus colour table (เติมสี)</h2></div>
+  <div class="body">
+    <p>📝 <b>Copy & complete the table</b> on litmus colours:</p>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;text-align:center">
+      <tr style="background:#eef"><th></th><th>In acidic solution</th><th>In neutral solution</th><th>In alkaline solution</th></tr>
+      <tr><td style="border:1px solid #ddd;padding:6px;font-weight:600">Red litmus</td><td style="border:1px solid #ddd;padding:6px;color:#ef5b6b">RED (no change)</td><td style="border:1px solid #ddd;padding:6px">RED (no change)</td><td style="border:1px solid #ddd;padding:6px;color:#4a6cf6">BLUE</td></tr>
+      <tr><td style="border:1px solid #ddd;padding:6px;font-weight:600">Blue litmus</td><td style="border:1px solid #ddd;padding:6px;color:#ef5b6b">RED</td><td style="border:1px solid #ddd;padding:6px">BLUE (no change)</td><td style="border:1px solid #ddd;padding:6px;color:#4a6cf6">BLUE (no change)</td></tr>
+    </table>
+    <div class="litmus-visuals">
+      <div class="litmus-demo"><span class="demo-label">Acid test</span>${svgLitmus('#4a6cf6','#ef5b6b','blue litmus → red')}<p>Blue litmus turns <b class="red-word">red</b>.</p></div>
+      <div class="litmus-beaker" aria-label="Three beakers showing acidic, neutral and alkaline solutions">
+        <div class="beaker acid-beaker"><i></i><b>Acid</b><small>pH &lt; 7</small></div>
+        <div class="beaker neutral-beaker"><i></i><b>Neutral</b><small>pH 7</small></div>
+        <div class="beaker alkali-beaker"><i></i><b>Alkali</b><small>pH &gt; 7</small></div>
+      </div>
+      <div class="litmus-demo"><span class="demo-label">Alkali test</span>${svgLitmus('#ef5b6b','#4a6cf6','red litmus → blue')}<p>Red litmus turns <b class="blue-word">blue</b>.</p></div>
+    </div>
+    <p>❓ Blue litmus in hydrochloric acid → <b>red</b>. &nbsp; Red litmus in sodium hydroxide → <b>blue</b>.</p>
+  </div>
+  <div class="thai"><span class="tag">ตาราง</span>กระดาษลิตมัสแดงเปลี่ยนเป็นน้ำเงินในด่าง, กระดาษน้ำเงินเปลี่ยนเป็นแดงในกรด, สารละลายกลางไม่เปลี่ยนสีทั้งคู่</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(1),`<div class="card reveal"><div class="topbar"><span class="chip">4.2</span><h2>The pH Scale & Universal Indicator</h2></div>
+  <div class="body">
+    <p><b>${V('Universal Indicator')}</b> turns many colours (red→yellow→green→purple) to measure how strong an acid/alkali is on the <b>${V('pH scale')}</b> (${V('range')} 0–14).</p>
+    <div class="grid2"><div>${svgPH()}</div>${motion('ph','pH colour scale moves from acid to alkali')}</div>
+    <div class="grid3">
+      <div class="mini"><b>pH 0–3</b><br>${V('strongly acidic')}</div><div class="mini"><b>pH 7</b><br>${V('neutral')} (green)</div><div class="mini"><b>pH 11–14</b><br>${V('strongly alkaline')}</div>
+      <div class="mini"><b>pH 4–6</b><br>${V('weakly acidic')}</div><div class="mini"><b>pH 8–10</b><br>${V('weakly alkaline')}</div><div class="mini"><b>Closer to 0</b> = more acidic<br><b>Closer to 14</b> = more alkaline</div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">pH</span>มาตรา pH 0–14 — เข้าใกล้ 0 ยิ่งเป็นกรดจัด, เข้าใกล้ 14 ยิ่งเป็นด่างจัด, 7 คือกลาง (น้ำบริสุทธิ์) Universal Indicator เปลี่ยนหลายสีให้เทียบค่า pH</div></div>`,{section:'t42'});
+
+add('topic-3 t-flip',factSlideHtml('Topic 4.2','🫃','Your stomach contains a strong acid','Stomach acid can have a pH close to 1–2. It helps digest food and kill many microorganisms, while a protective mucus layer helps stop the acid damaging the stomach wall.','A strong acid can be useful when it is controlled and kept in the right place.','กรดในกระเพาะมีค่า pH ประมาณ 1–2 ช่วยย่อยอาหารและทำลายจุลินทรีย์หลายชนิด ส่วนชั้นเมือกจะช่วยป้องกันกรดไม่ให้ทำลายผนังกระเพาะ'),{section:'t42',label:'4.2 Did you know? · Stomach acid'});
+add('topic-3 t-slide',realSlideHtml('Topic 4.2','stomachReal','Where stomach acid works','The stomach is a muscular organ that mixes food with acidic gastric juice. Its folded inner lining is protected by mucus.','The acid stays inside the stomach. Position and protective tissue allow a hazardous chemical to perform a useful job safely.','กระเพาะอาหารเป็นอวัยวะกล้ามเนื้อที่คลุกอาหารกับน้ำย่อยซึ่งเป็นกรด ผนังด้านในมีเมือกช่วยป้องกันเนื้อเยื่อ'),{section:'t42',label:'4.2 Real example · Stomach'});
+
+add('topic-3 '+pickT(2),`<div class="card reveal"><div class="topbar"><span class="chip">4.2</span><h2>Examples on the pH scale</h2></div>
+  <div class="body">
+    <div class="ph-example-top">${netImg('uiColors','Universal indicator colour range','max-width:300px;display:block;margin:auto')}${svgPH()}</div>
+    <p class="activity-prompt">Tap a sample to place it on the pH scale:</p>
+    <div class="ph-samples">
+      <button onclick="showPHSample(this,'battery')">🔋 Battery acid</button>
+      <button onclick="showPHSample(this,'orange')">🍊 Orange juice</button>
+      <button onclick="showPHSample(this,'water')">💧 Pure water</button>
+      <button onclick="showPHSample(this,'toothpaste')">🪥 Toothpaste</button>
+      <button onclick="showPHSample(this,'bleach')">🧴 Bleach</button>
+    </div>
+    <div class="ph-sample-result" aria-live="polite"><span>👆</span><div><strong>Choose a sample</strong><p>Its approximate pH and classification will appear here.</p></div></div>
+  </div>
+  <div class="thai"><span class="tag">ตัวอย่าง</span>น้ำส้มสายชู = กรดอ่อน, น้ำบริสุทธิ์ = กลาง, ฟันปู/เบกกิ้งโซดา = ด่างอ่อน, สารฟอกขาว/โซเดียมไฮดรอกไซด์ = ด่างจัด</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(3),`<div class="card reveal"><div class="topbar"><span class="chip">4.2</span><h2>Classify by pH (คำถามชุด)</h2></div>
+  <div class="body">
+    <p class="quiz-intro">Choose the correct classification. The answer is revealed only after you click.</p>
+    <div class="ph-quiz"></div>
+  </div>
+  <div class="thai"><span class="tag">ฝึก</span>จำช่วง pH: กรดจัด 1–3, กรดอ่อน 4–6, กลาง 7, ด่างอ่อน 8–10, ด่างจัด 11–14</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(4),`<div class="card reveal"><div class="topbar"><span class="chip">Activity 4.3</span><h2>Plan: acid or alkali?</h2></div>
+  <div class="body">
+    <p>Plan how to test household substances for pH: shampoo, vinegar, orange juice, toothpaste, tap water, indigestion tablets (dissolved).</p>
+    <div class="grid2">
+      <div class="mini"><b>A1 Prediction</b><p>Is it acid, alkali or neutral? What pH?</p></div>
+      <div class="mini"><b>A2 Equipment</b><p>List gear + safety (${V('eye protection')}).</p></div>
+      <div class="mini"><b>A3 Method</b><p>Which ${V('indicator')} and why? (Universal = gives a pH number.)</p></div>
+      <div class="mini"><b>A4 Results table</b><p>Draw a ${V('results table')} to record colours & pH.</p></div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">วางแผน</span>ทำนายก่อน → เลือกอุปกรณ์และตัวบ่งชี้ (Universal เพราะให้ค่า pH) → เขียนวิธี + ตารางบันทึก → ทดสอบและเทียบสี</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(0),`<div class="card reveal"><div class="topbar"><span class="chip">Making links</span><h2>Stomach acid defence</h2></div>
+  <div class="body">
+    <p>Humans have defence mechanisms against disease — one is <b>stomach acid</b>. The acid can damage or destroy microorganisms, stopping them making you ill.</p>
+    <div class="grid2"><div class="mini" style="text-align:center">${svgBubbles()}<p>❓ What colour would stomach acid turn litmus paper?</p><p><b>Answer: red</b> — because stomach acid is acidic (pH ~1–2).</p></div>${motion('ph','Strong acid: low pH')}</div>
+  </div>
+  <div class="thai"><span class="tag">เชื่อมโยง</span>กรดในกระเพาะอาหารช่วยทำลายเชื้อโรค — เป็นกรดจัด ลิตมัสจึงกลายเป็นสีแดง</div></div>`,{section:'t42'});
+
+add('topic-3 '+pickT(1),`<div class="card reveal"><div class="topbar"><span class="chip">4.2</span><h2>Other indicators & key facts</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>
+        <div class="mini"><b>📝 Other indicators scientists use:</b> phenolphthalein, methyl orange, bromothymol blue.</div>
+        <div class="mini" style="margin-top:8px"><b>📝 Disadvantage of litmus:</b> it only tells you acid/alkali — it does not show <i>how strong</i> (no pH number).</div>
+      </div>
+      ${netImg('litmusPhoto','Red and blue litmus paper used to test solutions','max-width:240px;display:block;margin:0 auto')}
+    </div>
+    <div class="mini" style="background:#eef1ff;margin-top:8px"><b>📌 Key facts</b><ul><li>${V('acid')}ity/${V('alkali')}nity is a chemical property.</li><li>${V('pH scale')} = 0 to 14; close to 0 = acidic, close to 14 = alkaline.</li><li>${V('neutral')} = pH 7.</li><li>An ${V('indicator')} changes colour in acid/alkali/neutral.</li></ul></div>
+  </div>
+  <div class="thai"><span class="tag">ทบทวน</span>กรด/ด่างเป็นคุณสมบัติทางเคมี วัดด้วย pH 0–14 (7=กลาง) ใช้ตัวบ่งชี้ เช่นลิตมัส/ยูนิเวอร์ซัล และต้องเข้าใจสัญลักษณ์อันตรายเพื่อวางแผนการทดลอง</div></div>`,{section:'t42',label:'4.2 Key facts'});
+
+/* 4.2 flip cards */
+const F42=[
+  ['Why is it important for some chemicals to have hazard symbols?','So people know the dangers and can take precautions (e.g. wear eye protection, handle safely).'],
+  ['Why do scientists use symbols instead of words?','Symbols are quick to recognise and work in every language — no translation needed.'],
+  ['A chemical burns skin/eyes. Which hazard symbol?','The corrosive symbol.'],
+  ['A chemical makes skin red/itchy. Which symbol?','The moderate-hazard / irritant symbol (exclamation mark).'],
+  ['What colour does blue litmus turn in hydrochloric acid?','Red — because hydrochloric acid is acidic.'],
+  ['What is a disadvantage of using litmus?','It only tells you acid vs alkali — it does not show how strong (no pH value). Use Universal Indicator for that.']
+];
+F42.forEach((f,i)=>add('topic-3 '+pickT(i),flipSlideHtml('4.2 · ถาม-ตอบ ('+(i+1)+'/'+F42.length+')','Book Questions · Topic 4.2',f[0],f[1],'Activities 4.2–4.3 — ฝึกคิดก่อนเปิดเฉลย'),{section:'t42q',label:i===0?'4.2 ถาม-ตอบ':undefined}));
+
+const M42=[
+  {q:`An acid has a pH that is...`,o:['greater than 7','less than 7','equal to 7','equal to 14'],a:1,e:'กรด pH < 7'},
+  {q:`An alkali has a pH that is...`,o:['less than 7','greater than 7','equal to 0','equal to 7'],a:1,e:'ด่าง pH > 7'},
+  {q:`A neutral solution has a pH of...`,o:['0','7','14','1'],a:1,e:'กลาง pH = 7'},
+  {q:`Blue litmus paper turns ___ in acid.`,o:['blue','red','green','yellow'],a:1,e:'กรด → ลิตมัสน้ำเงินกลายเป็นแดง'},
+  {q:`Red litmus paper turns ___ in alkali.`,o:['red','blue','yellow','colourless'],a:1,e:'ด่าง → ลิตมัสแดงกลายเป็นน้ำเงิน'},
+  {q:`Universal Indicator is green at pH...`,o:['1','7','14','3'],a:1,e:'เขียว = กลาง pH 7'},
+  {q:`A strongly acidic solution has a pH range of...`,o:['1–3','4–6','7','11–14'],a:0,e:'กรดจัด pH 1–3'},
+  {q:`A weakly alkaline solution has a pH range of...`,o:['1–3','4–6','8–10','11–14'],a:2,e:'ด่างอ่อน pH 8–10'},
+  {q:`Which substance is corrosive?`,o:['Water','Sodium hydroxide','Sugar','Salt'],a:1,e:'โซเดียมไฮดรอกไซด์กัดกร่อน'},
+  {q:`Which hazard symbol means "flammable"?`,o:['diamond + flame','square + !','circle + X','triangle + drop'],a:0,e:'เพชร + เปลวไฟ'},
+  {q:`Which is a weak acid in food?`,o:['hydrochloric acid','citric acid in orange','sodium hydroxide','bleach'],a:1,e:'กรดซิตริกในส้ม = กรดอ่อน'},
+  {q:`pH 14 is...`,o:['weakly acidic','neutral','strongly alkaline','weakly alkaline'],a:2,e:'pH 14 = ด่างจัด'},
+  {q:`Which indicator shows a full range of colours?`,o:['litmus','Universal Indicator','phenolphthalein only','methyl orange only'],a:1,e:'Universal Indicator ให้หลายสี'},
+  {q:`As pH gets closer to 0, a solution is more...`,o:['alkaline','neutral','acidic','dilute'],a:2,e:'เข้าใกล้ 0 = กรดจัดขึ้น'},
+  {q:`Which is a common alkali used in labs?`,o:['hydrochloric acid','sodium hydroxide','water','sugar'],a:1,e:'โซเดียมไฮดรอกไซด์ = ด่างในแล็บ'}
+];
+addMcqPages('topic-3','4.2',M42,'t42m');
+
+/* ============ TOPIC 4.3 (content + flip cards + 15 MCQ slides) ============ */
+add('topic-1 t-zoom',factSlideHtml('Topic 4.3','⚛️','Atoms are mostly empty space','If an atom were enlarged until its nucleus was the size of a pea, the outer electrons would be hundreds of metres away. Nearly all of the atom between them would be empty space.','Objects feel solid because of electrical forces between particles, not because atoms are packed without gaps.','อะตอมส่วนใหญ่เป็นพื้นที่ว่าง หากขยายนิวเคลียสให้มีขนาดเท่าเมล็ดถั่ว อิเล็กตรอนด้านนอกอาจอยู่ห่างออกไปหลายร้อยเมตร'),{section:'t43',label:'4.3 Did you know? · Empty space'});
+add('topic-1 t-slide',realSlideHtml('Topic 4.3','atomReal','Atoms revealed by a scanning probe','A scanning tunnelling microscope can map individual atoms on a surface. The coloured bumps in the image represent measured positions, not ordinary camera pixels.','Scientists cannot photograph atoms with a classroom camera; they use interactions between a tiny probe and the surface to build an image.','ภาพระดับอะตอมสร้างจากกล้องจุลทรรศน์แบบหัววัด ซึ่งตรวจแรงหรือกระแสที่ผิวแล้วแปลงข้อมูลเป็นภาพ ไม่ใช่ภาพถ่ายจากกล้องธรรมดา'),{section:'t43',label:'4.3 Real example · Atomic surface'});
+
+add('topic-1 '+pickT(0),`<div class="card reveal"><div class="topbar"><span class="chip">Topic 4.3</span><h2>The Particle Model</h2></div>
+  <div class="body">
+    <h3>🎯 You will learn</h3>
+    <ul><li>To use the ${V('particle model')} to describe different ${V('state of matter')}</li><li>To describe a ${V('vacuum')}</li><li>To describe the ${V('strengths')} and ${V('limitations')} of a model</li></ul>
+    <div class="grid2">
+      <div class="mini"><b>🧠 You should know</b><ul><li>Substances can be ${V('solid')}, ${V('liquid')} or ${V('gas')}</li><li>Boiling and ${V('evaporation')} are different</li></ul></div>
+      <div class="mini"><b>✋ You should be able to</b><ul><li>Classify materials using observations</li><li>Use models to represent ideas</li></ul></div>
+    </div>
+    <div class="grid2">${netImg('phase','States and phase changes diagram','max-width:220px;display:block;margin:6px auto;object-fit:contain')}${motion('particles','Particles are always moving')}</div>
+  </div>
+  <div class="thai"><span class="tag">4.3</span>แบบจำลองอนุภาคอธิบายว่าทำไมของแข็ง ของเหลว แก๊ส จึงมีคุณสมบัติต่างกัน เพราะ${V('particle')}อนุภาคเรียงตัวและเคลื่อนที่ต่างกัน</div></div>`,{section:'t43',label:'4.3 หน้าเนื้อหาแรก'});
+
+add('topic-1 '+pickT(1),`<div class="card reveal"><div class="topbar"><span class="chip">4.3</span><h2>Tiny particles · อนุภาคเล็กมาก</h2></div>
+  <div class="body">
+    <p>All solids, liquids and gases are made of tiny <b>${V('particle')}s</b> — too small to see. Some are single ${V('atom')}s; others are groups of atoms joined together.</p>
+    <div class="grid2">
+      <div class="mini" style="text-align:center"><svg viewBox="0 0 120 80" width="160" height="80"><circle cx="30" cy="40" r="12" fill="#5b8def"/><circle cx="90" cy="40" r="12" fill="#5b8def"/></svg><small>single atoms</small></div>
+      <div class="mini" style="text-align:center"><svg viewBox="0 0 120 80" width="160" height="80"><circle cx="40" cy="40" r="12" fill="#46d399"/><circle cx="64" cy="40" r="12" fill="#46d399"/><circle cx="88" cy="40" r="12" fill="#46d399"/></svg><small>atoms joined in groups</small></div>
+    </div>
+    <p>When we draw the particle model, each particle is shown as a <b>single sphere</b> — this makes the model easy to use.</p>
+    ${motion('atom','Atom model: simplified for learning')}
+  </div>
+  <div class="thai"><span class="tag">อนุภาค</span>ทุกสารเกิดจากอนุภาคเล็กมากมองไม่เห็น บางสารเป็นอะตอมเดี่ยว บางสารเป็นกลุ่มอะตอม — วาดเป็นทรงกลมในแบบจำลองเพื่อให้เข้าใจง่าย</div></div>`,{section:'t43'});
+
+add('topic-1 '+pickT(2),`<div class="card reveal"><div class="topbar"><span class="chip">4.3</span><h2>Solid — ของแข็ง</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>${svgParticles('solid')}${motion('particles','Solid: vibrate in fixed places')}</div>
+      <div class="mini"><ul><li>Particles are all <b>touching</b> → you cannot ${V('compress')} a solid.</li><li>Held together by <b>strong forces</b> → shape is ${V('fixed')}.</li><li>Particles ${V('vibrate')} but cannot move around → solids cannot flow.</li></ul></div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">ของแข็ง</span>อนุภาคแน่นติดกัน อัดไม่ได้ รูปทรงคงตัว เพราะแรงยึดแข็งแรง อนุภาคแค่สั่นในที่</div></div>`,{section:'t43'});
+
+add('topic-1 '+pickT(3),`<div class="card reveal"><div class="topbar"><span class="chip">4.3</span><h2>Liquid — ของเหลว</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>${svgParticles('liquid')}${motion('particles','Liquid: slide past each other')}</div>
+      <div class="mini"><ul><li>Particles are all <b>touching</b> → cannot ${V('compress')} a liquid.</li><li>Particles <b>can move past one another</b> → liquids can flow & take the shape of their container.</li></ul></div>
+    </div>
+    ${netImg('uiColors','Liquids can flow and take the shape of a container','max-width:240px;display:block;margin:6px auto')}
+  </div>
+  <div class="thai"><span class="tag">ของเหลว</span>อนุภาคแน่นแต่เคลื่อนที่ผ่านกันได้ → จึงไหลได้และเทลงภาชนะรูปไหนก็เป็นรูปนั้น (ปริมาตรคงเดิม)</div></div>`,{section:'t43'});
+
+add('topic-1 '+pickT(4),`<div class="card reveal"><div class="topbar"><span class="chip">4.3</span><h2>Gas — แก๊ส</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>${svgParticles('gas')}${motion('particles','Gas: fast random motion')}</div>
+      <div class="mini"><ul><li>Particles are <b>far apart</b> → you <b>can ${V('compress')}</b> a gas (push them together).</li><li>Particles move very fast in all directions → gases can flow & fill their container.</li></ul></div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">แก๊ส</span>อนุภาคห่างกันมาก เคลื่อนที่เร็วทุกทิศ → อัดได้ และฟุ้งกระจายเต็มภาชนะ</div></div>`,{section:'t43'});
+
+add('topic-1 '+pickT(0),`<div class="card reveal"><div class="topbar"><span class="chip">4.3</span><h2>Using models · การใช้แบบจำลอง</h2></div>
+  <div class="body">
+    <p>A ${V('model')} is a simple way to think about something complex. There will be some differences to the real thing — that is okay; a simplified model helps us understand.</p>
+    <div class="grid2">
+      <div class="mini" style="background:#eafaf2"><b>👍 Strengths</b><ul><li>Shows how particles are arranged differently in solid/liquid/gas</li><li>Easy to draw and compare</li></ul></div>
+      <div class="mini" style="background:#fdeaea"><b>👎 Limitations</b><ul><li>Does not show the strong forces between particles in a solid</li><li>Particles are not actually perfect spheres</li></ul></div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">แบบจำลอง</span>แบบจำลองช่วยให้เข้าใจสิ่งซับซ้อน แต่มีข้อจำกัด เช่น ไม่แสดงแรงระหว่างอนุภาค และอนุภาคจริงไม่ใช่ทรงกลมสมบูรณ์</div></div>`,{section:'t43'});
+
+add('topic-1 '+pickT(1),`<div class="card reveal"><div class="topbar"><span class="chip">Activity 4.4</span><h2>Build a particle model</h2></div>
+  <div class="body">
+    <p>Build a model of a solid, a liquid and a gas using dried peas, modelling clay and a plastic bottle with a lid.</p>
+    <div class="grid3">
+      <div class="mini"><b>Particles?</b><p>Peas/clay can represent particles.</p></div>
+      <div class="mini"><b>Strong forces in solid?</b><p>Press clay tightly together.</p></div>
+      <div class="mini"><b>Liquid/gas in bottle?</b><p>Tip the bottle — peas slide (liquid) or shake hard (gas flies).</p></div>
+    </div>
+    <p>❓ What are the <b>${V('strengths')}</b> and <b>${V('limitations')}</b> of your model?</p>
+  </div>
+  <div class="thai"><span class="tag">ลงมือ</span>ใช้ถั่ว/ดินเหนียวเป็นอนุภาค ของแข็งอัดแน่น, ของเหลวเขย่าขวดให้ถั่วเลื่อน, แก๊สเขย่าแรง ๆ ให้กระเด็น — แล้วคิดว่าแบบจำลองแสดงดี/ไม่ดีตรงไหน</div></div>`,{section:'t43'});
+
+add('topic-1 t-flip',factSlideHtml('Topic 4.3','👃','Smells travel by diffusion','When perfume is sprayed, its gas particles move randomly and spread through the air. After a while, people across the room can smell it even though they never touched the liquid.','Gas particles are always moving and spread from crowded regions to less crowded regions.','เมื่อฉีดน้ำหอม อนุภาคแก๊สจะเคลื่อนที่แบบสุ่มและกระจายไปในอากาศ คนที่อยู่ไกลออกไปจึงได้กลิ่นแม้ไม่ได้สัมผัสน้ำหอม'),{section:'t43',label:'4.3 Did you know? · Diffusion'});
+add('topic-1 t-slide',realSlideHtml('Topic 4.3','perfumeReal','Perfume spreading through a room','Perfume contains volatile liquids that evaporate easily. Their particles mix with air and diffuse away from the bottle or spray.','The liquid level is in the bottle, but the smell can reach your nose across the room—evidence that particles have spread.','น้ำหอมมีของเหลวที่ระเหยง่าย อนุภาคจะผสมกับอากาศและแพร่ออกจากบริเวณที่ฉีด จึงได้กลิ่นจากระยะไกล'),{section:'t43',label:'4.3 Real example · Perfume'});
+
+add('topic-1 '+pickT(2),`<div class="card reveal"><div class="topbar"><span class="chip">4.3</span><h2>Changes of state</h2></div>
+  <div class="body">
+    <p>During ${V('melting')} & ${V('boiling')}, heating <b>increases</b> the energy of particles. During ${V('freezing')} & ${V('condensation')}, energy <b>decreases</b>.</p>
+    <div style="text-align:center;font-size:14px;margin:6px 0">
+      <span style="display:inline-block;background:#eef;padding:6px 10px;border-radius:8px;margin:4px">${V('solid')}</span>
+      <span style="margin:0 4px">→${V('melting')}→ <br>←${V('freezing')}←</span>
+      <span style="display:inline-block;background:#eef;padding:6px 10px;border-radius:8px;margin:4px">${V('liquid')}</span>
+      <span style="margin:0 4px">→${V('boiling')}→ <br>←${V('condensation')}←</span>
+      <span style="display:inline-block;background:#eef;padding:6px 10px;border-radius:8px;margin:4px">${V('gas')}</span>
+    </div>
+    <p>⚠️ The <b>size of particles does not change</b> — only their arrangement and movement.</p>
+    <div class="mini" style="background:#fff8e6">When a solid melts, particles ${V('vibrate')} faster until they move apart → liquid. When a liquid freezes, particles slow down, lock in place → solid.</div>
+    <div class="grid2">${netImg('phase','Phase change diagram','max-width:240px;display:block;margin:6px auto;object-fit:contain')}${motion('boil','Heating changes particle motion')}</div>
+  </div>
+  <div class="thai"><span class="tag">เปลี่ยนสถานะ</span>อุ่น → อนุภาคได้พลังงาน เคลื่อนที่เร็ว/ห่างขึ้น (หลอมเหลว/เดือด) เย็น → ช้าลงและเข้าใกล้กัน (แข็งตัว/ควบแน่น) ขนาดอนุภาคไม่เปลี่ยน มีเพียงการเรียงและการเคลื่อนที่</div></div>`,{section:'t43'});
+
+add('topic-1 '+pickT(3),`<div class="card reveal"><div class="topbar"><span class="chip">4.3</span><h2>Explaining changes in state</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div>
+        <p>❓ Describe what happens to the particles when a liquid is heated to form a gas.</p>
+        <div class="mini">The particles gain energy, move faster and further apart, until they break free and spread out in all directions — the liquid has become a gas.</div>
+        <p>❓ A ${V('diamond')} is hard and cannot be scratched easily. Use the particle model to suggest why.</p>
+        <div class="mini">In diamond the particles are held together by very strong forces in a fixed arrangement, so the particles cannot move or slide past each other — this makes diamond very hard.</div>
+      </div>
+      <div>
+        ${netImg('diamond','A rough diamond — particles locked tightly together','max-width:260px;display:block;margin:0 auto')}
+        <p class="caption">Diamond's particles are held by very strong forces in a fixed, repeating pattern.</p>
+      </div>
+    </div>
+  </div>
+  <div class="thai"><span class="tag">อธิบาย</span>ของเหลว→แก๊ส: อนุภาคได้พลังงาน เคลื่อนที่เร็วและห่างขึ้นจนหลุดออกไปเป็นแก๊ส / เพชรแข็งเพราะอนุภาคยึดแน่นด้วยแรงแรงมากในรูปทรงคงตัว</div></div>`,{section:'t43'});
+
+add('topic-1 '+pickT(4),`<div class="card reveal"><div class="topbar"><span class="chip">Science in context</span><h2>Breathing in space · ${V('vacuum')}</h2></div>
+  <div class="body">
+    <p>Space is a <b>${V('vacuum')}</b> — unlike air on Earth, there are <b>no particles</b> in space. Astronauts doing repairs outside the ISS carry a backpack of ${V('oxygen')} that flows through the spacesuit so they can breathe.</p>
+    <div class="grid2">${netImg('eva','Astronaut outside the International Space Station','max-width:260px;display:block;margin:6px auto')}${motion('particles','Vacuum: almost no particles')}</div>
+  </div>
+  <div class="thai"><span class="tag">อวกาศ</span>อวกาศเป็นสุญญากาศ ไม่มีอนุภาคเลย นักบินอวกาศจึงต้องพกถังออกซิเจนไว้ในชุดอวกาศเพื่อหายใจ</div></div>`,{section:'t43'});
+
+add('topic-1 '+pickT(0),`<div class="card reveal"><div class="topbar"><span class="chip">4.3</span><h2>Key facts & skills</h2></div>
+  <div class="body">
+    <div class="mini" style="background:#eef1ff"><b>📌 Key facts</b><ul><li>Substances are made of tiny particles.</li><li>Three ${V('state of matter')}: solid, liquid, gas.</li><li>Different properties because particles are arranged differently.</li><li>A ${V('vacuum')} is space with no matter.</li></ul></div>
+    <div class="mini" style="margin-top:8px;background:#eafaf2"><b>✅ Check your skills</b><ul><li>I can describe ${V('strengths')} & ${V('limitations')} of a model.</li><li>I can classify substances as solids, liquids or gases.</li></ul></div>
+  </div>
+  <div class="thai"><span class="tag">ทบทวน</span>สารทุกชนิดเกิดจากอนุภาค สถานะต่างกันเพราะเรียงตัวต่างกัน แบบจำลองมีข้อดี-ข้อจำกัด และสุญญากาศคือที่ว่างที่ไม่มีอนุภาค</div></div>`,{section:'t43',label:'4.3 Key facts'});
+
+/* 4.3 flip cards */
+const F43=[
+  ['a) Particles are far apart — what state?','Gas.'],
+  ['b) Particles are not moving around — what state?','Solid (they only vibrate in place).'],
+  ['c) Particles all touching but moving — what state?','Liquid.'],
+  ['Use the particle model to explain why you can compress a gas, but not a solid or a liquid.','Gas particles are far apart, so you can push them together. Solid/liquid particles are already touching, so there is no space to push into.'],
+  ['Describe what happens to the particles when a liquid is heated to form a gas.','The particles gain energy, move faster and further apart, until they break free and spread out — the liquid becomes a gas.']
+];
+F43.forEach((f,i)=>add('topic-1 '+pickT(i),flipSlideHtml('4.3 · ถาม-ตอบ ('+(i+1)+'/'+F43.length+')','Book Questions · Topic 4.3',f[0],f[1],'Activities 4.4 — ฝึกคิดก่อนเปิดเฉลย'),{section:'t43q',label:i===0?'4.3 ถาม-ตอบ':undefined}));
+
+const M43=[
+  {q:`In a solid, particles are...`,o:['far apart','touching & fixed','not present','moving very fast'],a:1,e:'ของแข็ง: อนุภาคแน่นและยึดติด'},
+  {q:`In a gas, particles...`,o:['vibrate only','are touching','move fast in all directions','cannot move'],a:2,e:'แก๊ส: เคลื่อนที่เร็วทุกทิศ'},
+  {q:`You can compress a gas because...`,o:['particles are far apart','particles are fixed','there are no particles','particles are heavy'],a:0,e:'อนุภาคห่างกัน → อัดได้'},
+  {q:`Why can liquids flow?`,o:['particles are fixed','particles move past each other','particles are huge','no forces'],a:1,e:'อนุภาคเลื่อนผ่านกันได้'},
+  {q:`The smallest particle of a substance is the...`,o:['molecule','atom','droplet','crystal'],a:1,e:'atom = อนุภาคเล็กสุด'},
+  {q:`A vacuum is a space...`,o:['full of gas','with strong forces','with no particles','full of liquid'],a:2,e:'vacuum = ไม่มีอนุภาค'},
+  {q:`When a solid melts, particles...`,o:['stop moving','get bigger','vibrate faster & move apart','disappear'],a:2,e:'ได้พลังงาน → สั่นเร็ว/ห่างขึ้น'},
+  {q:`During freezing, particle energy...`,o:['increases','decreases','stays the same','becomes zero'],a:1,e:'เย็น → พลังงานลด'},
+  {q:`Condensation is the change from...`,o:['solid→liquid','liquid→gas','gas→liquid','liquid→solid'],a:2,e:'แก๊ส → ของเหลว'},
+  {q:`The size of particles during a change of state...`,o:['increases','decreases','does not change','doubles'],a:2,e:'ขนาดอนุภาคไม่เปลี่ยน'},
+  {q:`Which state has a fixed shape?`,o:['solid','liquid','gas','plasma'],a:0,e:'ของแข็งมีรูปทรงคงตัว'},
+  {q:`Particles in a solid can only...`,o:['flow','fly around','vibrate','disappear'],a:2,e:'ของแข็ง: สั่นในที่'},
+  {q:`A limitation of the particle model is it does not show...`,o:['arrangement','movement','forces between particles','size'],a:2,e:'ไม่แสดงแรงระหว่างอนุภาค'},
+  {q:`Which fills its container completely?`,o:['solid','liquid','gas','powder'],a:2,e:'แก๊สเต็มภาชนะ'},
+  {q:`Boiling is the change from...`,o:['solid→liquid','liquid→gas','gas→liquid','liquid→solid'],a:1,e:'ของเหลว → แก๊ส'}
+];
+addMcqPages('topic-1','4.3',M43,'t43m');
+
+/* ---------- FINAL ---------- */
+add('topic-intro t-fade',`<div class="hero">
+  <div class="badge reveal">🎉 จบบทแล้ว!</div>
+  <h1 class="reveal">Chapter 4 — สรุป</h1>
+  <div class="grid3 reveal" style="max-width:600px;margin-top:10px">
+    <div class="mini" style="background:rgba(255,255,255,.1);color:#fff;border:0"><b>4.1</b><br><small>กายภาพ vs เคมี — จุดเดือด/หลอมเหลว กราฟ</small></div>
+    <div class="mini" style="background:rgba(255,255,255,.1);color:#fff;border:0"><b>4.2</b><br><small>กรด/ด่าง สัญลักษณ์ pH 0–14 ลิตมัส Universal</small></div>
+    <div class="mini" style="background:rgba(255,255,255,.1);color:#fff;border:0"><b>4.3</b><br><small>อนุภาค ของแข็ง/ของเหลว/แก๊ส สุญญากาศ</small></div>
+  </div>
+  <p class="reveal">ดูคะแนนรวมของแบบทดสอบทั้ง 3 ชุดในหน้าถัดไป 👉</p>
+</div>`,{section:'final',label:'สรุปจบ'});
+
+add('topic-intro t-zoom',`<div class="card reveal"><div class="topbar"><span class="chip">คะแนนรวม</span><h2>Your total score</h2></div>
+  <div class="body" id="finalScore">
+    <div class="scorebox" id="finalBox"><h3>รวมทั้ง 3 Topic</h3><div style="font-size:32px;margin:6px 0" id="finalNum">— / 45</div><div id="finalMsg">ทำแบบทดสอบในแต่ละ Topic ก่อนนะครับ!</div></div>
+    <div class="grid3" id="perTopic"></div>
+    <p style="text-align:center;margin-top:10px">กดเมนู ☰ เพื่อทบทวนสไลด์อื่น ๆ ได้อีกครั้ง 🔄</p>
+  </div>
+  <div class="thai"><span class="tag">ยินดีด้วย</span>คุณได้เรียนจบบทที่ 4 แล้ว — ฝึกทำแบบทดสอบซ้ำจนได้คะแนนเต็มนะครับ 💪</div></div>`,{section:'final',label:'คะแนนรวม'});
+
+/* ===================== HELPERS ===================== */
+function factSlideHtml(topic,emoji,title,text,takeaway,thai){
+  return `<div class="card reveal fact-card"><div class="topbar"><span class="chip">${topic}</span><h2>Did you know?</h2></div>
+    <div class="body fact-body">
+      <div class="fact-visual"><div class="fact-ring"></div><span class="fact-emoji">${emoji}</span></div>
+      <div class="fact-copy"><span class="fact-label">✨ Did you know? · รู้หรือไม่?</span><h3>${title}</h3><p>${text}</p><p class="fact-th">🇹🇭 ${thai}</p><div class="fact-takeaway">💡 ${takeaway}</div></div>
+    </div></div>`;
+}
+function realSlideHtml(topic,imageKey,title,text,observe,thai){
+  return `<div class="card reveal real-card"><div class="topbar"><span class="chip">${topic}</span><h2>See it in real life · ดูของจริง</h2></div>
+    <div class="body real-body">
+      <div class="real-photo">${netImg(imageKey,title)}<span class="real-badge">📷 REAL-WORLD EXAMPLE</span></div>
+      <div class="real-copy"><h3>${title}</h3><p>${text}</p><div class="real-observe"><b>🔎 What to notice</b><p>${observe}</p></div><p class="real-th">🇹🇭 ${thai}</p></div>
+    </div></div>`;
+}
+function flipSlideHtml(chip,title,q,a,thaiTag){
+  return `<div class="card reveal"><div class="topbar"><span class="chip">${chip}</span><h2>${title}</h2></div>
+  <div class="body">
+    <div class="flip" onclick="this.classList.toggle('on')"><div class="inner">
+      <div class="face front"><div class="q">${q}</div><div class="hint">คิดคำตอบในใจก่อน แล้วแตะเพื่อเปิดเฉลย</div></div>
+      <div class="face back"><div class="a">${a}</div></div>
+    </div></div>
+  </div>
+  <div class="thai"><span class="tag">ฝึก</span>${thaiTag}</div></div>`;
+}
+function mcqSlideHtml(topic,page,pages,items){
+  const opts=items.map((it,k)=>{
+    const idx=page+k;
+    return `<div class="mcq quiz-shell" data-topic="${topic}" data-q="${idx}">
+      <div class="quiz-orbit orbit-a"></div><div class="quiz-orbit orbit-b"></div>
+      <div class="question-kicker"><span>Question</span><b>${idx+1}</b></div>
+      <div class="stem">${it.q}</div>
+      <div class="opts">${it.o.map((o,j)=>`<button onclick="answer(this,${j},${it.a},${idx},'${topic}')"><span class="option-letter">${String.fromCharCode(65+j)}</span><span class="option-text">${o}</span></button>`).join('')}</div>
+      <div class="explain" id="ex-${topic}-${idx}">💡 ${it.e}</div>
+    </div>`;
+  }).join('');
+  const pager=`<div class="pager">${Array.from({length:pages}).map((_,p)=>`<button class="${p===page?'cur':''}" onclick="render(MCQ_PAGE['${topic}'][${p}])">${p+1}</button>`).join('')}</div>`;
+  return `<div class="card reveal"><div class="topbar"><span class="chip">MCQ · Topic ${topic}</span><h2>แบบทดสอบ 15 ข้อ (หน้า ${page+1}/${pages})</h2></div>
+  <div class="body">
+    <div class="scorebox" id="score-${topic}"><b>คะแนน ${topic}:</b> <span id="num-${topic}">0 / 15</span></div>
+    ${opts}${pager}
+  </div>
+  <div class="thai"><span class="tag">เฉลยทันที</span>เลือกคำตอบแล้วเห็นถูก/ผิดพร้อมคำอธิบาย — ทำครบ 15 ข้อแล้วดูคะแนนรวมด้านบน (ใช้ปุ่มเลขหน้าด้านล่างเพื่อดูข้อถัดไป)</div></div>`;
+}
+function addMcqPages(cls,topic,items,section){
+  const perPage=1;
+  const pages=Math.ceil(items.length/perPage);
+  const pageMap=[];
+  for(let p=0;p<pages;p++){
+    const slice=items.slice(p*perPage,p*perPage+perPage);
+    const html=mcqSlideHtml(topic,p,pages,slice);
+    add(cls+' '+pickT(p),html,{section,label:p===0?'MCQ '+topic:undefined,_mcqPage:true});
+    pageMap.push(S.length-1);
+  }
+  MCQ_PAGE[topic]=pageMap;
+}
+const SCORES={'4.1':0,'4.2':0,'4.3':0};
+const ANSWERED={};
+function answer(btn,chosen,correct,qid,topic){
+  const card=btn.closest('.mcq');
+  if(card.dataset.done)return;
+  card.dataset.done=1;
+  const btns=card.querySelectorAll('.opts button');
+  btns[correct].classList.add('correct');
+  if(chosen===correct){playTone(true);if(!ANSWERED[topic+qid]){SCORES[topic]++;ANSWERED[topic+qid]=1;updateScore(topic);}}
+  else{btn.classList.add('wrong');playTone(false);}
+  document.getElementById('ex-'+topic+'-'+qid).classList.add('show');
+  // confetti when THIS topic fully answered
+  const topicQs=document.querySelectorAll('.mcq[data-topic="'+topic+'"]');
+  if(topicQs.length>0 && [...topicQs].every(c=>c.dataset.done==='1')) confetti();
+}
+function updateScore(topic){
+  document.querySelectorAll('[id="num-'+topic+'"]').forEach(el=>el.textContent=SCORES[topic]+' / 15');
+  updateFinal();
+}
+function updateFinal(){
+  const total=SCORES['4.1']+SCORES['4.2']+SCORES['4.3'];
+  const box=document.getElementById('finalNum');
+  if(box){box.textContent=total+' / 45';const msg=document.getElementById('finalMsg');const pct=Math.round(total/45*100);msg.textContent=pct>=80?'ยอดเยี่ยม! 🌟':pct>=60?'ดีมากครับ 👍':'พยายามอีกนิดนะ 💪';const pt=document.getElementById('perTopic');if(pt)pt.innerHTML=['4.1','4.2','4.3'].map(t=>`<div class="mini"><b>Topic ${t}</b><br>${SCORES[t]} / 15</div>`).join('');}
+}
+let actx;
+function playTone(ok){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator();const g=actx.createGain();o.connect(g);g.connect(actx.destination);o.frequency.value=ok?880:220;o.type='sine';g.gain.setValueAtTime(.2,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.3);o.start();o.stop(actx.currentTime+.3);}catch(e){}}
+/* confetti */
+const cc=document.getElementById('confetti');cc.width=innerWidth;cc.height=innerHeight;const cctx=cc.getContext('2d');let parts=[];
+function confetti(){for(let i=0;i<120;i++)parts.push({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*8,vy:Math.random()*-8+2,g:.2,c:`hsl(${Math.random()*360},90%,60%)`,s:Math.random()*6+3,r:Math.random()*6});}
+function drawConf(){cctx.clearRect(0,0,cc.width,cc.height);parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;cctx.save();cctx.translate(p.x,p.y);cctx.rotate(p.r);cctx.fillStyle=p.c;cctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6);cctx.restore();});parts=parts.filter(p=>p.y<cc.height+20);requestAnimationFrame(drawConf);}
+drawConf();
+
+/* ===================== ENGINE ===================== */
+const PROPERTY_EXAMPLES={
+  'mass':{icon:'⚖️',title:'Mass — comparing school bags',text:'Place two school bags on a balance. The bag with more books has greater mass, measured in grams or kilograms.'},
+  'hardness':{icon:'💎',title:'Hardness — a scratch test',text:'A diamond can scratch glass because diamond is harder. Chalk is soft, so a fingernail can leave a mark on it.'},
+  'boiling point':{icon:'♨️',title:'Boiling point — water in a kettle',text:'Water boils at about 100°C at sea level. The temperature stays nearly constant while liquid water changes into gas.'},
+  'melting point':{icon:'🧊',title:'Melting point — ice in a warm room',text:'Ice melts at about 0°C. It changes from a solid into liquid water without becoming a new substance.'},
+  'electrical conductivity':{icon:'⚡',title:'Electrical conductivity — a copper wire',text:'Copper lets electric current pass through it, so it is used inside electrical cables. Rubber does not and is used as insulation.'},
+  'thermal conductivity':{icon:'🔥',title:'Thermal conductivity — a metal spoon',text:'A metal spoon in hot soup quickly becomes warm because metal transfers heat well. A wooden handle transfers heat slowly.'},
+  'solubility':{icon:'🥄',title:'Solubility — sugar in water',text:'Sugar dissolves in water to make a clear solution. Sand does not dissolve and settles at the bottom.'},
+  'density':{icon:'🛟',title:'Density — oil floating on water',text:'Cooking oil floats because it is less dense than water. A metal coin sinks because its density is greater than water.'},
+  'state':{icon:'💧',title:'State — water in three forms',text:'Water can be solid ice, liquid water or water vapour. Its state depends mainly on temperature and pressure.'}
+};
+function showPropertyExample(button,key){
+  const example=PROPERTY_EXAMPLES[key];
+  const panel=button.closest('.body').querySelector('.property-example');
+  button.closest('.property-grid').querySelectorAll('.prop-card').forEach(card=>card.classList.toggle('active',card===button));
+  panel.innerHTML='<span class="example-icon">'+example.icon+'</span><div><strong>'+example.title+'</strong><p>'+example.text+'</p></div>';
+  panel.classList.remove('pop');void panel.offsetWidth;panel.classList.add('pop');
+}
+const HAZARD_EXAMPLES={
+  moderate:{icon:'⚠️',title:'Moderate hazard — household cleaner',text:'A cleaning spray may irritate eyes or skin. Wear gloves, avoid breathing the mist and wash your hands after use.'},
+  corrosive:{icon:'🧪',title:'Corrosive — strong drain cleaner',text:'Strong acid or alkali can burn skin and damage eyes. Wear goggles and gloves; never touch or mix the chemical.'},
+  toxic:{icon:'☠️',title:'Toxic — pesticide',text:'A pesticide can cause serious poisoning if swallowed or inhaled. Keep it locked away and use only as directed.'},
+  flammable:{icon:'🔥',title:'Flammable — alcohol hand gel',text:'Alcohol vapour can catch fire easily. Keep the bottle away from flames, sparks and hot equipment.'},
+  environment:{icon:'🌳',title:'Environmental hazard — chemical spill',text:'Some chemicals kill fish and aquatic plants. Never pour them into a drain; use the approved disposal method.'},
+  health:{icon:'🫁',title:'Health hazard — long-term exposure',text:'Some substances may damage organs or cause cancer after repeated exposure. Use ventilation and the required protective equipment.'}
+};
+function showHazardExample(button,key){
+  const example=HAZARD_EXAMPLES[key];
+  const panel=button.closest('.body').querySelector('.hazard-example');
+  button.closest('.hazard-grid').querySelectorAll('.hazard-card').forEach(card=>card.classList.toggle('active',card===button));
+  panel.innerHTML='<span class="example-icon">'+example.icon+'</span><div><strong>'+example.title+'</strong><p>'+example.text+'</p></div>';
+  panel.classList.remove('pop');void panel.offsetWidth;panel.classList.add('pop');
+}
+const PH_SAMPLES={
+  battery:{icon:'🔋',title:'Battery acid · pH about 1',text:'Strongly acidic — Universal Indicator turns red.'},
+  orange:{icon:'🍊',title:'Orange juice · pH about 4',text:'Weakly acidic — Universal Indicator turns orange.'},
+  water:{icon:'💧',title:'Pure water · pH 7',text:'Neutral — Universal Indicator turns green.'},
+  toothpaste:{icon:'🪥',title:'Toothpaste · pH about 9',text:'Weakly alkaline — Universal Indicator turns blue.'},
+  bleach:{icon:'🧴',title:'Bleach · pH about 13',text:'Strongly alkaline — Universal Indicator turns purple.'}
+};
+function showPHSample(button,key){
+  const example=PH_SAMPLES[key],body=button.closest('.body'),panel=body.querySelector('.ph-sample-result');
+  body.querySelectorAll('.ph-samples button').forEach(item=>item.classList.toggle('active',item===button));
+  panel.innerHTML='<span>'+example.icon+'</span><div><strong>'+example.title+'</strong><p>'+example.text+'</p></div>';
+  panel.classList.remove('pop');void panel.offsetWidth;panel.classList.add('pop');
+}
+const PH_QUESTIONS=[
+  {q:'How should pH 3 be classified?',a:'Strongly acidic'},
+  {q:'How should pH 8 be classified?',a:'Weakly alkaline'},
+  {q:'Universal Indicator turns yellow at about pH 6. What is it?',a:'Weakly acidic'},
+  {q:'How should pH 7 be classified?',a:'Neutral'},
+  {q:'How should pH 14 be classified?',a:'Strongly alkaline'},
+  {q:'Universal Indicator turns blue at about pH 10. What is it?',a:'Weakly alkaline'}
+];
+const PH_OPTIONS=['Strongly acidic','Weakly acidic','Neutral','Weakly alkaline','Strongly alkaline'];
+function initPHQuiz(box){
+  let index=0,score=0,answered=false;
+  function draw(){
+    answered=false;
+    if(index>=PH_QUESTIONS.length){
+      box.innerHTML='<div class="phq-prompt">Quiz complete! 🎉</div><p style="text-align:center">Score: <b>'+score+' / '+PH_QUESTIONS.length+'</b></p><button class="phq-next show">Try again</button>';
+      box.querySelector('button').onclick=()=>{index=0;score=0;draw();};
+      return;
+    }
+    const item=PH_QUESTIONS[index];
+    box.innerHTML='<div class="phq-progress"><span>Question '+(index+1)+' / '+PH_QUESTIONS.length+'</span><span class="phq-bar"><i style="width:'+((index+1)/PH_QUESTIONS.length*100)+'%"></i></span></div><div class="phq-prompt">'+item.q+'</div><div class="phq-options"></div><div class="phq-feedback" aria-live="polite"></div><button class="phq-next">Next question →</button>';
+    const options=box.querySelector('.phq-options'),feedback=box.querySelector('.phq-feedback'),next=box.querySelector('.phq-next');
+    PH_OPTIONS.forEach(label=>{
+      const button=document.createElement('button');button.textContent=label;
+      button.onclick=()=>{
+        if(answered)return;answered=true;
+        [...options.children].forEach(b=>{b.disabled=true;if(b.textContent===item.a)b.classList.add('correct');});
+        if(label===item.a){score++;feedback.textContent='Correct! ✅';feedback.style.color='var(--ok)';}
+        else{button.classList.add('wrong');feedback.textContent='Not quite. The correct answer is '+item.a+'.';feedback.style.color='var(--no)';}
+        next.classList.add('show');
+      };
+      options.appendChild(button);
+    });
+    next.onclick=()=>{index++;draw();};
+  }
+  draw();
+}
+const stage=document.getElementById('stage');let cur=0;
+/* Remove non-essential or unavailable material before building the deck. */
+for(let i=S.length-1;i>=0;i--){
+  if(S[i].html.includes('How to use these slides')||S[i].html.includes('Short clips for class discussion'))S.splice(i,1);
+}
+S.forEach(item=>{
+  item.html=item.html.replace(/\s*<h3>[^<]*You will learn<\/h3>\s*<ul>[\s\S]*?<\/ul>/,'');
+});
+S.forEach((s,i)=>{const d=document.createElement('div');d.className='slide '+s.cls;d.innerHTML=s.html;d.dataset.i=i;d.dataset.section=s.meta.section||'';if(s.meta.label)d.dataset.label=s.meta.label;stage.appendChild(d);});
+const slides=[...document.querySelectorAll('.slide')];
+document.querySelectorAll('.quiz-shell').forEach(quiz=>{
+  const topic=quiz.dataset.topic,number=Number(quiz.dataset.q)+1,slide=quiz.closest('.slide');
+  const heading=slide.querySelector('.topbar h2'),chip=slide.querySelector('.topbar .chip'),score=slide.querySelector('.scorebox');
+  if(heading)heading.textContent='Question '+number+' of 15';
+  if(chip)chip.textContent='Challenge · Topic '+topic;
+  if(score)score.innerHTML='<b>Topic '+topic+' score</b><span id="num-'+topic+'">0 / 15</span>';
+});
+document.querySelectorAll('.ph-quiz').forEach(initPHQuiz);
+/* Upgrade the controls for classroom and projector use. */
+const nav=document.getElementById('nav');
+const navButtons=[...nav.querySelectorAll('button')];
+if(navButtons[0]){navButtons[0].textContent='☰';navButtons[0].title='Open slide menu';navButtons[0].setAttribute('aria-label','Open slide menu');}
+if(navButtons[1]){navButtons[1].textContent='←';navButtons[1].title='Previous slide';navButtons[1].setAttribute('aria-label','Previous slide');}
+if(navButtons[2]){navButtons[2].textContent='→';navButtons[2].title='Next slide';navButtons[2].setAttribute('aria-label','Next slide');}
+const sectionNow=document.createElement('span');
+sectionNow.id='sectionNow';sectionNow.textContent='Introduction';
+nav.insertBefore(sectionNow,document.getElementById('progwrap'));
+const fullBtn=document.createElement('button');
+fullBtn.textContent='⛶';fullBtn.title='Toggle fullscreen';fullBtn.setAttribute('aria-label','Toggle fullscreen');
+fullBtn.onclick=()=>toggleFullscreen();nav.appendChild(fullBtn);
+function toggleFullscreen(){
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+}
+document.querySelector('#menu h2').textContent='Slide navigator';
+const menuClose=document.querySelector('#menu > button');
+if(menuClose)menuClose.textContent='Close ×';
+const sectionNames={intro:'Introduction',t41:'4.1 Physical & Chemical Properties',t41q:'4.1 Practice',t41m:'4.1 Quiz',t42:'4.2 Acidity & Indicators',t42q:'4.2 Practice',t42m:'4.2 Quiz',t43:'4.3 Particle Model',t43q:'4.3 Practice',t43m:'4.3 Quiz',final:'Review & Results'};
+const topicGroups=[
+  {label:'Start',keys:['intro']},
+  {label:'4.1 Properties',keys:['t41','t41q','t41m']},
+  {label:'4.2 Acidity',keys:['t42','t42q','t42m']},
+  {label:'4.3 Particles',keys:['t43','t43q','t43m']},
+  {label:'Review',keys:['final']}
+];
+const topicsBar=document.getElementById('topics');
+topicGroups.forEach(group=>{
+  const first=slides.findIndex(slide=>group.keys.includes(slide.dataset.section));
+  if(first<0)return;
+  const button=document.createElement('button');
+  button.className='topic-pill';button.textContent=group.label;button.dataset.start=first;
+  button.onclick=()=>render(first);
+  topicsBar.appendChild(button);
+});
+function activeTopic(section){
+  return topicGroups.find(group=>group.keys.includes(section));
+}
+function classOf(i){return slides[i].className;}
+function render(i){
+  stage.classList.remove('forward','backward');
+  stage.classList.add(i<cur?'backward':'forward');
+  slides.forEach((s,k)=>{s.classList.remove('active','prev');if(k===i)s.classList.add('active');else if(k<i)s.classList.add('prev');});
+  hydrateVocab(slides[i]);
+  repairScanImages(slides[i]);
+  compactThaiSummaries(slides[i]);
+  removeInlineThai(slides[i]);
+  document.getElementById('prog').style.width=((i)/(slides.length-1)*100)+'%';
+  document.getElementById('counter').textContent=(i+1)+' / '+slides.length;
+  sectionNow.textContent=sectionNames[slides[i].dataset.section]||'Chapter 4';
+  const group=activeTopic(slides[i].dataset.section);
+  document.querySelectorAll('.topic-pill').forEach(pill=>{
+    const own=topicGroups.find(g=>g.label===pill.textContent);
+    pill.classList.toggle('active',own===group);
+  });
+  cur=i;updateFinal();
+}
+function go(n){const next=Math.max(0,Math.min(slides.length-1,cur+n));if(next!==cur){slides[cur].classList.add('no-anim');setTimeout(()=>slides[cur].classList.remove('no-anim'),600);}render(next);}
+function jumpClick(e){const r=e.currentTarget.getBoundingClientRect();const p=(e.clientX-r.left)/r.width;render(Math.round(p*(slides.length-1)));}
+
+/* menu — build dynamically by scanning slide data */
+function openMenu(){
+  const m=document.getElementById('menuList');m.innerHTML='';
+  const sections=[
+    {key:'intro',head:'เปิดเรื่อง'},
+    {key:'t41',head:'Topic 4.1 — Physical & Chemical'},
+    {key:'t41q',head:''},{key:'t41m',head:''},
+    {key:'t42',head:'Topic 4.2 — Acidity & Indicators'},
+    {key:'t42q',head:''},{key:'t42m',head:''},
+    {key:'t43',head:'Topic 4.3 — Particle Model'},
+    {key:'t43q',head:''},{key:'t43m',head:''},
+    {key:'final',head:'สรุปจบ'}
+  ];
+  sections.forEach(sec=>{
+    // first slide of section
+    const first=S.findIndex(s=>(s.meta.section||'')===sec.key);
+    if(first<0)return;
+    if(sec.head){const h=document.createElement('div');h.className='mhead';h.textContent=sec.head;m.appendChild(h);}
+    // section label slide
+    const data=S[first];
+    const label=data.meta.label||sec.head;
+    if(label){
+      const b=document.createElement('button');b.className='mitem';b.innerHTML=label;
+      b.onclick=()=>{render(first);closeMenu();};m.appendChild(b);
+    }
+    // also add MCQ sub-pages
+    if(sec.key.endsWith('m')){
+      const num=sec.key.replace('t','').replace('m','');      // '41','42','43'
+      const topicKey=num[0]+'.'+num[1];                        // '4.1','4.2','4.3'
+      MCQ_PAGE[topicKey].forEach((idx,p)=>{
+        const b=document.createElement('button');b.className='mitem';b.innerHTML='MCQ '+topicKey+' — หน้า '+(p+1);
+        b.onclick=()=>{render(idx);closeMenu();};m.appendChild(b);
+      });
+    }
+  });
+  document.getElementById('menu').classList.add('open');
+}
+function closeMenu(){document.getElementById('menu').classList.remove('open');}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')go(1);
+  else if(e.key==='ArrowLeft'||e.key==='PageUp')go(-1);
+  else if(e.key==='Home')render(0);
+  else if(e.key==='End')render(slides.length-1);
+  else if(e.key==='Escape')closeMenu();
+});
+let sx=0,sy=0;
+stage.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+stage.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){go(dx<0?1:-1);}},{passive:true});
+
+const colors=['#5b8def','#7b6cf6','#f78ca0','#ffb86b','#46d399'];
+for(let i=0;i<22;i++){const f=document.createElement('div');f.className='floater';const sz=Math.random()*60+20;f.style.width=sz+'px';f.style.height=sz+'px';f.style.left=Math.random()*100+'%';f.style.top=Math.random()*100+'%';f.style.background=colors[i%colors.length];f.style.animation=`floatY ${8+Math.random()*8}s ${Math.random()*5}s ease-in-out infinite`;stage.appendChild(f);}
+const st=document.createElement('style');st.textContent=`@keyframes floatY{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(-30px) translateX(15px)}}`;document.head.appendChild(st);
+window.addEventListener('resize',()=>{cc.width=innerWidth;cc.height=innerHeight;});
+const requestedSlide=Math.max(0,Math.min(slides.length-1,Number(new URLSearchParams(location.search).get('slide'))||0));
+render(requestedSlide);
+</script>
+</body>
+</html>
