@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 7 Rev2 — Rounding and Decimals</title>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ BASE ============ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --c1:#ff6b6b; --c2:#feca57; --c3:#48dbfb; --c4:#1dd1a1;
+  --c5:#5f27cd; --c6:#ff9ff3; --c7:#54a0ff; --c8:#222f3e;
+  --ink:#2d3436; --paper:#fffdf7;
+}
+html,body{height:100%;overflow:hidden;font-family:'Mali',cursive,sans-serif;background:var(--c8);}
+body{display:flex;align-items:center;justify-content:center;}
+
+/* ============ DECK ============ */
+#deck{position:relative;width:100vw;height:100vh;overflow:hidden;}
+.slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:7vh 5vw 9vh;opacity:0;visibility:hidden;
+  transition:opacity .6s ease, transform .6s cubic-bezier(.4,1.4,.5,1);
+  transform:scale(.92) translateY(40px);
+  overflow:hidden;
+}
+.slide.active{opacity:1;visibility:visible;transform:scale(1) translateY(0);z-index:5;}
+.slide.prev{transform:scale(.92) translateY(-40px);}
+
+/* ============ BACKGROUNDS (per chapter) ============ */
+.bg-ch7{background:linear-gradient(135deg,#feca57 0%,#ff9ff3 50%,#1dd1a1 100%);background-size:200% 200%;animation:bgshift 18s ease infinite;}
+.bg-title{background:linear-gradient(135deg,#5f27cd,#ff6b6b,#feca57,#48dbfb);background-size:300% 300%;animation:bgshift 12s ease infinite;}
+.bg-section{background:linear-gradient(135deg,#222f3e,#5f27cd);background-size:200% 200%;animation:bgshift 15s ease infinite;}
+.bg-review{background:linear-gradient(135deg,#1dd1a1,#48dbfb,#54a0ff);background-size:200% 200%;animation:bgshift 15s ease infinite;}
+@keyframes bgshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+/* ============ FLOATING SHAPES (decor) ============ */
+.floater{position:absolute;opacity:.18;pointer-events:none;z-index:0;}
+.floater svg{width:100%;height:100%;}
+.f1{top:8%;left:6%;width:90px;animation:float1 9s ease-in-out infinite;}
+.f2{top:15%;right:8%;width:70px;animation:float2 11s ease-in-out infinite;}
+.f3{bottom:12%;left:10%;width:80px;animation:float3 10s ease-in-out infinite;}
+.f4{bottom:8%;right:12%;width:100px;animation:float1 13s ease-in-out infinite reverse;}
+.f5{top:45%;left:4%;width:60px;animation:float2 8s ease-in-out infinite;}
+@keyframes float1{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-30px) rotate(180deg)}}
+@keyframes float2{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(20px,20px) rotate(-180deg)}}
+@keyframes float3{0%,100%{transform:translateX(0) rotate(0)}50%{transform:translateX(25px) rotate(360deg)}}
+
+/* ============ CONTENT CARDS ============ */
+.card{
+  position:relative;z-index:2;background:var(--paper);
+  border-radius:28px;padding:3.5vh 4vw;max-width:1000px;width:90%;
+  box-shadow:0 20px 60px rgba(0,0,0,.3),0 6px 0 rgba(0,0,0,.06);
+  border:5px solid rgba(255,255,255,.6);
+}
+.slide.active .card{animation:cardpop .7s cubic-bezier(.3,1.6,.5,1) both;}
+@keyframes cardpop{0%{transform:scale(.7) rotate(-3deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+
+/* ============ TYPOGRAPHY ============ */
+.eyebrow{font-size:.85rem;letter-spacing:3px;text-transform:uppercase;color:#fff;
+  font-weight:700;margin-bottom:1vh;text-shadow:0 2px 8px rgba(0,0,0,.3);
+  opacity:0;animation:dropin .6s ease .2s forwards;}
+.slide.active .eyebrow{animation:dropin .6s ease .2s forwards;}
+h1.title{font-size:clamp(2.2rem,5.5vw,4.2rem);color:#fff;font-weight:700;line-height:1.1;
+  text-shadow:0 4px 20px rgba(0,0,0,.35);opacity:0;animation:dropin .7s ease .35s forwards;}
+h2.heading{font-size:clamp(1.6rem,3.6vw,2.8rem);color:var(--c5);font-weight:700;margin-bottom:1.5vh;
+  opacity:0;animation:dropin .6s ease .3s forwards;}
+h3.sub{font-size:clamp(1.1rem,2.2vw,1.6rem);color:var(--c1);font-weight:600;margin:.8vh 0;
+  opacity:0;animation:dropin .6s ease .45s forwards;}
+p.lead{font-size:clamp(1rem,1.8vw,1.35rem);color:var(--ink);line-height:1.6;margin:.6vh 0;
+  opacity:0;animation:dropin .6s ease .55s forwards;}
+.small{font-size:.85rem;color:#636e72;}
+@keyframes dropin{0%{transform:translateY(30px);opacity:0}100%{transform:translateY(0);opacity:1}}
+
+/* staggered children reveal */
+.slide.active .reveal{opacity:0;animation:dropin .55s ease forwards;}
+.slide.active .reveal:nth-child(1){animation-delay:.5s}
+.slide.active .reveal:nth-child(2){animation-delay:.65s}
+.slide.active .reveal:nth-child(3){animation-delay:.8s}
+.slide.active .reveal:nth-child(4){animation-delay:.95s}
+.slide.active .reveal:nth-child(5){animation-delay:1.1s}
+.slide.active .reveal:nth-child(6){animation-delay:1.25s}
+.slide.active .reveal:nth-child(7){animation-delay:1.4s}
+.slide.active .reveal:nth-child(8){animation-delay:1.55s}
+
+/* ============ LISTS ============ */
+ul.pretty{list-style:none;text-align:left;margin:1vh auto;max-width:760px;}
+ul.pretty li{font-size:clamp(.95rem,1.6vw,1.2rem);color:var(--ink);padding:.5vh 0 .5vh 2.2em;
+  position:relative;line-height:1.5;}
+ul.pretty li::before{content:"▸";position:absolute;left:.4em;color:var(--c4);font-weight:700;font-size:1.2em;}
+ul.check li::before{content:"✔";color:var(--c4);}
+ul.star li::before{content:"★";color:var(--c2);}
+
+/* ============ TABLE ============ */
+table.poly{width:100%;border-collapse:separate;border-spacing:0;margin:1vh auto;
+  font-size:clamp(.8rem,1.4vw,1.05rem);border-radius:16px;overflow:hidden;
+  box-shadow:0 6px 20px rgba(0,0,0,.12);}
+table.poly th{background:var(--c5);color:#fff;padding:1vh .6vw;font-weight:700;}
+table.poly td{background:#fff;padding:1vh .6vw;color:var(--ink);border-bottom:2px solid #f1f2f6;}
+table.poly tr:nth-child(even) td{background:#f7f8fc;}
+table.poly td:first-child{font-weight:700;color:var(--c5);}
+
+.exercise-num{display:inline-block;background:var(--c1);color:#fff;font-weight:700;
+  padding:.4em 1em;border-radius:30px;font-size:1rem;margin-bottom:1vh;
+  opacity:0;animation:popbadge .5s ease .3s forwards;box-shadow:0 4px 0 #c0392b;}
+@keyframes popbadge{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+
+/* ============ KEY TERM BOX ============ */
+.keyterm{background:linear-gradient(135deg,#fff9e6,#ffeaa7);border-left:8px solid var(--c2);
+  border-radius:14px;padding:1.5vh 1.5vw;margin:1vh auto;text-align:left;max-width:760px;}
+.keyterm .kt-label{font-weight:700;color:#d4a017;text-transform:uppercase;font-size:.8rem;letter-spacing:2px;}
+.tipbox{background:#e8f8ef;border-left:8px solid var(--c4);border-radius:14px;padding:1.5vh 1.5vw;margin:1vh auto;text-align:left;max-width:760px;}
+.tipbox .tt-label{font-weight:700;color:var(--c4);text-transform:uppercase;font-size:.8rem;letter-spacing:2px;}
+.didthink{background:#eaf2ff;border-left:8px solid var(--c7);border-radius:14px;padding:1.5vh 1.5vw;margin:1vh auto;text-align:left;max-width:760px;}
+.didthink .dt-label{font-weight:700;color:var(--c7);text-transform:uppercase;font-size:.8rem;letter-spacing:2px;}
+
+/* ============ BADGE / PILL ============ */
+.pill{display:inline-block;background:var(--c5);color:#fff;font-weight:700;
+  padding:.5em 1.4em;border-radius:40px;margin:.4em;font-size:clamp(.85rem,1.5vw,1.1rem);
+  box-shadow:0 5px 0 rgba(0,0,0,.2);}
+.pill.c1{background:var(--c1)} .pill.c2{background:var(--c2);color:var(--ink)}
+.pill.c3{background:var(--c3)} .pill.c4{background:var(--c4)}
+.pill.c6{background:var(--c6);color:var(--ink)} .pill.c7{background:var(--c7)}
+
+/* ============ MATH DISPLAY ============ */
+.math{font-family:'Mali',cursive;font-weight:700;font-size:clamp(1.4rem,3vw,2.2rem);
+  color:var(--c5);background:#fff;border-radius:14px;padding:1vh 1.5vw;display:inline-block;
+  margin:.5vh .3vw;box-shadow:0 4px 0 #ddd;}
+.op{color:var(--c1);}
+
+/* ============ EMOJI BIG ============ */
+.bigemoji{font-size:clamp(3rem,8vw,6rem);display:block;line-height:1;
+  opacity:0;animation:emojibounce .8s ease .3s forwards;}
+@keyframes emojibounce{0%{transform:scale(0) rotate(-30deg)}60%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+
+/* ============ NAVIGATION ============ */
+#nav{position:fixed;bottom:0;left:0;right:0;height:8vh;z-index:50;
+  display:flex;align-items:center;justify-content:center;gap:1.5vw;
+  background:linear-gradient(to top,rgba(0,0,0,.5),transparent);padding:0 2vw;}
+.navbtn{background:#fff;color:var(--c5);border:none;width:56px;height:56px;border-radius:50%;
+  font-size:1.5rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);
+  transition:transform .15s;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.navbtn:hover{transform:translateY(-4px) scale(1.08);}
+.navbtn:active{transform:translateY(0);}
+#counter{color:#fff;font-weight:700;font-size:1.1rem;background:rgba(0,0,0,.35);
+  padding:.5em 1.2em;border-radius:30px;backdrop-filter:blur(4px);font-family:inherit;}
+#progress{position:fixed;top:0;left:0;height:5px;background:var(--c2);z-index:60;
+  transition:width .5s ease;width:0;}
+
+/* ============ TOPIC BOOKMARK BAR ============ */
+#topics{position:fixed;top:1.1vh;left:50%;transform:translateX(-50%);z-index:55;
+  display:flex;gap:.3vw;flex-wrap:wrap;justify-content:center;align-items:center;
+  background:rgba(0,0,0,.32);padding:.5vh 1vw;border-radius:30px;backdrop-filter:blur(6px);
+  max-width:95vw;box-shadow:0 4px 18px rgba(0,0,0,.25);}
+.topic-pill{color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.4px;
+  padding:.5em 1em;border-radius:20px;cursor:pointer;transition:all .2s;
+  opacity:.6;white-space:nowrap;font-family:inherit;}
+.topic-pill:hover{opacity:1;background:rgba(255,255,255,.18);transform:translateY(-1px);}
+.topic-pill.active{background:#fff;color:var(--c5);opacity:1;
+  box-shadow:0 3px 10px rgba(0,0,0,.3);}
+
+/* ============ SECTION DIVIDER ============ */
+.divider-num{font-size:clamp(4rem,12vw,9rem);font-weight:700;color:rgba(255,255,255,.25);
+  line-height:1;opacity:0;animation:fadenum 1s ease .2s forwards;}
+@keyframes fadenum{0%{opacity:0;transform:scale(2)}100%{opacity:.25;transform:scale(1)}}
+
+/* small helper */
+.center{display:flex;flex-direction:column;align-items:center;}
+.muted{color:#636e72;}
+.scrollhint{position:absolute;bottom:9vh;left:50%;transform:translateX(-50%);
+  color:#fff;font-size:.8rem;opacity:.7;animation:bob 1.6s ease infinite;}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* ============ INTERACTIVE QUIZ ============ */
+#lives{position:fixed;top:1.25vh;right:2vw;z-index:70;background:rgba(255,255,255,.96);
+  border-radius:18px;padding:.45em .75em;color:#2d3436;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.2);
+  transition:opacity .3s;display:flex;align-items:center;gap:.65rem;}
+#lives.hidden{opacity:0;pointer-events:none;}
+#today-score{position:fixed;top:1.1vh;left:1.2vw;z-index:72;background:rgba(255,255,255,.94);
+  border-radius:14px;padding:.4rem .65rem;box-shadow:0 4px 14px rgba(0,0,0,.16);text-align:left}
+#today-score .score-label{font-size:.62rem;font-weight:700;color:#7f8c8d;letter-spacing:.03em}
+#today-score .score-stars{font-size:.9rem;line-height:1.15;letter-spacing:.03em;white-space:nowrap}
+#today-score .score-count{font-size:.62rem;font-weight:700;color:#6c5ce7;margin-left:.25rem}
+#lives svg{width:92px;height:68px;display:block}
+.hang-base{fill:none;stroke:#aeb6bf;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.hang-part{fill:none;stroke:#e74c3c;stroke-width:5;stroke-linecap:round;opacity:.08;transition:opacity .25s,stroke .25s}
+.hang-part.shown{opacity:1}
+.hang-status{font-size:.72rem;line-height:1.35;min-width:92px}
+.hang-status strong{display:block;font-size:.92rem;color:var(--c1)}
+#game-over{display:none;position:fixed;inset:0;z-index:120;background:rgba(24,29,43,.88);align-items:center;justify-content:center;padding:2rem}
+#game-over.show{display:flex}
+.game-over-card{max-width:520px;background:#fff;border-radius:28px;padding:2rem;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.4)}
+.game-over-card h2{font-size:clamp(2rem,6vw,3.5rem);color:var(--c1);margin-bottom:.5rem}
+.exit-game{margin-top:1.25rem;border:0;border-radius:14px;padding:.7rem 2.2rem;background:var(--c5);
+  color:#fff;font:700 1rem 'Mali',sans-serif;cursor:pointer;box-shadow:0 7px 18px rgba(108,92,231,.3)}
+.exit-game:hover{transform:translateY(-2px)}
+.answer-quiz{max-width:560px;margin:1vh auto 0;background:#f0f4ff;border-radius:18px;padding:1.5vh 1.5vw;}
+.answer-quiz.wide{max-width:820px;}
+.quiz-steps{font-size:.78rem;font-weight:700;color:#8395a7;letter-spacing:1px;}
+.quiz-prompt{font-size:clamp(1.2rem,2.6vw,1.9rem);font-weight:700;color:var(--c5);margin:.4vh 0 1vh;line-height:1.4;}
+.quiz-hint{font-size:.8rem;color:#636e72;margin-bottom:.6vh;}
+.answer-display{min-height:2.1em;background:#fff;border:3px solid var(--c3);border-radius:12px;
+  font-size:1.35rem;font-weight:700;color:var(--ink);padding:.3em .7em;margin:auto;max-width:300px;}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;max-width:270px;margin:1vh auto;}
+.numkey{border:0;border-radius:10px;background:#fff;color:var(--c5);font:700 1.15rem 'Mali',cursive;
+  padding:.45em;box-shadow:0 3px 0 #dfe6e9;cursor:pointer;}
+.numkey:hover{background:#eaf2ff;}.numkey.action{background:var(--c2);color:var(--ink);}
+.numkey.check{background:var(--c4);color:#fff;}
+.quiz-feedback{min-height:1.5em;font-weight:700;}
+
+/* choice buttons */
+.quiz-opts{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:1vh auto;}
+.opt-btn{border:0;border-radius:12px;background:#fff;color:var(--c5);font:700 1rem 'Mali',cursive;
+  padding:.55em 1.1em;box-shadow:0 3px 0 #dfe6e9;cursor:pointer;transition:transform .12s;}
+.opt-btn:hover{background:#eaf2ff;transform:translateY(-2px);}
+.opt-btn.right{background:var(--c4);color:#fff;box-shadow:0 3px 0 #14a37f;}
+.opt-btn.wrong{background:var(--c1);color:#fff;box-shadow:0 3px 0 #c0392b;}
+
+/* chips for ordering & matching */
+.chip-row{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:1vh auto;}
+.chip{border:0;border-radius:12px;background:#fff;color:var(--c5);font:700 1rem 'Mali',cursive;
+  padding:.5em 1em;box-shadow:0 3px 0 #dfe6e9;cursor:pointer;transition:transform .12s;}
+.chip:hover{background:#eaf2ff;transform:translateY(-2px);}
+.chip.picked{background:var(--c3);color:#fff;box-shadow:0 3px 0 #0a9bc4;}
+.chip.done{background:var(--c4);color:#fff;box-shadow:0 3px 0 #14a37f;cursor:default;opacity:.75;}
+.chip.done:hover{transform:none;}
+.chip.miss{animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.slot-row{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;align-items:center;
+  min-height:3em;background:#fff;border:3px dashed var(--c3);border-radius:12px;padding:.5em;margin:1vh auto;}
+.slot-row:empty::before{content:"Select in the correct order";color:#b2bec3;font-size:.9rem;}
+.slot{background:var(--c5);color:#fff;border-radius:10px;padding:.4em .8em;font-weight:700;font-size:.95rem;}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="topics"></div>
+<div id="today-score" aria-live="polite">
+  <div class="score-label">คะแนนการเรียนวันนี้</div>
+  <div><span class="score-stars">⭐ ⭐ ⭐ ⭐ ⭐</span><span class="score-count">5 / 5</span></div>
+</div>
+<div id="lives" aria-live="polite" class="hidden">
+  <svg viewBox="0 0 120 90" aria-label="Hangman progress">
+    <path class="hang-base" d="M8 84H112M26 84V8H78M26 20L39 8M78 8V20"/>
+    <circle class="hang-part" cx="78" cy="29" r="9"/>
+    <path class="hang-part" d="M78 38V60"/>
+    <path class="hang-part" d="M78 44L64 52"/>
+    <path class="hang-part" d="M78 44L92 52"/>
+    <path class="hang-part" d="M78 60L66 76"/>
+    <path class="hang-part" d="M78 60L90 76"/>
+  </svg>
+  <div class="hang-status"><strong>Hangman 0 / 6</strong></div>
+</div>
+<div id="game-over" role="dialog" aria-modal="true" aria-live="assertive">
+  <div class="game-over-card">
+    <h2>GAME OVER</h2>
+    <p class="lead">Hangman ครบแล้ว วันนี้ดาวลดลง 1 แต้ม</p>
+    <button type="button" class="exit-game" id="exit-game">ออก</button>
+  </div>
+</div>
+<div id="deck">
+
+<!-- ============================================================ -->
+<!-- CHAPTER 7 — ROUNDING AND DECIMALS                            -->
+<!-- ============================================================ -->
+
+<!-- SLIDE 1 — Title -->
+<section class="slide bg-title active" data-topic="Start">
+  <div class="floater f1"><svg viewBox="0 0 100 100"><polygon points="50,5 95,90 5,90" fill="#fff"/></svg></div>
+  <div class="floater f2"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="18" fill="#fff"/></svg></div>
+  <div class="floater f3"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#fff"/></svg></div>
+  <div class="floater f4"><svg viewBox="0 0 100 100"><polygon points="50,5 61,38 95,38 67,58 78,90 50,70 22,90 33,58 5,38 39,38" fill="#fff"/></svg></div>
+  <span class="eyebrow">Stage 7 Mathematics</span>
+  <h1 class="title">🔢 Maths Adventure 🔢</h1>
+  <span class="bigemoji" style="animation-delay:.6s">➗ ✖️ 🔟</span>
+  <p class="lead" style="color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.4)">Chapter 7: Rounding & Decimals</p>
+  <div class="scrollhint">use ◀ ▶ arrows or click to explore ↓</div>
+</section>
+
+<!-- SLIDE 2 — Chapter 7 divider -->
+<section class="slide bg-section" data-topic="Start">
+  <div class="divider-num">7</div>
+  <h1 class="title">🔢 Rounding & Decimals 🔢</h1>
+  <p class="lead" style="color:#fff">Powers of 10, rounding, adding & multiplying</p>
+</section>
+
+<!-- SLIDE 3 — Ch7 objectives -->
+<section class="slide bg-ch7" data-topic="Start">
+  <div class="card center">
+    <span class="exercise-num" style="background:var(--c5)">🎯 Learning Goals</span>
+    <h2 class="heading">You will learn how to…</h2>
+    <ul class="pretty check reveal">
+      <li>Multiply & divide by powers of 10 using place value.</li>
+      <li>Round numbers to a given number of decimal places.</li>
+      <li>Estimate, add & subtract positive and negative decimals.</li>
+      <li>Estimate, multiply & divide decimals by whole numbers.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 4 — Ch7 starting point -->
+<section class="slide bg-ch7" data-topic="Start">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">💭 Do you remember?</span>
+    <h2 class="heading">Starting Point</h2>
+    <ul class="pretty star reveal">
+      <li>Multiply & divide by 10, 100, 1000? e.g. <span class="math">450 ÷ 1000</span></li>
+      <li>Round to nearest tenth or whole? e.g. <span class="math">3.77 → ?</span></li>
+      <li>Add & subtract decimals? e.g. <span class="math">3.8 + 1.45</span></li>
+      <li>Multiply decimals? e.g. <span class="math">8.4 × 13</span></li>
+      <li>Divide decimals? e.g. <span class="math">2.64 ÷ 12</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 5 — Getting started 7.0 -->
+<section class="slide bg-ch7" data-topic="Start">
+  <div class="card">
+    <h2 class="heading">7.0 Getting Started 🎲</h2>
+    <p class="lead">Use the digits <strong>1, 2, 3 and 4</strong> once each to complete the addition.</p>
+    <div class="reveal center">
+      <span class="math">_._ + _._ = ?</span>
+    </div>
+    <div class="reveal center">
+      <span class="pill c1">Highest result?</span>
+      <span class="pill c2">Lowest result?</span>
+      <span class="pill c3">Closest to 5?</span>
+      <span class="pill c4">How many results?</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6 — 7.1 section -->
+<section class="slide bg-section" data-topic="7.1 Powers of 10">
+  <div class="divider-num">7.1</div>
+  <h1 class="title">Powers of 10</h1>
+  <p class="lead" style="color:#fff">Multiply & divide by 10ⁿ</p>
+</section>
+
+<!-- SLIDE 7 — Key term power/index -->
+<section class="slide bg-ch7" data-topic="7.1 Powers of 10">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📖 Key Terms</span>
+    <h2 class="heading">Powers & Indices</h2>
+    <div class="keyterm reveal">
+      <div class="kt-label">Definition</div>
+      <p class="lead">A <strong>power or index</strong> tells you how many copies of a number to multiply together.</p>
+    </div>
+    <div class="reveal center">
+      <span class="math">10⁴ = 10 × 10 × 10 × 10 = 10 000</span>
+    </div>
+    <div class="tipbox reveal"><div class="tt-label">Tip</div><p class="lead">10¹ = 10 and 10⁰ = 1.</p></div>
+    <div class="didthink reveal"><div class="dt-label">Did you know?</div><p class="lead">10¹⁰⁰ is called a <strong>googol</strong>. The search engine Google was named after this huge number! 🔍</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 8 — Worked example 1 (7.1) -->
+<section class="slide bg-ch7" data-topic="7.1 Powers of 10">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">✏️ Worked Example 1</span>
+    <h2 class="heading">Multiply & Divide by 10ⁿ</h2>
+    <div class="reveal center">
+      <span class="math">a) 10⁰</span><span class="math">b) 10⁴</span><span class="math">c) 1000 as power</span>
+    </div>
+    <div class="reveal center">
+      <span class="math">d) 36 × 10⁴</span><span class="math">e) 0.036 × 10⁴</span><span class="math">f) 0.2 ÷ 10⁴</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9 — Worked example 1 answers -->
+<section class="slide bg-ch7" data-topic="7.1 Powers of 10">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c4)">✅ Answers</span>
+    <h2 class="heading">Worked Example 1 — Solution</h2>
+    <div class="reveal center">
+      <span class="math">a) 10⁰ = 1</span>
+      <span class="math">b) 10⁴ = 10 000</span>
+      <span class="math">c) 1000 = 10³</span>
+    </div>
+    <div class="reveal center">
+      <span class="math">d) 36 × 10⁴ = 360 000</span>
+    </div>
+    <div class="reveal center">
+      <span class="math">e) 0.036 × 10⁴ = 360</span>
+      <span class="math">f) 0.2 ÷ 10⁴ = 0.00002</span>
+    </div>
+    <div class="tipbox reveal"><div class="tt-label">Method</div><p class="lead">Multiplying moves digits <strong>left</strong>; dividing moves digits <strong>right</strong>. Fill gaps with zeros.</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 9b — Quick answer quiz -->
+<section class="slide bg-ch7" data-topic="7.1 Powers of 10">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c4)">📝 Quick Check</span>
+    <h2 class="heading">Answer Using the Number Pad</h2>
+    <p class="small">Each wrong answer costs one life. After three misses, the answer is shown.</p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"36 × 10⁴ = ?","a":"360000"},
+      {"q":"0.036 × 10⁴ = ?","a":"360"},
+      {"q":"0.2 ÷ 10⁴ = ?","a":"0.00002"}
+    ]'></div>
+  </div>
+</section>
+
+<section class="slide bg-ch7" data-topic="7.1 Powers of 10">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.1 · Q1–2</span>
+    <h2 class="heading">Powers ⇄ Ordinary Numbers</h2>
+    <p class="small">Write each value in ordinary form or as a power of 10.</p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"Q1 a) 10⁷ = ?","a":"10000000"},
+      {"q":"Q1 b) 10⁶ = ?","a":"1000000"},
+      {"q":"Q1 c) 10⁵ = ?","a":"100000"},
+      {"q":"Q2 a) 10 × 10 = 10ⁿ. Find n.","a":"2","hint":"Enter the exponent only"},
+      {"q":"Q2 b) 10 × 10 × 10 × 10 × 10 = 10ⁿ. Find n.","a":"5","hint":"Enter the exponent only"},
+      {"q":"Q2 c) 10 000 = 10ⁿ. Find n.","a":"4","hint":"Enter the exponent only"},
+      {"q":"Q2 d) 1000 = 10ⁿ. Find n.","a":"3","hint":"Enter the exponent only"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 11 — Exercise 7.1 Q3 -->
+<section class="slide bg-ch7" data-topic="7.1 Powers of 10">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.1 · Q3–4</span>
+    <h2 class="heading">Find the Values 🔢</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) 4 × 10² = ?","a":"400"},
+      {"q":"b) 5.0024 × 1000 = ?","a":"5002.4"},
+      {"q":"c) 56 × 10⁴ = ?","a":"560000"},
+      {"q":"d) 0.25 × 10⁵ = ?","a":"25000"},
+      {"q":"e) 32 × 10³ = ?","a":"32000"},
+      {"q":"f) 0.0098 × 10⁶ = ?","a":"9800"},
+      {"q":"g) 6.8223 × 10⁷ = ?","a":"68223000"},
+      {"q":"h) 72 × 10⁰ = ?","a":"72","hint":" 0  1"},
+      {"type":"order","q":"Q4 Arrange from smallest to largest.","items":["10⁴","10⁵","1000","1 000 000"],
+       "a":["1000","10⁴","10⁵","1 000 000"],"hint":"Compare each power in ordinary form."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 12 — Exercise 7.1 Q5 -->
+<section class="slide bg-ch7" data-topic="7.1 Powers of 10">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.1 · Q5</span>
+    <h2 class="heading">Match Equal Values 🎯</h2>
+    <div class="answer-quiz wide" data-questions='[
+      {"type":"match","q":"Match the three pairs that have equal values.",
+       "chips":["A: 10⁵","B: 4 ÷ 10⁴","C: 0.0004 × 10⁴","D: 0.00004 × 10¹","E: 400 000 ÷ 10⁴","F: 400 × 10³","G: 400 ÷ 10²","H: 0.0004 × 10⁵"],
+       "pairs":[["B","D"],["C","G"],["E","H"]],
+       "hint":"There are three matching pairs. A and F are unmatched."},
+      {"q":"What is the value of A: 10⁵?","a":"100000"},
+      {"q":"What is the value of F: 400 × 10³?","a":"400000"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 13 — Exercise 7.1 Q6-7 reasoning -->
+<section class="slide bg-ch7" data-topic="7.1 Powers of 10">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.1 · Q6–7</span>
+    <h2 class="heading">Reason & Correct 🧠</h2>
+    <div class="answer-quiz" data-questions='[
+      {"type":"choice","q":"Q6 Emily says 4.314 × 10² = 4.31400. Is she correct?",
+       "opts":["Agree","Disagree"],"a":"Disagree",
+       "hint":"Multiplying by 10² moves every digit two places to the left."},
+      {"q":"Q6 What is the correct value of 4.314 × 10²?","a":"431.4","hint":"Multiply by 100."},
+      {"q":"Q7 i) 8 × 10³ = ?","a":"8000"},
+      {"q":"Q7 ii) 2300 ÷ 10³ = ?","a":"2.3"},
+      {"q":"Q7 iii) 10¹ × 10⁰ = ?","a":"10","hint":"10⁰ = 1"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 14 — 7.2 Rounding -->
+<section class="slide bg-section" data-topic="7.2 Rounding">
+  <div class="divider-num">7.2</div>
+  <h1 class="title">Rounding</h1>
+  <p class="lead" style="color:#fff">To decimal places</p>
+</section>
+
+<!-- SLIDE 15 — Key terms decimal place -->
+<section class="slide bg-ch7" data-topic="7.2 Rounding">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📖 Key Terms</span>
+    <h2 class="heading">Decimal Places</h2>
+    <div class="keyterm reveal">
+      <div class="kt-label">Decimal place (d.p.)</div>
+      <p class="lead">A space after the decimal point where you write a digit. <strong>3.142</strong> has <strong>3 d.p.</strong></p>
+    </div>
+    <div class="keyterm reveal" style="background:linear-gradient(135deg,#e8f8ef,#bff5d4);border-left-color:var(--c4)">
+      <div class="kt-label" style="color:var(--c4)">Accurate</div>
+      <p class="lead">Close to the true value. Rounding usually makes a number <strong>less accurate</strong>.</p>
+    </div>
+    <div class="tipbox reveal"><div class="tt-label">Tip</div><p class="lead">1 d.p. = nearest tenth · 2 d.p. = nearest hundredth · 3 d.p. = nearest thousandth.</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 16 — Worked example 2 (rounding) -->
+<section class="slide bg-ch7" data-topic="7.2 Rounding">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">✏️ Worked Example 2</span>
+    <h2 class="heading">Round 9.8257</h2>
+    <p class="lead">a) to 1 d.p. &nbsp; b) to 3 d.p.</p>
+    <div class="reveal center">
+      <span class="math">a) 9.8</span><span class="math">b) 9.826</span>
+    </div>
+    <p class="small reveal">Look at the next digit: 0–4 don't round up; 5–9 round up.</p>
+  </div>
+</section>
+
+<!-- SLIDE 17 — Exercise 7.2 Q1 -->
+<section class="slide bg-ch7" data-topic="7.2 Rounding">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.2 · Q1</span>
+    <h2 class="heading">Round to 1 d.p.</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) Round 0.46 to 1 decimal place.","a":"0.5","hint":"Look at the hundredths digit."},
+      {"q":"b) Round 6.413 to 1 decimal place.","a":"6.4"},
+      {"q":"c) Round 12.389 to 1 decimal place.","a":"12.4"},
+      {"q":"d) Round 21.01 to 1 decimal place.","a":"21.0"},
+      {"q":"e) Round 7.98 to 1 decimal place.","a":"8.0","hint":"Rounding 9 tenths up carries into the ones place."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 18 — Exercise 7.2 Q2 -->
+<section class="slide bg-ch7" data-topic="7.2 Rounding">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.2 · Q2</span>
+    <h2 class="heading">Round to Accuracy</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) 0.386 rounded to 2 decimal places = ?","a":"0.39"},
+      {"q":"b) 72.6088 rounded to 3 decimal places = ?","a":"72.609"},
+      {"q":"c) 1.50923 rounded to 4 decimal places = ?","a":"1.5092"},
+      {"q":"d) 5.55555 rounded to 4 decimal places = ?","a":"5.5556"},
+      {"q":"e) 0.00014 rounded to 4 decimal places = ?","a":"0.0001","hint":" 4 "},
+      {"q":"f) 670.4009 rounded to 3 decimal places = ?","a":"670.401"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 19 — Exercise 7.2 Q3-4 -->
+<section class="slide bg-ch7" data-topic="7.2 Rounding">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.2 · Q3–4</span>
+    <h2 class="heading">Check & Calculate</h2>
+    <p class="lead">Q3  <span class="math">0.068506</span></p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"Q3 Round 0.068506 to 1 decimal place.","a":"0.1","hint":"The hundredths digit is 6, so round up."},
+      {"q":"Q3 Round 0.068506 to 2 decimal places.","a":"0.07"},
+      {"q":"Q3 Round 0.068506 to 3 decimal places.","a":"0.069","hint":"The fourth decimal digit is 5."},
+      {"q":"Q3 Round 0.068506 to 4 decimal places.","a":"0.0685"},
+      {"q":"Q3 Round 0.068506 to 5 decimal places.","a":"0.06851"},
+      {"q":"Q4 Gautam and Amelia both round 6.999 incorrectly. What is 6.999 to 2 decimal places?","a":"7.00","hint":"Rounding the hundredths digit causes carrying."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 20 — Exercise 7.2 Q5-6 -->
+<section class="slide bg-ch7" data-topic="7.2 Rounding">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.2 · Q5–6</span>
+    <h2 class="heading">Calculator Problems 🧮</h2>
+    <p class="small">Use a calculator and round each answer to the stated accuracy.</p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"Q5 a) 5 ÷ 16 rounded to 3 decimal places = ?","a":"0.313"},
+      {"q":"Q5 b) 8 ÷ 9 rounded to 3 decimal places = ?","a":"0.889"},
+      {"q":"Q5 c) 15 ÷ 19 rounded to 3 decimal places = ?","a":"0.789"},
+      {"q":"Q5 d) 4.56² rounded to 3 decimal places = ?","a":"20.794","hint":"4.56²  4.56 × 4.56"},
+      {"q":"Q6 a) Seven people share $123.00 equally. How much does each person receive, to the nearest cent?","a":"17.57"},
+      {"q":"Q6 b) A field is 12.82 m by 30.14 m. Find its area to 3 decimal places.","a":"386.395","hint":"Give the answer in m²."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 21 — Double rounding -->
+<section class="slide bg-ch7" data-topic="7.2 Rounding">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c6)">🧩 Thinking Mathematically</span>
+    <h2 class="heading">Double Rounding?</h2>
+    <p class="lead">Helen rounds <span class="math">0.548</span> to 1 d.p. as 0.6:</p>
+    <p class="lead reveal">0.548 → 2 d.p. = 0.55 → 1 d.p. = 0.6</p>
+    <div class="keyterm reveal"><div class="kt-label">Is this correct?</div><p class="lead">Her method is called <strong>"double rounding"</strong>. Many say it's incorrect. Investigate when it agrees and disagrees with proper rounding!</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 22 — 7.3 Add subtract -->
+<section class="slide bg-section" data-topic="7.3 Add/Subtract">
+  <div class="divider-num">7.3</div>
+  <h1 class="title">Add & Subtract Decimals</h1>
+  <p class="lead" style="color:#fff">Including negative numbers</p>
+</section>
+
+<!-- SLIDE 23 — Worked example 3 -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">✏️ Worked Example 3</span>
+    <h2 class="heading">Add & Subtract with Negatives</h2>
+    <div class="reveal center">
+      <span class="math">a) −7.3 + 0.5</span><span class="math">b) 3.2 − 5.9</span>
+    </div>
+    <div class="reveal center">
+      <span class="math">a) = −6.8</span><span class="math">b) = −2.7</span>
+    </div>
+    <div class="tipbox reveal"><div class="tt-label">Tip</div><p class="lead">Use a number line! Start at the first number, then move <strong>right</strong> to add, <strong>left</strong> to subtract.</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 24 — Worked example 4 -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">✏️ Worked Example 4</span>
+    <h2 class="heading">Estimate, Then Find</h2>
+    <div class="reveal center">
+      <span class="math">a) −13.8 − 7.56</span><span class="math">b) 36.18 − 45.62</span>
+    </div>
+    <div class="reveal center">
+      <span class="math">a) = −21.36</span><span class="math">b) = −9.44</span>
+    </div>
+    <div class="keyterm reveal"><div class="kt-label">Method</div><p class="lead">If the answer is negative, swap the order, calculate, then add a minus sign.</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 25 — Exercise 7.3 Q1-2 -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.3 · Q1–2</span>
+    <h2 class="heading">Find the Answers</h2>
+    <p class="small">Calculate each sum or difference.</p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"Q1 a) −0.5 + 3.5 = ?","a":"3","hint":"Start at −0.5 and move 3.5 units to the right."},
+      {"q":"Q1 b) 0.2 − 0.7 = ?","a":"-0.5"},
+      {"q":"Q1 c) −0.3 − 0.5 = ?","a":"-0.8"},
+      {"q":"Q2 a) −2.3 + 2.5 = ?","a":"0.2"},
+      {"q":"Q2 b) 0.4 − 0.7 = ?","a":"-0.3"},
+      {"q":"Q2 c) −0.9 + 1.3 = ?","a":"0.4"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 26 — Exercise 7.3 Q3 -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.3 · Q3</span>
+    <h2 class="heading">Use a Number Line</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) 8.3 + 2.4 = ?","a":"10.7"},
+      {"q":"b) −2.7 − 1.5 = ?","a":"-4.2"},
+      {"q":"c) −4.1 + 6.1 = ?","a":"2"},
+      {"q":"d) 0.6 + (−1) = ?","a":"-0.4","hint":"Adding −1 is the same as subtracting 1."},
+      {"q":"e) −6.3 − (+6.7) = ?","a":"-13"},
+      {"q":"f) 5.8 − (−6.5 + 2.1) = ?","a":"10.2","hint":"First calculate −6.5 + 2.1 = −4.4."},
+      {"q":"g) 1.1 + (−10.5) = ?","a":"-9.4"},
+      {"q":"h) −6.7 − (−3.2) = ?","a":"-3.5","hint":"Subtracting a negative is the same as adding."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 27 — Exercise 7.3 Q4-5 -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.3 · Q4–5</span>
+    <h2 class="heading">Reason & Find</h2>
+    <div class="answer-quiz" data-questions='[
+      {"type":"choice","q":"Q4 Valma says −3.1 + 2.2 = −5.3. Is she correct?",
+       "opts":["Correct","Incorrect"],"a":"Incorrect","hint":"The numbers have different signs, so compare their magnitudes."},
+      {"q":"Q4 What is the correct value of −3.1 + 2.2?","a":"-0.9"},
+      {"q":"Q5 The difference between two numbers is 4.7. One number is 3.9. How many possible values can the other number have?","a":"2",
+       "hint":"The other number can be above or below 3.9."},
+      {"q":"Q5 What is the possible value greater than 3.9?","a":"8.6"},
+      {"q":"Q5 What is the possible value less than 3.9?","a":"-0.8"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 28 — Exercise 7.3 Q6-7 -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.3 · Q6–7</span>
+    <h2 class="heading">Calculate Carefully</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"Q6 a) 3.26 + 5.1 = ?","a":"8.36","hint":"Align the decimal points."},
+      {"q":"Q6 b) −6.58 − 3.3 = ?","a":"-9.88"},
+      {"q":"Q6 e) −12.76 − (+6.6) = ?","a":"-19.36"},
+      {"q":"Q6 f) −5.28 − (−5.28) = ?","a":"0"},
+      {"q":"Q7 a) 4.56 − 8.68 = ?","a":"-4.12"},
+      {"q":"Q7 c) −8.4 + 9.47 = ?","a":"1.07"},
+      {"q":"Q7 d) 7.8 − (2.2 + 8.65) = ?","a":"-3.05","hint":"First calculate 2.2 + 8.65 = 10.85."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 29 — Exercise 7.3 Q8 mistakes -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.3 · Q8</span>
+    <h2 class="heading">Find the Mistakes! 🔍</h2>
+    <p class="small">Each displayed calculation is incorrect. Enter the correct answer.</p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) Correct the calculation: 34.57 + 49.37 = 275.414","a":"83.94",
+       "hint":"Align the decimal points before adding."},
+      {"q":"b) Correct the calculation: 204.65 + 39.37 = 243.102","a":"244.02"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 30 — Three students -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.3 · Q9</span>
+    <h2 class="heading">Who is Right? 🙋‍♀️</h2>
+    <p class="lead" style="font-size:1rem"> <span class="math" style="font-size:1.2rem">6.57 − 9.23</span><br>
+      <strong>Habiba</strong>  → −15.8 · <strong>James</strong>  → −3.34 · <strong>Kiyoko</strong>  → 2.66</p>
+    <div class="answer-quiz" data-questions='[
+      {"type":"choice","q":"Which student has the correct answer?","opts":["Habiba","James","Kiyoko","None of them"],
+       "a":"None of them","hint":"The result must be negative and have magnitude 9.23 − 6.57."},
+      {"q":"What is the correct value of 6.57 − 9.23?","a":"-2.66",
+       "hint":"Calculate 9.23 − 6.57, then attach a minus sign."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 31 — Word problems -->
+<section class="slide bg-ch7" data-topic="7.3 Add/Subtract">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.3 · Q11 Word Problems</span>
+    <h2 class="heading">Real-Life Decimals 🌍</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) A room is 22.3°C, cools by 3.5°C, then warms by 4.1°C. What is the new temperature?","a":"22.9"},
+      {"q":"b) Adelaide is 28.2°C and Ulaanbaatar is −19.4°C. What is the temperature difference?","a":"47.6",
+       "hint":"Calculate 28.2 − (−19.4)."},
+      {"q":"c) Lowtown is at −8.9 m. Highville is 127.3 m higher. What is the elevation of Highville?","a":"118.4"},
+      {"q":"d) Mishal runs in 11.36 s. Keira is 0.4 s faster. What time does Keira take?","a":"10.96"},
+      {"q":"d) Seema takes 1.09 s longer than Keira. What time does Seema take?","a":"12.05"},
+      {"q":"d) What is the sum of the three race times?","a":"34.37","hint":"11.36 + 10.96 + 12.05"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 32 — 7.4 Multiply divide -->
+<section class="slide bg-section" data-topic="7.4 Multiply/Divide">
+  <div class="divider-num">7.4</div>
+  <h1 class="title">Multiply & Divide Decimals</h1>
+  <p class="lead" style="color:#fff">Written methods</p>
+</section>
+
+<!-- SLIDE 33 — Key terms dividend -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📖 Key Terms</span>
+    <h2 class="heading">Division Words</h2>
+    <div class="keyterm reveal">
+      <div class="kt-label">In 56 ÷ 10 = 5 r 6</div>
+      <p class="lead"><strong>Dividend</strong> = 56 (number you divide)<br><strong>Divisor</strong> = 10 (number you divide by)<br><strong>Quotient</strong> = 5 (the answer)<br><strong>Remainder</strong> = 6</p>
+    </div>
+    <div class="reveal center">
+      <span class="pill c2">Short division — remainders in your head</span>
+      <span class="pill c3">Long division — remainders on paper</span>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 34 — Worked example 5 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">✏️ Worked Example 5</span>
+    <h2 class="heading">Multiply a Decimal</h2>
+    <div class="reveal center"><span class="math">Estimate & calculate: 41.23 × 207</span></div>
+    <div class="reveal center">
+      <span class="math">Estimate: 40 × 200 = 8000</span>
+      <span class="math">Answer: 8534.61</span>
+    </div>
+    <div class="tipbox reveal"><div class="tt-label">Method</div><p class="lead">Ignore the decimal point, multiply as integers, then put the decimal point back using the estimate.</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 35 — Worked example 6-7 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">✏️ Worked Examples 6 & 7</span>
+    <h2 class="heading">Divide a Decimal</h2>
+    <div class="reveal center">
+      <span class="math">6) 7.123 ÷ 3 = 2.374 (3 d.p.)</span>
+      <span class="math">7) 81.475 ÷ 25 = 3.259</span>
+    </div>
+    <div class="keyterm reveal"><div class="kt-label">Method</div><p class="lead">Write a decimal point in the answer <strong>above</strong> the decimal point in the dividend.</p></div>
+  </div>
+</section>
+
+<!-- SLIDE 36 — Exercise 7.4 Q1 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.4 · Q1</span>
+    <h2 class="heading">Find the Answers</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) 0.2 × 4 = ?","a":"0.8"},
+      {"q":"b) 9 × 0.06 = ?","a":"0.54"},
+      {"q":"c) 0.006 × 6 = ?","a":"0.036"},
+      {"q":"d) 3.007 × 8 = ?","a":"24.056"},
+      {"q":"e) 0.9 ÷ 3 = ?","a":"0.3"},
+      {"q":"f) 0.56 ÷ 8 = ?","a":"0.07"},
+      {"q":"g) 0.036 ÷ 2 = ?","a":"0.018"},
+      {"q":"h) 0.036 ÷ 12 = ?","a":"0.003"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 37 — Exercise 7.4 Q2 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.4 · Q2</span>
+    <h2 class="heading">Estimate, Then Calculate</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) 3.2 × 31 = ?","a":"99.2","hint":"Estimate: 3 × 30 = 90."},
+      {"q":"b) 7.32 × 41 = ?","a":"300.12"},
+      {"q":"c) −36 × 4.08 = ?","a":"-146.88"},
+      {"q":"d) 9.16 × 83 = ?","a":"760.28"},
+      {"q":"e) 191.2 ÷ 5 = ?","a":"38.24"},
+      {"q":"f) −8.254 ÷ 2 = ?","a":"-4.127"},
+      {"q":"g) 100.008 ÷ 8 = ?","a":"12.501"},
+      {"q":"h) 12.21 ÷ 11 = ?","a":"1.11"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 38 — Exercise 7.4 Q3 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.4 · Q3</span>
+    <h2 class="heading">Mystery Digits 🔎</h2>
+    <p class="lead" style="font-size:1rem"><span class="math" style="font-size:1.2rem">decimal number × integer = 0.072</span><br>
+      The decimal number has exactly <strong>3 digits after the decimal point</strong> and the integer is <strong>less than 13</strong>.</p>
+    <div class="answer-quiz" data-questions='[
+      {"type":"choice","q":"Which list contains every possible integer?",
+       "opts":["1, 2, 3, 4, 6, 8, 9, 12","1, 4, 9, 12","Every integer from 1 to 12","5, 7, 10, 11"],
+       "a":"1, 2, 3, 4, 6, 8, 9, 12","hint":"For each integer n, calculate 0.072 ÷ n and keep results with exactly three decimal digits."},
+      {"q":"If the integer is 1, what is the decimal number?","a":"0.072"},
+      {"q":"If the integer is 4, what is the decimal number?","a":"0.018"},
+      {"q":"If the integer is 9, what is the decimal number?","a":"0.008"},
+      {"q":"If the integer is 12, what is the decimal number?","a":"0.006"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 39 — Exercise 7.4 Q4 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.4 · Q4</span>
+    <h2 class="heading">Estimate, Then Find</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) 63 × 78.5 = ?","a":"4945.5","hint":"Estimate: 60 × 80 = 4800."},
+      {"q":"b) 6.99 × 88 = ?","a":"615.12"},
+      {"q":"c) 11 × 1.111 = ?","a":"12.221"},
+      {"q":"d) 6.21 × (−506) = ?","a":"-3142.26"},
+      {"q":"e) 71.75 ÷ 25 = ?","a":"2.87"},
+      {"q":"f) 54.94 ÷ 41 = ?","a":"1.34"},
+      {"q":"g) −147.52 ÷ 32 = ?","a":"-4.61"},
+      {"q":"h) 349.32 ÷ 71 = ?","a":"4.92"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 40 — Exercise 7.4 Q5-6 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.4 · Q5–6</span>
+    <h2 class="heading">Reason & Compare</h2>
+    <div class="answer-quiz" data-questions='[
+      {"type":"choice","q":"Q5 Owen says 5.62 ÷ 8 is impossible because 8 is greater than 5.62. Is he correct?",
+       "opts":["Correct","Incorrect"],"a":"Incorrect","hint":"A smaller number can be divided by a larger number; the quotient will be between 0 and 1."},
+      {"q":"Q5 What is 5.62 ÷ 8?","a":"0.7025"},
+      {"q":"Q6 What is 78.44 ÷ 37?","a":"2.12"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 41 — Exercise 7.4 Q7-8 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.4 · Q7</span>
+    <h2 class="heading">Round to 3 d.p. 🧮</h2>
+    <p class="small">Estimate first, then calculate and round to 3 decimal places.</p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) 33.82 ÷ 6, to 3 decimal places = ?","a":"5.637"},
+      {"q":"b) 286.41 ÷ 44, to 3 decimal places = ?","a":"6.509"},
+      {"q":"c) −37.91 ÷ 27, to 3 decimal places = ?","a":"-1.404"},
+      {"q":"d) 55.891 ÷ 52, to 3 decimal places = ?","a":"1.075"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 42 — Exercise 7.4 Q9-10 -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c5)">📝 Exercise 7.4 · Q9–10</span>
+    <h2 class="heading">Round the Answer</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"Q9 a) 22.058 ÷ 9, to 1 decimal place = ?","a":"2.5"},
+      {"q":"Q9 b) 13.569 ÷ 8, to 3 decimal places = ?","a":"1.696"},
+      {"q":"Q9 c) 9.0089 ÷ 8, to 4 decimal places = ?","a":"1.1261"},
+      {"q":"Q9 d) 76.03 ÷ 33, to 2 decimal places = ?","a":"2.30"},
+      {"q":"Q9 e) 51.367 ÷ 21, to 2 decimal places = ?","a":"2.45"},
+      {"q":"Q9 f) 65.4321 ÷ 12, to 3 decimal places = ?","a":"5.453"},
+      {"type":"choice","q":"Q10 In 72 ÷ 10 = 7 remainder 2, what is 72?",
+       "opts":["dividend","divisor","quotient","remainder"],"a":"dividend","hint":"It is the number being divided."},
+      {"type":"choice","q":"Q10 In 72 ÷ 10 = 7 remainder 2, what is 10?",
+       "opts":["dividend","divisor","quotient","remainder"],"a":"divisor","hint":""},
+      {"type":"choice","q":"Q10 In 72 ÷ 10 = 7 remainder 2, what is 7?",
+       "opts":["dividend","divisor","quotient","remainder"],"a":"quotient","hint":"It is the whole-number result."},
+      {"type":"choice","q":"Q10 In 72 ÷ 10 = 7 remainder 2, what is 2?",
+       "opts":["dividend","divisor","quotient","remainder"],"a":"remainder","hint":""}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 43 — Lattice multiplication -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card center">
+    <span class="exercise-num" style="background:var(--c6)">🧩 Thinking Mathematically</span>
+    <h2 class="heading">Lattice Multiplication 🔲</h2>
+    <p class="lead">An alternative to long multiplication! Here is 47 × 32 = 1504:</p>
+    <p class="lead reveal">Can you adapt it for <strong>4.7 × 32</strong> or <strong>0.47 × 32</strong>? Describe your method!</p>
+  </div>
+</section>
+
+<!-- SLIDE 44 — Consolidation ch7 -->
+<section class="slide bg-review" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c7)">📋 Consolidation Exercise</span>
+    <h2 class="heading">Powers of Ten</h2>
+    <div class="answer-quiz" data-questions='[
+      {"type":"choice","q":"Q1 Can 100 be written as an integer power of 10?","opts":["Yes","No"],"a":"Yes","hint":"100 = 10²."},
+      {"type":"choice","q":"Q1 Can 11 000 be written as an integer power of 10?","opts":["Yes","No"],"a":"No","hint":"An integer power of 10 has one 1 followed by zeros."},
+      {"type":"choice","q":"Q1 Can 10 000 be written as an integer power of 10?","opts":["Yes","No"],"a":"Yes","hint":"10 000 = 10⁴."},
+      {"type":"choice","q":"Q1 Can 100 000 be written as an integer power of 10?","opts":["Yes","No"],"a":"Yes","hint":"100 000 = 10⁵."},
+      {"type":"choice","q":"Q1 Can 10 000 000 be written as an integer power of 10?","opts":["Yes","No"],"a":"Yes","hint":"10 000 000 = 10⁷."},
+      {"type":"choice","q":"Q1 Can 101 000 be written as an integer power of 10?","opts":["Yes","No"],"a":"No","hint":"It has more than one non-zero digit."},
+      {"type":"choice","q":"Q2 a) Multiplying a number by 10 gives an answer ending in 0.","opts":["Always","Sometimes","Never"],"a":"Sometimes","hint":"It is true for integers, but not for every decimal number."},
+      {"type":"choice","q":"Q2 b) Dividing by 10 twice is the same as dividing by 100.","opts":["Always","Sometimes","Never"],"a":"Always","hint":"10 × 10 = 100."},
+      {"type":"choice","q":"Q2 c) Multiplying by 10² and then by 10³ is the same as multiplying by 10 000.","opts":["Always","Sometimes","Never"],"a":"Sometimes","hint":"The first method multiplies by 10⁵ = 100 000. Both give the same result only when the starting number is 0."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 45 — Odd one out -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c7)">📋 Consolidation · Q3</span>
+    <h2 class="heading">Odd One Out 🤔</h2>
+    <div class="answer-quiz" data-questions='[
+      {"q":"a) 2.3 × 10² = ?","a":"230"},
+      {"q":"b) 23 000 ÷ 10 = ?","a":"2300"},
+      {"q":"c) 0.23 × 10³ = ?","a":"230"},
+      {"q":"d) 23 × 10 = ?","a":"230"},
+      {"type":"choice","q":"Which calculation is the odd one out?","opts":["a) 2.3 × 10²","b) 23 000 ÷ 10","c) 0.23 × 10³","d) 23 × 10"],
+       "a":"b) 23 000 ÷ 10","hint":"The other three answers are 230."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 46 — Matching numbers -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c7)">📋 Consolidation · Q4</span>
+    <h2 class="heading">Complete the Rounding Statements 🧩</h2>
+    <div class="answer-quiz" data-questions='[
+      {"type":"choice","q":"Which number rounds to 24 to the nearest integer?","opts":["23.951","23.049","23.482","23.488"],"a":"23.951","hint":"Use each of the ten numbers once across the five statements."},
+      {"type":"choice","q":"Which pair is correct to 1 decimal place?","opts":["23.049 → 23.0","23.488 → 23.49","23.482 → 23.48","23.951 → 24"],"a":"23.049 → 23.0","hint":""},
+      {"type":"choice","q":"Which other pair is correct to 1 decimal place?","opts":["23.999 → 24.0","23.488 → 23.49","23.482 → 23.48","23.951 → 24"],"a":"23.999 → 24.0","hint":""},
+      {"type":"choice","q":"Which pair is correct to 2 decimal places?","opts":["23.488 → 23.49","23.049 → 23.0","23.999 → 24.0","23.951 → 24"],"a":"23.488 → 23.49","hint":""},
+      {"type":"choice","q":"Which other pair is correct to 2 decimal places?","opts":["23.482 → 23.48","23.049 → 23.0","23.999 → 24.0","23.951 → 24"],"a":"23.482 → 23.48","hint":""}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 47 — Match calculations -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c7)">📋 Consolidation · Q6–7</span>
+    <h2 class="heading">Match Same Answers 🔗</h2>
+    <div class="answer-quiz wide" data-questions='[
+      {"type":"match","q":"Q6 Match the three pairs of calculations with equal answers.",
+       "chips":["A: −6.84 + 2.15","B: −2.15 + 6.84","C: −6.84 − 2.15","D: 6.84 − 2.15","E: −(6.84 − 2.15)","F: −(6.84 + 2.15)"],
+       "pairs":[["A","E"],["B","D"],["C","F"]],
+       "hint":"Evaluate the signs carefully."},
+      {"q":"Q7 a) Vesna has $56.22 and spends $82.45. What is her new bank balance?","a":"-26.23","hint":"Calculate 56.22 − 82.45."},
+      {"q":"Q7 b) Mars temperatures were −100.9°C and −24.6°C. What is the difference?","a":"76.3","hint":"Calculate −24.6 − (−100.9)."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 48 — Pyramid puzzle -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c7)">📋 Consolidation · Q8–9</span>
+    <h2 class="heading">Pyramid Puzzle 🔺</h2>
+    <p class="lead" style="font-size:1rem">Each block is the sum of the two blocks directly below it.</p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"Q8 Bottom row: −0.86, ?, 2.62, ?. The middle block above the first three is 0.12. Find the second bottom number.","a":"-2.5","hint":"? + 2.62 = 0.12."},
+      {"q":"Q8 Find the left block in the row above the bottom.","a":"-3.36","hint":"−0.86 + (−2.5)."},
+      {"q":"Q8 The right block in the next row is −0.263. Find the right block in the row of three.","a":"-0.383","hint":"0.12 + ? = −0.263."},
+      {"q":"Q8 Find the fourth number in the bottom row.","a":"-3.003","hint":"2.62 + ? = −0.383."},
+      {"q":"Q8 Find the left block in the row of two.","a":"-3.24","hint":"−3.36 + 0.12."},
+      {"type":"choice","q":"Q9 Given 14.37 × 103 = 1480.11, must 1.437 × 103 = 148.011 also be true?","opts":["Yes","No"],"a":"Yes","hint":"The first factor is divided by 10, so the product is divided by 10."},
+      {"type":"choice","q":"Q9 Must 143.7 × 10.3 = 1480.11 also be true?","opts":["Yes","No"],"a":"Yes","hint":"One factor is multiplied by 10 while the other is divided by 10."},
+      {"type":"choice","q":"Q9 Must 0.1437 × 1030 = 14.8011 also be true?","opts":["Yes","No"],"a":"No","hint":"The product is 148.011."},
+      {"type":"choice","q":"Q9 Must 1480.11 ÷ 10.3 = 143.7 also be true?","opts":["Yes","No"],"a":"Yes","hint":"This reverses the multiplication."},
+      {"type":"choice","q":"Q9 Must 148.011 ÷ 1437 = 0.103 also be true?","opts":["Yes","No"],"a":"Yes","hint":"1437 × 0.103 = 148.011."},
+      {"type":"choice","q":"Q9 Must 103 ÷ 14.37 = 1480.11 also be true?","opts":["Yes","No"],"a":"No","hint":"Division is not commutative."}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 49 — Jenni's puzzle -->
+<section class="slide bg-ch7" data-topic="7.4 Multiply/Divide">
+  <div class="card center">
+    <span class="exercise-num" style="background:var(--c6)">🧩 Challenge · Q10</span>
+    <h2 class="heading">Jenni's Mystery ✨</h2>
+    <p class="lead" style="font-size:1rem">Jenni multiplies a <strong>decimal number</strong> by a <strong>single-digit whole number</strong>. Her answer is 0.32.</p>
+    <div class="center"><span class="math">? × ? = 0.32</span></div>
+    <div class="answer-quiz" data-questions='[
+      {"q":"If the whole number is 8, what decimal number could Jenni use?","a":"0.04","hint":"Calculate 0.32 ÷ 8."},
+      {"q":"If the whole number is 4, what decimal number could Jenni use?","a":"0.08"},
+      {"q":"If the whole number is 2, what decimal number could Jenni use?","a":"0.16"},
+      {"q":"If the whole number is 5, what decimal number could Jenni use?","a":"0.064"},
+      {"q":"If the whole number is 1, what decimal number could Jenni use?","a":"0.32"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 50 — Chapter 7 reflection -->
+<section class="slide bg-section" data-topic="Reflection">
+  <div class="divider-num">7</div>
+  <h1 class="title">You Should Now…</h1>
+</section>
+
+<!-- SLIDE 51 — Ch7 summary key ideas -->
+<section class="slide bg-review" data-topic="Reflection">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c4)">⭐ Chapter 7 Reflection</span>
+    <h2 class="heading">Key Ideas 🔑</h2>
+    <ul class="pretty check reveal">
+      <li>Multiplying by 10ⁿ = multiplying by ten <strong>n times</strong>.</li>
+      <li>To estimate, round each number so you can calculate mentally.</li>
+      <li>If an answer is negative, swap order, calculate, add a minus sign.</li>
+      <li>For long multiplication with a decimal: ignore the point, multiply, then place the point.</li>
+      <li>For division to n d.p., work out <strong>one extra digit</strong> to decide rounding.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 52 — Ch7 skills checklist -->
+<section class="slide bg-review" data-topic="Reflection">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c4)">✅ Skills Checklist</span>
+    <h2 class="heading">You Should Be Able To…</h2>
+    <ul class="pretty check reveal">
+      <li>Multiply & divide integers and decimals by powers of 10.</li>
+      <li>Estimate adding & subtracting decimals.</li>
+      <li>Estimate multiplying or dividing a decimal by an integer.</li>
+      <li>Add & subtract decimals (including negative answers).</li>
+      <li>Multiply a decimal by an integer.</li>
+      <li>Divide a decimal by a 1- or 2-digit integer.</li>
+      <li>Divide and write the answer to a specified number of d.p.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 53 — Self-check -->
+<section class="slide bg-review" data-topic="Reflection">
+  <div class="card">
+    <span class="exercise-num" style="background:var(--c7)">✍️ Check Yourself</span>
+    <h2 class="heading">Can You…?</h2>
+    <p class="small">End-of-chapter quiz covering all Chapter 7 skills</p>
+    <div class="answer-quiz" data-questions='[
+      {"q":"1) 52 × 10³ = ?","a":"52000"},
+      {"q":"2) 0.036 × 10⁵ = ?","a":"3600"},
+      {"q":"3) 17 ÷ 10⁴ = ?","a":"0.0017"},
+      {"q":"4) 12.79 ÷ 10² = ?","a":"0.1279"},
+      {"q":"5) −3.28 + (−4.51) = ?","a":"-7.79"},
+      {"q":"6) 22.4 − 38.07 = ?","a":"-15.67"},
+      {"q":"7) 17.82 × 10⁷ = ?","a":"178200000"},
+      {"q":"8) 36.85 ÷ 17 = ? (3 decimal places)","a":"2.168"}
+    ]'></div>
+  </div>
+</section>
+
+<!-- SLIDE 54 — Final celebration -->
+<section class="slide bg-title" data-topic="Reflection">
+  <div class="floater f1"><svg viewBox="0 0 100 100"><polygon points="50,5 95,90 5,90" fill="#fff"/></svg></div>
+  <div class="floater f2"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#fff"/></svg></div>
+  <div class="floater f3"><svg viewBox="0 0 100 100"><polygon points="50,5 61,38 95,38 67,58 78,90 50,70 22,90 33,58 5,38 39,38" fill="#fff"/></svg></div>
+  <span class="bigemoji">🎉 🎊 🌟</span>
+  <h1 class="title">Well Done!</h1>
+  <p class="lead" style="color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.4)">You mastered decimals and rounding!<br><a href="chapter6.html" style="color:#fff;text-decoration:underline">← Back to Chapter 6: Symmetry</a></p>
+</section>
+
+</div><!-- /deck -->
+
+<!-- ============ NAV ============ -->
+<div id="nav">
+  <button class="navbtn" id="first" title="First">⏮</button>
+  <button class="navbtn" id="prev" title="Previous">◀</button>
+  <div id="counter">1 / 1</div>
+  <button class="navbtn" id="next" title="Next">▶</button>
+  <button class="navbtn" id="last" title="Last">⏭</button>
+</div>
+
+<script>
+/* Rev2: keep one opening slide. 7.1–7.2 are revision exercises only;
+   their teaching, worked-example and section-divider slides were already taught. */
+document.querySelectorAll('.slide').forEach((slide,index)=>{
+  const topic=slide.dataset.topic||'';
+  const isRevisionExercise=slide.querySelector('.exercise-num')?.textContent.includes('Exercise 7.');
+  if((topic==='Start'&&index>0) ||
+     ((topic.startsWith('7.1')||topic.startsWith('7.2'))&&!isRevisionExercise)){
+    slide.remove();
+  }
+});
+const slides=document.querySelectorAll('.slide');
+let cur=0;
+const total=slides.length;
+const counter=document.getElementById('counter');
+const progress=document.getElementById('progress');
+
+/* ---- Build topic bookmark bar ---- */
+const topicMap=new Map();      // topic name -> first slide index
+const topicOrder=[];
+slides.forEach((s,idx)=>{
+  const t=s.dataset.topic;
+  if(t && !topicMap.has(t)){topicMap.set(t,idx);topicOrder.push(t);}
+});
+const topicsBar=document.getElementById('topics');
+topicOrder.forEach(t=>{
+  const pill=document.createElement('div');
+  pill.className='topic-pill';
+  pill.textContent=t;
+  pill.dataset.start=topicMap.get(t);
+  pill.onclick=()=>show(parseInt(pill.dataset.start));
+  topicsBar.appendChild(pill);
+});
+
+function show(i){
+  if(i<0)i=0; if(i>=total)i=total-1;
+  slides.forEach((s,idx)=>{
+    s.classList.remove('active','prev');
+    if(idx===i)s.classList.add('active');
+    else if(idx<i)s.classList.add('prev');
+  });
+  cur=i;
+  counter.textContent=(i+1)+' / '+total;
+  progress.style.width=((i+1)/total*100)+'%';
+  // update active topic
+  let activeStart=-1;
+  topicOrder.forEach(t=>{if(topicMap.get(t)<=i)activeStart=topicMap.get(t);});
+  document.querySelectorAll('.topic-pill').forEach(p=>{
+    p.classList.toggle('active',parseInt(p.dataset.start)===activeStart);
+  });
+  if(window.onSlideShown)window.onSlideShown(slides[i]);
+}
+document.getElementById('prev').onclick=()=>show(cur-1);
+document.getElementById('next').onclick=()=>show(cur+1);
+document.getElementById('first').onclick=()=>show(0);
+document.getElementById('last').onclick=()=>show(total-1);
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);
+  if(e.key==='Home')show(0);
+  if(e.key==='End')show(total-1);
+});
+
+// click left/right half of screen to navigate (not on buttons/cards/topics)
+document.getElementById('deck').addEventListener('click',e=>{
+  if(e.target.closest('#nav')||e.target.closest('.card')||e.target.closest('button')||e.target.closest('#topics'))return;
+  const x=e.clientX/window.innerWidth;
+  if(x<0.3)show(cur-1); else show(cur+1);
+});
+
+show(0);
+
+/* ============================================================ */
+/* DOT WALK — animated decimal-point mover                      */
+/* ============================================================ */
+/* Each .dw-prob carries a data-dw JSON with:
+   digits: array of single characters (may include '0' padding)
+   op: "×" (multiply → dot moves right) or "÷" (divide → dot moves left)
+   by: string label, e.g. "10⁴"
+   from: dot start position index (between digits; 0 = before first)
+   to:   dot end position index
+   padL / padR (optional): number of leading/trailing pad cells to show
+*/
+(function buildDotWalk(){
+  // The decimal-point animation has been retired; the slide now uses the keypad quiz below.
+  return;
+  document.querySelectorAll('.dw-prob').forEach(prob=>{
+    const cfg=JSON.parse(prob.dataset.dw);
+    const cellsEl=prob.querySelector('.dw-cells');
+    const dotEl =prob.querySelector('.dw-dot');
+    const dirEl =prob.querySelector('.dw-dir');
+    const playBtn=prob.querySelector('.dw-play');
+
+    // Pad digits array so the track shows the full range of motion
+    const padL=cfg.padL||0;
+    const padR=cfg.padR||0;
+    const display=[];
+    for(let i=0;i<padL;i++) display.push({d:'0',pad:true});
+    cfg.digits.forEach(ch=>display.push({d:ch,pad:false}));
+    for(let i=0;i<padR;i++) display.push({d:'0',pad:true});
+
+    // Build cells
+    display.forEach(item=>{
+      const c=document.createElement('div');
+      c.className='dw-cell'+(item.pad?' pad':'');
+      c.textContent=item.d;
+      cellsEl.appendChild(c);
+    });
+
+    // Position helper: position index i (0..display.length) → left offset in px
+    function posLeft(i){
+      const cw=cellsEl.firstChild.getBoundingClientRect().width;
+      return i*cw + cw/2;
+    }
+    // Number of steps between from and to (account for padding)
+    const fromIdx=padL+cfg.from;
+    const toIdx  =padL+cfg.to;
+    const steps=Math.abs(toIdx-fromIdx);
+    const dir = (cfg.op==='×') ? +1 : -1;  // × moves right, ÷ moves left
+
+    // Place dot initially
+    function placeDot(i){
+      dotEl.style.left=posLeft(i)+'px';
+    }
+    placeDot(fromIdx);
+    dirEl.textContent='';
+
+    let timers=[];
+    function clearTimers(){timers.forEach(clearTimeout);timers=[];}
+
+    playBtn.addEventListener('click',()=>{
+      if(playBtn.classList.contains('playing'))return;
+      clearTimers();
+      prob.classList.add('started');
+      playBtn.classList.add('playing');
+      playBtn.textContent='… Play';
+      placeDot(fromIdx);
+      dirEl.textContent='';
+      let step=0;
+      for(let s=1;s<=steps;s++){
+        timers.push(setTimeout(()=>{
+          step++;
+          placeDot(fromIdx+dir*step);
+          dirEl.textContent = (dir>0?'→  () ':'←  () ')+step+' ';
+          if(step===steps){
+            playBtn.classList.remove('playing');
+            playBtn.textContent='▶ Play again';
+            const n=steps;
+            dirEl.textContent = (dir>0?'✅  ':'✅  ')+n+'  = ';
+          }
+        },s*700));
+      }
+    });
+  });
+})();
+
+/* ============================================================ */
+/* INTERACTIVE QUIZZES                                          */
+/* ============================================================ */
+/* Every .answer-quiz builds its own widget from a data-questions
+   JSON array. Each entry picks an input type:
+     numeric (default) — numpad; answers compared as numbers, so
+                         "400" and "400.0" both pass
+     choice            — one button per option
+     order             — tap items into the right sequence
+     match             — tap two chips that belong together
+   Rev2 uses one shared six-part Hangman for the whole page.
+   Moving between questions or slides never resets a wrong answer. */
+(function setupQuizzes(){
+  const livesEl=document.getElementById('lives');
+  const gameOverEl=document.getElementById('game-over');
+  const scoreStarsEl=document.querySelector('#today-score .score-stars');
+  const scoreCountEl=document.querySelector('#today-score .score-count');
+  document.getElementById('exit-game').onclick=()=>{
+    gameOverEl.classList.remove('show');
+    render(0);
+  };
+  const MAX_MISSES=6;
+  let misses=0,gameOver=false;
+
+  const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!=null)n.textContent=txt;return n;};
+  /* Strip spaces/commas and fold the various unicode minus signs onto '-'. */
+  const clean=s=>String(s).replace(/[\s, ]/g,'').replace(/[−–—]/g,'-');
+  const numEq=(a,b)=>{
+    const x=Number(clean(a)),y=Number(clean(b));
+    return Number.isFinite(x)&&Number.isFinite(y)&&Math.abs(x-y)<1e-9;
+  };
+  const same=(a,b)=>numEq(a,b)||clean(a)===clean(b);
+
+  const quizzes=[...document.querySelectorAll('.answer-quiz')].map(quiz=>{
+    const questions=JSON.parse(quiz.dataset.questions);
+    let idx=0,typed='',seq=[],picked=null,solved=[],locked=false;
+
+    const steps=el('div','quiz-steps'),prompt=el('div','quiz-prompt'),
+          hint=el('div','quiz-hint'),body=el('div','quiz-body'),
+          feedback=el('div','quiz-feedback');
+    quiz.append(steps,prompt,hint,body,feedback);
+
+    const say=(msg,colour)=>{feedback.textContent=msg;feedback.style.color=colour;};
+    const paintLives=()=>{
+      livesEl.querySelectorAll('.hang-part').forEach((part,i)=>part.classList.toggle('shown',i<misses));
+      const title=livesEl.querySelector('.hang-status strong');
+      title.textContent='Hangman '+misses+' / '+MAX_MISSES;
+    };
+
+    /* The printable answer, used when the tries run out. */
+    function solution(q){
+      if(q.type==='order')return q.a.join('  →  ');
+      if(q.type==='match')return q.pairs.map(p=>p.join(' = ')).join(' , ');
+      return q.a;
+    }
+    function advance(){
+      idx++;typed='';seq=[];picked=null;solved=[];locked=true;
+      setTimeout(()=>{locked=false;say('','');render();},180);
+    }
+    function wrong(msg){
+      if(gameOver)return;
+      misses++;paintLives();
+      livesEl.classList.remove('hidden');
+      if(misses>=MAX_MISSES){
+        gameOver=true;
+        locked=true;
+        paintLives();
+        say('GAME OVER · คำตอบคือ '+solution(questions[idx]),'var(--c1)');
+        scoreStarsEl.textContent='⭐ ⭐ ⭐ ⭐ ☆';
+        scoreCountEl.textContent='4 / 5';
+        gameOverEl.classList.add('show');
+      }else say(msg||'ยังไม่ถูก · Hangman '+misses+' / '+MAX_MISSES,'var(--c1)');
+    }
+    const right=()=>{locked=true;say('Correct! ✅','var(--c4)');advance();};
+
+    /* ---- numeric ---- */
+    function numericUI(q){
+      const display=el('div','answer-display');
+      const paint=()=>{
+        display.textContent=typed||'Answer';
+        display.style.color=typed?'var(--ink)':'#95a5a6';
+      };
+      const pad=el('div','numpad');
+      const keys=[['1','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],
+                  ['7','7'],['8','8'],['9','9'],['-','−'],['0','0'],['.','.']];
+      keys.forEach(([k,label])=>{
+        const b=el('button','numkey'+(k==='.'||k==='-'?' action':''),label);
+        b.onclick=()=>{
+          if(locked)return;
+          if(k==='-'){typed=typed.startsWith('-')?typed.slice(1):'-'+typed;}
+          else if(k==='.'&&typed.includes('.'))return;
+          else if(typed.length<14)typed+=k;
+          say('','');paint();
+        };
+        pad.append(b);
+      });
+      const back=el('button','numkey action','Delete');
+      back.style.gridColumn='1 / -1';
+      back.onclick=()=>{if(locked)return;typed=typed.slice(0,-1);say('','');paint();};
+      const go=el('button','numkey check','Check answer');
+      go.style.gridColumn='1 / -1';
+      go.onclick=()=>{
+        if(locked)return;
+        if(!typed||typed==='-')return say('Answer','var(--c1)');
+        same(typed,q.a)?right():(typed='',paint(),wrong());
+      };
+      pad.append(back,go);
+      body.append(display,pad);
+      paint();
+    }
+
+    /* ---- choice ---- */
+    function choiceUI(q){
+      const row=el('div','quiz-opts');
+      q.opts.forEach(opt=>{
+        const b=el('button','opt-btn',opt);
+        b.onclick=()=>{
+          if(locked)return;
+          if(same(opt,q.a)){b.classList.add('right');locked=true;right();}
+          else{b.classList.add('wrong');setTimeout(()=>b.classList.remove('wrong'),600);wrong();}
+        };
+        row.append(b);
+      });
+      body.append(row);
+    }
+
+    /* ---- order ---- */
+    function orderUI(q){
+      const slots=el('div','slot-row'),row=el('div','chip-row');
+      const paint=()=>{
+        slots.textContent='';
+        seq.forEach((item,i)=>{
+          const s=el('span','slot',(i+1)+'. '+item);
+          s.onclick=()=>{if(locked)return;seq.splice(i,1);say('','');paint();};
+          slots.append(s);
+        });
+        [...row.children].forEach(c=>c.classList.toggle('done',seq.includes(c.textContent)));
+      };
+      q.items.forEach(item=>{
+        const c=el('button','chip',item);
+        c.onclick=()=>{
+          if(locked||seq.includes(item))return;
+          seq.push(item);say('','');paint();
+        };
+        row.append(c);
+      });
+      const go=el('button','numkey check','Check answer');
+      go.style.margin='1vh auto 0';go.style.display='block';go.style.padding='.5em 1.6em';
+      go.onclick=()=>{
+        if(locked)return;
+        if(seq.length<q.items.length)return say('','var(--c1)');
+        const ok=seq.every((v,i)=>same(v,q.a[i]));
+        if(ok){locked=true;right();}else{seq=[];paint();wrong('Incorrect ');}
+      };
+      body.append(slots,row,go);
+      paint();
+    }
+
+    /* ---- match ---- */
+    function matchUI(q){
+      const row=el('div','chip-row');
+      const keyOf=txt=>txt.split(':')[0].trim();
+      const partner=k=>{
+        const p=q.pairs.find(pair=>pair.includes(k));
+        return p?p.find(x=>x!==k):null;
+      };
+      q.chips.forEach(txt=>{
+        const c=el('button','chip',txt);
+        c.dataset.key=keyOf(txt);
+        c.onclick=()=>{
+          if(locked||c.classList.contains('done'))return;
+          if(!picked){picked=c;c.classList.add('picked');return say('','');}
+          if(picked===c){c.classList.remove('picked');picked=null;return;}
+          const a=picked.dataset.key,b=c.dataset.key;
+          if(partner(a)===b){
+            picked.classList.remove('picked');
+            picked.classList.add('done');c.classList.add('done');
+            solved.push(a);picked=null;
+            if(solved.length===q.pairs.length){locked=true;right();}
+            else say('! ✅  '+(q.pairs.length-solved.length)+' ','var(--c4)');
+          }else{
+            c.classList.add('miss');setTimeout(()=>c.classList.remove('miss'),400);
+            picked.classList.remove('picked');picked=null;
+            wrong('');
+          }
+        };
+        row.append(c);
+      });
+      body.append(row);
+    }
+
+    function render(){
+      body.textContent='';
+      const q=questions[idx];
+      if(!q){
+        steps.textContent='';hint.textContent='';
+        prompt.textContent='!  🎉';
+        const again=el('button','numkey check','Restart');
+        again.style.margin='1vh auto 0';again.style.display='block';again.style.padding='.5em 1.6em';
+        again.onclick=()=>{idx=0;typed='';seq=[];picked=null;solved=[];locked=false;say('','');render();};
+        body.append(again);
+        return;
+      }
+      steps.textContent=' '+(idx+1)+' / '+questions.length;
+      prompt.textContent=q.q;
+      hint.textContent=q.hint||'';
+      paintLives();
+      ({choice:choiceUI,order:orderUI,match:matchUI}[q.type]||numericUI)(q);
+    }
+    render();
+    return {quiz,paintLives};
+  });
+
+  /* Show the hearts only while a quiz slide is on screen. */
+  window.onSlideShown=slide=>{
+    const here=quizzes.find(q=>slide.contains(q.quiz));
+    livesEl.classList.toggle('hidden',!here||misses===0);
+    if(here)here.paintLives();
+  };
+  if(quizzes.length)window.onSlideShown(document.querySelector('.slide.active')||document.body);
+})();
+</script>
+</body>
+</html>
