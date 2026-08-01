@@ -1,0 +1,1236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Elements and the Periodic Table — Interactive Lesson</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&family=Sarabun:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #FFF9F4;
+  --bg-2: #FFF3E9;
+  --text: #2D3047;
+  --muted: #6B7280;
+  --pink: #FF7E6B;
+  --yellow: #FFD93D;
+  --mint: #5DEBC9;
+  --blue: #4F9DFF;
+  --purple: #B388FF;
+  --orange: #FF9F43;
+  --shadow: 6px 6px 0px rgba(45, 48, 71, 0.15);
+  --shadow-sm: 3px 3px 0px rgba(45, 48, 71, 0.1);
+  --radius: 24px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%; height: 100dvh;
+  overflow: hidden; overscroll-behavior: none;
+  font-family: 'Mali', 'Sarabun', cursive;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg-2) 100%);
+  color: var(--text);
+}
+body { position: fixed; inset: 0; }
+
+/* Decorative Blobs */
+.blob {
+  position: fixed; border-radius: 50%; filter: blur(60px);
+  opacity: 0.35; z-index: -1; animation: float 12s infinite ease-in-out;
+}
+.blob-1 { width: 400px; height: 400px; background: var(--mint); top: -100px; left: -100px; }
+.blob-2 { width: 500px; height: 500px; background: var(--yellow); bottom: -150px; right: -150px; animation-delay: 2s; }
+.blob-3 { width: 300px; height: 300px; background: var(--pink); top: 30%; left: 60%; animation-delay: 4s; }
+.blob-4 { width: 250px; height: 250px; background: var(--purple); top: 60%; left: 10%; animation-delay: 6s; }
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.05); }
+}
+
+/* Progress Bar */
+.progress-container {
+  position: fixed; top: calc(8px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+  width: min(52%, 560px); height: 10px;
+  background: white; border: 3px solid var(--text); border-radius: 20px;
+  overflow: hidden; z-index: 100; box-shadow: var(--shadow-sm);
+}
+.progress-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--pink), var(--yellow), var(--mint), var(--blue), var(--purple));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+  transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+@keyframes shimmer { 0% {background-position: 0% 0%;} 100% {background-position: 200% 0%;} }
+
+/* Star System (Daily Stars) */
+.star-counter {
+  position: fixed; top: calc(8px + env(safe-area-inset-top)); right: 16px;
+  background: white; border: 2px solid var(--text); border-radius: 20px;
+  padding: 4px 12px; font-size: 0.72rem; font-weight: 700; z-index: 100;
+  box-shadow: var(--shadow-sm); display: flex; gap: 6px; align-items: center;
+  max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.star-counter .stars { color: var(--orange); letter-spacing: 1px; }
+
+/* Topics */
+#topics {
+  position: fixed; top: calc(28px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px; z-index: 100;
+  max-width: calc(100% - 280px); overflow-x: auto; overflow-y: hidden; padding: 3px;
+  scrollbar-width: none; white-space: nowrap;
+}
+#topics::-webkit-scrollbar { display: none; }
+.topic-pill {
+  flex: none; border: 2px solid var(--text); background: white; color: var(--text);
+  padding: 4px 10px; border-radius: 20px; font-family: 'Mali', cursive;
+  font-weight: 700; font-size: 0.72rem; line-height: 1.15; cursor: pointer; transition: all 0.2s;
+  box-shadow: 2px 2px 0px var(--text);
+}
+.topic-pill:hover { background: var(--yellow); transform: translateY(-2px); }
+.topic-pill.active { background: var(--blue); color: white; }
+
+/* Deck & Slides */
+#deck {
+  position: relative; width: 100%; height: 100vh; height: 100dvh;
+  display: flex; justify-content: center; align-items: center;
+  padding: calc(62px + env(safe-area-inset-top)) 0 calc(54px + env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+.slide {
+  position: absolute; width: 94%; max-width: 1280px;
+  height: calc(100dvh - 126px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  max-height: calc(100% - 126px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  background: white; border-radius: var(--radius); border: 4px solid var(--text);
+  box-shadow: var(--shadow); padding: clamp(14px, 2.4vw, 30px);
+  display: flex; flex-direction: column;
+  opacity: 0; transform: translateX(60px) scale(0.95);
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none; overflow: hidden;
+}
+.slide.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
+.slide.exit { opacity: 0; transform: translateX(-60px) scale(0.95); }
+.slide.title {
+  background: linear-gradient(135deg, #FFE5DE 0%, #FFF9C4 50%, #D4F5FF 100%);
+  justify-content: center; align-items: center; text-align: center;
+}
+.slide.final {
+  background: linear-gradient(135deg, #D4F5FF 0%, #E5D4FF 100%);
+  justify-content: center; align-items: center; text-align: center;
+}
+.slide.dyk { background: linear-gradient(135deg, #FFF9C4 0%, #FFE5DE 100%); }
+
+/* Typography */
+.eyebrow {
+  display: inline-block; background: var(--yellow); color: var(--text);
+  padding: 6px 16px; border-radius: 20px; font-weight: 700; margin-bottom: 20px;
+  border: 2px solid var(--text); box-shadow: 2px 2px 0px var(--text);
+  font-size: 0.9rem; text-transform: uppercase; align-self: flex-start;
+}
+.eyebrow.dyk-tag { background: var(--orange); color: white; }
+.eyebrow.quiz-tag { background: var(--purple); color: white; }
+h1 { font-size: 3.2rem; line-height: 1.1; color: var(--blue); margin-bottom: 15px; text-shadow: 3px 3px 0 rgba(0,0,0,0.1); }
+h2 { font-size: 2.2rem; line-height: 1.2; color: var(--text); margin-bottom: 16px; }
+.lead { font-size: 1.15rem; line-height: 1.6; color: var(--muted); margin-bottom: 16px; }
+
+.content-grid {
+  display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px;
+  align-items: center; flex: 1; min-height: 0;
+}
+.points { list-style: none; display: flex; flex-direction: column; gap: 15px; }
+.points li {
+  font-size: 1.15rem; font-weight: 600; background: #FAFAFA;
+  border: 2px solid var(--text); border-radius: 12px; padding: 12px 15px;
+  box-shadow: 3px 3px 0px var(--text); display: flex; align-items: center;
+}
+.points li::before {
+  content: "•"; color: var(--pink); font-size: 2rem; margin-right: 10px; line-height: 1;
+}
+
+/* Visual Area */
+.visual {
+  display: flex; justify-content: center; align-items: center;
+  background: #F0F4FF; border: 3px dashed var(--blue); border-radius: 20px;
+  padding: 20px; min-height: 0; height: min(100%, 360px); text-align: center;
+}
+.dyk .visual { background: #FFF9C4; border-color: var(--yellow); }
+.slide.photo-story .content-grid { grid-template-columns: 0.82fr 1.18fr; }
+.slide.photo-story .visual, .slide.experiment .visual {
+  padding: 0; overflow: hidden; border-style: solid; height: 100%;
+}
+.lesson-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slide.experiment .content-grid { grid-template-columns: 0.9fr 1.1fr; }
+.slide.experiment .visual { border-color: var(--mint); }
+.slide.challenge .content-grid {
+  grid-template-columns: 1fr 1fr; border: 3px solid var(--text);
+  border-radius: 20px; overflow: hidden; gap: 0;
+}
+.slide.challenge .points { padding: 18px; }
+.slide.challenge .visual { height: 100%; border: 0; border-left: 3px dashed var(--text); border-radius: 0; background: #FAFAFA; }
+.evidence-strip {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%;
+}
+.evidence-card {
+  background: white; border: 2px solid var(--text); border-radius: 12px;
+  padding: 10px 8px; box-shadow: 2px 2px 0 var(--text); text-align: center;
+}
+.evidence-card b { display: block; color: var(--blue); margin-bottom: 4px; }
+
+/* Custom CSS Graphics */
+.elem-cards { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+.elem-card {
+  width: 90px; background: white; border: 3px solid var(--text); border-radius: 12px;
+  padding: 10px; box-shadow: 4px 4px 0px var(--text); transition: transform 0.2s;
+  display: flex; flex-direction: column; align-items: center;
+}
+.elem-card:hover { transform: translateY(-5px) rotate(-2deg); }
+.elem-num { font-size: 0.8rem; color: var(--muted); align-self: flex-start; }
+.elem-sym { font-size: 2.5rem; font-weight: 700; line-height: 1; margin: 5px 0; color: var(--blue); }
+.elem-card.alt .elem-sym { color: var(--pink); }
+.elem-card.alt2 .elem-sym { color: var(--purple); }
+.elem-name { font-size: 0.8rem; font-weight: 600; }
+
+.atom-container { position: relative; width: 180px; height: 180px; }
+.nucleus {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 40px; height: 40px; background: var(--pink); border-radius: 50%;
+  border: 3px solid var(--text); z-index: 2; animation: pulse 2s infinite ease-in-out;
+}
+.orbit-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.orbit-wrap-1 { animation: spin 6s linear infinite; }
+.orbit-wrap-2 { animation: spin 8s linear infinite reverse; }
+.orbit-wrap-3 { animation: spin 10s linear infinite; }
+.orbit-line { width: 100%; height: 100%; border: 2px dashed var(--blue); border-radius: 50%; opacity: 0.7; }
+.orbit-wrap-2 .orbit-line { border-color: var(--purple); }
+.orbit-wrap-3 .orbit-line { border-color: var(--mint); }
+.electron { position: absolute; top: -10px; left: 50%; margin-left: -10px; width: 20px; height: 20px; background: var(--blue); border-radius: 50%; border: 2px solid var(--text); z-index: 2; }
+.orbit-wrap-2 .electron { background: var(--purple); }
+.orbit-wrap-3 .electron { background: var(--mint); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.1); } }
+
+.chem-formula {
+  font-size: 3.5rem; font-weight: 700; color: var(--text);
+  background: white; padding: 20px 30px; border: 4px solid var(--text);
+  border-radius: 16px; box-shadow: 6px 6px 0px var(--text);
+  margin-bottom: 15px;
+}
+.chem-formula sub { font-size: 0.6em; color: var(--pink); }
+.formula-caption { font-size: 1.2rem; font-weight: 600; color: var(--blue); }
+
+.molecule { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.atom-circle {
+  width: 50px; height: 50px; border-radius: 50%; border: 3px solid var(--text);
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+  color: white; box-shadow: 3px 3px 0px var(--text);
+}
+.bond-line { width: 20px; height: 4px; background: var(--text); }
+
+.comp-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+.comp-table th {
+  background: var(--text); color: white; padding: 10px; font-size: 1.1rem;
+  border-radius: 8px; text-align: left;
+}
+.comp-table td {
+  background: white; border: 2px solid var(--text); padding: 12px; font-size: 1rem;
+}
+.comp-table td:first-child { border-right: none; border-radius: 8px 0 0 8px; font-weight: 700; background: #FAFAFA; }
+.comp-table td:last-child { border-left: none; border-radius: 0 8px 8px 0; }
+
+/* Quiz Style */
+.quiz-content { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 24px; align-items: center; }
+.quiz-main { min-width: 0; }
+.options { display: grid; gap: 15px; grid-template-columns: 1fr 1fr; margin-top: 20px; }
+.option {
+  background: white; border: 3px solid var(--text); padding: 15px; border-radius: 12px;
+  font-family: 'Mali', cursive; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; box-shadow: 3px 3px 0px var(--text); text-align: left; color: var(--text);
+}
+.option:hover { background: var(--yellow); transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--text); }
+.option.correct { background: var(--mint); }
+.option.wrong { background: var(--pink); color: white; }
+.option:disabled { cursor: not-allowed; opacity: 0.8; }
+.feedback { margin-top: 20px; font-size: 1.2rem; font-weight: bold; color: var(--text); }
+.hangman { text-align: center; }
+.hangman svg { display: block; width: 100%; max-height: 230px; }
+.gallows, .hm-part {
+  fill: none; stroke: var(--text); stroke-width: 5; stroke-linecap: round;
+}
+.gallows { opacity: 0.25; }
+.hm-part { opacity: 0; stroke-dasharray: 240; stroke-dashoffset: 240; }
+.hm-part.drawn { opacity: 1; animation: drawHangman 0.55s ease forwards; }
+@keyframes drawHangman { to { stroke-dashoffset: 0; } }
+.hangman small { font-weight: 700; }
+
+/* Modal */
+.modal {
+  position: fixed; inset: 0; background: rgba(45, 48, 71, 0.6);
+  display: none; justify-content: center; align-items: center; z-index: 200;
+  backdrop-filter: blur(4px);
+}
+.modal.show { display: flex; }
+.modal-content {
+  background: white; padding: 30px 40px; border-radius: 24px; border: 4px solid var(--text);
+  box-shadow: var(--shadow); text-align: center; max-width: 90%;
+}
+.modal-content h2 { color: var(--pink); margin-bottom: 10px; }
+.modal-content p { margin-bottom: 20px; font-size: 1.1rem; line-height: 1.5; }
+
+/* Thai Summary Bar */
+.th-bar {
+  position: fixed; bottom: calc(8px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
+  width: min(58%, 620px); background: #FFF9C4; border: 2px solid var(--text);
+  border-radius: 12px; padding: 4px 8px; box-shadow: 3px 3px 0px var(--text);
+  font-weight: bold; color: var(--text); z-index: 50; display: flex; align-items: center;
+  gap: 6px; font-size: 0.7rem;
+}
+.th-bar .th-icon { font-size: 0.9rem; }
+.th-bar .th-text {
+  flex: 1; line-height: 1.15; text-align: center;
+  overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; line-clamp: 2;
+}
+
+/* Controls */
+.controls {
+  position: fixed; left: 0; bottom: calc(6px + env(safe-area-inset-bottom)); width: 100%;
+  display: flex; justify-content: space-between; gap: 20px; z-index: 100;
+  padding: 0 max(12px, 2.5vw); pointer-events: none;
+}
+.btn {
+  background: white; border: 3px solid var(--text); padding: 7px 16px;
+  font-family: 'Mali', cursive; font-size: 0.88rem; font-weight: 700; border-radius: 50px;
+  cursor: pointer; box-shadow: 4px 4px 0px var(--text); transition: all 0.1s; color: var(--text);
+  display: flex; align-items: center; gap: 8px; pointer-events: auto;
+}
+.btn.primary { background: var(--mint); }
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px var(--text); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px var(--text); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: 4px 4px 0px var(--text); }
+
+/* Animations */
+.slide.active .anim-up { animation: animUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) backwards; }
+.slide.active .anim-up:nth-child(1) { animation-delay: 0.1s; }
+.slide.active .anim-up:nth-child(2) { animation-delay: 0.2s; }
+.slide.active .anim-up:nth-child(3) { animation-delay: 0.3s; }
+.slide.active .anim-up:nth-child(4) { animation-delay: 0.4s; }
+@keyframes animUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (min-width: 601px) and (max-width: 1366px) {
+  #deck { padding-top: calc(58px + env(safe-area-inset-top)); padding-bottom: calc(52px + env(safe-area-inset-bottom)); }
+  .slide { width: calc(100% - 40px); height: calc(100dvh - 120px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: calc(100% - 120px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding: clamp(14px, 2vw, 22px); }
+  h1 { font-size: clamp(2rem, 4vw, 2.7rem); } h2 { font-size: clamp(1.55rem, 3vw, 2rem); margin-bottom: 12px; }
+  .eyebrow { padding: 4px 11px; margin-bottom: 10px; font-size: 0.72rem; }
+  .lead { font-size: 1rem; line-height: 1.4; margin-bottom: 10px; }
+  .content-grid { gap: 18px; } .points { gap: 9px; } .points li { font-size: 0.92rem; padding: 8px 10px; }
+  .visual { padding: 12px; height: min(100%, 290px); }
+  .slide.photo-story .visual, .slide.experiment .visual { height: min(100%, 320px); }
+  .options { gap: 9px; margin-top: 10px; } .option { padding: 10px; font-size: 0.92rem; }
+  .quiz-content { grid-template-columns: minmax(0, 1fr) 180px; gap: 16px; }
+  .hangman svg { max-height: 180px; } .feedback { margin-top: 10px; font-size: 0.95rem; }
+  .th-bar { width: min(56%, 560px); font-size: 0.66rem; } .th-bar .th-icon { font-size: 0.82rem; }
+  .btn { padding: 6px 13px; font-size: 0.8rem; }
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 1.9rem; } h2 { font-size: 1.45rem; margin-bottom: 10px; }
+  #topics { max-width: calc(100% - 12px); } .topic-pill { padding: 3px 8px; font-size: 0.64rem; }
+  #deck { padding-top: calc(56px + env(safe-area-inset-top)); padding-bottom: calc(50px + env(safe-area-inset-bottom)); }
+  .slide { width: calc(100% - 16px); height: calc(100dvh - 106px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: calc(100% - 106px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding: 12px; }
+  .eyebrow { padding: 4px 10px; margin-bottom: 10px; font-size: 0.7rem; }
+  .lead { font-size: 0.92rem; line-height: 1.35; margin-bottom: 10px; }
+  .content-grid { grid-template-columns: 1fr; gap: 15px; }
+  .slide.photo-story .content-grid, .slide.experiment .content-grid, .slide.challenge .content-grid { grid-template-columns: 1fr 1fr; }
+  .points { gap: 8px; } .points li { font-size: 0.88rem; padding: 7px 9px; } .points li::before { font-size: 1.3rem; margin-right: 6px; }
+  .visual { min-height: 100px; padding: 10px; } .options { gap: 8px; grid-template-columns: 1fr; }
+  .option { padding: 9px; font-size: 0.88rem; }
+  .quiz-content { grid-template-columns: minmax(0, 1fr) 118px; gap: 10px; }
+  .hangman svg { max-height: 130px; } .feedback { margin-top: 10px; font-size: 0.88rem; }
+  .th-bar { width: min(60%, 300px); font-size: 0.58rem; padding: 3px 6px; } .th-bar .th-icon { font-size: 0.72rem; }
+  .controls { gap: 8px; padding-inline: 8px; } .btn { padding: 5px 10px; font-size: 0.72rem; }
+}
+
+@media (max-height: 700px) {
+  h1 { font-size: 1.9rem; } h2 { font-size: 1.45rem; margin-bottom: 8px; }
+  .eyebrow { margin-bottom: 8px; } .lead { line-height: 1.3; margin-bottom: 8px; }
+  .points { gap: 7px; } .points li { padding-block: 6px; font-size: 0.85rem; }
+  .visual { height: min(100%, 230px); padding: 9px; } .option { padding-block: 7px; }
+  .hangman svg { max-height: 140px; }
+}
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="blob blob-4"></div>
+
+<div class="progress-container">
+  <div class="progress-bar" id="progress"></div>
+</div>
+
+<div class="star-counter" id="starCounter" title="Daily Stars">
+  <span class="stars" id="starDisplay">★★★★★</span>
+  <span id="starText">5/5</span>
+</div>
+
+<nav id="topics"></nav>
+
+<main id="deck"></main>
+
+<div class="controls">
+  <button class="btn" id="prev">← Prev</button>
+  <button class="btn primary" id="next">Next →</button>
+</div>
+
+<div class="th-bar">
+  <span class="th-icon">🇹🇭</span>
+  <span class="th-text" id="thText">เริ่มบทเรียนกันเลย!</span>
+</div>
+
+<div class="modal" id="hangmanModal">
+  <div class="modal-content">
+    <h2>Hangman Complete!</h2>
+    <p>You've accumulated 11 wrong answers. <br>You lost 1 star. But don't worry, keep learning!<br>Let's start a new Hangman.</p>
+    <button class="btn primary" id="resetHangmanBtn">Start New Hangman</button>
+  </div>
+</div>
+
+<script>
+const Visual = {
+  cards: (items) => `
+    <div class="elem-cards">
+      ${items.map((it, i) => `
+        <div class="elem-card ${i%3===0?'alt':i%3===1?'alt2':''}">
+          <span class="elem-num">${it.num}</span>
+          <span class="elem-sym">${it.sym}</span>
+          <span class="elem-name">${it.name}</span>
+        </div>
+      `).join('')}
+    </div>
+  `,
+  atom: () => `
+    <div class="atom-container">
+      <div class="nucleus"></div>
+      <div class="orbit-wrap orbit-wrap-1"><div class="orbit-line"></div><div class="electron"></div></div>
+      <div class="orbit-wrap orbit-wrap-2"><div class="orbit-line"></div><div class="electron"></div></div>
+      <div class="orbit-wrap orbit-wrap-3"><div class="orbit-line"></div><div class="electron"></div></div>
+    </div>
+  `,
+  formula: (f, caption) => `
+    <div>
+      <div class="chem-formula">${f}</div>
+      <div class="formula-caption">${caption}</div>
+    </div>
+  `,
+  molecule: (parts) => `
+    <div class="molecule">
+      ${parts.map((p, i) => `
+        <div class="atom-circle" style="background:${p.color}">${p.sym}</div>
+        ${i < parts.length - 1 ? '<div class="bond-line"></div>' : ''}
+      `).join('')}
+    </div>
+  `,
+  table: (headers, rows) => `
+    <table class="comp-table">
+      <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+      ${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}
+    </table>
+  `,
+  img: (url, alt) => `<img class="lesson-photo" src="${url}" alt="${alt}" onerror="this.onerror=null;this.src='https://placehold.co/600x400/4F9DFF/white?text=Image+Not+Found'">`
+};
+
+const C=(title,bullets,th,type="content",visual="")=>({title,bullets,th,type,visual});
+const Q=(title,q,opts,answer,ref,th)=>({title,type:"quiz",q,opts,answer,ref,th});
+
+const img_salt = "https://images.unsplash.com/photo-1518110925495-b37653f4f4f2?q=80&w=600&auto=format&fit=crop";
+const img_pencil = "https://images.unsplash.com/photo-1583485088034-697b5bc36b92?q=80&w=600&auto=format&fit=crop";
+const img_cable = "https://images.unsplash.com/photo-1620283085439-39620a1e21c4?q=80&w=600&auto=format&fit=crop";
+const img_bridge = "https://images.unsplash.com/photo-1542524165-4bd0144975a2?q=80&w=600&auto=format&fit=crop";
+const img_concrete = "https://images.unsplash.com/photo-1545203927-764b2c8b4e1d?q=80&w=600&auto=format&fit=crop";
+const img_glass = "https://images.unsplash.com/photo-1565193298357-49a31c7f9e90?q=80&w=600&auto=format&fit=crop";
+
+const slides=[
+  C("Elements and the Periodic Table",
+    ["Chapter 4 · Topics 4–6","Structure and properties of materials"],
+    "บทเรียนเรื่องธาตุ ตารางธาตุ สารประกอบ สารผสม และสมบัติของวัสดุ",
+    "title",
+    Visual.atom()
+  ),
+  C("Starting Point & A Universe Made of Atoms",
+    ["All substances are made of particles.","Everything in the universe is made of atoms.","Atoms are the basic particles discussed in this chapter."],
+    "สารทุกชนิดและทุกสิ่งในจักรวาลประกอบขึ้นจากอะตอม ซึ่งมีขนาดเล็กมาก",
+    "content",
+    Visual.atom()
+  ),
+  Q("Quiz 1 · Atoms",
+    "If every atom in your clenched fist became a marble, your fist would be about the size of...?",
+    ["A basketball","A house","The Earth","The Solar System"],
+    2, "T4", "ถ้าอะตอมในกำปั้นใหญ่เท่าลูกแก้ว กำปั้นจะมีขนาดประมาณโลก"
+  ),
+  C("Atoms and Elements",
+    ["There are about 100 different types of atoms.","These 100 atoms can combine to make millions of materials.","An element is a substance containing only one type of atom.","Silver, carbon and helium are examples of elements."],
+    "ธาตุคือสารที่มีอะตอมเพียงชนิดเดียว เช่น เงิน คาร์บอน และฮีเลียม",
+    "content",
+    Visual.cards([{num:47, sym:"Ag", name:"Silver"}, {num:6, sym:"C", name:"Carbon"}, {num:2, sym:"He", name:"Helium"}])
+  ),
+  Q("Quiz 2 · Elements",
+    "Which statement defines an element?",
+    ["A substance with one type of atom","Any solid material","Two substances mixed together","A substance that always conducts"],
+    0, "T4", "ธาตุประกอบด้วยอะตอมเพียงชนิดเดียว"
+  ),
+  Q("Quiz 3 · Helium",
+    "A balloon filled with helium contains only helium atoms. What is helium?",
+    ["A compound","A mixture","An element","An alloy"],
+    2, "T4", "ฮีเลียมในบอลลูนประกอบด้วยอะตอมฮีเลียมเพียงชนิดเดียว จึงเป็นธาตุ"
+  ),
+  C("Reading Particle Diagrams",
+    ["Same particles throughout → element","More than one unjoined particle type → mixture","Different atoms joined together → compound"],
+    "แบบจำลองอนุภาคช่วยแยกธาตุ สารผสม และสารประกอบ",
+    "content",
+    Visual.table(["Diagram", "Type"], [["Same particles","Element"],["Different joined","Compound"],["Different unjoined","Mixture"]])
+  ),
+  Q("Quiz 4 · Particle Diagrams",
+    "Which particle diagram represents a mixture?",
+    ["Same particles throughout","Different particles strongly joined","Different particles not joined","A single particle"],
+    2, "T4", "สารผสมคืออนุภาคต่างชนิดที่อยู่ร่วมกันแต่ไม่ยึดกันทางเคมี"
+  ),
+  C("Indium and Touchscreens",
+    ["Indium is a rare metal element in high demand.","Mixed with tin and oxygen, it forms a transparent conducting material.","This makes it perfect for touchscreens on phones and tablets.","Recycling helps extend this limited resource."],
+    "อินเดียมเป็นโลหะหายาก ใช้ทำจอสัมผัสเพราะโปร่งใสและนำไฟฟ้าได้",
+    "content",
+    Visual.cards([{num:49, sym:"In", name:"Indium"}, {num:50, sym:"Sn", name:"Tin"}, {num:8, sym:"O", name:"Oxygen"}])
+  ),
+  Q("Quiz 5 · Indium",
+    "Why is indium suitable for touchscreens?",
+    ["It is a heavy metal","It is transparent and conducts electricity","It is a gas","It is very cheap"],
+    1, "T4", "อินเดียมผสมกับดีบุกและออกซิเจนทำให้โปร่งใสและนำไฟฟ้าได้"
+  ),
+  C("Chemical Symbols",
+    ["Element names differ by language, so scientists use symbols.","A symbol is the same in every country.","The first letter is uppercase; the second is lowercase.","Silver is Ag, Sodium is Na, Potassium is K."],
+    "สัญลักษณ์เคมีเป็นภาษาสากล ตัวแรกพิมพ์ใหญ่ ตัวที่สองพิมพ์เล็ก",
+    "content",
+    Visual.formula("Ag, He, O, Na", "Chemical Symbols")
+  ),
+  Q("Quiz 6 · Symbols",
+    "Which is the correct format for a chemical symbol?",
+    ["na","NA","Na","nA"],
+    2, "T4", "สัญลักษณ์เคมีตัวแรกต้องเป็นพิมพ์ใหญ่ และตัวที่สอง (ถ้ามี) ต้องเป็นพิมพ์เล็ก"
+  ),
+  Q("Quiz 7 · Sodium Symbol",
+    "What is the chemical symbol for Sodium?",
+    ["S","So","Na","N"],
+    2, "T4", "สัญลักษณ์ของโซเดียมคือ Na"
+  ),
+  C("The Periodic Table",
+    ["The Periodic Table lists all known elements.","Elements are arranged in rows from left to right.","The order is based on atomic structure.","Hydrogen is 1, Helium is 2, Carbon is 6."],
+    "ตารางธาตุรวบรวมธาตุทั้งหมดและจัดลำดับตามโครงสร้างอะตอม",
+    "content",
+    `<div class="elem-cards">
+      <div class="elem-card"><span class="elem-num">1</span><span class="elem-sym">H</span><span class="elem-name">Hydrogen</span></div>
+      <div class="elem-card alt"><span class="elem-num">2</span><span class="elem-sym">He</span><span class="elem-name">Helium</span></div>
+      <div class="elem-card alt2"><span class="elem-num">6</span><span class="elem-sym">C</span><span class="elem-name">Carbon</span></div>
+    </div>`
+  ),
+  Q("Quiz 8 · Periodic Table Order",
+    "How are elements arranged in the Periodic Table?",
+    ["Alphabetically","By color","Based on atomic structure","By discovery date"],
+    2, "T4", "ธาตุจัดเรียงตามโครงสร้างของอะตอม"
+  ),
+  Q("Quiz 9 · Hydrogen",
+    "What is the atomic number of Hydrogen?",
+    ["1","2","6","8"],
+    0, "T4", "ไฮโดรเจนเป็นธาตุลำดับที่ 1"
+  ),
+  Q("Quiz 10 · Calcium",
+    "Which element is in the 20th position?",
+    ["K","Ca","Na","Mg"],
+    1, "T4", "แคลเซียม (Ca) เป็นธาตุลำดับที่ 20"
+  ),
+  C("Topic 4 Summary",
+    ["Elements contain only one type of atom.","Each element has a chemical symbol.","All elements are arranged in the Periodic Table.","Scientists use symbols to represent elements internationally."],
+    "สรุปบทที่ 4: ธาตุประกอบด้วยอะตอมชนิดเดียว มีสัญลักษณ์เคมีเฉพาะ และจัดอยู่ในตารางธาตุ",
+    "content",
+    Visual.table(["Concept", "Summary"], [["Element","One type of atom"],["Symbols","International language"],["Table","Ordered by structure"]])
+  ),
+  C("Topic 5: Compounds and Mixtures",
+    ["Atoms of different elements can join strongly.","This forms a compound, which is hard to separate.","A compound has different properties from its elements.","Examples: Water (H₂O), Carbon dioxide (CO₂)."],
+    "บทที่ 5: สารประกอบเกิดจากอะตอมต่างชนิดยึดกันทางเคมี แยกยาก และมีสมบัติใหม่",
+    "content",
+    Visual.molecule([{sym:"H", color:"#FF7E6B"}, {sym:"H", color:"#FF7E6B"}, {sym:"O", color:"#4F9DFF"}])
+  ),
+  Q("Quiz 11 · Compounds",
+    "What is a compound?",
+    ["One type of atom","A mixture of elements","Atoms of different elements strongly joined","A metal and a non-metal"],
+    2, "T5", "สารประกอบคืออะตอมต่างชนิดที่ยึดกันแน่นทางเคมี"
+  ),
+  C("Chemical Formulae",
+    ["A formula identifies the elements in a compound.","Symbols tell which elements are present.","A small number (subscript) after a symbol tells how many atoms.","No number means 1 atom."],
+    "สูตรเคมีบอกชนิดธาตุ เลขห้อยบอกจำนวนอะตอม ถ้าไม่มีเลขหมายถึง 1",
+    "content",
+    Visual.formula("H₂O", "2 Hydrogen, 1 Oxygen")
+  ),
+  Q("Quiz 12 · Formulae",
+    "In the formula H₂O, what does the number 2 mean?",
+    ["2 oxygen atoms","2 hydrogen atoms","2 molecules","2 charges"],
+    1, "T5", "เลขห้อยข้างหลัง H หมายถึงมีไฮโดรเจน 2 อะตอม"
+  ),
+  C("Did You Know? The Salt on Your Table",
+    ["The salt you eat is sodium chloride (NaCl).","Sodium (Na) is a reactive metal that explodes in water.","Chlorine (Cl) is a toxic green gas.","Combined, they form a safe, tasty crystal!"],
+    "เกลือที่เรากินสร้างมาจากโลหะที่ระเบิดในน้ำและก๊าซพิษ แต่เมื่อรวมกันทางเคมีกลับกลายเป็นเกลือที่ปลอดภัย",
+    "dyk",
+    Visual.img(img_salt, "Table salt crystals")
+  ),
+  Q("Quiz 13 · Salt",
+    "Sodium chloride (NaCl) is a...?",
+    ["Element","Compound","Mixture","Alloy"],
+    1, "T5", "เกลือแกงเป็นสารประกอบเพราะเกิดจากอะตอมต่างชนิดยึดกันทางเคมี"
+  ),
+  C("Examples of Compounds",
+    ["Water: H₂O (2 Hydrogen, 1 Oxygen)","Carbon dioxide: CO₂ (1 Carbon, 2 Oxygen)","Magnesium chloride: MgCl₂ (1 Mg, 2 Cl)"],
+    "ตัวอย่างสารประกอบ เช่น น้ำ คาร์บอนไดออกไซด์ และแมกนีเซียมคลอไรด์",
+    "content",
+    `<div style="display:flex; flex-direction:column; gap:10px;">
+      ${Visual.formula("H₂O", "Water")}
+      ${Visual.formula("CO₂", "Carbon Dioxide")}
+    </div>`
+  ),
+  Q("Quiz 14 · CO2",
+    "How many oxygen atoms are in one CO₂ particle?",
+    ["1","2","3","0"],
+    1, "T5", "CO₂ มีออกซิเจน 2 อะตอมตามเลขห้อย"
+  ),
+  Q("Quiz 15 · MgCl2 Ratio",
+    "In MgCl₂, what is the ratio of Magnesium to Chlorine?",
+    ["1:1","1:2","2:1","1:3"],
+    1, "T5", "MgCl₂ มีอัตราส่วน Mg:Cl = 1:2"
+  ),
+  C("Key Elements in the Human Body",
+    ["The body is mostly made of 6 elements: Oxygen, Carbon, Hydrogen, Nitrogen, Calcium, Phosphorus.","These elements combine to form bone, blood, skin, and hair.","Even though there are ~100 elements, just 6 build most of you!"],
+    "ร่างกายมนุษย์เกือบทั้งหมดประกอบจากธาตุหลักเพียง 6 ชนิด คือ O, C, H, N, Ca และ P",
+    "dyk",
+    Visual.cards([{num:8, sym:"O", name:"Oxygen"}, {num:6, sym:"C", name:"Carbon"}, {num:1, sym:"H", name:"Hydrogen"}])
+  ),
+  Q("Quiz 16 · Body Elements",
+    "Which of these is NOT one of the 6 main elements in the human body?",
+    ["Oxygen","Carbon","Gold","Hydrogen"],
+    2, "T5", "ทองคำไม่ใช่ธาตุหลักที่สร้างร่างกายมนุษย์"
+  ),
+  C("Pure Substances vs Mixtures",
+    ["Pure substance: contains one element or one compound (e.g., Pure water).","Mixture: contains at least two elements or compounds not strongly joined (e.g., Air).","Mixtures can usually be separated physically."],
+    "สารบริสุทธิ์มีธาตุ/สารประกอบชนิดเดียว ส่วนสารผสมมีหลายชนิดไม่ยึดกันแน่น",
+    "content",
+    Visual.table(["Type", "Separation"], [["Pure Substance","Difficult"],["Mixture","Easy (Physical)"]])
+  ),
+  Q("Quiz 17 · Pure Substance",
+    "Which of these is a pure substance?",
+    ["Air","Milkshake","Pure water (H₂O)","Rock"],
+    2, "T5", "น้ำบริสุทธิ์เป็นสารประกอบชนิดเดียว จึงเป็นสารบริสุทธิ์"
+  ),
+  Q("Quiz 18 · Mixture Separation",
+    "Why can substances in a mixture usually be separated easily?",
+    ["They are all gases","They are not strongly chemically joined","They contain only one atom type","They have identical properties"],
+    1, "T5", "สารในสารผสมไม่ได้ยึดกันแน่นทางเคมี จึงแยกได้ด้วยกายภาพ"
+  ),
+  Q("Quiz 19 · Air",
+    "What is the main gas in air?",
+    ["Oxygen","Carbon dioxide","Nitrogen","Water vapour"],
+    2, "T5", "อากาศประกอบด้วยไนโตรเจนมากที่สุด (ประมาณ 78%)"
+  ),
+  Q("Quiz 20 · Milkshake",
+    "A milkshake is a...?",
+    ["Element","Compound","Mixture","Alloy"],
+    2, "T5", "มิลก์เชกเป็นสารผสมเพราะมีหลายสารไม่ได้เกิดปฏิกิริยาเคมี"
+  ),
+  C("Compound vs Mixture",
+    ["Compound: atoms are strongly joined by chemical bonds. Hard to separate.","Mixture: substances are not chemically joined. Easy to separate.","A compound has new properties; a mixture keeps the original properties."],
+    "สารประกอบยึดกันทางเคมีแยกยาก ส่วนสารผสมแยกง่ายและคงสมบัติเดิม",
+    "content",
+    Visual.table(["Property", "Compound", "Mixture"], [["Bonding","Strong","None"],["Separation","Hard","Easy"]])
+  ),
+  Q("Quiz 21 · Compound vs Mixture",
+    "Which property describes a mixture?",
+    ["Atoms are strongly joined","It has new properties","Substances are not chemically joined","It is always a solid"],
+    2, "T5", "สารผสมคือสารที่ไม่ยึดกันทางเคมี"
+  ),
+  C("Concrete: Mixing and Reaction",
+    ["Sand, stones and cement powder begin as a mixture.","Adding water starts chemical changes in cement.","The hardened material is no longer just the original mixture."],
+    "ก่อนเติมน้ำเป็นสารผสม แต่หลังเติมน้ำ ซีเมนต์เกิดปฏิกิริยาเคมี",
+    "photo-story",
+    Visual.img(img_concrete, "Concrete mixing")
+  ),
+  Q("Quiz 22 · Concrete",
+    "Why is hardened concrete not just a mixture?",
+    ["Because it is a liquid","Because a chemical reaction occurred in the cement","Because water evaporated","Because it is an element"],
+    1, "T5", "การเติมน้ำทำให้เกิดปฏิกิริยาเคมีในซีเมนต์ ทำให้มันแข็งตัว"
+  ),
+  C("Alloys",
+    ["An alloy is a mixture containing two or more metals, or a metal and a non-metal.","They are heated together so particles mix within the solid.","Alloys are not chemically joined into one compound.","Alloys have different properties from their ingredients."],
+    "โลหะผสมเป็นสารผสมของโลหะหลายชนิด ไม่ได้ยึดกันทางเคมี",
+    "content",
+    Visual.molecule([{sym:"Fe", color:"#4F9DFF"}, {sym:"C", color:"#2D3047"}, {sym:"Fe", color:"#4F9DFF"}])
+  ),
+  Q("Quiz 23 · Alloys",
+    "What is an alloy?",
+    ["A pure element","A chemical compound","A mixture of metals","A type of gas"],
+    2, "T5", "โลหะผสมคือสารผสมของโลหะตั้งแต่ 2 ชนิดขึ้นไป"
+  ),
+  C("Topic 5 Summary",
+    ["Compounds form when different atoms join strongly.","Formulae show the types and numbers of atoms.","Mixtures contain substances not chemically joined.","Alloys are mixtures of metals."],
+    "สรุปบทที่ 5: สารประกอบเกิดจากอะตอมยึดกันทางเคมี สารผสมแยกได้ง่าย และโลหะผสมเป็นสารผสม",
+    "content",
+    Visual.table(["Concept", "Summary"], [["Compound","Strongly joined"],["Mixture","Easy to separate"],["Alloy","Metal mixture"]])
+  ),
+  C("Topic 6: Metals and Non-metals",
+    ["Every element is classified as a metal or non-metal.","Metals occupy the left and central regions of the table.","Non-metals are mainly on the right (except hydrogen)."],
+    "บทที่ 6: ธาตุแบ่งเป็นโลหะ (ซ้าย/กลาง) และอโลหะ (ขวา)",
+    "content",
+    Visual.table(["Type", "Location", "Examples"], [["Metals","Left/Center","Iron, Copper"],["Non-metals","Right","Oxygen, Sulfur"]])
+  ),
+  Q("Quiz 24 · Periodic Table",
+    "Where are metals generally located on the Periodic Table?",
+    ["Far right","Top only","Left and center","Bottom only"],
+    2, "T6", "โลหะอยู่ทางซ้ายและตรงกลางของตารางธาตุ"
+  ),
+  Q("Quiz 25 · Non-metals",
+    "Where are non-metals mostly found?",
+    ["Left side","Center","Right side","Scattered randomly"],
+    2, "T6", "อโลหะส่วนใหญ่อยู่ทางด้านขวาของตารางธาตุ"
+  ),
+  C("Typical Properties",
+    ["Metals: often hard, shiny, malleable, good conductors, high melting points.","Non-metals: often dull, lower melting points, poor conductors.","Poor conductors are called insulators."],
+    "โลหะมักมันวาว ตีแผ่ได้ นำไฟฟ้าดี ส่วนอโลหะมักทึบแสง นำไฟฟ้าไม่ดี",
+    "content",
+    Visual.table(["Property", "Metals", "Non-metals"], [["Shine","Shiny","Dull"],["Conductivity","Good","Poor"]])
+  ),
+  Q("Quiz 26 · Metal Properties",
+    "Which property is most typical of metals?",
+    ["They are always gases","They are good electrical conductors","They are always soft","They never reflect light"],
+    1, "T6", "โลหะโดยทั่วไปนำไฟฟ้าได้ดี"
+  ),
+  Q("Quiz 27 · Non-metal Properties",
+    "Which is a typical property of non-metals?",
+    ["High melting point","Shiny appearance","Poor conductor of heat","Malleable"],
+    2, "T6", "อโลหะมักนำความร้อนและไฟฟ้าไม่ดี"
+  ),
+  C("Malleable & Exceptions",
+    ["Malleable: can be bent or shaped (e.g., Copper pipes).","Lead is a metal so soft you can bend it by hand.","Gallium is a metal that melts in your hand!","Diamond is a non-metal that is extremely hard."],
+    "ข้อยกเว้น: เกลือเป็นโลหะอ่อนนุ่ม, แกลเลียมเป็นโลหะที่ละลายในมือ และเพชรเป็นอโลหะที่แข็งมาก",
+    "content",
+    Visual.cards([{num:31, sym:"Ga", name:"Gallium"}])
+  ),
+  Q("Quiz 28 · Gallium",
+    "What is unusual about the metal Gallium?",
+    ["It is a gas","It is transparent","It melts from the heat of a hand","It is the hardest metal"],
+    2, "T6", "แกลเลียมเป็นโลหะที่จุดหลอมเหลวต่ำจนละลายในความอุ่นของมือได้"
+  ),
+  C("Did You Know? Pencil Graphite",
+    ["Pencils don't contain lead! They use graphite.","Graphite is a non-metal form of carbon (C).","It is the only non-metal that conducts electricity well!"],
+    "แท่งดินสอไม่ได้ทำจากตะกั่ว แต่ทำจากกราไฟต์ ซึ่งเป็นอโลหะที่นำไฟฟ้าได้ดี",
+    "dyk",
+    Visual.img(img_pencil, "Pencil tips")
+  ),
+  Q("Quiz 29 · Graphite",
+    "Graphite is a non-metal that can...?",
+    ["Conduct electricity","Explode in water","Turn into gold","Reflect all light"],
+    0, "T6", "กราไฟต์เป็นอโลหะที่นำไฟฟ้าได้"
+  ),
+  Q("Quiz 30 · Malleable",
+    "What does 'malleable' mean?",
+    ["Can be stretched into wires","Can be shaped or bent easily","Can conduct electricity","Can resist rust"],
+    1, "T6", "Malleable หมายถึงสามารถตีแผ่หรือดัดเป็นรูปร่างต่างๆ ได้"
+  ),
+  C("Materials in the Burj Khalifa",
+    ["The tower uses concrete strengthened with steel rods.","Its many windows admit light, but ordinary glass transfers heat.","A very thin metal coating reflects heat while allowing light through."],
+    "อาคารใช้คอนกรีตเสริมเหล็ก และเคลือบโลหะบางบนกระจกเพื่อสะท้อนความร้อน",
+    "photo-story",
+    Visual.img(img_glass, "Tall glass building")
+  ),
+  Q("Quiz 31 · Building Materials",
+    "Why does the Burj Khalifa have a thin metal coating on its glass?",
+    ["To make the glass stronger","To reflect heat but let light in","To prevent rust","To conduct electricity"],
+    1, "T6", "โลหะเคลือบบางๆ ช่วยสะท้อนความร้อนแต่ยังให้แสงผ่านได้"
+  ),
+  C("Heat Conductors and Insulators",
+    ["A good conductor transfers heat quickly.","A poor conductor transfers heat slowly; called an insulator.","Investigation: attach waxed pins to a heated rod. Pin falls when heat melts wax."],
+    "ตัวนำความร้อนถ่ายเทความร้อนได้เร็ว ส่วนฉนวนถ่ายเทได้ช้า",
+    "content",
+    `<div style="text-align:center"><div style="font-size:3rem">🌡️</div><div style="font-weight:bold; margin-top:5px;">Heat Transfer</div></div>`
+  ),
+  Q("Quiz 32 · Insulators",
+    "What is an insulator?",
+    ["A material that transfers heat quickly","A material that transfers heat slowly","A type of metal","A type of compound"],
+    1, "T6", "ฉนวนคือวัสดุที่ถ่ายเทความร้อนหรือไฟฟ้าได้ช้า"
+  ),
+  C("Heat Investigation: Read the Evidence",
+    ["Heat rods made from different materials in the same way.","Keep pin spacing, rod size and heat source controlled.","A pin falling sooner means heat travelled faster through that rod."],
+    "ควบคุมตัวแปรให้เหมือนกัน แล้วใช้เวลาที่หมุดหล่นเป็นหลักฐานเปรียบเทียบ",
+    "experiment",
+    `<img class="lesson-photo" src="https://images.unsplash.com/photo-1581093588401-fbb62a02f120?q=80&w=600&auto=format&fit=crop" alt="Science lab experiment">`
+  ),
+  Q("Quiz 33 · Heat Test Variables",
+    "In a heat conduction test, what must be kept the same?",
+    ["Type of material","Distance between pins","Color of the rod","Time of day"],
+    1, "T6", "ต้องควบคุมระยะห่างระหว่างหมุดให้เท่ากันเพื่อให้ผลเป็นธรรม"
+  ),
+  Q("Quiz 34 · Heat Test Evidence",
+    "If a pin falls quickly, it means...?",
+    ["The material is a good insulator","Heat travelled through the rod quickly","The wax was very strong","The rod is short"],
+    1, "T6", "ถ้าหมุดหล่นเร็ว แปลว่าความร้อนเคลื่อนผ่านวัสดุนั้นได้เร็ว"
+  ),
+  C("Testing Electrical Conductivity",
+    ["Place a test material in a gap in a circuit.","A conducting material completes the circuit and lights the lamp.","Wood and plastic did not light the lamp; Iron, copper and graphite did."],
+    "นำวัสดูใส่ในช่องว่างของวงจร ถ้านำไฟฟ้า หลอดไฟจะติด",
+    "content",
+    `<div style="text-align:center"><div style="font-size:3rem">💡</div><div style="font-weight:bold; margin-top:5px;">Circuit Test</div></div>`
+  ),
+  Q("Quiz 35 · Circuit Test",
+    "What shows that a material conducts electricity in a circuit test?",
+    ["The material changes color","The lamp lights up","The battery disappears","The wire turns cold"],
+    1, "T6", "ถ้าวัสดุทำให้วงจรครบ หลอดไฟจะติด"
+  ),
+  C("Why a Cable Uses Two Materials",
+    ["Copper is selected for the core because it conducts electricity well.","Plastic surrounds the copper because it is an electrical insulator.","A useful product often combines materials with contrasting properties."],
+    "สายไฟใช้ทองแดงนำกระแสและใช้พลาสติกเป็นฉนวนเพื่อความปลอดภัย",
+    "photo-story",
+    Visual.img(img_cable, "Copper wires in plastic insulation")
+  ),
+  Q("Quiz 36 · Electrical Cable",
+    "Why does an electrical cable use copper and plastic?",
+    ["Both are conductors","Copper conducts; plastic insulates","Both are elements","Plastic conducts better"],
+    1, "T6", "ทองแดงนำไฟฟ้า ส่วนพลาสติกเป็นฉนวนป้องกันไฟฟ้า"
+  ),
+  C("Particle Layers in Pure Metals vs Alloys",
+    ["Pure metal: particles are in regular layers that can slide, making it malleable.","Alloy: added particles differ in size, disrupting the layers.","The layers cannot slide easily, making alloys harder than pure metals."],
+    "อนุภาคโลหะบริสุทธิ์เรียงเป็นชั้นเลื่อนได้ง่าย แต่โลหะผสมมีอนุภาคต่างขนาดแทรกทำให้เลื่อนยากและแข็งกว่า",
+    "content",
+    `<div style="display:flex; flex-direction:column; gap:4px;">
+      <div style="height:15px; background:var(--blue); border:2px solid var(--text); border-radius:4px; position:relative;"><div style="width:10px; height:10px; background:var(--pink); border-radius:50%; position:absolute; right:20px; top:2px;"></div></div>
+      <div style="height:15px; background:var(--blue); border:2px solid var(--text); border-radius:4px; margin-left:10px;"></div>
+      <div style="height:15px; background:var(--blue); border:2px solid var(--text); border-radius:4px; position:relative;"><div style="width:10px; height:10px; background:var(--pink); border-radius:50%; position:absolute; left:30px; top:2px;"></div></div>
+    </div>`
+  ),
+  Q("Quiz 37 · Alloy Hardness",
+    "Why are alloys often harder than pure metals?",
+    ["Their disrupted layers slide less easily","They contain no particles","They are always liquids","Their atoms disappear"],
+    0, "T6", "อนุภาคต่างขนาดที่แทรกอยู่ทำให้ชั้นอนุภาคเลื่อนผ่านกันได้ยากขึ้น"
+  ),
+  C("Topic 6 Summary",
+    ["Materials are divided into metals and non-metals.","Metals are often hard, shiny, malleable, and good conductors.","Alloys are mixtures that are often harder than pure metals.","Scientific conclusions require sufficient evidence and repetition."],
+    "สรุปบทที่ 6: โลหะและอโลหะมีสมบัติต่างกัน โลหะผสมแข็งกว่าโลหะบริสุทธิ์ และข้อสรุปทางวิทยาศาสตร์ต้องมีหลักฐาน",
+    "content",
+    Visual.table(["Concept", "Summary"], [["Metals","Conductors, shiny"],["Non-metals","Insulators, dull"],["Alloys","Harder than pure metals"]])
+  ),
+  C("End of Chapter: Physical & Chemical Properties",
+    ["Physical property: observed without forming a new substance (e.g., color, density).","Chemical property: describes how a substance reacts (e.g., flammability).","Rusting is a chemical property; melting point is a physical property."],
+    "สมบัติทางกายภาพสังเกตได้โดยไม่เกิดสารใหม่ ส่วนสมบัติทางเคมีเกี่ยวกับการเกิดปฏิกิริยา",
+    "content",
+    Visual.table(["Type", "Example"], [["Physical","Melting Point"],["Chemical","Reactivity with Acid"]])
+  ),
+  Q("Quiz 38 · Chemical Property",
+    "Which of these is a chemical property?",
+    ["Melting point","Density","Flammability","Color"],
+    2, "Review", "การติดไฟเป็นสมบัติทางเคมี เพราะเกี่ยวกับการเกิดปฏิกิริยา"
+  ),
+  Q("Quiz 39 · Physical Property",
+    "Which is a physical property of hydrogen?",
+    ["It is colorless","It is highly reactive","It explodes in air","It forms water"],
+    0, "Review", "ไม่มีสีเป็นสมบัติทางกายภาพ"
+  ),
+  C("Acids, Bases and Indicators",
+    ["Universal Indicator changes color to show pH.","Red (0-3) is strongly acidic, Green (7) is neutral, Purple (11-14) is strongly basic.","Vinegar is acidic, Water is neutral, Toothpaste is basic."],
+    "ตัวบ่งชี้เปลี่ยนสีตามค่า pH แดง=กรด เขียว=กลาง ม่วง=ด่าง",
+    "content",
+    Visual.table(["Color", "pH Range"], [["Red","0-3 (Acid)"],["Green","7 (Neutral)"],["Purple","11-14 (Base)"]])
+  ),
+  Q("Quiz 40 · pH Scale",
+    "What does a pH of 7 indicate?",
+    ["Strong acid","Neutral","Strong base","Toxic"],
+    1, "Review", "pH 7 หมายถึงสารเป็นกลาง เช่น น้ำบริสุทธิ์"
+  ),
+  Q("Quiz 41 · Universal Indicator",
+    "What color does Universal Indicator turn in a strong acid?",
+    ["Green","Purple","Red","Blue"],
+    2, "Review", "กรดแรงจะทำให้ตัวบ่งชี้กลายเป็นสีแดง"
+  ),
+  Q("Quiz 42 · Bases",
+    "Which household item is usually a base?",
+    ["Vinegar","Lemon juice","Oven cleaner","Water"],
+    2, "Review", "น้ำยาทำความสะอาดเตาอบมักเป็นด่าง"
+  ),
+  C("Concrete, Steel and Bridges",
+    ["Stainless steel resists rust because of Chromium and Nickel.","Carbon steel is stronger than pure iron, making it good for bridges.","Alloys combine the best properties of their ingredients."],
+    "สเตนเลสทนสนิมเพราะมีโครเมียม เหล็กกล้าแข็งแรงเหมาะกับสะพาน",
+    "photo-story",
+    Visual.img(img_bridge, "A steel bridge")
+  ),
+  Q("Quiz 43 · MgCl2",
+    "Magnesium chloride (MgCl₂) is a...?",
+    ["Element","Compound","Mixture","Alloy"],
+    1, "Review", "MgCl₂ เป็นสารประกอบ เพราะอะตอมต่างชนิดยึดกันทางเคมี"
+  ),
+  Q("Quiz 44 · MgCl2 Ratio",
+    "If a model has 400 chlorine atoms in MgCl₂, how many magnesium atoms are there?",
+    ["100","200","400","800"],
+    1, "Review", "อัตราส่วน 1:2 หมายความว่า Mg 1 ส่วนจะสัมพันธ์กับ Cl 2 ส่วน (400/2 = 200)"
+  ),
+  C("Stainless & Carbon Steel",
+    ["Stainless steel: iron + chromium + nickel + carbon. Resists rust.","Carbon steel: iron + carbon. Stronger than pure iron, suits bridges.","Material choice balances strength, rust resistance, cost, and availability."],
+    "สเตนเลสทนสนิมเพราะมีโครเมียม ส่วนเหล็กกล้าแข็งแรงเพราะมีคาร์บอน",
+    "content",
+    Visual.cards([{num:26, sym:"Fe", name:"Iron"}, {num:24, sym:"Cr", name:"Chromium"}, {num:6, sym:"C", name:"Carbon"}])
+  ),
+  Q("Quiz 45 · Stainless Steel",
+    "Why is stainless steel used for cutlery instead of pure iron?",
+    ["It is cheaper","It resists rust","It is heavier","It is an element"],
+    1, "Review", "สเตนเลสทนสนิมมากกว่าเหล็กบริสุทธิ์"
+  ),
+  Q("Quiz 46 · Carbon Steel",
+    "Why is carbon steel used for bridges?",
+    ["It resists rust perfectly","Carbon makes iron stronger","It is very light","It is a compound"],
+    1, "Review", "คาร์บอนช่วยเพิ่มความแข็งแรงให้เหล็ก"
+  ),
+  C("Bronze and Hip Replacements",
+    ["Bronze is an alloy used for statues for thousands of years.","Hip replacements evolved from soft ivory to durable metal alloys.","Modern Titanium-Gold alloys could last much longer than standard ones."],
+    "บรอนซ์ใช้ทำรูปปั้นมานาน ข้อสะโพกโลหะผสมไทเทเนียม–ทองอาจอยู่ได้นานกว่าโลหะทั่วไป",
+    "content",
+    Visual.table(["Material", "Use"], [["Bronze","Statues"],["Titanium-Gold","Hip Joints"]])
+  ),
+  Q("Quiz 47 · Bronze",
+    "Bronze is an alloy of copper and...?",
+    ["Iron","Tin","Carbon","Gold"],
+    1, "Review", "บรอนซ์คือทองแดงผสมดีบุก"
+  ),
+  C("Reviewing the Evidence",
+    ["Testing only a few metals cannot prove all metals conduct electricity.","Repeating experiments and testing more samples improves reliability.","Scientific conclusions must be based on sufficient evidence."],
+    "ผลจากตัวอย่างไม่กี่ชนิดยังพิสูจน์ไม่ได้ว่าโลหะทุกชนิดนำไฟฟ้า ต้องเพิ่มตัวอย่างและทำซ้ำ",
+    "challenge",
+    `<div class="evidence-strip">
+      <div class="evidence-card"><b>Repeat</b>Reduce chance variation</div>
+      <div class="evidence-card"><b>Control</b>Keep tests fair</div>
+      <div class="evidence-card"><b>Sample</b>Strengthen the claim</div>
+    </div>`
+  ),
+  Q("Quiz 48 · Reliability",
+    "Which change most improves the reliability of an experiment?",
+    ["Test only one material","Repeat each material test","Change the heat source every time","Use different pin distances"],
+    1, "Review", "การทำซ้ำช่วยลดความคลาดเคลื่อนและเพิ่มความน่าเชื่อถือ"
+  ),
+  Q("Quiz 49 · Alloys vs Pure Metals",
+    "Which particle-model explains why an alloy is harder than a pure metal?",
+    ["Alloy particles vanish","Mixed-size particles disrupt sliding layers","Alloy layers slide more freely","Alloys have no particles"],
+    1, "Review", "อนุภาคต่างขนาดขัดขวางการเลื่อนตัวของชั้น ทำให้โลหะผสมแข็งกว่า"
+  ),
+  C("Learning Summary",
+    ["You can classify substances using particles.","You can read common symbols and formulae.","You can use evidence to compare metals, non-metals and alloys."],
+    "คุณสามารถจำแนกสาร อ่านสูตรพื้นฐาน และใช้หลักฐานอธิบายสมบัติของวัสดุได้แล้ว",
+    "final",
+    Visual.atom()
+  ),
+  Q("Quiz 50 · Final Challenge",
+    "Which is the best evidence-based reason to use stainless steel instead of pure iron for a bridge?",
+    ["It is an element","It is strong and resists rust","It contains only carbon","It cannot be shaped"],
+    1, "Review", "สเตนเลสแข็งแรงและทนสนิมมากกว่าเหล็กบริสุทธิ์"
+  )
+];
+
+const topicStarts=[
+ ["Start","Elements and the Periodic Table"],
+ ["T4 · Elements","Starting Point & A Universe Made of Atoms"],
+ ["T5 · Mixtures","Topic 5: Compounds and Mixtures"],
+ ["T6 · Materials","Topic 6: Metals and Non-metals"],
+ ["Review","End of Chapter: Physical & Chemical Properties"]
+];
+
+const topicGroups=topicStarts.map(([name,title],i)=>{
+ const start=slides.findIndex(s=>s.title===title);
+ const nextTitle=topicStarts[i+1]?.[1];
+ const next=nextTitle?slides.findIndex(s=>s.title===nextTitle):slides.length;
+ return {name,start,end:next-1};
+});
+const topicFor=i=>topicGroups.find(t=>i>=t.start&&i<=t.end)||topicGroups[0];
+
+const deck=document.querySelector("#deck");
+const topicsEl=document.querySelector("#topics");
+const progressBar=document.getElementById("progress");
+const prevBtn=document.getElementById("prev");
+const nextBtn=document.getElementById("next");
+const thTextEl=document.getElementById("thText");
+const starDisplay=document.getElementById("starDisplay");
+const starText=document.getElementById("starText");
+const hangmanModal=document.getElementById("hangmanModal");
+const resetHangmanBtn=document.getElementById("resetHangmanBtn");
+
+topicsEl.innerHTML=topicGroups.map(t=>`<button class="topic-pill" data-start="${t.start}">${t.name}</button>`).join("");
+topicsEl.addEventListener("click",e=>{const b=e.target.closest(".topic-pill");if(b)show(Number(b.dataset.start))});
+
+const hangmanSvg=()=>`<svg viewBox="0 0 260 300" role="img" aria-label="Hangman drawing">
+  <path class="gallows" d="M25 278H235M55 278V25H170V62M38 25H72"/>
+  <circle class="hm-part" data-part="1" cx="170" cy="87" r="25"/>
+  <path class="hm-part" data-part="2" d="M170 112V190"/>
+  <path class="hm-part" data-part="3" d="M170 130L130 165"/>
+  <path class="hm-part" data-part="4" d="M170 130L210 165"/>
+  <path class="hm-part" data-part="5" d="M170 190L138 240"/>
+  <path class="hm-part" data-part="6" d="M170 190L202 240"/>
+  <path class="hm-part" data-part="7" d="M155 78l10 10"/>
+  <path class="hm-part" data-part="8" d="M165 78l-10 10"/>
+  <path class="hm-part" data-part="9" d="M176 78l10 10"/>
+  <path class="hm-part" data-part="10" d="M186 78l-10 10"/>
+  <path class="hm-part" data-part="11" d="M158 102q12-12 24 0"/>
+</svg><small>Wrong answers: <b class="wrong-count">0</b>/11</small>`;
+
+function render(){
+  deck.innerHTML = slides.map((s, i) => {
+    if (s.type === "quiz") {
+      return `
+        <section class="slide" data-index="${i}" data-th="${s.th}">
+          <div class="eyebrow quiz-tag anim-up">🧠 Knowledge Check</div>
+          <h2 class="anim-up">${s.title}</h2>
+          <div class="quiz-content anim-up">
+            <div class="quiz-main">
+              <p class="lead">${s.q}</p>
+              <div class="options">
+                ${s.opts.map((o, j) => `<button class="option" data-choice="${j}">${"ABCD"[j]}. ${o}</button>`).join("")}
+              </div>
+              <div class="feedback"></div>
+            </div>
+            <div class="hangman">${hangmanSvg()}</div>
+          </div>
+        </section>
+      `;
+    }
+
+    let eyebrowText = "";
+    if (s.type === "dyk") eyebrowText = "💡 Did You Know?";
+    else if (s.type === "title") eyebrowText = "Interactive Lesson";
+    else if (s.type === "final") eyebrowText = "Lesson Complete";
+    else if (s.type === "photo-story") eyebrowText = "📷 Science in Real Life";
+    else if (s.type === "experiment") eyebrowText = "🔎 Evidence Lab";
+    else if (s.type === "challenge") eyebrowText = "🧩 Think Like a Scientist";
+    else eyebrowText = `Slide ${i+1}`;
+
+    return `
+      <section class="slide ${s.type}" data-index="${i}" data-th="${s.th}">
+        <div class="eyebrow anim-up ${s.type === 'dyk' ? 'dyk-tag' : ''}">${eyebrowText}</div>
+        <h2 class="anim-up">${s.title}</h2>
+        <div class="content-grid">
+          <ul class="points anim-up">
+            ${s.bullets.map(b => `<li>${b}</li>`).join("")}
+          </ul>
+          <div class="visual anim-up">
+            ${s.visual}
+          </div>
+        </div>
+      </section>
+    `;
+  }).join("");
+}
+render();
+
+// Load state from localStorage
+function loadState() {
+  const today = new Date().toDateString();
+  const saved = localStorage.getItem('scienceLessonState');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    if (parsed.date === today) {
+      return parsed;
+    }
+  }
+  return {
+    date: today,
+    index: 0,
+    hangman: 0,
+    stars: 5,
+    todayCorrect: 0,
+    answered: []
+  };
+}
+
+let state = loadState();
+const els = [...document.querySelectorAll(".slide")];
+
+function saveState() {
+  localStorage.setItem('scienceLessonState', JSON.stringify(state));
+}
+
+function updateHangman() {
+  document.querySelectorAll(".hm-part").forEach(part => {
+    part.classList.toggle("drawn", Number(part.dataset.part) <= state.hangman);
+  });
+  document.querySelectorAll(".wrong-count").forEach(count => {
+    count.textContent = state.hangman;
+  });
+}
+
+function updateStars() {
+  const fullStars = '★'.repeat(state.stars);
+  const emptyStars = '☆'.repeat(5 - state.stars);
+  starDisplay.textContent = fullStars + emptyStars;
+  if (state.stars > 0) {
+    starText.textContent = `${state.stars}/5`;
+  } else {
+    starText.textContent = `0/5 · Today: ${state.todayCorrect} correct · Keep learning!`;
+  }
+}
+
+function show(index) {
+  if (index < 0 || index >= slides.length) return;
+  
+  const currentSlide = els[state.index];
+  const newSlide = els[index];
+  
+  if (index > state.index) {
+    currentSlide.classList.add("exit");
+  } else {
+    currentSlide.classList.remove("active");
+    currentSlide.style.transform = 'translateX(60px) scale(0.95)';
+  }
+  
+  state.index = index;
+  
+  setTimeout(() => {
+    els.forEach(s => {
+      s.classList.remove("active", "exit");
+      s.style.transform = '';
+    });
+    newSlide.classList.add("active");
+    
+    const thData = newSlide.getAttribute("data-th");
+    thTextEl.innerText = thData || "บทเรียนวิทยาศาสตร์";
+    updateHangman();
+  }, 50);
+
+  updateUI();
+  saveState();
+}
+
+function updateUI() {
+  const progress = ((state.index + 1) / slides.length) * 100;
+  progressBar.style.width = `${progress}%`;
+
+  const activeTopic = topicFor(state.index);
+  document.querySelectorAll(".topic-pill").forEach(b => {
+    b.classList.toggle("active", Number(b.dataset.start) === activeTopic.start);
+  });
+  
+  prevBtn.disabled = state.index === 0;
+  nextBtn.innerHTML = state.index === slides.length - 1 ? "Restart ↺" : "Next →";
+}
+
+deck.addEventListener("click", e => {
+  const btn = e.target.closest(".option");
+  if (!btn || btn.disabled) return;
+  
+  const slide = btn.closest(".slide");
+  const idx = Number(slide.dataset.index);
+  
+  // ถ้าทำถูกแล้วจะไม่ให้กดอีก
+  if (state.answered.includes(idx)) return;
+  
+  const q = slides[idx];
+  const choice = Number(btn.dataset.choice);
+  const feedback = slide.querySelector(".feedback");
+  const options = slide.querySelectorAll(".option");
+  
+  if (choice === q.answer) {
+    state.answered.push(idx);
+    btn.classList.add("correct");
+    state.todayCorrect++;
+    feedback.innerHTML = "✅ ถูกต้อง! คิดอย่างมีหลักฐานได้ดีมาก (Correct!)";
+    feedback.style.color = "var(--blue)";
+    options.forEach(opt => opt.disabled = true);
+    launchConfetti();
+    updateStars();
+  } else {
+    // ถ้าผิด ไม่เฉลย แล้วให้กดตอบใหม่ได้ (ปิดแค่ปุ่มที่ผิดไป)
+    btn.classList.add("wrong");
+    btn.disabled = true; 
+    feedback.innerHTML = "❌ ยังไม่ถูกนะ ลองตอบใหม่ได้เลย! (Not yet. Try again!)";
+    feedback.style.color = "var(--pink)";
+    
+    // นับที่ผิดลงใน Hangman ทุกครั้ง
+    if (state.hangman < 11) {
+      state.hangman++;
+      updateHangman();
+      
+      // ถ้า Hangman ครบ 11 ส่วน
+      if (state.hangman === 11) {
+        if (state.stars > 0) state.stars--;
+        updateStars();
+        hangmanModal.classList.add("show");
+      }
+    }
+  }
+  saveState();
+});
+
+resetHangmanBtn.addEventListener("click", () => {
+  state.hangman = 0;
+  updateHangman();
+  hangmanModal.classList.remove("show");
+  saveState();
+});
+
+prevBtn.addEventListener("click", () => show(state.index - 1));
+nextBtn.addEventListener("click", () => {
+  if (state.index === slides.length - 1) {
+    state = {
+      date: new Date().toDateString(),
+      index: 0,
+      hangman: 0,
+      stars: 5,
+      todayCorrect: 0,
+      answered: []
+    };
+    document.querySelectorAll(".option").forEach(o => { o.classList.remove("correct", "wrong"); o.disabled = false; });
+    document.querySelectorAll(".feedback").forEach(f => f.innerHTML = "");
+    updateHangman();
+    updateStars();
+    show(0);
+  } else {
+    show(state.index + 1);
+  }
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight" || e.key === " ") nextBtn.click();
+  if (e.key === "ArrowLeft") prevBtn.click();
+});
+
+function launchConfetti() {
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.style.position = 'fixed';
+    c.style.width = '10px'; c.style.height = '10px';
+    c.style.left = '50%'; c.style.top = '50%'; c.style.zIndex = '1000';
+    const colors = ['#FF7E6B', '#FFD93D', '#5DEBC9', '#4F9DFF', '#B388FF'];
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    c.style.border = '2px solid #2D3047';
+    
+    const angle = Math.random() * Math.PI * 2;
+    const velocity = Math.random() * 300 + 100;
+    const tx = Math.cos(angle) * velocity;
+    const ty = Math.sin(angle) * velocity;
+    
+    c.animate([
+      { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+      { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`, opacity: 0 }
+    ], { duration: 1200, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' });
+    
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 1200);
+  }
+}
+
+// Initialize UI
+updateHangman();
+updateStars();
+show(state.index);
+</script>
+</body>
+</html>
