@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 5 — Making Compounds & Precipitates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2a2838; --muted:#6b6880; --paper:#f7f4ec; --card:#ffffff;
+  --indigo:#3b38a8; --indigo-d:#26246e; --teal:#0e9594; --coral:#ff5d54;
+  --amber:#ffb020; --good:#2e9e5b; --bad:#e05252; --line:#e7e2d5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Mali',cursive;background:var(--paper);color:var(--ink);overflow:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;
+  background-image:radial-gradient(#d8d2c2 1.2px,transparent 1.2px);background-size:26px 26px;opacity:.35}
+
+/* ---------- chrome ---------- */
+#prog{position:fixed;top:0;left:0;right:0;height:7px;background:#e8e4d8;z-index:60}
+#progfill{height:100%;width:0;background:linear-gradient(90deg,var(--indigo),var(--teal));transition:width .35s}
+#scorechip{position:fixed;top:16px;right:16px;z-index:60;background:#fff;border:2px solid var(--line);
+  border-radius:999px;padding:5px 16px;font-weight:700;font-size:.95rem;box-shadow:0 6px 18px rgba(40,38,80,.12)}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;display:flex;gap:10px;align-items:center;
+  background:#fff;padding:9px 14px;border-radius:999px;box-shadow:0 10px 30px rgba(40,38,80,.2);z-index:60;border:1px solid var(--line)}
+.navbtn{font-family:inherit;font-weight:700;font-size:.95rem;border:none;border-radius:999px;padding:8px 18px;
+  background:var(--indigo);color:#fff;cursor:pointer;transition:.2s}
+.navbtn:hover:not(:disabled){background:var(--indigo-d);transform:translateY(-2px)}
+.navbtn:disabled{opacity:.35;cursor:default}
+.navbtn.ghost{background:transparent;color:var(--indigo);border:2px solid var(--indigo)}
+.navbtn.ghost:hover:not(:disabled){background:#f1efff}
+.counter{font-weight:700;color:var(--muted);min-width:100px;text-align:center;font-size:.95rem}
+
+/* ---------- slides ---------- */
+.slide{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:64px 22px 96px;opacity:0;visibility:hidden;transform:translateY(20px);transition:.45s ease;z-index:1}
+.slide.active{opacity:1;visibility:visible;transform:none;z-index:5}
+.card{background:var(--card);border-radius:26px;box-shadow:0 18px 50px rgba(40,38,80,.13);
+  padding:42px 52px;width:min(1060px,94vw);max-height:calc(100vh - 175px);overflow:auto;border:1px solid var(--line)}
+.card.quiz{border-top:8px solid var(--teal)}
+.card.hangman{border-top:8px solid var(--coral)}
+.kick{font-size:.8rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--indigo);font-weight:700;margin-bottom:6px}
+.card h2{font-size:clamp(1.5rem,3vw,2.3rem);margin-bottom:16px;line-height:1.25}
+.card p{font-size:clamp(.98rem,1.6vw,1.2rem);margin:.5em 0;line-height:1.65}
+ul{list-style:none}
+.card ul li{padding-left:1.6em;position:relative;margin:.5em 0;font-size:clamp(.95rem,1.55vw,1.18rem);line-height:1.6}
+.card ul li::before{content:"▸";color:var(--coral);position:absolute;left:0;font-weight:700}
+.box{background:#fff6e0;border-left:6px solid var(--amber);padding:12px 18px;border-radius:0 14px 14px 0;
+  margin:14px 0;font-size:clamp(.92rem,1.45vw,1.12rem);line-height:1.6}
+.box.info{background:#eaf6ff;border-color:#3b9ae1}
+.box.good{background:#e9f8ef;border-color:var(--good)}
+.box.bad{background:#fdecec;border-color:var(--bad)}
+.eq{display:flex;gap:.6em;align-items:center;justify-content:center;flex-wrap:wrap;font-weight:700;
+  font-size:clamp(1.15rem,2.3vw,1.7rem);background:#f1efff;border:2px dashed var(--indigo);padding:16px 20px;
+  border-radius:16px;margin:18px 0}
+.eq .r{color:var(--indigo)} .eq .p{color:var(--teal)} .eq .arrow{color:var(--coral)}
+.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:clamp(.88rem,1.4vw,1.08rem)}
+.tbl th{background:var(--indigo);color:#fff;padding:10px 14px;text-align:left}
+.tbl td{border-bottom:2px solid var(--line);padding:10px 14px;vertical-align:top;line-height:1.55}
+.tbl tr:nth-child(even) td{background:#faf8f2}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.signs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:14px 0}
+.sign{background:#fff;border:2px solid var(--line);border-radius:16px;padding:14px;text-align:center;font-size:clamp(.9rem,1.4vw,1.05rem)}
+.sign .emo{font-size:1.9rem;display:block;margin-bottom:4px}
+.sign b{display:block;color:var(--indigo)}
+.tag{display:inline-block;background:#eee9ff;color:var(--indigo);border-radius:999px;padding:2px 12px;
+  font-size:.85rem;font-weight:600;margin:3px 3px 0 0}
+.fig{max-width:100%;height:auto;margin:8px auto;display:block}
+.figcap{text-align:center;color:var(--muted);font-size:.9rem;margin-top:2px}
+.photo-figure{max-width:840px;margin:16px auto;text-align:center}
+.photo-figure img{display:block;max-width:100%;max-height:360px;width:auto;height:auto;object-fit:contain;object-position:center;margin:0 auto;border:2px solid var(--line);border-radius:14px;box-shadow:0 5px 16px rgba(40,38,80,.12)}
+.chemistry-illustration{display:block;width:min(100%,720px);height:auto;margin:0 auto;border:2px solid var(--line);border-radius:14px;box-shadow:0 5px 16px rgba(40,38,80,.12)}
+.photo-figure .figcap{margin-top:7px}
+.checklist li::before{content:"☐" !important;color:var(--teal);font-size:1.15em}
+
+/* ---------- title / end slides ---------- */
+.title-slide{background:linear-gradient(135deg,#33307f 0%,#211f63 60%,#1a1860 100%)}
+.title-slide::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.25;
+  background-image:radial-gradient(#ffffff 1.4px,transparent 1.4px);background-size:30px 30px}
+.tcenter{position:relative;z-index:2;text-align:center;color:#fff;max-width:900px;padding:20px}
+.tcenter .kick{color:var(--amber);letter-spacing:4px}
+.tcenter h1{font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.15;margin:10px 0}
+.tsub{font-size:clamp(1.05rem,2vw,1.4rem);opacity:.92;line-height:1.6}
+.chiprow{margin-top:22px}
+.chip{display:inline-block;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.45);
+  border-radius:999px;padding:4px 16px;font-size:.95rem;font-weight:600;margin:4px}
+.navhint{margin-top:30px;font-size:.9rem;opacity:.75}
+.stats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:28px 0}
+.stat{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.4);border-radius:18px;
+  padding:14px 26px;min-width:150px}
+.stat b{display:block;font-size:2.2rem;color:var(--amber)}
+.stat span{font-size:.9rem;opacity:.9}
+.restart{font-family:inherit;font-weight:700;font-size:1.05rem;border:none;border-radius:999px;
+  padding:12px 30px;background:#fff;color:var(--indigo-d);cursor:pointer;transition:.2s}
+.restart:hover{transform:translateY(-2px)}
+
+/* ---------- quiz ---------- */
+.qhead{font-weight:700;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;font-size:.85rem;margin-bottom:4px}
+.qhead.hm{color:var(--coral)}
+.q-question{font-size:clamp(1.12rem,2vw,1.45rem);font-weight:700;margin:6px 0 16px;line-height:1.5}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:#f7f5ef;
+  border:2px solid var(--line);border-radius:14px;padding:11px 16px;margin:10px 0;cursor:pointer;
+  font-family:inherit;font-size:clamp(.92rem,1.5vw,1.12rem);transition:.2s;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--indigo);transform:translateY(-2px);background:#fbfaff}
+.opt:disabled{cursor:default}
+.opt .badge{flex:0 0 32px;height:32px;border-radius:50%;background:var(--indigo);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700}
+.opt.correct{background:#e5f7ec;border-color:var(--good)}
+.opt.correct .badge{background:var(--good)}
+.opt.wrong{background:#fdeaea;border-color:var(--bad);animation:shake .3s}
+.opt.wrong .badge{background:var(--bad)}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.explain{display:none}.explain.show{display:block}
+
+/* ---------- hangman ---------- */
+.hm-wrap{display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:start;margin-top:6px}
+.hm-left{text-align:center}
+.hm-svg{width:100%;max-width:240px}
+.hp{opacity:0;transition:opacity .3s}
+.hp.on{opacity:1}
+.hearts{display:flex;gap:5px;justify-content:center;font-size:1.25rem;margin-top:6px}
+.word{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.bl{width:36px;height:48px;border-bottom:4px solid var(--indigo);display:flex;align-items:flex-end;
+  justify-content:center;font-size:1.7rem;font-weight:700}
+.bl span{opacity:0;transform:translateY(8px);transition:.25s;color:var(--teal)}
+.bl.revealed span{opacity:1;transform:none}
+.bl.losecolor span{opacity:1;transform:none;color:var(--coral)}
+.kb{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;margin-top:12px}
+.kb button{padding:8px 0;border-radius:10px;border:2px solid var(--line);background:#fff;
+  font-family:inherit;font-weight:700;font-size:.95rem;cursor:pointer;transition:.15s;color:var(--ink)}
+.kb button:hover:not(:disabled){border-color:var(--indigo);background:#f1efff}
+.kb button:disabled{cursor:default}
+.kb button.hit{background:var(--good);border-color:var(--good);color:#fff}
+.kb button.miss{background:var(--bad);border-color:var(--bad);color:#fff;opacity:.85}
+.hm-msg{text-align:center;font-weight:700;font-size:1.15rem;margin-top:12px;min-height:1.7em}
+.hm-msg.win{color:var(--good)} .hm-msg.lose{color:var(--bad)}
+.hm-msg.blocked{color:var(--coral);animation:shake .3s}
+.quiz-layout{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:24px;align-items:start}
+.quiz-box{min-width:0}
+.partner.hangman{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff;box-shadow:0 8px 22px rgba(40,38,80,.1);position:sticky;top:0}
+.partner.hangman h3{margin:0 0 3px;font-size:1rem}
+.partner.hangman p{margin:0;color:var(--muted);font-size:.76rem}
+.partner-svg{width:100%;height:190px;display:block;margin:5px auto}
+.gallows{stroke:#aaa3bd;stroke-width:4;fill:none;stroke-linecap:round}
+.partner-svg .part{stroke:var(--bad);stroke-width:4;fill:none;stroke-linecap:round;opacity:0}
+.partner-svg .part.on{opacity:1;animation:draw .4s ease both}
+.hang-note{text-align:center;font-size:.8rem!important;color:var(--muted)!important}
+.steps{display:flex;justify-content:center;flex-wrap:wrap;gap:4px;margin-top:8px}
+.step{display:grid;place-items:center;width:23px;height:23px;border-radius:7px;background:#f0edf8;color:#aaa3bd;font-size:.65rem;font-weight:700}
+.step.on{background:rgba(226,78,115,.13);color:var(--bad)}
+.step.last{box-shadow:0 0 0 2px var(--bad);transform:scale(1.1)}
+.hm-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(30,28,70,.55);backdrop-filter:blur(4px);z-index:90;padding:20px}
+.hm-modal.open{display:flex}
+.hm-modal-card{max-width:460px;background:#fff;border-radius:22px;padding:28px;text-align:center;box-shadow:0 18px 50px rgba(40,38,80,.25)}
+.hm-modal-card h2{color:var(--coral);margin-bottom:10px}
+.hm-modal-card p{line-height:1.6;margin:8px 0}
+.hm-modal-card button{margin-top:14px;font-family:inherit;font-weight:700;border:0;border-radius:999px;padding:11px 22px;background:var(--indigo);color:#fff;cursor:pointer}
+
+/* ---------- menu ---------- */
+#menu{position:fixed;inset:0;background:rgba(30,28,70,.55);backdrop-filter:blur(4px);display:none;z-index:80;padding:34px 18px;overflow:auto}
+#menu.open{display:block}
+.menu-inner{max-width:920px;margin:auto;background:#fff;border-radius:20px;padding:24px 26px}
+.menu-inner h3{margin-bottom:12px}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:6px}
+.mi{display:flex;gap:8px;align-items:center;padding:7px 10px;border-radius:10px;cursor:pointer;
+  border:2px solid transparent;font-size:.88rem;line-height:1.3}
+.mi:hover{background:#f1efff}
+.mi.cur{border-color:var(--indigo);background:#f1efff;font-weight:700}
+.mi .n{color:var(--muted);min-width:2.3em}
+.mi .st{margin-left:auto}
+
+@media(max-width:820px){
+  .hm-wrap{grid-template-columns:1fr}
+  .quiz-layout{grid-template-columns:1fr}
+  .partner.hangman{position:static}
+  .grid2{grid-template-columns:1fr}
+  .card{padding:28px 24px}
+  .kb{grid-template-columns:repeat(7,1fr)}
+  .bl{width:30px;height:42px;font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"><div id="progfill"></div></div>
+<div id="scorechip">⭐ 0 pts · 0 / 36 attempted</div>
+<main id="deck"></main>
+
+<nav class="nav">
+  <button class="navbtn ghost" id="prevBtn">← Prev</button>
+  <div class="counter" id="counter">1 / 110</div>
+  <button class="navbtn" id="nextBtn">Next →</button>
+  <button class="navbtn ghost" id="menuBtn" title="All slides">☰</button>
+</nav>
+
+<div id="menu"><div class="menu-inner">
+  <h3>📄 All slides — click to jump</h3>
+  <div class="menu-grid" id="menuGrid"></div>
+</div></div>
+
+<div id="hmModal" class="hm-modal" aria-hidden="true">
+  <div class="hm-modal-card">
+    <h2>Hangman set complete</h2>
+    <p>You have reached 11 wrong answers. Review the questions, then start a fresh Hangman set.</p>
+    <button type="button" id="newHmBtn">Start a new set</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   CHAPTER 5 SLIDE DECK  ·  110 slides
+   Pattern: 2 content slides → 1 question (quiz / hangman)
+   Font: Mali  ·  All content in English
+   ========================================================= */
+
+/* ---------- reusable SVG figures ---------- */
+const svgParticles = `
+<svg viewBox="0 0 660 200" class="fig">
+  <circle cx="70" cy="80" r="24" fill="#c9cdd6" stroke="#6d7482" stroke-width="3"/>
+  <text x="70" y="87" text-anchor="middle" font-size="15" font-weight="700" fill="#3a3f4c">Mg</text>
+  <circle cx="140" cy="80" r="24" fill="#c9cdd6" stroke="#6d7482" stroke-width="3"/>
+  <text x="140" y="87" text-anchor="middle" font-size="15" font-weight="700" fill="#3a3f4c">Mg</text>
+  <text x="105" y="55" text-anchor="middle" font-size="20" font-weight="700" fill="#2a2838">+</text>
+  <circle cx="235" cy="80" r="20" fill="#ffd9d4" stroke="#ff6b57" stroke-width="3"/>
+  <text x="235" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="#a33424">O</text>
+  <circle cx="283" cy="80" r="20" fill="#ffd9d4" stroke="#ff6b57" stroke-width="3"/>
+  <text x="283" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="#a33424">O</text>
+  <path d="M330 80 H378" stroke="#3b38a8" stroke-width="6" fill="none"/>
+  <path d="M390 80 l-16 -10 v20 z" fill="#3b38a8"/>
+  <circle cx="455" cy="80" r="24" fill="#c9cdd6" stroke="#6d7482" stroke-width="3"/>
+  <text x="455" y="87" text-anchor="middle" font-size="15" font-weight="700" fill="#3a3f4c">Mg</text>
+  <circle cx="500" cy="80" r="20" fill="#ffd9d4" stroke="#ff6b57" stroke-width="3"/>
+  <text x="500" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="#a33424">O</text>
+  <circle cx="572" cy="80" r="24" fill="#c9cdd6" stroke="#6d7482" stroke-width="3"/>
+  <text x="572" y="87" text-anchor="middle" font-size="15" font-weight="700" fill="#3a3f4c">Mg</text>
+  <circle cx="617" cy="80" r="20" fill="#ffd9d4" stroke="#ff6b57" stroke-width="3"/>
+  <text x="617" y="86" text-anchor="middle" font-size="13" font-weight="700" fill="#a33424">O</text>
+  <text x="105" y="155" text-anchor="middle" font-size="15" fill="#6b6880">magnesium</text>
+  <text x="259" y="155" text-anchor="middle" font-size="15" fill="#6b6880">oxygen</text>
+  <text x="536" y="155" text-anchor="middle" font-size="15" fill="#6b6880">magnesium oxide</text>
+</svg>
+<p class="figcap">Figure 5.2 — magnesium and oxygen atoms rearrange and join to make magnesium oxide</p>`;
+
+function mixSVG(cA,cB,cR,labelA,labelB){
+return `
+<svg viewBox="0 0 360 310" class="fig">
+  <path d="M60 20 v90 a26 26 0 0 0 52 0 V20" fill="#eaf6ff" stroke="#3a3f4c" stroke-width="3"/>
+  <path d="M60 62 v48 a26 26 0 0 0 52 0 v-48 z" fill="${cA}"/>
+  <path d="M250 20 v90 a26 26 0 0 0 52 0 V20" fill="#eaf6ff" stroke="#3a3f4c" stroke-width="3"/>
+  <path d="M250 62 v48 a26 26 0 0 0 52 0 v-62 z" fill="${cB}"/>
+  <path d="M92 145 q45 30 84 48" fill="none" stroke="#8b88a6" stroke-width="4" stroke-dasharray="6 6"/>
+  <path d="M272 145 q-45 30 -84 48" fill="none" stroke="#8b88a6" stroke-width="4" stroke-dasharray="6 6"/>
+  <rect x="112" y="198" width="136" height="82" rx="14" fill="${cR}" stroke="#3a3f4c" stroke-width="4"/>
+  <circle cx="142" cy="266" r="4.5" fill="#00000033"/><circle cx="172" cy="271" r="4.5" fill="#00000033"/>
+  <circle cx="205" cy="267" r="4.5" fill="#00000033"/><circle cx="228" cy="262" r="4" fill="#00000033"/>
+  <text x="40" y="132" font-size="12.5" fill="#6b6880">${labelA}</text>
+  <text x="252" y="132" font-size="12.5" fill="#6b6880">${labelB}</text>
+</svg>`;
+}
+
+const svgH2 = `
+<svg viewBox="0 0 330 300" class="fig">
+  <path d="M120 40 v170 a40 40 0 0 0 80 0 V40" fill="#eaf6ff" stroke="#3a3f4c" stroke-width="4"/>
+  <path d="M120 140 v70 a40 40 0 0 0 80 0 v-70 z" fill="#d3ecff"/>
+  <circle cx="146" cy="182" r="5" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <circle cx="171" cy="152" r="6" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <circle cx="160" cy="118" r="4" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <circle cx="180" cy="192" r="4" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <circle cx="152" cy="98" r="3.5" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <rect x="138" y="214" width="44" height="9" rx="4" fill="#9aa1ad"/>
+  <line x1="268" y1="12" x2="184" y2="52" stroke="#a06a3a" stroke-width="6" stroke-linecap="round"/>
+  <path d="M168 64 c-10 -18 8 -30 14 -44 c6 14 24 26 14 44 c-5 9 -23 9 -28 0 z" fill="#ffb020"/>
+  <path d="M175 62 c-5 -9 3 -15 7 -22 c4 7 12 13 7 22 c-3 5 -11 5 -14 0 z" fill="#ff6b57"/>
+  <text x="216" y="96" font-size="21" font-weight="700" fill="#e05252" transform="rotate(-8 216 96)">POP!</text>
+  <text x="196" y="236" font-size="13" fill="#6b6880">hydrochloric acid</text>
+  <text x="196" y="254" font-size="13" fill="#6b6880">+ piece of magnesium</text>
+</svg>
+<p class="figcap">Figure 5.7 — how to test for hydrogen</p>`;
+
+const svgO2 = `
+<svg viewBox="0 0 330 300" class="fig">
+  <path d="M120 40 v170 a40 40 0 0 0 80 0 V40" fill="#eaf6ff" stroke="#3a3f4c" stroke-width="4"/>
+  <path d="M120 130 v80 a40 40 0 0 0 80 0 v-80 z" fill="#eef7ff"/>
+  <circle cx="148" cy="180" r="5" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <circle cx="172" cy="150" r="6" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <circle cx="162" cy="118" r="4" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <circle cx="184" cy="196" r="4" fill="#fff" stroke="#7fb6d9" stroke-width="2"/>
+  <line x1="272" y1="18" x2="180" y2="56" stroke="#a06a3a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="173" cy="59" r="7" fill="#e05252"/>
+  <path d="M158 74 c-8 -13 6 -23 11 -34 c5 11 19 21 11 34 c-4 7 -18 7 -22 0 z" fill="#ffb020"/>
+  <text x="188" y="106" font-size="17" font-weight="700" fill="#0e9594">relights!</text>
+  <text x="200" y="236" font-size="13" fill="#6b6880">hydrogen peroxide</text>
+  <text x="200" y="254" font-size="13" fill="#6b6880">+ potassium iodide</text>
+</svg>
+<p class="figcap">Figure 5.8 — how to test for oxygen</p>`;
+
+const svgCO2 = `
+<svg viewBox="0 0 430 260" class="fig">
+  <path d="M40 34 v116 a30 30 0 0 0 60 0 V34" fill="#eaf6ff" stroke="#3a3f4c" stroke-width="4"/>
+  <path d="M40 92 v58 a30 30 0 0 0 60 0 v-58 z" fill="#d3ecff"/>
+  <circle cx="60" cy="158" r="6" fill="#b9bfca"/><circle cx="80" cy="163" r="6" fill="#b9bfca"/>
+  <circle cx="70" cy="146" r="5" fill="#b9bfca"/>
+  <rect x="37" y="20" width="66" height="14" rx="4" fill="#e8a04c"/>
+  <path d="M70 27 H250 V138" fill="none" stroke="#3a3f4c" stroke-width="5"/>
+  <path d="M250 148 l-7 -14 h14 z" fill="#3a3f4c"/>
+  <path d="M225 62 v148 a30 30 0 0 0 60 0 V62" fill="#f6f3ec" stroke="#3a3f4c" stroke-width="4"/>
+  <path d="M225 122 v88 a30 30 0 0 0 60 0 v-88 z" fill="#f3efe4"/>
+  <circle cx="243" cy="168" r="4" fill="#fff" stroke="#d8d2c2"/><circle cx="262" cy="182" r="4.5" fill="#fff" stroke="#d8d2c2"/>
+  <circle cx="255" cy="150" r="3.5" fill="#fff" stroke="#d8d2c2"/><circle cx="272" cy="158" r="3.5" fill="#fff" stroke="#d8d2c2"/>
+  <text x="18" y="235" font-size="12.5" fill="#6b6880">calcium carbonate + acid</text>
+  <text x="222" y="245" font-size="12.5" fill="#6b6880">limewater → milky!</text>
+</svg>
+<p class="figcap">Figure 5.9 — how to test for carbon dioxide</p>`;
+
+const svgSwap = `
+<svg viewBox="0 0 660 240" class="fig">
+  <circle cx="90" cy="62" r="19" fill="#ffb28a" stroke="#d9713d" stroke-width="3"/>
+  <text x="90" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#8a4318">Cu</text>
+  <line x1="109" y1="62" x2="128" y2="62" stroke="#6b6880" stroke-width="3"/>
+  <rect x="128" y="44" width="64" height="36" rx="18" fill="#cfe8cf" stroke="#4c9a55" stroke-width="3"/>
+  <text x="160" y="67" text-anchor="middle" font-size="13" font-weight="700" fill="#2c6335">SO₄</text>
+  <circle cx="90" cy="168" r="17" fill="#d9ccf5" stroke="#7a5fd0" stroke-width="3"/>
+  <text x="90" y="174" text-anchor="middle" font-size="12" font-weight="700" fill="#4a3385">Na</text>
+  <line x1="107" y1="168" x2="124" y2="168" stroke="#6b6880" stroke-width="3"/>
+  <rect x="124" y="150" width="70" height="36" rx="18" fill="#cfe4f5" stroke="#4a7fb5" stroke-width="3"/>
+  <text x="159" y="173" text-anchor="middle" font-size="13" font-weight="700" fill="#28527a">SiO₃</text>
+  <path d="M196 62 C 320 62 320 168 428 168" fill="none" stroke="#4c9a55" stroke-width="4"/>
+  <path d="M440 168 l-15 -8 v16 z" fill="#4c9a55"/>
+  <path d="M198 168 C 320 168 320 62 428 62" fill="none" stroke="#4a7fb5" stroke-width="4"/>
+  <path d="M440 62 l-15 -8 v16 z" fill="#4a7fb5"/>
+  <circle cx="470" cy="62" r="19" fill="#ffb28a" stroke="#d9713d" stroke-width="3"/>
+  <text x="470" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#8a4318">Cu</text>
+  <line x1="489" y1="62" x2="506" y2="62" stroke="#6b6880" stroke-width="3"/>
+  <rect x="506" y="44" width="70" height="36" rx="18" fill="#cfe4f5" stroke="#4a7fb5" stroke-width="3"/>
+  <text x="541" y="67" text-anchor="middle" font-size="13" font-weight="700" fill="#28527a">SiO₃</text>
+  <ellipse cx="515" cy="62" rx="92" ry="42" fill="none" stroke="#e05252" stroke-width="3" stroke-dasharray="8 7"/>
+  <circle cx="470" cy="168" r="17" fill="#d9ccf5" stroke="#7a5fd0" stroke-width="3"/>
+  <text x="470" y="174" text-anchor="middle" font-size="12" font-weight="700" fill="#4a3385">Na</text>
+  <line x1="487" y1="168" x2="504" y2="168" stroke="#6b6880" stroke-width="3"/>
+  <rect x="504" y="150" width="64" height="36" rx="18" fill="#cfe8cf" stroke="#4c9a55" stroke-width="3"/>
+  <text x="536" y="173" text-anchor="middle" font-size="13" font-weight="700" fill="#2c6335">SO₄</text>
+  <text x="330" y="228" text-anchor="middle" font-size="14" fill="#6b6880">copper + sodium SWAP partners — Figure 5.13</text>
+  <text x="515" y="18" text-anchor="middle" font-size="13" font-weight="700" fill="#e05252">insoluble → precipitate!</text>
+</svg>`;
+
+const svgHydroxides = `
+<svg viewBox="0 0 460 190" class="fig">
+  <g><path d="M60 25 v95 a28 28 0 0 0 56 0 V25" fill="#eaf6ff" stroke="#3a3f4c" stroke-width="4"/>
+     <path d="M60 70 v50 a28 28 0 0 0 56 0 v-50 z" fill="#2f6bd8"/>
+     <text x="88" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#2a2838">copper hydroxide</text>
+     <text x="88" y="186" text-anchor="middle" font-size="13" fill="#2f6bd8">BLUE</text></g>
+  <g><path d="M200 25 v95 a28 28 0 0 0 56 0 V25" fill="#eaf6ff" stroke="#3a3f4c" stroke-width="4"/>
+     <path d="M200 70 v50 a28 28 0 0 0 56 0 v-50 z" fill="#58b368"/>
+     <text x="228" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#2a2838">iron(II) hydroxide</text>
+     <text x="228" y="186" text-anchor="middle" font-size="13" fill="#3a8a4c">GREEN</text></g>
+  <g><path d="M340 25 v95 a28 28 0 0 0 56 0 V25" fill="#eaf6ff" stroke="#3a3f4c" stroke-width="4"/>
+     <path d="M340 70 v50 a28 28 0 0 0 56 0 v-50 z" fill="#b5651d"/>
+     <text x="368" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#2a2838">iron(III) hydroxide</text>
+     <text x="368" y="186" text-anchor="middle" font-size="13" fill="#b5651d">BROWN</text></g>
+</svg>
+<p class="figcap">Figure 5.14 — three different hydroxide precipitates</p>`;
+
+const magnesiumBurningFigure = caption => `
+<figure class="photo-figure">
+  <svg class="chemistry-illustration" viewBox="0 0 720 420" role="img" aria-label="Magnesium ribbon burning with a bright white flame">
+    <defs>
+      <radialGradient id="burnGlow" cx="50%" cy="55%" r="52%">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset=".28" stop-color="#fffbd0"/>
+        <stop offset=".62" stop-color="#ffd85a"/>
+        <stop offset="1" stop-color="#ff7b35" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="metal" x1="0" x2="1">
+        <stop offset="0" stop-color="#7f8793"/>
+        <stop offset=".5" stop-color="#f4f7fb"/>
+        <stop offset="1" stop-color="#8b929d"/>
+      </linearGradient>
+    </defs>
+    <rect width="720" height="420" rx="28" fill="#202431"/>
+    <ellipse cx="360" cy="338" rx="235" ry="36" fill="#0d1018" opacity=".8"/>
+    <ellipse cx="360" cy="270" rx="185" ry="145" fill="url(#burnGlow)" opacity=".9"/>
+    <path d="M360 315 C315 285 320 238 350 206 C347 172 379 145 386 105 C422 155 446 184 423 224 C460 211 477 246 454 278 C433 308 398 321 360 315Z" fill="#fff"/>
+    <path d="M367 306 C343 278 352 246 374 224 C373 199 390 178 399 157 C421 193 428 222 412 244 C434 239 444 260 430 281 C416 302 392 309 367 306Z" fill="#fff7a8"/>
+    <path d="M235 336 C286 321 330 307 375 280 C401 264 426 244 457 226" fill="none" stroke="url(#metal)" stroke-width="13" stroke-linecap="round"/>
+    <circle cx="457" cy="226" r="9" fill="#fff"/>
+    <text x="360" y="55" text-anchor="middle" font-family="Arial" font-size="30" font-weight="700" fill="#eceff5">Magnesium burning in air</text>
+    <text x="360" y="392" text-anchor="middle" font-family="Arial" font-size="22" fill="#b8c0ce">bright white light  •  very hot  •  magnesium + oxygen → magnesium oxide</text>
+  </svg>
+  <figcaption class="figcap">${caption}</figcaption>
+</figure>`;
+
+const photoFigure = (file, caption) => file === '5.1_magnesium_burning.jpg'
+  ? magnesiumBurningFigure(caption)
+  : `
+<figure class="photo-figure">
+  <img src="assets/chemistry_chapter5_images/${file}" alt="${caption}" loading="lazy">
+  <figcaption class="figcap">${caption}</figcaption>
+</figure>`;
+
+/* ---------- slide data (110 slides) ---------- */
+const S = [];
+const K1 = 'Chapter 5 · Topic 1', K2 = 'Chapter 5 · Topic 2';
+
+/* ======== TOPIC 1 : MAKING COMPOUNDS ======== */
+// 01
+S.push({type:'title',kicker:K1,title:'Making Compounds',
+  sub:'Using observations to identify chemical reactions, testing for gases, and modelling reactions',
+  chips:['reactants & products','word equations','particle diagrams','gas tests','hazards & risks']});
+// 02
+S.push({type:'content',kicker:K1,title:'You will learn to…',html:`
+  <ul>
+    <li>Use <b>observations</b> to identify chemical reactions</li>
+    <li>Identify <b>oxygen, carbon dioxide and hydrogen</b> gases using simple tests</li>
+    <li>Describe chemical reactions using the <b>particle model</b></li>
+    <li>Represent scientific ideas using <b>symbols and formulae</b></li>
+  </ul>`});
+// 03 Q
+// 04
+S.push({type:'content',kicker:K1,title:'Starting point — you should know that…',html:`
+  <ul>
+    <li>Chemical reactions involve substances called <b>reactants</b>, which interact to form new substances called <b>products</b>.</li>
+    <li>Changes such as <b>production of gas</b>, <b>colour change</b> or <b>temperature change</b> are evidence that a chemical reaction has taken place.</li>
+  </ul>
+  <div class="box info">Today we will use these ideas to <b>spot reactions</b> and to <b>model</b> them.</div>`});
+// 05
+S.push({type:'content',kicker:K1,title:'Starting point — you should be able to…',html:`
+  <ul>
+    <li>Describe <b>risks</b> when planning an experiment</li>
+    <li>Understand how to <b>minimise</b> those risks</li>
+  </ul>
+  <div class="box">Safety first! We will come back to hazards and risks later in this topic — burning magnesium is spectacular… but risky!</div>`});
+// 06 Q
+S.push({type:'quiz',q:'In a chemical reaction, what are the NEW substances formed called?',
+  opts:['Reactants','Products','Precipitates','Elements'],a:1,
+  why:'Reactants interact to form new substances — these new substances are the products.'});
+// 07
+S.push({type:'content',kicker:K1,title:'Reactants and products',html:`
+  <p>In a chemical reaction, substances react together to form <b>new substances</b>.</p>
+  <ul>
+    <li><b>Reactants</b> — the substances that react together</li>
+    <li><b>Products</b> — the new substances formed</li>
+  </ul>
+  <div class="eq"><span class="r">reactants</span><span class="arrow">→</span><span class="p">products</span></div>`});
+// 08
+S.push({type:'content',kicker:K1,title:'Word equations',html:`
+  <ul>
+    <li>A <b>word equation</b> is a type of scientific <b>model</b> that represents a chemical reaction.</li>
+    <li>It shows you the <b>names</b> of the reactants and the products in the reaction.</li>
+    <li>It is quick and easy to write — but it only uses words.</li>
+  </ul>
+  <div class="box info"><b>model</b> = a simple way of showing or explaining a complicated object or idea.</div>`});
+// 09 Q
+// 10
+S.push({type:'content',kicker:K1,title:'Magnesium burns in air',html:`
+  <ul>
+    <li>Magnesium burns in air with a <b>bright white light</b> and gets <b>very hot</b> (Figure 5.1).</li>
+    <li>Magnesium and oxygen react together to make <b>magnesium oxide</b>.</li>
+  </ul>${photoFigure('5.1_magnesium_burning.jpg','Figure 5.1 - magnesium burning in air')}
+  <div class="eq"><span class="r">magnesium + oxygen</span><span class="arrow">→</span><span class="p">magnesium oxide</span></div>`});
+// 11
+S.push({type:'content',kicker:K1,title:'Reading a word equation',html:`
+  <ul>
+    <li>The names of the <b>reactants</b> are written on the <b>left</b>.</li>
+    <li>The names of the <b>products</b> are written on the <b>right</b>.</li>
+    <li>The <b>arrow</b> points from reactants to products — it shows that the reactants <b>make or form</b> the products.</li>
+  </ul>
+  <div class="eq"><span class="r">magnesium + oxygen</span><span class="arrow">→</span><span class="p">magnesium oxide</span></div>
+  <p class="figcap">left = reactants &nbsp;·&nbsp; right = product</p>`});
+// 12 Q
+S.push({type:'quiz',q:'In a word equation, what does the arrow show?',
+  opts:['Products form reactants','Reactants form the products','The reaction is dangerous','The substances are only mixed'],a:1,
+  why:'Reactants sit on the left, products on the right — the arrow points from reactants to products.'});
+// 13
+S.push({type:'content',kicker:K1,title:'The particle model',html:`
+  <ul>
+    <li>A <b>particle diagram</b> shows the atoms in the reactants and products as <b>circles</b>.</li>
+    <li>The way the circles are <b>joined together</b> shows how the atoms are joined in each substance.</li>
+  </ul>${photoFigure('5.2_particle_diagram.jpg','Figure 5.2 - magnesium and oxygen atoms form magnesium oxide')}`});
+// 14
+S.push({type:'content',kicker:K1,title:'Atoms are never lost',html:`
+  <ul>
+    <li>Atoms are <b>not made or destroyed</b> in chemical reactions — they just <b>join together in different ways</b>.</li>
+    <li>So a particle diagram must show the <b>same number of each type of atom</b> on the left and on the right.</li>
+  </ul>
+  <div class="box good">Check the diagram: Mg atoms 2 → 2 ✅ &nbsp; Oxygen atoms 2 → 2 ✅</div>`});
+// 15 Q
+S.push({type:'quiz',q:'Why does a particle diagram give you MORE information than a word equation?',
+  opts:['It is quicker to draw','It shows how the atoms rearrange and join together','It shows the temperature change','It lists the hazards'],a:1,
+  why:'The particle diagram shows how the arrangement of atoms changes — but it is harder to draw than a word equation.'});
+// 16
+S.push({type:'content',kicker:K1,title:'Comparing the two models',html:`
+  <table class="tbl">
+    <tr><th>Word equation</th><th>Particle diagram</th></tr>
+    <tr><td>Shows the <b>names</b> of reactants and products</td><td>Shows <b>atoms</b> and how they are joined</td></tr>
+    <tr><td><b>Quick and easy</b> to write</td><td>Shows how atoms <b>rearrange</b> in the reaction</td></tr>
+    <tr><td>Limited — no detail about particles</td><td><b>More difficult</b> to use — you must make a drawing</td></tr>
+  </table>
+  <div class="box">Every model has <b>strengths</b> and <b>limitations</b> — scientists choose the best model for the job.</div>`});
+// 17
+S.push({type:'content',kicker:K1,title:'Think like a scientist',html:`
+  <div class="box"><b>Question 1</b> — Atoms of different elements can be shown differently in a particle diagram. Suggest how.</div>
+  <p>✅ Ideas: give each element its own <b>colour</b>, <b>size</b> or <b>label</b> (like grey Mg and red O).</p>
+  <div class="box"><b>Question 2</b> — How can you tell from the particle diagram that magnesium and oxygen are in the reactants AND in the product?</div>
+  <p>✅ The <b>same circles</b> (grey Mg, red O) appear on <b>both sides</b> — they have simply rearranged.</p>`});
+// 18 Q
+// 19
+S.push({type:'content',kicker:K1,title:'Two elements react',html:`
+  <div class="grid2">
+    <div class="sign"><span class="emo">🔩</span><b>Magnesium</b>an <b>element</b> — a light grey metal</div>
+    <div class="sign"><span class="emo">💨</span><b>Oxygen</b>an <b>element</b> — a colourless gas</div>
+  </div>
+  <p style="text-align:center">Elements contain only <b>one kind of atom</b>. Together they can make something completely new…</p>`});
+// 20
+S.push({type:'content',kicker:K1,title:'A brand-new substance: a compound',html:`
+  <ul>
+    <li>When magnesium (A) is heated it reacts with oxygen in the air to form a <b>white solid</b> (B) — Figure 5.3.</li>
+    <li><b>Magnesium oxide is a compound</b> — it contains magnesium and oxygen atoms, <b>strongly held together</b>.</li>
+    <li>Its properties are <b>different</b> from the properties of the elements it is made from.</li>
+  </ul>${photoFigure('5.3_magnesium_oxide.jpg','Figure 5.3 - magnesium changes into magnesium oxide')}
+  <div class="box info"><b>compound</b> = a substance that contains atoms of more than one element strongly held together.</div>`});
+// 21 Q
+S.push({type:'quiz',q:'Which statement best describes a compound?',
+  opts:['Two substances stirred together that keep their own properties','A substance containing atoms of more than one element strongly held together','Any substance that conducts electricity','A solid that will not dissolve in water'],a:1,
+  why:'A compound contains atoms of different elements strongly held together — and it has new, different properties.'});
+// 22
+S.push({type:'content',kicker:K1,title:'Completely new properties',html:`
+  <table class="tbl">
+    <tr><th>Substance</th><th>Appearance / properties</th></tr>
+    <tr><td><b>Magnesium</b> (element)</td><td>light grey, shiny, flexible <b>metal</b></td></tr>
+    <tr><td><b>Oxygen</b> (element)</td><td>colourless, invisible <b>gas</b></td></tr>
+    <tr><td><b>Magnesium oxide</b> (compound)</td><td><b>white, brittle solid</b> — nothing like either element!</td></tr>
+  </table>`});
+// 23
+S.push({type:'content',kicker:K1,title:'Separating a compound',html:`
+  <ul>
+    <li>A compound can <b>only</b> be separated into the elements it contains by using <b>chemical reactions</b>.</li>
+    <li>This is <b>difficult</b> to do — unlike a mixture, you cannot simply filter or pick the parts out.</li>
+  </ul>
+  <div class="box bad">⚠ Not easy to undo! Making a compound is a <b>chemical</b> change, not a physical one.</div>`});
+// 24 Q
+// 25
+S.push({type:'content',kicker:K1,title:'Iron + sulfur — the setup',html:`
+  <p>A teacher heats <b>iron</b> and <b>sulfur</b> together. A new substance, <b>iron sulfide</b>, is produced.</p>
+  <div class="eq"><span class="r">iron + sulfur</span><span class="arrow">→</span><span class="p">iron sulfide</span></div>
+  <div class="box"><b>Your questions:</b><br>a) Name the two elements.<br>b) Name the compound.<br>c) Explain why this is a chemical reaction.</div>`});
+// 26
+S.push({type:'content',kicker:K1,title:'Iron + sulfur — the answers',html:`
+  <ul>
+    <li>a) The elements: <b>iron</b> and <b>sulfur</b></li>
+    <li>b) The compound: <b>iron sulfide</b></li>
+    <li>c) It is a chemical reaction because a <b>new substance</b> with <b>different properties</b> is formed — the atoms have rearranged and joined together in a new way.</li>
+  </ul>`});
+// 27 Q
+S.push({type:'quiz',q:'Iron is heated with sulfur and iron sulfide forms. Which statement is TRUE?',
+  opts:['Iron sulfide is an element','Iron sulfide is a compound','Iron and sulfur never react','The product keeps the properties of iron'],a:1,
+  why:'Iron sulfide contains atoms of two different elements (iron and sulfur) strongly held together — so it is a compound.'});
+// 28
+S.push({type:'content',kicker:K1,title:'Evidence 1 — temperature change',html:`
+  <ul>
+    <li>The reaction mixture gets <b>very hot</b> when magnesium burns in air.</li>
+    <li>There is often a <b>temperature change</b> like this during a reaction.</li>
+    <li>However — you can often tell a reaction is happening just by <b>watching carefully</b>…</li>
+  </ul>
+  <div class="signs">
+    <div class="sign"><span class="emo">🫧</span><b>Gas given off</b>coming up…</div>
+    <div class="sign"><span class="emo">🎨</span><b>Colour change</b>coming up…</div>
+    <div class="sign"><span class="emo">☁️</span><b>Precipitate</b>coming up…</div>
+  </div>`});
+// 29
+S.push({type:'content',kicker:K1,title:'Evidence 2 — reactant used up + gas',html:`
+  <ul>
+    <li><b>Sodium hydrogen carbonate</b> (baking soda) reacts with <b>ethanoic acid</b> (vinegar) — Figure 5.4.</li>
+    <li>The sodium hydrogen carbonate <b>gradually disappears</b> as it is used up.</li>
+    <li><b>Bubbles of gas</b> are given off.</li>
+  </ul>${photoFigure('5.4_baking_soda_vinegar.jpg','Figure 5.4 - baking soda reacts with vinegar')}
+  <div class="box info">You will learn to identify this gas with simple tests very soon!</div>`});
+// 30 Q
+S.push({type:'quiz',q:'Baking soda is added to vinegar. Which observations show a chemical reaction?',
+  opts:['Nothing seems to change','The solid disappears and bubbles of gas are given off','The mixture freezes solid','The vinegar instantly evaporates'],a:1,
+  why:'The reactant being used up and a gas being produced are both evidence of a chemical reaction.'});
+// 31
+S.push({type:'content',kicker:K1,title:'Evidence 3 — colour change',html:`
+  <ul>
+    <li><b>Zinc metal</b> reacts with <b>copper sulfate solution</b> — Figure 5.5.</li>
+    <li>The solution changes from <span style="color:#2f6bd8;font-weight:700">blue</span> to <b>colourless</b> as the copper sulfate is used up.</li>
+    <li>The zinc becomes coated with <span style="color:#b5651d;font-weight:700">brown copper</span>.</li>
+  </ul>${photoFigure('5.5_zinc_copper_sulfate.jpg','Figure 5.5 - zinc reacts with copper sulfate solution')}
+  <div class="box info">Reactants and products may have <b>different colours</b> — so look for a colour change!</div>`});
+// 32
+S.push({type:'content',kicker:K1,title:'Evidence 4 — a precipitate!',html:`
+  <ul>
+    <li>Some solutions react together to produce a solid called a <b>precipitate</b>.</li>
+    <li>It appears as a <b>cloudy</b> white or coloured substance in the reaction mixture.</li>
+    <li><b>Lead nitrate + potassium iodide:</b> two colourless solutions → a <b>yellow precipitate</b> (Figure 5.6).</li>
+  </ul>
+  ${photoFigure('5.6_yellow_precipitate.jpg','Figure 5.6 - a yellow precipitate forms')}
+  `});
+// 33 Q
+// 34
+S.push({type:'content',kicker:K1,title:'Four ways to spot a reaction',html:`
+  <div class="signs">
+    <div class="sign"><span class="emo">🫧</span><b>Gas given off</b>bubbles appear</div>
+    <div class="sign"><span class="emo">🎨</span><b>Colour change</b>new colours appear</div>
+    <div class="sign"><span class="emo">🌡️</span><b>Temperature change</b>hotter or colder</div>
+    <div class="sign"><span class="emo">☁️</span><b>Precipitate forms</b>mixture goes cloudy</div>
+  </div>
+  <div class="box">Also: watch the <b>reactant being used up</b> (like the disappearing baking soda)!</div>`});
+// 35
+S.push({type:'content',kicker:K1,title:'Testing for hydrogen',html:`
+  <ul>
+    <li>Bubbles are given off when <b>magnesium</b> reacts with <b>dilute hydrochloric acid</b>.</li>
+    <li>Hold a <b>lighted wooden splint</b> near the mouth of a test tube of the gas.</li>
+    <li>The gas ignites with a <b>'pop' sound</b> if it is hydrogen!</li>
+  </ul>${photoFigure('5.7_hydrogen_test.jpg','Figure 5.7 - testing for hydrogen')}`});
+// 36 Q
+S.push({type:'quiz',q:"A lighted splint makes a 'pop' sound at the mouth of a test tube. The gas is:",
+  opts:['oxygen','hydrogen','carbon dioxide','nitrogen'],a:1,
+  why:"The 'pop' test is the specific test for hydrogen — hydrogen is flammable and burns very quickly."});
+// 37
+S.push({type:'content',kicker:K1,title:'Why the pop?',html:`
+  <ul>
+    <li>The test works because hydrogen is <b>flammable</b> and burns <b>very quickly</b>.</li>
+    <li>The rapid burning of the gas makes the <b>'pop'</b> sound.</li>
+  </ul>
+  <div class="box bad">⚠ Safety: always point the test tube <b>away from people</b> before testing the gas.</div>`});
+// 38
+S.push({type:'content',kicker:K1,title:'Testing for oxygen',html:`
+  <ul>
+    <li>Bubbles are given off when <b>potassium iodide</b> is added to <b>hydrogen peroxide</b> solution.</li>
+    <li>Light a wooden splint, then gently <b>blow it out</b> so it is glowing.</li>
+    <li>Hold the <b>glowing splint</b> just inside a test tube of the gas — the splint <b>relights</b> if it is oxygen!</li>
+    <li>It works because oxygen allows the hot wood to <b>start burning again</b>.</li>
+  </ul>${photoFigure('5.8_oxygen_test.jpg','Figure 5.8 - testing for oxygen')}`});
+// 39 Q
+// 40
+S.push({type:'content',kicker:K1,title:'Testing for carbon dioxide',html:`
+  <ul>
+    <li>Bubbles are given off when <b>calcium carbonate</b> reacts with <b>dilute hydrochloric acid</b>.</li>
+    <li>Pass the gas through <b>limewater</b> (calcium hydroxide solution) using a delivery tube.</li>
+    <li>Limewater changes from <b>clear & colourless → milky white</b> if carbon dioxide is present.</li>
+  </ul>${photoFigure('5.9_carbon_dioxide_test.jpg','Figure 5.9 - testing for carbon dioxide')}`});
+// 41
+S.push({type:'content',kicker:K1,title:'Limewater — a key term',html:`
+  <ul>
+    <li><b>Limewater</b> is calcium hydroxide solution — a clear, colourless liquid.</li>
+    <li>It turns <b>milky</b> when carbon dioxide is added.</li>
+  </ul>
+  <div class="box info">Surprise! The limewater test is actually a <b>precipitation reaction</b> — we will find out why in Topic 2. 😉</div>`});
+// 42 Q
+S.push({type:'quiz',q:'Limewater turns from colourless to milky white. The gas bubbled through it was:',
+  opts:['hydrogen','oxygen','carbon dioxide','water vapour'],a:2,
+  why:'Limewater (calcium hydroxide solution) turns milky when carbon dioxide bubbles through it.'});
+// 43
+S.push({type:'content',kicker:K1,title:'Practice — book question 6',html:`
+  <div class="box"><b>Q6</b> — A stoppered test tube contains carbon dioxide from a reaction. A few drops of limewater are added, the stopper is replaced and the tube is shaken. Describe what you would see.</div>
+  <div class="box good"><b>Answer:</b> The limewater turns <b>milky white</b> — the cloudiness spreads through the liquid as the carbon dioxide reacts.</div>`});
+// 44
+S.push({type:'content',kicker:K1,title:'Practice — book question 7',html:`
+  <div class="box"><b>Q7</b> — Describe how you can use a wooden splint to show that a reaction produces hydrogen gas and not oxygen gas.</div>
+  <div class="box good"><b>Answer:</b> Use a <b>lighted</b> splint: hydrogen burns with a <b>'pop'</b>. Oxygen would not pop — oxygen only <b>relights a glowing</b> splint.</div>`});
+// 45 Q
+// 46
+S.push({type:'content',kicker:K1,title:'Hazards',html:`
+  <ul>
+    <li>When you carry out an experiment there might be <b>hazards</b>.</li>
+    <li>A <b>hazard</b> is a substance or procedure that can cause <b>harm</b>.</li>
+    <li>You might see <b>hazard labels</b> on the substances you use.</li>
+  </ul>`});
+// 47
+S.push({type:'content',kicker:K1,title:'Risks',html:`
+  <ul>
+    <li>A <b>risk</b> is the <b>chance</b> of a hazard causing harm to you, or to people around you.</li>
+    <li>Before you start: <b>identify the hazards</b> and plan how to <b>control the risks</b> (reduce the chances of harm).</li>
+  </ul>
+  <div class="box">Example: one step might be pouring <b>hot water</b> into a test tube — plan for splashes and breakages <b>before</b> you start!</div>`});
+// 48 Q
+S.push({type:'quiz',q:'Which statement is correct?',
+  opts:['A hazard is the chance that harm will happen','A hazard can cause harm; a risk is the chance that it does','Hazards and risks are exactly the same thing','A risk only exists outside the laboratory'],a:1,
+  why:'Hazard = what could cause harm. Risk = the chance that the hazard actually causes harm.'});
+// 49
+S.push({type:'content',kicker:K1,title:'Table 5.1 — hazard: limewater',html:`
+  <table class="tbl">
+    <tr><th>Hazard</th><th>Controlling the risk</th></tr>
+    <tr>
+      <td><b>Limewater</b> (calcium hydroxide solution) — an <b>alkaline</b> substance that can damage <b>eyes</b> and <b>skin</b></td>
+      <td>Wear <b>eye protection</b> and avoid skin contact. <b>Wash your hands</b> after using it</td>
+    </tr>
+  </table>`});
+// 50
+S.push({type:'content',kicker:K1,title:'Table 5.1 — hazard: glass test tube',html:`
+  <table class="tbl">
+    <tr><th>Hazard</th><th>Controlling the risk</th></tr>
+    <tr>
+      <td>A <b>glass test tube</b> could <b>break</b> and cause <b>cuts</b> if touched</td>
+      <td><b>Tell the teacher</b> if anything breaks. <b>Never pick up broken glass yourself</b></td>
+    </tr>
+  </table>
+  <div class="box info">Identifying hazards and controlling risks keeps everyone safe — including the people around you.</div>`});
+// 51 Q
+// 52
+S.push({type:'content',kicker:K1,title:'Activity 5.1 — Samir’s plan',html:`
+  <ul>
+    <li>Samir is going to make <b>magnesium oxide</b>.</li>
+    <li>He plans to hold a strip of magnesium <b>in a flame</b> until it gives out a bright white light.</li>
+    <li>He will then put the magnesium oxide <b>onto his desk</b> so he can observe it.</li>
+  </ul>
+  <div class="box bad">⚠ This experiment could cause harm to Samir <b>and the people around him</b>!</div>`});
+// 53
+S.push({type:'content',kicker:K1,title:'Activity 5.1 — reducing the harm',html:`
+  <table class="tbl">
+    <tr><th>Hazard</th><th>Controlling the risk</th></tr>
+    <tr><td>Intense <b>bright light</b> can damage eyes</td><td>Never look directly at it; do not burn it while facing the class</td></tr>
+    <tr><td>Very <b>hot burning metal</b></td><td>Hold the strip with <b>tongs</b>; wear eye protection</td></tr>
+    <tr><td>Hot product <b>left on the desk</b></td><td>Place it on a <b>watch glass</b> or heatproof mat; do not touch; wash hands afterwards</td></tr>
+  </table>`});
+// 54 Q
+S.push({type:'quiz',q:'Which combination keeps Samir safest?',
+  opts:['Look straight at the flame and hold the magnesium with his fingers','Avoid looking directly at the light, hold the strip with tongs, and place the product on a watch glass','Wear dark sunglasses and hold the magnesium with a paper towel','Burn the magnesium quickly so nobody notices'],a:1,
+  why:'Never look directly at burning magnesium, use tongs for hot metal, and put the product on a watch glass — these control all the hazards.'});
+// 55
+S.push({type:'content',kicker:K1,title:'Science in context — industry',html:`
+  <ul>
+    <li>The <b>chemical industry</b> makes useful substances such as <b>metals, dyes and medicines</b>.</li>
+    <li>It is important that industrial chemists and engineers know that reactions <b>are happening</b> or <b>have happened</b>.</li>
+  </ul>
+  <div class="signs">
+    <div class="sign"><span class="emo">⚡</span><b>Aluminium</b>next slide</div>
+    <div class="sign"><span class="emo">🎨</span><b>Dyes</b>coming up</div>
+    <div class="sign"><span class="emo">💊</span><b>Aspirin</b>coming up</div>
+  </div>`});
+// 56
+S.push({type:'content',kicker:K1,title:'Industrial reactions — aluminium',html:`
+  <ul>
+    <li>Aluminium is made by passing <b>electricity</b> through <b>liquid aluminium oxide</b>.</li>
+    <li>Products: <b>aluminium + oxygen</b>.</li>
+    <li>It is difficult to see the aluminium being made — it <b>sinks to the bottom</b> of the mixture.</li>
+    <li>But <b>continuous bubbling</b> shows the reaction is happening!</li>
+  </ul>`});
+// 57 Q
+// 58
+S.push({type:'content',kicker:K1,title:'Industrial reactions — dyes',html:`
+  <ul>
+    <li><b>Dyes</b> are coloured substances used to give colour to <b>paints</b> and <b>clothing</b>.</li>
+    <li>They can be made by reacting suitable <b>colourless liquids</b> together, producing a coloured substance.</li>
+    <li>The <b>colour change</b> shows that the reaction has happened.</li>
+  </ul>`});
+// 59
+S.push({type:'content',kicker:K1,title:'Industrial reactions — aspirin',html:`
+  <ul>
+    <li><b>Aspirin</b> is a medicine used to ease aches and pains, and the symptoms of colds.</li>
+    <li>One step in making aspirin involves reacting <b>two solutions</b> together.</li>
+    <li>Aspirin does <b>not dissolve</b> in water — so it forms a <b>white precipitate</b> that can be separated from the reaction mixture.</li>
+  </ul>`});
+// 60 Q
+S.push({type:'quiz',q:'In aspirin production, what evidence shows that the reaction has happened?',
+  opts:["A 'pop' sound","A white precipitate forms","Limewater turns milky","A glowing splint relights"],a:1,
+  why:'Aspirin is insoluble in water, so it appears as a white precipitate — evidence that the reaction took place.'});
+// 61
+S.push({type:'content',kicker:K1,title:'Key facts (1 of 2)',html:`
+  <ul>
+    <li><b>Word equations</b> and <b>particle diagrams</b> are used to model chemical reactions.</li>
+    <li>You can identify whether a chemical reaction has happened by the <b>loss of reactants</b> or the <b>formation of products</b>.</li>
+    <li><b>Compounds</b> can be made during chemical reactions.</li>
+  </ul>`});
+// 62
+S.push({type:'content',kicker:K1,title:'Key facts (2 of 2)',html:`
+  <ul>
+    <li>Products have <b>different properties</b> to the reactants that formed them.</li>
+    <li>Evidence of a reaction includes a <b>gas</b>, a <b>precipitate</b>, or a <b>colour change</b>.</li>
+    <li>There are specific <b>tests</b> to identify hydrogen, oxygen and carbon dioxide:</li>
+  </ul>
+  <table class="tbl">
+    <tr><th>Gas</th><th>Test</th><th>Positive result</th></tr>
+    <tr><td><b>hydrogen</b></td><td>lighted splint at tube mouth</td><td>ignites with a 'pop'</td></tr>
+    <tr><td><b>oxygen</b></td><td>glowing splint inside tube</td><td>splint relights</td></tr>
+    <tr><td><b>carbon dioxide</b></td><td>bubble through limewater</td><td>turns milky white</td></tr>
+  </table>`});
+// 63 Q
+// 64
+S.push({type:'content',kicker:K1,title:'Check your skills — Topic 1',html:`
+  <ul class="checklist">
+    <li>I can describe the <b>strengths and limitations</b> of a model</li>
+    <li>I can consider <b>hazards</b> and how to reduce them, to carry out practical work <b>safely</b></li>
+  </ul>
+  <div class="box good">If you can tick both — brilliant! If not, use the ☰ menu to revisit any slide.</div>`});
+// 65
+S.push({type:'content',kicker:K1,title:'Coming up next…',html:`
+  <div class="grid2">
+    <div class="sign"><span class="emo">☁️</span><b>Topic 2: Forming Precipitates</b>Why do some reactions turn cloudy?</div>
+    <div class="sign"><span class="emo">🔮</span><b>Predicting reactions</b>Use solubility rules to predict precipitates!</div>
+  </div>
+  <div class="box">But first — one final check on Topic 1! 👉</div>`});
+// 66 Q
+S.push({type:'quiz',q:'Which is a LIMITATION of a particle diagram?',
+  opts:['It shows the names of all the substances','It does not show every atom or the forces between particles','It can only be drawn in pencil','It only works for metals'],a:1,
+  why:'Particle diagrams simplify reactions — they cannot show every atom (like the atoms inside sulfate) or the forces holding particles together.'});
+
+/* ======== TOPIC 2 : FORMING PRECIPITATES ======== */
+// 67
+S.push({type:'title',kicker:K2,title:'Forming Precipitates',
+  sub:'Solubility, swapping particles and making predictions you can test',
+  chips:['soluble & insoluble','precipitation reactions','particle model','predictions']});
+// 68
+S.push({type:'content',kicker:K2,title:'You will learn to…',html:`
+  <ul>
+    <li>Explain how chemical reactions produce <b>precipitates</b></li>
+    <li>Describe chemical reactions using the <b>particle model</b></li>
+    <li>Represent scientific ideas using <b>symbols and formulae</b></li>
+    <li>Use scientific knowledge and understanding to make <b>predictions</b></li>
+  </ul>`});
+// 69 Q
+// 70
+S.push({type:'content',kicker:K2,title:'Starting point',html:`
+  <table class="tbl">
+    <tr><th>You should know that…</th><th>You should be able to…</th></tr>
+    <tr>
+      <td>Chemical reactions involve <b>reactants</b> interacting to form new substances called <b>products</b>.<br><br>An <b>insoluble solid</b> can be separated from a liquid.</td>
+      <td>Make <b>predictions</b>, referring to relevant scientific knowledge.</td>
+    </tr>
+  </table>`});
+// 71
+S.push({type:'content',kicker:K2,title:'Soluble substances',html:`
+  <ul>
+    <li>Some substances are <b>soluble</b> in water — they dissolve to form a <b>clear solution</b>.</li>
+    <li>You can see <b>through</b> solutions because the dissolved particles are <b>far too small to see</b>.</li>
+    <li><b>Sodium chloride</b> (common table salt) is soluble → it dissolves to form sodium chloride solution.</li>
+  </ul>`});
+// 72 Q
+S.push({type:'quiz',q:'Sodium chloride is stirred into water. The result is:',
+  opts:['A cloudy white mixture','A clear, colourless solution','Two separate layers','Nothing — sodium chloride is insoluble'],a:1,
+  why:'Sodium chloride is soluble — it dissolves, and the dissolved particles are too small to see, so the solution is clear.'});
+// 73
+S.push({type:'content',kicker:K2,title:'Clear but coloured!',html:`
+  <ul>
+    <li>Some solutions are <b>colourless</b> — like sodium chloride solution.</li>
+    <li>Other solutions are <b>coloured</b> — <b>copper sulfate solution is blue</b>.</li>
+    <li>But you can still <b>see through it</b>, because it is <b>clear</b> (Figure 5.10).</li>
+  </ul>${photoFigure('5.10_copper_sulfate.jpg','Figure 5.10 - clear blue copper sulfate solution')}
+  <div class="box info">Clear ≠ colourless! A solution can be coloured and still see-through.</div>`});
+// 74
+S.push({type:'content',kicker:K2,title:'Insoluble substances',html:`
+  <ul>
+    <li>Other substances are <b>insoluble</b> — they do <b>not</b> dissolve and cannot form a solution.</li>
+    <li>If you mix an insoluble substance with water, you can <b>still see the substance</b>.</li>
+    <li>This makes the mixture <b>cloudy</b>.</li>
+    <li><b>Calcium carbonate</b> is an insoluble white solid → the water goes cloudy (Figure 5.11).</li>
+  </ul>${photoFigure('5.11_solutions_comparison.jpg','Figure 5.11 - comparing clear and cloudy mixtures')}`});
+// 75 Q
+// 76
+S.push({type:'content',kicker:K2,title:'Book Q1 — soluble vs insoluble',html:`
+  <div class="box"><b>Q1</b> — Give the difference between a soluble substance and an insoluble substance.</div>
+  <div class="box good"><b>Answer:</b> A <b>soluble</b> substance dissolves in water to form a clear solution. An <b>insoluble</b> substance does not dissolve — it stays visible and makes the mixture cloudy.</div>`});
+// 77
+S.push({type:'content',kicker:K2,title:'Book Q2 — the two mixtures',html:`
+  <div class="grid2">
+    <div class="sign"><span class="emo">💧</span><b>Water + soluble substance</b>clear solution — dissolved particles far too small to see</div>
+    <div class="sign"><span class="emo">🥛</span><b>Water + insoluble substance</b>cloudy mixture — you can still see the substance in the water</div>
+  </div>`});
+// 78 Q
+S.push({type:'quiz',q:'You mix a white powder with water and cannot see through the mixture. The powder is:',
+  opts:['soluble','insoluble','a gas','an acid'],a:1,
+  why:'Insoluble substances do not dissolve — they stay visible and make the water cloudy.'});
+// 79
+S.push({type:'content',kicker:K2,title:'Key terms — Topic 2',html:`
+  <ul>
+    <li><b>soluble</b> — a substance that dissolves to form a solution</li>
+    <li><b>insoluble</b> — a substance that does not dissolve</li>
+    <li><b>solution</b> — a mixture of a soluble substance and a liquid</li>
+  </ul>
+  <div class="box info">Keep these three words handy — they are the key to predicting precipitates!</div>`});
+// 80
+S.push({type:'content',kicker:K2,title:'Dissolved reactants still react!',html:`
+  <ul>
+    <li>Substances can take part in reactions <b>even when dissolved in water</b> — acids are like this.</li>
+    <li>Some mixtures of <b>soluble reactants</b> react together to form one or more <b>insoluble products</b>.</li>
+  </ul>
+  <div class="box">An insoluble product made from soluble reactants = a <b>precipitate</b>!</div>`});
+// 81 Q
+S.push({type:'quiz',q:'A precipitation reaction happens when…',
+  opts:['Two soluble substances react and one product is insoluble','Two insoluble solids are shaken together','Water is heated to boiling','A metal is bent into a new shape'],a:0,
+  why:'A precipitate is an insoluble solid formed when soluble substances react together.'});
+// 82
+S.push({type:'content',kicker:K2,title:'Precipitate & precipitation reaction',html:`
+  <ul>
+    <li><b>precipitate</b> — an insoluble solid formed when soluble substances react together.</li>
+    <li>As it <b>cannot dissolve</b> in the reaction mixture, a precipitate turns the mixture <b>cloudy</b>.</li>
+    <li>A reaction in which a precipitate forms is called a <b>precipitation reaction</b>.</li>
+  </ul>`});
+// 83
+S.push({type:'content',kicker:K2,title:'Modelling a precipitation reaction',html:`
+  <p>The word equation for the reaction that produces a precipitate of copper silicate:</p>
+  <div class="eq"><span class="r">copper sulfate + sodium silicate</span><span class="arrow">→</span><span class="p">copper silicate + sodium sulfate</span></div>
+  <div class="box">This model shows the reactants and products — but you <b>cannot see what is happening to the particles</b>. A particle diagram is better for that…</div>`});
+// 84 Q
+// 85
+S.push({type:'content',kicker:K2,title:'A dark blue surprise — Figure 5.12',html:`
+  <ul>
+    <li><b>Copper sulfate solution</b> (blue) + <b>sodium silicate solution</b> (colourless) are mixed.</li>
+    <li>A precipitate of <b>dark blue copper silicate</b> forms.</li>
+    <li><b>Sodium sulfate</b> also forms — and stays dissolved (it is soluble).</li>
+  </ul>
+  ${photoFigure('5.12_precipitation_reaction.jpg','Figure 5.12 - a dark blue precipitate forms')}
+  `});
+// 86
+S.push({type:'content',kicker:K2,title:'The particle view — swapping partners!',html:`
+  <ul>
+    <li>Look at what happens to the particles (Figure 5.13):</li>
+    <li><b>Copper and sodium swap</b> the sulfate and silicate particles!</li>
+    <li>The result: insoluble <b>copper silicate</b> (precipitate) + soluble <b>sodium sulfate</b>.</li>
+  </ul>${photoFigure('5.13_particle_model.jpg','Figure 5.13 - particles swap partners in a precipitation reaction')}`});
+// 87 Q
+S.push({type:'quiz',q:'In the particle diagram of the precipitation, the metals…',
+  opts:['are destroyed','swap partners — copper joins silicate, sodium joins sulfate','turn into oxygen','dissolve away completely'],a:1,
+  why:'Copper was with sulfate and sodium was with silicate. After swapping, copper silicate (insoluble) and sodium sulfate (soluble) form.'});
+// 88
+S.push({type:'content',kicker:K2,title:'Every model has limits…',html:`
+  <ul>
+    <li>The particle diagram does <b>not show all the atoms</b>: sulfate contains 1 sulfur + 4 oxygen atoms; silicate contains 1 silicon + 3 oxygen atoms.</li>
+    <li>Neither model shows the <b>forces</b> holding particles together.</li>
+    <li>You cannot work out whether a substance is <b>soluble or insoluble</b> using these models.</li>
+  </ul>`});
+// 89
+S.push({type:'content',kicker:K2,title:'Book Q3 — why not show every atom?',html:`
+  <div class="box"><b>Q3</b> — Suggest a reason why the particle model in the diagram does not show all the atoms involved.</div>
+  <div class="box good"><b>Answer:</b> To keep the model <b>simple and clear</b> — each compound particle is shown as one circle. Drawing every single atom would make the diagram complicated and harder to read.</div>`});
+// 90 Q
+// 91
+S.push({type:'content',kicker:K2,title:'Making links — the limewater test again!',html:`
+  <ul>
+    <li>The limewater test for carbon dioxide (Topic 1) is an example of a <b>precipitation reaction</b>.</li>
+    <li>Limewater is <b>calcium hydroxide solution</b>.</li>
+    <li>It reacts with carbon dioxide to form a precipitate of <b>calcium carbonate</b>.</li>
+  </ul>
+  <div class="eq"><span class="r">calcium hydroxide + carbon dioxide</span><span class="arrow">→</span><span class="p">calcium carbonate + water</span></div>`});
+// 92
+S.push({type:'content',kicker:K2,title:'Which parts are soluble?',html:`
+  <table class="tbl">
+    <tr><th>Substance</th><th>Soluble or insoluble?</th></tr>
+    <tr><td>calcium hydroxide (limewater)</td><td>✅ soluble — it is a solution!</td></tr>
+    <tr><td>carbon dioxide</td><td>a gas that reacts</td></tr>
+    <tr><td><b>calcium carbonate</b></td><td>❌ insoluble → the milky cloudiness!</td></tr>
+  </table>`});
+// 93 Q
+S.push({type:'quiz',q:'In the limewater test, which product is insoluble?',
+  opts:['Calcium hydroxide','Calcium carbonate','Carbon dioxide','Water'],a:1,
+  why:'Calcium carbonate does not dissolve — it is the precipitate that makes limewater look milky.'});
+// 94
+S.push({type:'content',kicker:K2,title:'Table 5.2 — always SOLUBLE in water',html:`
+  <ul>
+    <li>✅ all <b>sodium salts</b></li>
+    <li>✅ all <b>nitrates</b></li>
+    <li>✅ <b>most chlorides</b> (but watch out…)</li>
+    <li>✅ <b>most sulfates</b> (but watch out…)</li>
+    <li>✅ sodium carbonate, sodium hydroxide</li>
+  </ul>
+  <div class="box info">Memorise these — they are your prediction superpower! 🦸</div>`});
+// 95
+S.push({type:'content',kicker:K2,title:'Table 5.2 — INSOLUBLE in water',html:`
+  <ul>
+    <li>❌ <b>silver chloride</b> (the chloride exception)</li>
+    <li>❌ <b>barium sulfate</b> and <b>calcium sulfate</b> (the sulfate exceptions)</li>
+    <li>❌ <b>most carbonates</b> and <b>most hydroxides</b></li>
+  </ul>
+  <div class="box bad">⚠ Exception alert! “Most” is not “all” — silver chloride and barium sulfate break the rules.</div>`});
+// 96 Q
+// 97
+S.push({type:'content',kicker:K2,title:'Predict it! Silver nitrate + sodium chloride',html:`
+  <ul>
+    <li>Both reactants are <b>soluble</b> (a nitrate + a sodium salt).</li>
+    <li>Products: <b>silver chloride</b> + <b>sodium nitrate</b>.</li>
+    <li>Sodium nitrate is <b>soluble</b>… but silver chloride is <b>insoluble</b> → a <b>precipitate</b> forms!</li>
+  </ul>
+  <div class="eq"><span class="r">silver nitrate + sodium chloride</span><span class="arrow">→</span><span class="p">silver chloride↓ + sodium nitrate</span></div>`});
+// 98
+S.push({type:'content',kicker:K2,title:'Predictions have limits',html:`
+  <ul>
+    <li>You <b>CAN</b> predict whether a precipitate will form, using the solubility table.</li>
+    <li>You <b>CANNOT</b> predict the colour of a precipitate unless you already know it. (Silver chloride is white.)</li>
+    <li>The prediction is <b>easily tested</b> in the laboratory!</li>
+  </ul>
+  <div class="box good">Predict → test → observe. That is real science! 🔬</div>`});
+// 99 Q
+S.push({type:'quiz',q:'Silver nitrate solution is mixed with sodium chloride solution. What happens?',
+  opts:['Nothing happens — both reactants are soluble','A white precipitate of silver chloride forms','The mixture pops when lit','The solution turns blue'],a:1,
+  why:'Both reactants are soluble, but silver chloride is insoluble — so it forms as a white precipitate.'});
+// 100
+S.push({type:'content',kicker:K2,title:'A1 — use Table 5.2',html:`
+  <div class="box"><b>A1</b> — Use Table 5.2 to work out whether <b>sodium sulfate</b> and <b>copper hydroxide</b> are soluble or insoluble.</div>
+  <div class="box good"><b>Answers:</b><br>• Sodium sulfate → <b>SOLUBLE</b> (all sodium salts; most sulfates)<br>Copper hydroxide → <b>INSOLUBLE</b> (most hydroxides are insoluble)</div>`});
+// 101
+S.push({type:'content',kicker:K2,title:'A2 — predict the reaction',html:`
+  <div class="box"><b>A2</b> — Use your answers to predict what happens when <b>sodium hydroxide solution</b> is mixed with <b>copper sulfate solution</b>.</div>
+  <ul>
+    <li>Both solutions are <b>soluble</b> reactants.</li>
+    <li>Products: copper hydroxide + sodium sulfate.</li>
+    <li>Copper hydroxide is <b>insoluble</b> → a <b>blue precipitate</b> forms! Sodium sulfate stays dissolved.</li>
+  </ul>`});
+// 102 Q
+// 103
+S.push({type:'content',kicker:K2,title:'A3 — one more prediction',html:`
+  <div class="box"><b>A3</b> — Predict what happens when <b>barium nitrate solution</b> is mixed with <b>sodium sulfate solution</b>.</div>
+  <ul>
+    <li>Both are <b>soluble</b> (a nitrate + a sodium salt).</li>
+    <li>Products: barium sulfate + sodium nitrate.</li>
+    <li><b>Barium sulfate is insoluble</b> → a <b>white precipitate</b> forms!</li>
+  </ul>`});
+// 104
+S.push({type:'content',kicker:K2,title:'Colourful hydroxides',html:`
+  <ul>
+    <li>Different metal hydroxide precipitates have <b>different colours</b> (Figure 5.14).</li>
+    <li>The colour can help identify the metal — <b>but only if you already know it!</b></li>
+  </ul>${photoFigure('5.14_hydroxide_precipitates.jpg','Figure 5.14 - three different hydroxide precipitates')}`});
+// 105 Q
+S.push({type:'quiz',q:'Barium nitrate solution is mixed with sodium sulfate solution. Predict the result:',
+  opts:['No reaction — all the substances are soluble','An insoluble precipitate of barium sulfate forms','A blue precipitate of copper hydroxide','Hydrogen gas is given off'],a:1,
+  why:'Barium sulfate is one of the insoluble sulfate exceptions — it forms a white precipitate.'});
+// 106
+S.push({type:'content',kicker:K2,title:'Key facts — Topic 2',html:`
+  <ul>
+    <li>Precipitates are <b>insoluble products</b> formed from reactions between <b>soluble reactants</b>.</li>
+    <li>A precipitate turns the reaction mixture <b>cloudy</b>.</li>
+    <li>Word equations and particle diagrams model precipitation — with <b>limitations</b>.</li>
+    <li>Solubility tables let us <b>predict</b> whether a precipitate will form.</li>
+  </ul>`});
+// 107
+S.push({type:'content',kicker:K2,title:'Check your skills — Topic 2',html:`
+  <ul class="checklist">
+    <li>I can make <b>predictions</b>, referring to relevant scientific knowledge</li>
+    <li>I can describe reactions with <b>word equations</b> and <b>particle diagrams</b></li>
+    <li>I can explain the <b>limitations</b> of a model</li>
+  </ul>
+  <div class="box good">One last challenge before the finish line! 🏁</div>`});
+// 108 Q
+// 109
+S.push({type:'content',kicker:'Chapter 5',title:'The big picture 🧪',html:`
+  <div class="grid2">
+    <div class="sign" style="text-align:left"><span class="emo">🔥</span><b>Topic 1 — Making compounds</b>
+      <ul style="margin-top:8px">
+        <li>word equations & particle diagrams</li>
+        <li>compounds have new properties</li>
+        <li>gas tests: H₂ pop · O₂ relights · CO₂ milky</li>
+        <li>hazards, risks and controls</li>
+      </ul>
+    </div>
+    <div class="sign" style="text-align:left"><span class="emo">☁️</span><b>Topic 2 — Forming precipitates</b>
+      <ul style="margin-top:8px">
+        <li>soluble vs insoluble</li>
+        <li>soluble reactants → insoluble product</li>
+        <li>particles swap partners</li>
+        <li>use Table 5.2 to predict!</li>
+      </ul>
+    </div>
+  </div>`});
+// 110
+S.push({type:'end'});
+
+/* =========================================================
+   ENGINE — rendering, navigation, quiz & hangman
+   ========================================================= */
+const deck = document.getElementById('deck');
+const TOTAL_Q = S.filter(s => s.type==='quiz').length;
+let cur = -1, curEl = null, score = 0, answered = 0;
+const els = [];
+const C = {maxWrong:11, key:'sci-ch5-progress-v1'};
+const fresh = () => ({hangmanParts:0, hangmanPending:false, wrongChoices:{}, correctQuizIds:[], attemptedIds:[]});
+let state = fresh();
+function readState(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(C.key) || 'null');
+    if (saved && typeof saved === 'object') state = {...fresh(), ...saved};
+  }catch(e){ state = fresh(); }
+  state.hangmanParts = Math.max(0, Math.min(C.maxWrong, Number(state.hangmanParts) || 0));
+  state.hangmanPending = Boolean(state.hangmanPending);
+  state.wrongChoices = state.wrongChoices && typeof state.wrongChoices === 'object' ? state.wrongChoices : {};
+  state.correctQuizIds = Array.isArray(state.correctQuizIds) ? state.correctQuizIds : [];
+  state.attemptedIds = Array.isArray(state.attemptedIds) ? state.attemptedIds : [];
+  return state;
+}
+function saveState(){try{localStorage.setItem(C.key, JSON.stringify(state));}catch(e){}}
+
+const chip = () => document.getElementById('scorechip').textContent =
+  `⭐ ${score} pts · ${answered} / ${TOTAL_Q} attempted`;
+
+const HANGMAN_PARTS = [
+  '<circle cx="124" cy="45" r="17"/>',
+  '<path d="M124 62v48"/>',
+  '<path d="M124 72 96 94"/>',
+  '<path d="M124 72 152 94"/>',
+  '<path d="M124 110 101 145"/>',
+  '<path d="M124 110 147 145"/>',
+  '<path d="M124 34q-16-14-31 0"/>',
+  '<path d="M117 46h2M130 46h2"/>',
+  '<path d="M117 55q7 5 14 0"/>',
+  '<path d="M124 20v-7"/>',
+  '<circle cx="124" cy="9" r="4"/>'
+];
+
+function hangmanPartner(){
+  const n = state.hangmanParts;
+  return `<aside class="hangman partner">
+    <h3>Hangman partner</h3>
+    <p>${C.maxWrong} wrong answers completes one set</p>
+    <svg class="partner-svg" viewBox="0 0 180 175" aria-label="${n} of ${C.maxWrong} Hangman parts drawn">
+      <path class="gallows" d="M20 157h135M45 157V20h82v18"/>
+      ${HANGMAN_PARTS.map((p,i)=>`<g class="part ${i<n?'on':''}">${p}</g>`).join('')}
+    </svg>
+    <p class="hang-note"><b>${n}/${C.maxWrong}</b> wrong${state.hangmanPending?'<br>Set complete — start a new one':''}</p>
+    <div class="steps">${Array.from({length:C.maxWrong},(_,i)=>`<span class="step ${i<n?'on':''} ${i===n-1?'last':''}">${i+1}</span>`).join('')}</div>
+  </aside>`;
+}
+
+function buildTitle(s){
+  return `<div class="tcenter">
+    <div class="kick">${s.kicker}</div>
+    <h1>${s.title}</h1>
+    <p class="tsub">${s.sub}</p>
+    <div class="chiprow">${(s.chips||[]).map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+    <p class="navhint">Use ← / → arrow keys (or Space) · or the buttons below</p>
+  </div>`;
+}
+function buildContent(s){
+  return `<div class="card"><div class="kick">${s.kicker}</div><h2>${s.title}</h2>${s.html}</div>`;
+}
+function buildQuiz(s){
+  const bd = ['A','B','C','D'];
+  const wrong = state.wrongChoices[s.id] || [];
+  const correct = state.correctQuizIds.includes(s.id);
+  return `<div class="card quiz">
+    <div class="qhead">🎯 Quick check</div>
+    <div class="quiz-layout"><div class="quiz-box">
+      <div class="q-question">${s.q}</div>
+      ${s.opts.map((o,i)=>`<button type="button" class="opt ${wrong.includes(i)?'wrong':''} ${correct&&i===s.a?'correct':''}" ${wrong.includes(i)||correct?'disabled':''}><span class="badge">${bd[i]}</span><span>${o}</span></button>`).join('')}
+      <div class="explain box info ${correct?'show':''}"><b>Why:</b> ${s.why}</div>
+    </div>${hangmanPartner()}</div>
+  </div>`;
+}
+function buildEnd(){
+  return `<div class="tcenter">
+    <div class="kick">Chapter 5 · Complete</div>
+    <h1>🎓 Well done!</h1>
+    <p class="tsub">You have finished both topics:<br><b>Making Compounds</b> & <b>Forming Precipitates</b></p>
+    <div class="stats">
+      <div class="stat"><b id="finScore">0</b><span>points earned</span></div>
+      <div class="stat"><b id="finAns">0</b><span>questions attempted</span></div>
+      <div class="stat"><b id="finTot">0</b><span>total questions</span></div>
+    </div>
+    <button type="button" class="restart" onclick="location.reload()">↻ Restart the deck</button>
+  </div>`;
+}
+
+function wireQuiz(sec, s){
+  const opts = [...sec.querySelectorAll('.opt')];
+  const wrong = new Set(state.wrongChoices[s.id] || []);
+  const isCorrect = () => state.correctQuizIds.includes(s.id);
+  opts.forEach((b, i) => b.addEventListener('click', () => {
+    if (state.hangmanPending || isCorrect() || wrong.has(i)) return;
+    if (!state.attemptedIds.includes(s.id)){
+      state.attemptedIds.push(s.id);
+      answered++;
+    }
+    if (i === s.a){
+      state.correctQuizIds.push(s.id);
+      score++;
+      b.classList.add('correct');
+      opts.forEach(o => o.disabled = true);
+      sec.dataset.done = 1;
+      sec.querySelector('.explain').classList.add('show');
+      document.getElementById('nextBtn').disabled = false;
+    } else {
+      wrong.add(i);
+      (state.wrongChoices[s.id] ||= []).push(i);
+      state.hangmanParts = Math.min(C.maxWrong, state.hangmanParts + 1);
+      b.classList.add('wrong');
+      b.disabled = true;
+      if (state.hangmanParts >= C.maxWrong) state.hangmanPending = true;
+    }
+    saveState();
+    renderPartner(sec);
+    if (state.hangmanPending) openHangmanModal();
+    chip();
+  }));
+}
+
+function renderPartner(sec){
+  const n = state.hangmanParts;
+  sec.querySelectorAll('.partner-svg .part').forEach((p,i) => p.classList.toggle('on', i < n));
+  const note = sec.querySelector('.hang-note');
+  if (note) note.innerHTML = `<b>${n}/${C.maxWrong}</b> wrong${state.hangmanPending?'<br>Set complete — start a new one':''}`;
+  sec.querySelector('.steps').innerHTML = Array.from({length:C.maxWrong},(_,i)=>`<span class="step ${i<n?'on':''} ${i===n-1?'last':''}">${i+1}</span>`).join('');
+}
+
+function openHangmanModal(){
+  if (!state.hangmanPending) return;
+  const modal = document.getElementById('hmModal');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+}
+function closeHangmanModal(){
+  const modal = document.getElementById('hmModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+}
+function resetHangman(){
+  state.hangmanParts = 0;
+  state.hangmanPending = false;
+  saveState();
+  closeHangmanModal();
+  if (curEl && S[cur] && S[cur].type === 'quiz') renderPartner(curEl);
+}
+
+function ensure(i){
+  if (els[i]) return els[i];
+  const s = S[i];
+  const sec = document.createElement('section');
+  sec.className = 'slide' + ((s.type==='title'||s.type==='end') ? ' title-slide' : '');
+  sec.innerHTML = s.type==='title' ? buildTitle(s)
+                : s.type==='content'? buildContent(s)
+                : s.type==='quiz'   ? buildQuiz(s)
+                : buildEnd();
+  deck.appendChild(sec);
+  if (s.type==='quiz') wireQuiz(sec, s);
+  els[i] = sec;
+  return sec;
+}
+
+function show(i){
+  i = Math.max(0, Math.min(S.length-1, i));
+  if (curEl) curEl.classList.remove('active');
+  cur = i;
+  curEl = ensure(i);
+  const card = curEl.querySelector('.card'); if (card) card.scrollTop = 0;
+  curEl.classList.add('active');
+  document.getElementById('counter').textContent = `${i+1} / ${S.length}`;
+  document.getElementById('progfill').style.width = ((i+1)/S.length*100) + '%';
+  document.getElementById('prevBtn').disabled = (i===0);
+  document.getElementById('nextBtn').disabled = (i===S.length-1) || (S[i].type==='quiz' && !state.correctQuizIds.includes(S[i].id));
+  if (S[i].type==='end'){
+    document.getElementById('finScore').textContent = score;
+    document.getElementById('finAns').textContent = answered;
+    document.getElementById('finTot').textContent = TOTAL_Q;
+  }
+  if (state.hangmanPending && S[i].type==='quiz') setTimeout(openHangmanModal, 80);
+}
+function next(){
+  const s = S[cur];
+  if (state.hangmanPending){ openHangmanModal(); return; }
+  if (s && s.type === 'quiz' && !state.correctQuizIds.includes(s.id)) return;
+  show(cur+1);
+}
+const prev = () => show(cur-1);
+
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('prevBtn').addEventListener('click', prev);
+
+/* keyboard */
+document.addEventListener('keydown', e => {
+  const menu = document.getElementById('menu');
+  if (menu.classList.contains('open')){ if (e.key==='Escape') menu.classList.remove('open'); return; }
+  if (e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown'){ e.preventDefault(); next(); }
+  else if (e.key==='ArrowLeft' || e.key==='PageUp'){ e.preventDefault(); prev(); }
+});
+
+/* swipe */
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 60) (dx < 0 ? next() : prev());
+}, {passive:true});
+
+/* jump menu */
+const label = (s,i) => s.type==='title' ? `📘 ${s.title}`
+  : s.type==='content' ? s.title
+  : s.type==='quiz' ? '🎯 ' + s.q.slice(0,30) + '…'
+  : '🏁 The End';
+
+function openMenu(){
+  const g = document.getElementById('menuGrid');
+  g.innerHTML = S.map((s,i)=>{
+    const done = els[i] && els[i].dataset.done;
+    return `<div class="mi ${i===cur?'cur':''}" data-i="${i}">
+      <span class="n">${i+1}</span><span>${label(s,i)}</span>
+      <span class="st">${done ? (done==='1' ? '✅' : '') : ''}</span></div>`;
+  }).join('');
+  g.querySelectorAll('.mi').forEach(m => m.addEventListener('click', () => {
+    document.getElementById('menu').classList.remove('open');
+    show(+m.dataset.i);
+  }));
+  document.getElementById('menu').classList.add('open');
+}
+document.getElementById('menuBtn').addEventListener('click', openMenu);
+document.getElementById('menu').addEventListener('click', e => {
+  if (e.target.id==='menu') e.target.classList.remove('open');
+});
+document.getElementById('newHmBtn').addEventListener('click', resetHangman);
+
+/* start */
+readState();
+score = state.correctQuizIds.length;
+answered = state.attemptedIds.length;
+chip();
+show(0);
+if (state.hangmanPending) setTimeout(openHangmanModal, 80);
+</script>
+</body>
+</html>
