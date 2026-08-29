@@ -1,778 +1,1764 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เฉลยคณิตศาสตร์พร้อมวิธีทำ</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<title>Alge-Buddy · Manipulating Expressions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#0a0814; --bg-1:#161228; --bg-2:#1f1a3a; --panel:#1a1530;
+  --line:#2a2455; --txt:#ece8ff; --muted:#8a82b8;
+  --pink:#ff3d8b; --pink-glow:#ff6bb5;
+  --cyan:#4dd0ff; --yellow:#ffd84d; --green:#4dffa1; --red:#ff5a5a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+button{font:inherit}
+html,body{height:100vh;width:100vw;overflow:hidden;font-family:'Mali','Noto Sans Thai',sans-serif;background:var(--bg-0);color:var(--txt);user-select:none}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 30%,rgba(255,61,139,.08),transparent 50%),radial-gradient(circle at 80% 70%,rgba(77,208,255,.08),transparent 50%),radial-gradient(circle at 50% 50%,rgba(255,216,77,.04),transparent 60%);pointer-events:none;z-index:0}
+#app{position:relative;z-index:1;height:100vh;width:100vw;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+.topics-bar{display:flex;gap:6px;padding:8px 12px;background:linear-gradient(180deg,rgba(22,18,40,.95),rgba(16,12,30,.95));border-bottom:1px solid var(--line);backdrop-filter:blur(8px);align-items:center;overflow-x:auto;scrollbar-width:thin}
+.topics-bar::-webkit-scrollbar{height:4px}
+.topics-bar::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+.brand{font-weight:800;font-size:14px;padding:6px 10px;background:linear-gradient(135deg,var(--pink),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+.topic-btn{padding:5px 11px;background:rgba(42,36,85,.6);color:var(--muted);border:1px solid var(--line);border-radius:14px;cursor:pointer;font-size:11.5px;font-weight:500;transition:all .2s ease;white-space:nowrap}
+.topic-btn:hover{background:rgba(60,50,120,.8);color:var(--txt)}
+.topic-btn.active{background:linear-gradient(135deg,var(--pink),#c92d6e);color:#fff;border-color:var(--pink);box-shadow:0 0 12px rgba(255,61,139,.5)}
+.topic-btn.done::after{content:' ✓';color:var(--green)}
+.spacer{flex:1}
+.stars-display{display:flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;font-size:12px;color:var(--yellow);white-space:nowrap}
+.stars-display .star{font-size:14px}
+.stars-display .star.empty{color:#444}
+.settings-btn{background:rgba(0,0,0,.3);border:1px solid var(--line);color:var(--muted);padding:5px 10px;border-radius:12px;cursor:pointer;font-size:12px}
+.settings-btn:hover{color:var(--txt)}
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+.main{display:grid;grid-template-columns:1fr 230px;gap:12px;padding:12px;overflow:hidden;min-height:0}
+.card{background:linear-gradient(135deg,rgba(31,26,58,.9),rgba(22,18,40,.95));border:1px solid var(--line);border-radius:18px;padding:24px 28px;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pink),var(--cyan),var(--yellow))}
+.slide-content{flex:1;overflow-y:auto;padding-right:6px;scrollbar-width:thin}
+.slide-content::-webkit-scrollbar{width:5px}
+.slide-content::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
 
-        h1 {
-            text-align: center;
-            color: #fff;
-            font-size: 2em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+@keyframes slideEnter{0%{opacity:0;transform:translateX(40px) scale(.98);filter:blur(4px)}100%{opacity:1;transform:translateX(0) scale(1);filter:blur(0)}}
+.slide-content>*{animation:slideEnter .5s cubic-bezier(.22,.61,.36,1) both}
+.slide-content>*:nth-child(2){animation-delay:.08s}
+.slide-content>*:nth-child(3){animation-delay:.16s}
+.slide-content>*:nth-child(4){animation-delay:.24s}
+.slide-content>*:nth-child(5){animation-delay:.32s}
 
-        .subtitle {
-            text-align: center;
-            color: #e0d4f7;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
+.slide-header{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+.slide-num{font-size:11px;color:var(--muted);background:rgba(0,0,0,.3);padding:3px 8px;border-radius:8px;letter-spacing:1px;margin-left:auto}
+.slide-title{font-size:21px;font-weight:700;color:var(--txt);line-height:1.2}
+.slide-section-tag{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--pink);margin-bottom:4px}
+.slide-body{font-size:14.5px;line-height:1.65;color:var(--txt)}
+.slide-body p{margin-bottom:8px}
+.lesson-visual{display:block;float:right;width:min(34%,320px);height:auto;max-height:240px;object-fit:contain;object-position:center;margin:0 0 12px 18px;border-radius:14px;border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.lesson-visual-small{width:min(24%,220px);max-height:170px}
+.lesson-visual-centered{display:block;float:none;width:min(48%,420px);max-height:270px;margin:12px auto}
+@media(max-width:880px){.lesson-visual{float:none;width:100%;margin:12px 0 0}.lesson-visual-centered{width:100%}}
+.slide-body ul,.slide-body ol{margin:6px 0 10px 22px}
+.slide-body li{margin-bottom:4px}
+.slide-body code,.math{font-family:'JetBrains Mono','Consolas',monospace;background:rgba(255,61,139,.12);color:var(--pink-glow);padding:2px 7px;border-radius:5px;font-size:13.5px;border:1px solid rgba(255,61,139,.25)}
+.example-box{margin:12px 0;padding:12px 14px;background:rgba(77,208,255,.06);border-left:3px solid var(--cyan);border-radius:0 10px 10px 0}
+.example-box .label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--cyan);margin-bottom:5px;font-weight:700}
+.tip-box{margin:12px 0;padding:10px 14px;background:rgba(255,216,77,.07);border-left:3px solid var(--yellow);border-radius:0 10px 10px 0;font-size:13.5px}
+.tip-box .label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--yellow);margin-bottom:4px;font-weight:700}
 
-        /* ============ CARD ============ */
-        .card {
-            background: #fff;
-            border-radius: 16px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
+.side{display:grid;grid-template-rows:auto auto 1fr;gap:10px;min-height:0}
+.hangman-box{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column}
+.hangman-box .label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
+.hangman-count{color:var(--pink);font-weight:700}
+.hangman-svg{width:100%;height:130px;background:rgba(0,0,0,.2);border-radius:8px}
 
-        .card:hover {
-            transform: translateY(-4px);
-        }
+.combo-box{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center;font-size:12px}
+.combo-value{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--pink),var(--yellow));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.combo-label{font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:4px}
 
-        .card-header {
-            padding: 18px 24px;
-            color: #fff;
-            font-weight: bold;
-            font-size: 1.15em;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.stats-box{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;padding:10px;font-size:11px}
+.stats-box .label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px}
 
-        .card-header .toggle-icon {
-            font-size: 1.4em;
-            transition: transform 0.3s;
-        }
+.quiz-question{font-size:17px;font-weight:600;margin-bottom:16px;line-height:1.5}
+.quiz-options{display:grid;gap:9px}
+.quiz-option{padding:12px 16px;background:rgba(42,36,85,.4);border:1.5px solid var(--line);border-radius:11px;cursor:pointer;transition:all .2s ease;font-size:14.5px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+.quiz-option:hover:not(.wrong):not(.correct):not(.disabled){background:rgba(60,50,120,.6);border-color:var(--cyan);transform:translateX(4px)}
+.quiz-option .letter{width:26px;height:26px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+.quiz-option.wrong{background:rgba(255,90,90,.12);border-color:var(--red);opacity:.55;cursor:not-allowed}
+.quiz-option.wrong .letter{background:var(--red);color:#fff}
+.quiz-option.wrong::after{content:'✗';margin-left:auto;color:var(--red);font-weight:700}
+.quiz-option.correct{background:rgba(77,255,161,.12);border-color:var(--green)}
+.quiz-option.correct .letter{background:var(--green);color:#052}
+.quiz-option.correct::after{content:'✓';margin-left:auto;color:var(--green);font-weight:700;font-size:18px}
+.quiz-option.disabled{cursor:not-allowed}
+.quiz-feedback{margin-top:12px;padding:10px 14px;border-radius:9px;font-size:13.5px;display:none}
+.quiz-feedback.show{display:block;animation:slideEnter .4s ease both}
+.quiz-feedback.correct{background:rgba(77,255,161,.1);border:1px solid var(--green);color:var(--green)}
+.quiz-feedback.wrong{background:rgba(255,90,90,.1);border:1px solid var(--red);color:var(--red)}
 
-        .card-header.open .toggle-icon {
-            transform: rotate(45deg);
-        }
+.bottom-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:linear-gradient(0deg,rgba(22,18,40,.95),rgba(16,12,30,.95));border-top:1px solid var(--line);gap:12px}
+.nav-btn{padding:8px 18px;background:linear-gradient(135deg,var(--pink),#c92d6e);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:600;transition:all .2s;display:flex;align-items:center;gap:6px}
+.nav-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,61,139,.4)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn.secondary{background:rgba(42,36,85,.7);border:1px solid var(--line)}
+.nav-btn.secondary:hover:not(:disabled){background:rgba(60,50,120,.8);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.progress-bar{flex:1;height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--cyan));width:0%;transition:width .4s ease;border-radius:3px}
+.progress-text{font-size:11px;color:var(--muted);white-space:nowrap}
 
-        /* สีหัวแต่ละข้อ */
-        .color-1 { background: linear-gradient(135deg, #f093fb, #f5576c); }
-        .color-2 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-        .color-3 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-        .color-4 { background: linear-gradient(135deg, #fa709a, #fee140); }
-        .color-5 { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
-        .color-6 { background: linear-gradient(135deg, #fccb90, #d57eeb); }
-        .color-7 { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .color-8 { background: linear-gradient(135deg, #f6d365, #fda085); }
+.combo-overlay{position:fixed;inset:0;pointer-events:none;z-index:100;display:none;align-items:center;justify-content:center}
+.combo-overlay.show{display:flex}
+.combo-text{font-size:110px;font-weight:900;color:var(--pink);text-shadow:0 0 8px #fff,0 0 16px var(--pink),0 0 30px var(--pink),0 0 50px var(--pink-glow),0 0 80px var(--pink-glow);animation:comboFlicker .35s infinite alternate,comboPop .6s ease;letter-spacing:4px;font-family:'Impact',sans-serif}
+@keyframes comboFlicker{0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;text-shadow:0 0 8px #fff,0 0 16px var(--pink),0 0 30px var(--pink),0 0 50px var(--pink-glow),0 0 80px var(--pink-glow)}20%,24%,55%{opacity:.4;text-shadow:none}}
+@keyframes comboPop{0%{transform:scale(.3) rotate(-15deg);opacity:0}60%{transform:scale(1.2) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}
+.combo-emoji{position:absolute;font-size:70px;top:30%;left:50%;transform:translate(-50%,-50%);animation:comboPop .6s ease}
+.sparkle{position:absolute;width:8px;height:8px;border-radius:50%;animation:sparkleFloat 1s ease-out forwards}
+@keyframes sparkleFloat{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 
-        .card-body {
-            padding: 24px;
-            display: none;
-        }
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:200;animation:fadeIn .3s ease}
+.modal-backdrop.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border:1px solid var(--pink);border-radius:20px;padding:28px;max-width:460px;text-align:center;box-shadow:0 0 60px rgba(255,61,139,.4);animation:modalIn .4s cubic-bezier(.22,.61,.36,1)}
+@keyframes modalIn{from{transform:scale(.8) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal h2{font-size:24px;margin-bottom:12px;color:var(--pink);text-shadow:0 0 12px var(--pink-glow)}
+.modal p{color:var(--txt);margin-bottom:14px;line-height:1.6;font-size:14px}
+.modal .stars-lost{font-size:32px;color:var(--yellow);margin:10px 0}
+.modal.nt{border-color:var(--red);box-shadow:0 0 80px rgba(255,90,90,.6)}
+.modal.nt h2{color:var(--red);text-shadow:0 0 16px var(--red);font-size:42px;letter-spacing:6px;animation:ntFlicker .4s infinite alternate}
+@keyframes ntFlicker{from{text-shadow:0 0 16px var(--red);opacity:.85}to{text-shadow:0 0 30px var(--red),0 0 50px #ff8888;opacity:1}}
+.modal .modal-btn{margin-top:8px}
 
-        .card-body.show {
-            display: block;
-        }
+.hangman-svg .part{opacity:0;transition:opacity .3s}
+.hangman-svg .part.on{opacity:1;animation:draw .5s ease both}
+@keyframes draw{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+.hangman-svg .frame{stroke:var(--muted);stroke-width:2;fill:none}
+.hangman-svg .body-part{stroke:var(--pink);stroke-width:2.5;fill:none;stroke-linecap:round}
 
-        /* ============ โจทย์ ============ */
-        .question {
-            background: #f0f4ff;
-            border-left: 4px solid #667eea;
-            padding: 14px 18px;
-            border-radius: 8px;
-            margin-bottom: 18px;
-            font-weight: 500;
-            line-height: 1.8;
-        }
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.shake{animation:shake .4s}
 
-        .choices {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 18px;
-        }
-
-        .choice {
-            padding: 10px 14px;
-            border-radius: 8px;
-            background: #f9f9f9;
-            border: 2px solid #e0e0e0;
-            font-size: 0.95em;
-        }
-
-        .choice.correct {
-            background: #e8f5e9;
-            border-color: #4caf50;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-
-        /* ============ วิธีทำ ============ */
-        .solution-title {
-            font-weight: bold;
-            color: #333;
-            font-size: 1.1em;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .step {
-            background: #fafafa;
-            border-radius: 10px;
-            padding: 14px 18px;
-            margin-bottom: 10px;
-            border-left: 3px solid #667eea;
-        }
-
-        .step-label {
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 4px;
-        }
-
-        .step p {
-            margin: 4px 0;
-            line-height: 1.7;
-        }
-
-        .calc {
-            font-family: 'Courier New', monospace;
-            background: #eef;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        /* ============ คำตอบ ============ */
-        .answer-box {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-            color: #1a5c2a;
-            padding: 16px 20px;
-            border-radius: 12px;
-            font-size: 1.15em;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 16px;
-        }
-
-        /* ============ 3D Box (ข้อ 5) ============ */
-        .box-3d-container {
-            perspective: 600px;
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        .box-3d {
-            width: 140px;
-            height: 60px;
-            position: relative;
-            transform-style: preserve-3d;
-            transform: rotateX(-25deg) rotateY(-35deg);
-            animation: rotateBox 8s infinite linear;
-        }
-
-        @keyframes rotateBox {
-            0%   { transform: rotateX(-25deg) rotateY(0deg); }
-            100% { transform: rotateX(-25deg) rotateY(360deg); }
-        }
-
-        .box-3d .face {
-            position: absolute;
-            border: 2px solid rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .box-3d .front {
-            width: 140px; height: 60px;
-            background: rgba(102, 126, 234, 0.7);
-            transform: translateZ(10px);
-        }
-
-        .box-3d .back {
-            width: 140px; height: 60px;
-            background: rgba(102, 126, 234, 0.5);
-            transform: translateZ(-10px) rotateY(180deg);
-        }
-
-        .box-3d .left {
-            width: 20px; height: 60px;
-            background: rgba(118, 75, 162, 0.7);
-            transform: translateX(-10px) rotateY(-90deg);
-        }
-
-        .box-3d .right {
-            width: 20px; height: 60px;
-            background: rgba(118, 75, 162, 0.7);
-            transform: translateX(130px) rotateY(90deg);
-        }
-
-        .box-3d .top {
-            width: 140px; height: 20px;
-            background: rgba(240, 147, 251, 0.7);
-            transform: translateY(-10px) rotateX(90deg);
-        }
-
-        .box-3d .bottom {
-            width: 140px; height: 20px;
-            background: rgba(240, 147, 251, 0.5);
-            transform: translateY(50px) rotateX(-90deg);
-        }
-
-        /* ============ ตาราง ============ */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 12px 0;
-        }
-
-        th, td {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        th {
-            background: #667eea;
-            color: #fff;
-        }
-
-        tr:nth-child(even) {
-            background: #f5f5ff;
-        }
-
-        /* ============ สรุป ============ */
-        .summary {
-            background: #fff;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-        }
-
-        .summary h2 {
-            text-align: center;
-            margin-bottom: 16px;
-            color: #333;
-        }
-
-        .summary table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .summary .correct-cell {
-            background: #e8f5e9;
-            font-weight: bold;
-            color: #2e7d32;
-        }
-
-        /* ============ Pattern (ข้อ 27) ============ */
-        .pattern-display {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 3px;
-            margin: 10px 0;
-        }
-
-        .pattern-display span {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 13px;
-            color: #fff;
-        }
-
-        .letter-A { background: #f5576c; }
-        .letter-B { background: #4facfe; }
-        .letter-C { background: #43e97b; color: #1a5c2a !important; }
-        .letter-D { background: #764ba2; }
-        .letter-highlight {
-            outline: 3px solid red;
-            animation: blink 0.8s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { outline-color: red; }
-            50% { outline-color: yellow; }
-        }
-
-        /* ============ Dartboard (ข้อ 26) ============ */
-        .dartboard {
-            display: flex;
-            justify-content: center;
-            margin: 16px 0;
-        }
-
-        .dartboard svg {
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
-        }
-
-        /* ============ Responsive ============ */
-        @media (max-width: 600px) {
-            .choices {
-                grid-template-columns: 1fr;
-            }
-
-            h1 { font-size: 1.5em; }
-        }
-    </style>
+@media(max-width:880px){.main{grid-template-columns:1fr}.side{display:none}.combo-text{font-size:70px}}
+</style>
 </head>
 <body>
-
-<div class="container">
-
-    <h1>🎯 เฉลยคณิตศาสตร์พร้อมวิธีทำ</h1>
-    <p class="subtitle">วิธีทำแบบง่ายๆ ไม่ใช้สูตรยาก — คลิกที่แต่ละข้อเพื่อดูวิธีทำ</p>
-
-    <!-- ==================== ข้อ 5 ==================== -->
-    <div class="card">
-        <div class="card-header color-1" onclick="toggleCard(this)">
-            <span>📦 ข้อ 5: กล่องจากกระดาษตัดมุม</span>
-            <span class="toggle-icon">+</span>
-        </div>
-        <div class="card-body">
-            <div class="question">
-                กระดาษรูปสี่เหลี่ยมมุมฉาก กว้าง 14 ซม. ยาว 26 ซม. ตัดมุมทั้งสี่เป็นรูปสี่เหลี่ยมจัตุรัสด้านละ 6 ซม. แล้วพับขึ้นเป็นกล่อง จะมีปริมาตรกี่ ลบ.ซม.?
-            </div>
-            <div class="choices">
-                <div class="choice correct">1. 168 ลบ.ซม. ✅</div>
-                <div class="choice">2. 504 ลบ.ซม.</div>
-                <div class="choice">3. 672 ลบ.ซม.</div>
-                <div class="choice">4. 960 ลบ.ซม.</div>
-            </div>
-
-            <!-- 3D Box -->
-            <div class="box-3d-container">
-                <div class="box-3d">
-                    <div class="face front">ยาว 14 × สูง 6</div>
-                    <div class="face back">ยาว 14 × สูง 6</div>
-                    <div class="face left">2</div>
-                    <div class="face right">2</div>
-                    <div class="face top">กว้าง 2 × ยาว 14</div>
-                    <div class="face bottom">พื้น</div>
-                </div>
-            </div>
-
-            <div class="solution-title">📝 วิธีทำ</div>
-            <div class="step">
-                <div class="step-label">ขั้น 1 — หากว้างกล่อง</div>
-                <p>กระดาษกว้าง 14 ซม. ตัดมุมออกซ้าย 6 ขวา 6</p>
-                <p>กว้างกล่อง = <span class="calc">14 − 6 − 6 = 2 ซม.</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 2 — หายาวกล่อง</div>
-                <p>กระดาษยาว 26 ซม. ตัดมุมออกบน 6 ล่าง 6</p>
-                <p>ยาวกล่อง = <span class="calc">26 − 6 − 6 = 14 ซม.</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 3 — ความสูงกล่อง</div>
-                <p>พับขอบขึ้นมา → สูงเท่ากับด้านที่ตัด = <span class="calc">6 ซม.</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 4 — หาปริมาตร</div>
-                <p>กว้าง × ยาว × สูง = <span class="calc">2 × 14 × 6 = 168 ลบ.ซม.</span></p>
-            </div>
-            <div class="answer-box">✅ ตอบข้อ 1 → 168 ลูกบาศก์เซนติเมตร</div>
-        </div>
+<div id="app">
+  <div class="topics-bar" id="topicsBar">
+    <span class="brand">⚡ Alge-Buddy</span>
+    <div class="spacer"></div>
+    <div class="stars-display" id="starsDisplay"></div>
+    <button class="settings-btn" onclick="settings()">⚙</button>
+  </div>
+  <div class="main">
+    <div class="card" id="card"></div>
+    <div class="side">
+      <div class="hangman-box">
+        <div class="label"><span>Hangman</span><span class="hangman-count" id="hangmanCount">0/11</span></div>
+        <svg class="hangman-svg" id="hangmanSvg" viewBox="0 0 120 160">
+          <line class="frame" x1="10" y1="150" x2="90" y2="150"/>
+          <line class="frame" x1="30" y1="150" x2="30" y2="10"/>
+          <line class="frame" x1="30" y1="10" x2="80" y2="10"/>
+          <line class="frame" x1="80" y1="10" x2="80" y2="25"/>
+          <circle class="part body-part" id="p0" cx="80" cy="35" r="10"/>
+          <line class="part body-part" id="p1" x1="80" y1="45" x2="80" y2="85"/>
+          <line class="part body-part" id="p2" x1="80" y1="58" x2="65" y2="72"/>
+          <line class="part body-part" id="p3" x1="80" y1="58" x2="95" y2="72"/>
+          <line class="part body-part" id="p4" x1="80" y1="85" x2="68" y2="110"/>
+          <line class="part body-part" id="p5" x1="80" y1="85" x2="92" y2="110"/>
+          <path class="part body-part" id="p6" d="M70 28 Q80 16 90 28"/>
+          <circle class="part body-part" id="p7" cx="76" cy="34" r="1.6" fill="#ff3d8b"/>
+          <circle class="part body-part" id="p8" cx="84" cy="34" r="1.6" fill="#ff3d8b"/>
+          <path class="part body-part" id="p9" d="M75 41 Q80 45 85 41"/>
+          <path class="part body-part" id="p10" d="M70 48 L75 46 M85 46 L90 48" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div class="combo-box">
+        <div class="combo-label">Combo Streak</div>
+        <div class="combo-value" id="comboValue">0</div>
+        <div class="combo-label" id="comboBest">Best: 0</div>
+      </div>
+      <div class="stats-box">
+        <div class="label">Today</div>
+        <div id="dailyStats" style="color:var(--muted);font-size:12px;line-height:1.6"></div>
+      </div>
     </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-btn secondary" onclick="prev()">◀ Prev</button>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-text" id="progressText">1 / 1</span>
+    <button class="nav-btn" id="nextBtn" onclick="next()">Next ▶</button>
+  </div>
+</div>
 
-    <!-- ==================== ข้อ 18 ==================== -->
-    <div class="card">
-        <div class="card-header color-2" onclick="toggleCard(this)">
-            <span>💰 ข้อ 18: กำไร-ขาดทุนเสื้อ</span>
-            <span class="toggle-icon">+</span>
-        </div>
-        <div class="card-body">
-            <div class="question">
-                เสื้อราคาทุน 1,000 บาท ติดราคาขายเพื่อเอากำไร 10% แต่ขายไม่ได้ จึงลดราคาขายลง 10% ข้อใดถูกต้อง
-            </div>
-            <div class="choices">
-                <div class="choice">1. เท่าทุน</div>
-                <div class="choice">2. กำไร 10 บาท</div>
-                <div class="choice correct">3. ขาดทุน 10 บาท ✅</div>
-                <div class="choice">4. ขาดทุน 100 บาท</div>
-            </div>
+<div class="combo-overlay" id="comboOverlay"></div>
 
-            <div class="solution-title">📝 วิธีทำ</div>
-            <div class="step">
-                <div class="step-label">ขั้น 1 — หาราคาป้าย</div>
-                <p>ทุน 1,000 บาท บวกกำไร 10%</p>
-                <p>10% ของ 1,000 = <span class="calc">100</span></p>
-                <p>ราคาป้าย = <span class="calc">1,000 + 100 = 1,100 บาท</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 2 — ลดราคา 10%</div>
-                <p>⚠️ ลด 10% <b>จากราคาป้าย (1,100)</b> ไม่ใช่จากทุน!</p>
-                <p>10% ของ 1,100 = <span class="calc">110</span></p>
-                <p>ขายจริง = <span class="calc">1,100 − 110 = 990 บาท</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 3 — เทียบกับทุน</div>
-                <p>ขาย 990 บาท ทุน 1,000 บาท</p>
-                <p><span class="calc">990 − 1,000 = −10</span> → ขาดทุน 10 บาท</p>
-            </div>
-
-            <!-- Money Flow Diagram -->
-            <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0;font-size:.95em">
-                <div style="background:#e3f2fd;padding:10px 16px;border-radius:10px;text-align:center;border:2px solid #42a5f5;font-weight:bold">1,000<br><small>ทุน</small></div>
-                <span style="font-size:1.3em">→ +100 →</span>
-                <div style="background:#fff9c4;padding:10px 16px;border-radius:10px;text-align:center;border:2px solid #fbc02d;font-weight:bold">1,100<br><small>ป้าย</small></div>
-                <span style="font-size:1.3em">→ −110 →</span>
-                <div style="background:#ffebee;padding:10px 16px;border-radius:10px;text-align:center;border:2px solid #ef5350;font-weight:bold">990<br><small>ขายจริง</small></div>
-            </div>
-            <div class="answer-box">✅ ตอบข้อ 3 → ขาดทุน 10 บาท</div>
-        </div>
-    </div>
-
-    <!-- ==================== ข้อ 19 ==================== -->
-    <div class="card">
-        <div class="card-header color-3" onclick="toggleCard(this)">
-            <span>🧊 ข้อ 19: ปริมาตรจากพื้นที่ 3 หน้า</span>
-            <span class="toggle-icon">+</span>
-        </div>
-        <div class="card-body">
-            <div class="question">
-                ทรงสี่เหลี่ยมมุมฉากแต่ละหน้าเป็นรูปสี่เหลี่ยมผืนผ้า ถ้าพื้นที่แต่ละหน้าคือ 42, 72 และ 84 ตร.หน่วย จงหาปริมาตร
-            </div>
-            <div class="choices">
-                <div class="choice">1. 280 ลบ.หน่วย</div>
-                <div class="choice">2. 320 ลบ.หน่วย</div>
-                <div class="choice">3. 405 ลบ.หน่วย</div>
-                <div class="choice correct">4. 504 ลบ.หน่วย ✅</div>
-            </div>
-
-            <div class="solution-title">📝 วิธีทำ — ลองหาตัวเลขที่ลงตัว</div>
-            <div class="step">
-                <div class="step-label">ขั้น 1 — ตั้งให้ 3 ด้าน = a, b, c</div>
-                <p>หน้า 1: a × b = 42</p>
-                <p>หน้า 2: b × c = 72</p>
-                <p>หน้า 3: a × c = 84</p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 2 — ลองแยก 42</div>
-                <p>42 = 6 × 7 → ลอง a = 7, b = 6</p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 3 — หา c จาก b × c = 72</div>
-                <p>6 × c = 72 → c = <span class="calc">72 ÷ 6 = 12</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 4 — ตรวจ a × c</div>
-                <p>7 × 12 = <span class="calc">84</span> ✓ ตรง!</p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 5 — หาปริมาตร</div>
-                <p>ด้าน = 6, 7, 12</p>
-                <p>ปริมาตร = <span class="calc">6 × 7 × 12 = 504 ลบ.หน่วย</span></p>
-            </div>
-            <div class="answer-box">✅ ตอบข้อ 4 → 504 ลูกบาศก์หน่วย</div>
-        </div>
-    </div>
-
-    <!-- ==================== ข้อ 21 ==================== -->
-    <div class="card">
-        <div class="card-header color-4" onclick="toggleCard(this)">
-            <span>⭕ ข้อ 21: เส้นผ่านศูนย์กลางวงกลม</span>
-            <span class="toggle-icon">+</span>
-        </div>
-        <div class="card-body">
-            <div class="question">
-                วงกลมวงหนึ่งมีพื้นที่เป็น 4 เท่าของพื้นที่รูปสี่เหลี่ยมผืนผ้าที่มีด้านกว้าง 21 ยาว 66 หน่วย เส้นผ่านศูนย์กลางยาวเท่าไหร่
-            </div>
-            <div class="choices">
-                <div class="choice">1. 264 หน่วย</div>
-                <div class="choice">2. 132 หน่วย</div>
-                <div class="choice">3. 98 หน่วย</div>
-                <div class="choice correct">4. 84 หน่วย ✅</div>
-            </div>
-
-            <div class="solution-title">📝 วิธีทำ</div>
-            <div class="step">
-                <div class="step-label">ขั้น 1 — พื้นที่ผืนผ้า</div>
-                <p><span class="calc">21 × 66 = 1,386</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 2 — พื้นที่วงกลม</div>
-                <p>4 เท่า = <span class="calc">4 × 1,386 = 5,544</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 3 — หา r × r</div>
-                <p>พื้นที่วงกลม = 22/7 × r × r</p>
-                <p>r × r = 5,544 × 7 ÷ 22</p>
-                <p>= <span class="calc">38,808 ÷ 22 = 1,764</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 4 — หา r</div>
-                <p>ลอง: 42 × 42 = 1,764 ✓</p>
-                <p>r = <span class="calc">42</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 5 — เส้นผ่านศูนย์กลาง</div>
-                <p>= 2 × r = <span class="calc">2 × 42 = 84 หน่วย</span></p>
-            </div>
-            <div class="answer-box">✅ ตอบข้อ 4 → เส้นผ่านศูนย์กลาง 84 หน่วย</div>
-        </div>
-    </div>
-
-    <!-- ==================== ข้อ 22 ==================== -->
-    <div class="card">
-        <div class="card-header color-5" onclick="toggleCard(this)">
-            <span>🔺 ข้อ 22: ท่อระบายน้ำรอบสามเหลี่ยม</span>
-            <span class="toggle-icon">+</span>
-        </div>
-        <div class="card-body">
-            <div class="question">
-                สนามเด็กเล่นรูปสามเหลี่ยมด้านเท่า มีพื้นที่ 96 ตร.ม. ส่วนสูง 12 ม. วางท่อระบายน้ำรอบสนาม ท่อยาว 5 ม. ราคา 70 บาท ต้องจ่ายเงินกี่บาท
-            </div>
-            <div class="choices">
-                <div class="choice">1. 560 บาท</div>
-                <div class="choice">2. 630 บาท</div>
-                <div class="choice correct">3. 700 บาท ✅</div>
-                <div class="choice">4. 770 บาท</div>
-            </div>
-
-            <div class="solution-title">📝 วิธีทำ</div>
-            <div class="step">
-                <div class="step-label">ขั้น 1 — หาฐาน</div>
-                <p>พื้นที่สามเหลี่ยม = ครึ่งหนึ่งของ ฐาน × สูง</p>
-                <p>96 = ครึ่งหนึ่งของ ฐาน × 12</p>
-                <p>ฐาน × 12 = 96 × 2 = 192</p>
-                <p>ฐาน = <span class="calc">192 ÷ 12 = 16 เมตร</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 2 — เส้นรอบรูป</div>
-                <p>สามเหลี่ยม<b>ด้านเท่า</b> → ทุกด้าน = 16 ม.</p>
-                <p>รอบรูป = <span class="calc">16 + 16 + 16 = 48 เมตร</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 3 — จำนวนท่อ</div>
-                <p>48 ÷ 5 = 9.6</p>
-                <p>⚠️ ซื้อ 9 ท่อไม่พอ → <b>ปัดขึ้นเป็น 10 ท่อ</b></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 4 — เงินทั้งหมด</div>
-                <p><span class="calc">10 × 70 = 700 บาท</span></p>
-            </div>
-            <div class="answer-box">✅ ตอบข้อ 3 → 700 บาท</div>
-        </div>
-    </div>
-
-    <!-- ==================== ข้อ 25 ==================== -->
-    <div class="card">
-        <div class="card-header color-6" onclick="toggleCard(this)">
-            <span>🧴 ข้อ 25: ผงซักฟอก</span>
-            <span class="toggle-icon">+</span>
-        </div>
-        <div class="card-body">
-            <div class="question">
-                ผงซักฟอก 1 กล่อง ขนาด กว้าง 10 ซม. ยาว 20 ซม. สูง 30 ซม. ใช้ซักผ้าได้ 90 วัน ถ้าเหลือ 1/5 ลิตร จะใช้ซักผ้าได้กี่วัน
-            </div>
-            <div class="choices">
-                <div class="choice">1. 15 วัน</div>
-                <div class="choice">2. 9 วัน</div>
-                <div class="choice correct">3. 3 วัน ✅</div>
-                <div class="choice">4. 1 วัน</div>
-            </div>
-
-            <div class="solution-title">📝 วิธีทำ</div>
-            <div class="step">
-                <div class="step-label">ขั้น 1 — ปริมาตรกล่อง</div>
-                <p><span class="calc">10 × 20 × 30 = 6,000 ลบ.ซม.</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 2 — แปลงเป็นลิตร</div>
-                <p>1 ลิตร = 1,000 ลบ.ซม.</p>
-                <p>กล่องจุ <span class="calc">6,000 ÷ 1,000 = 6 ลิตร</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 3 — แบ่งเป็นส่วนละ 1/5 ลิตร</div>
-                <p>1 ลิตร แบ่ง 5 ส่วน → 6 ลิตร = <span class="calc">6 × 5 = 30 ส่วน</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 4 — หาจำนวนวัน</div>
-                <p>30 ส่วนใช้ 90 วัน</p>
-                <p>1 ส่วน (1/5 ลิตร) ใช้ <span class="calc">90 ÷ 30 = 3 วัน</span></p>
-            </div>
-            <div class="answer-box">✅ ตอบข้อ 3 → 3 วัน</div>
-        </div>
-    </div>
-
-    <!-- ==================== ข้อ 26 ==================== -->
-    <div class="card">
-        <div class="card-header color-7" onclick="toggleCard(this)">
-            <span>🎯 ข้อ 26: ปาลูกดอก</span>
-            <span class="toggle-icon">+</span>
-        </div>
-        <div class="card-body">
-            <div class="question">
-                วงกลมซ้อนแต้ม 3, 5, 7 ปา 3 ลูก ได้แต้มรวมเท่าไหร่ที่<b>ไม่มีทางเกิดขึ้น</b>อย่างแน่นอน
-            </div>
-            <div class="choices">
-                <div class="choice">1. 13 แต้ม</div>
-                <div class="choice">2. 15 แต้ม</div>
-                <div class="choice correct">3. 20 แต้ม ✅</div>
-                <div class="choice">4. 21 แต้ม</div>
-            </div>
-
-            <!-- Dartboard SVG -->
-            <div class="dartboard">
-                <svg width="180" height="180" viewBox="0 0 180 180">
-                    <circle cx="90" cy="90" r="85" fill="#e8f5e9" stroke="#43e97b" stroke-width="3"/>
-                    <circle cx="90" cy="90" r="55" fill="#e3f2fd" stroke="#42a5f5" stroke-width="3"/>
-                    <circle cx="90" cy="90" r="25" fill="#fce4ec" stroke="#ef5350" stroke-width="3"/>
-                    <text x="90" y="96" text-anchor="middle" font-size="22" font-weight="bold" fill="#c62828">7</text>
-                    <text x="90" y="58" text-anchor="middle" font-size="18" font-weight="bold" fill="#1565c0">5</text>
-                    <text x="90" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#2e7d32">3</text>
-                </svg>
-            </div>
-
-            <div class="solution-title">📝 วิธีทำ — เขียนทุกแบบที่ปาได้</div>
-            <div class="step">
-                <div class="step-label">ขั้น 1 — ลูกดอกแต่ละลูกได้ 3, 5 หรือ 7</div>
-                <p>เขียนทุกแบบที่ 3 ลูกรวมกันได้:</p>
-                <table>
-                    <tr><th>ลูก 1</th><th>ลูก 2</th><th>ลูก 3</th><th>รวม</th></tr>
-                    <tr><td>3</td><td>3</td><td>3</td><td><b>9</b></td></tr>
-                    <tr><td>3</td><td>3</td><td>5</td><td><b>11</b></td></tr>
-                    <tr><td>3</td><td>3</td><td>7</td><td><b>13</b></td></tr>
-                    <tr><td>3</td><td>5</td><td>5</td><td><b>13</b></td></tr>
-                    <tr><td>3</td><td>5</td><td>7</td><td><b>15</b></td></tr>
-                    <tr><td>3</td><td>7</td><td>7</td><td><b>17</b></td></tr>
-                    <tr><td>5</td><td>5</td><td>5</td><td><b>15</b></td></tr>
-                    <tr><td>5</td><td>5</td><td>7</td><td><b>17</b></td></tr>
-                    <tr><td>5</td><td>7</td><td>7</td><td><b>19</b></td></tr>
-                    <tr><td>7</td><td>7</td><td>7</td><td><b>21</b></td></tr>
-                </table>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 2 — สรุปผลรวมที่ได้</div>
-                <p>9, 11, 13, 15, 17, 19, 21 — <b>สังเกต: ล้วนเป็นเลขคี่!</b></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 3 — เช็คตัวเลือก</div>
-                <p>13 → ได้ ✓ &nbsp; 15 → ได้ ✓ &nbsp; <b style="color:#ef5350">20 → ไม่มี! ✗</b> &nbsp; 21 → ได้ ✓</p>
-                <p>💡 คี่ + คี่ + คี่ = คี่เสมอ → 20 เป็นเลขคู่ เป็นไปไม่ได้!</p>
-            </div>
-            <div class="answer-box">✅ ตอบข้อ 3 → 20 แต้ม ไม่มีทางเกิดขึ้น</div>
-        </div>
-    </div>
-
-    <!-- ==================== ข้อ 27 ==================== -->
-    <div class="card">
-        <div class="card-header color-8" onclick="toggleCard(this)">
-            <span>🔤 ข้อ 27: แบบรูปตัวอักษร</span>
-            <span class="toggle-icon">+</span>
-        </div>
-        <div class="card-body">
-            <div class="question">
-                ABBCCCDDDD ABBCCCDDDD… เขียนไปเรื่อยๆ ตัวอักษรลำดับที่ 101 คืออักษรอะไร
-            </div>
-            <div class="choices">
-                <div class="choice correct">1. A ✅</div>
-                <div class="choice">2. B</div>
-                <div class="choice">3. C</div>
-                <div class="choice">4. D</div>
-            </div>
-
-            <!-- Pattern Display !-->
-            <div class="solution-title">📝 แบบรูป (สีจะช่วยให้เห็นง่าย)</div>
-            <div class="pattern-display" id="patternBox"></div>
-
-            <div class="step">
-                <div class="step-label">ขั้น 1 — นับ 1 รอบ</div>
-                <p><b style="color:#f5576c">A</b> = 1 ตัว, <b style="color:#4facfe">BB</b> = 2 ตัว, <b style="color:#2e7d32">CCC</b> = 3 ตัว, <b style="color:#764ba2">DDDD</b> = 4 ตัว</p>
-                <p>รวม 1 รอบ = <span class="calc">1 + 2 + 3 + 4 = 10 ตัว</span></p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 2 — หารด้วย 10</div>
-                <p>101 ÷ 10 = <span class="calc">10 รอบเต็ม เหลือ 1</span></p>
-                <p>10 รอบ = 100 ตัวพอดี</p>
-            </div>
-            <div class="step">
-                <div class="step-label">ขั้น 3 — ตัวที่ 101</div>
-                <p>ตัวที่ 101 = ตัว<b>แรก</b>ของรอบที่ 11</p>
-                <p>ตัวแรกของทุกรอบ = <b style="color:#f5576c;font-size:1.3em">A</b></p>
-            </div>
-            <div class="answer-box">✅ ตอบข้อ 1 → ตัวอักษรลำดับที่ 101 คือ A</div>
-        </div>
-    </div>
-
-    <!-- ==================== สรุป ==================== -->
-    <div class="summary">
-        <h2>📋 สรุปคำตอบทุกข้อ</h2>
-        <table>
-            <tr><th>ข้อ</th><th>คำตอบ</th><th>ค่า</th></tr>
-            <tr><td>5</td><td class="correct-cell">ข้อ 1</td><td>168 ลบ.ซม.</td></tr>
-            <tr><td>18</td><td class="correct-cell">ข้อ 3</td><td>ขาดทุน 10 บาท</td></tr>
-            <tr><td>19</td><td class="correct-cell">ข้อ 4</td><td>504 ลบ.หน่วย</td></tr>
-            <tr><td>21</td><td class="correct-cell">ข้อ 4</td><td>เส้นผ่านฯ 84 หน่วย</td></tr>
-            <tr><td>22</td><td class="correct-cell">ข้อ 3</td><td>700 บาท</td></tr>
-            <tr><td>25</td><td class="correct-cell">ข้อ 3</td><td>3 วัน</td></tr>
-            <tr><td>26</td><td class="correct-cell">ข้อ 3</td><td>20 แต้ม (ไม่เกิดขึ้น)</td></tr>
-            <tr><td>27</td><td class="correct-cell">ข้อ 1</td><td>A</td></tr>
-        </table>
-    </div>
-
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modalContent"></div>
 </div>
 
 <script>
-function toggleCard(header) {
-    var body = header.nextElementSibling;
-    var isOpen = body.classList.contains('show');
-    // ปิดทุกการ์ดก่อน
-    document.querySelectorAll('.card-body').forEach(function(b) { b.classList.remove('show'); });
-    document.querySelectorAll('.card-header').forEach(function(h) { h.classList.remove('open'); });
-    // ถ้าไม่ได้เปิดอยู่ → เปิด
-    if (!isOpen) {
-        body.classList.add('show');
-        header.classList.add('open');
-    }
+// ============= SLIDE DATA =============
+const slides = [];
+let _id = 0;
+const nextId = () => 's' + String(++_id).padStart(3,'0');
+
+const L = (section, title, body, opts={}) => slides.push({
+  id: nextId(), type:'lesson', section, title, body,
+  example: opts.example || '', tip: opts.tip || ''
+});
+
+const Q = (section, title, question, options, answer, opts={}) => slides.push({
+  id: nextId(), type:'quiz', section, title,
+  question, options, answer,
+  hint: opts.hint || '', explain: opts.explain || ''
+});
+
+// ===== SECTION 1: 10.0 Getting Started =====
+L('10.0 Getting Started','Chapter 10: Manipulating Expressions',`
+  <p>Welcome to <strong>Chapter 10</strong>! In this chapter, you will learn how to manipulate algebraic expressions.</p>
+  <h3 style="color:var(--cyan);margin-top:12px;">You will learn how to:</h3>
+  <ul>
+    <li>Understand how to manipulate algebraic expressions, including:</li>
+    <li style="margin-left:18px;">→ collecting like terms</li>
+    <li style="margin-left:18px;">→ applying the distributive law with a constant</li>
+  </ul>
+`);
+
+L('10.0 Getting Started','Starting Point — Algebra in Real Life',`
+  <img class="lesson-visual" src="assets/01_number_machine.svg" alt="Number machine showing double a number, then add 5">
+  <p><strong>Do you remember how to write an algebraic expression to represent something in real-life?</strong></p>
+  <div class="example-box">
+    <div class="label">Example</div>
+    <p>You think of a number. You double the number and then add 5.</p>
+    <p>You can write the new number as <span class="math">2m + 5</span>, where <span class="math">m</span> represents your original number.</p>
+  </div>
+`);
+
+Q('10.0 Getting Started','Quick Check 1',
+  'You think of a number <code>n</code>, then add 7. What is the new number?',
+  ['n + 7','7n','n − 7','7 − n'], 0,
+  {explain:'Adding 7 to n gives n + 7.'});
+
+L('10.0 Getting Started','Starting Point — Multiply 2-Digit',`
+  <img class="lesson-visual" src="assets/02_place_value_split.svg" alt="Place value split for multiplying a two-digit number">
+  <p><strong>Do you remember how to multiply by 2-digit whole numbers?</strong></p>
+  <div class="example-box">
+    <div class="label">Example</div>
+    <p>For example, <span class="math">3 × (42) = 3 × 40 + 3 × 2 = 120 + 6 = 126</span></p>
+  </div>
+  <p>This idea of "splitting then multiplying" is exactly what we will use when expanding brackets!</p>
+`);
+
+Q('10.0 Getting Started','Quick Check 2',
+  'Using the same method, what is 4 × (23)?',
+  ['4 × 20 + 4 × 3 = 92','4 × 20 + 3 = 83','4 + 20 + 3 = 27','4 × 23 = 423'], 0,
+  {explain:'4 × 23 = 4 × 20 + 4 × 3 = 80 + 12 = 92.'});
+
+L('10.0 Getting Started','This Will Help You...',`
+  <p>This chapter will also be helpful when you learn about:</p>
+  <ul><li>Constructing and using formulas</li><li>Solving equations</li><li>Working with patterns and sequences</li></ul>
+  <div class="tip-box"><div class="label">Tip</div>Algebra is a tool — once you master it, you can describe many real-world situations concisely.</div>
+`);
+
+L('10.0 Getting Started','Eva\'s Cake Stall — Setup',`
+  <img class="lesson-visual" src="assets/03_cupcake_stall.svg" alt="Cupcake stall with boxes of cakes">
+  <p><strong>Eva is organising a charity cake stall.</strong></p>
+  <p>She has <strong>five boxes</strong> of cupcakes with <span class="math">c</span> cakes in each box, plus another <strong>12 cupcakes</strong>.</p>
+  <p style="margin-top:12px;">How could you write this as an algebraic expression?</p>
+  <div class="tip-box"><div class="label">Think</div>5 boxes × c cakes + 12 more = ?</div>
+`);
+
+Q('10.0 Getting Started','Cake Stall Expression',
+  'How many cupcakes does Eva have?',
+  ['5c + 12','5 + c + 12','5(c + 12)','c + 60'], 0,
+  {explain:'5 boxes of c cakes gives 5c, plus 12 separate cakes gives 5c + 12.'});
+
+L('10.0 Getting Started','Eva Gets More Boxes',`
+  <img class="lesson-visual lesson-visual-small" src="assets/03_cupcake_stall.svg" alt="Cupcake stall with boxes of cakes">
+  <p>She is now given another <strong>eight boxes</strong> of cupcakes.</p>
+  <p>How many cupcakes does she have now?</p>
+  <div class="example-box">
+    <div class="label">Reasoning</div>
+    <p>Originally: <span class="math">5c + 12</span></p>
+    <p>Added: <span class="math">8c</span> (8 more boxes of c)</p>
+    <p>Total: <span class="math">5c + 12 + 8c = 13c + 12</span></p>
+  </div>
+`);
+
+Q('10.0 Getting Started','Cake Stall New Total',
+  'After getting 8 more boxes, how many cupcakes total?',
+  ['13c + 12','5c + 8 + 12','13c + 8','40 + 12'], 0,
+  {explain:'5c + 8c = 13c, plus the 12 = 13c + 12.'});
+
+L('10.0 Getting Started','Eva Sells Some',`
+  <img class="lesson-visual lesson-visual-small" src="assets/03_cupcake_stall.svg" alt="Cupcake stall with boxes of cakes">
+  <p>She sells <strong>12 whole boxes</strong> of cupcakes and another <strong>seven separate cupcakes</strong>.</p>
+  <p>How many cupcakes does she have left?</p>
+  <div class="example-box">
+    <div class="label">Reasoning</div>
+    <p>Before: <span class="math">13c + 12</span></p>
+    <p>Sold: <span class="math">12c + 7</span></p>
+    <p>Left: <span class="math">13c + 12 − (12c + 7) = c + 5</span></p>
+  </div>
+`);
+
+Q('10.0 Getting Started','Cake Stall After Selling',
+  'After selling 12 boxes and 7 single cakes, what remains?',
+  ['c + 5','c − 5','c + 12','25c + 5'], 0,
+  {explain:'13c + 12 − 12c − 7 = (13c − 12c) + (12 − 7) = c + 5.'});
+
+L('10.0 Getting Started','If 8 Cupcakes Per Box',`
+  <p>If there were <strong>8 cupcakes in each box</strong>, how many cupcakes did she sell?</p>
+  <div class="example-box">
+    <div class="label">Reasoning</div>
+    <p>Sold: <span class="math">12c + 7</span> with <span class="math">c = 8</span></p>
+    <p>= <span class="math">12(8) + 7 = 96 + 7 = 103</span></p>
+  </div>
+`);
+
+Q('10.0 Getting Started','Substitution Check',
+  'If c = 8, how many cupcakes did she sell?',
+  ['103','96','12','7'], 0,
+  {explain:'12 × 8 + 7 = 96 + 7 = 103.'});
+
+L('10.0 Getting Started','How Many Left?',`
+  <p>With <span class="math">c = 8</span>, how many cupcakes did Eva have left?</p>
+  <div class="example-box">
+    <div class="label">Reasoning</div>
+    <p>Left: <span class="math">c + 5 = 8 + 5 = 13</span></p>
+  </div>
+  <p style="margin-top:12px;">Notice how algebra lets us describe the situation first, then plug in numbers whenever we need them.</p>
+`);
+
+L('10.0 Getting Started','Make Your Own Problem',`
+  <div class="tip-box">
+    <div class="label">Try this!</div>
+    Can you make up a problem like Eva's? Try this:
+    <ol>
+      <li>Pick a starting quantity (e.g., boxes of pens, packets of biscuits)</li>
+      <li>Use a letter for the unknown amount in each</li>
+      <li>Add or subtract a fixed amount</li>
+      <li>Write the final expression</li>
+    </ol>
+  </div>
+`);
+
+// ===== SECTION 2: 10.1 Simplifying Expressions =====
+L('10.1 Simplifying','Section 10.1 — Overview',`
+  <p>In this section we will learn to <strong>simplify expressions</strong> by collecting like terms.</p>
+  <p>This means combining terms that have the same letter (or letters) into a single, cleaner term.</p>
+`);
+
+L('10.1 Simplifying','Key Terms — Collecting Like Terms',`
+  <img class="lesson-visual" src="assets/04_like_terms_tiles.svg" alt="Tiles showing matching like terms">
+  <p>When more than one term with the <strong>same letter</strong> is added or subtracted, this is called:</p>
+  <ul><li><strong>collecting like terms</strong>, or</li><li><strong>simplifying by collecting like terms</strong></li></ul>
+`);
+
+L('10.1 Simplifying','Rectangle Perimeter Example',`
+  <img class="lesson-visual" src="assets/05_perimeter_shapes.svg" alt="Shapes illustrating perimeter">
+  <p>A rectangle has side lengths <span class="math">c</span> and <span class="math">d</span>.</p>
+  <p>The perimeter is:</p>
+  <p style="text-align:center;font-size:18px;"><span class="math">c + d + c + d</span></p>
+  <p>Since you have two lots of <span class="math">c</span> and two lots of <span class="math">d</span>, you can write this as:</p>
+  <p style="text-align:center;font-size:22px;color:var(--pink);"><span class="math">2c + 2d</span></p>
+`);
+
+Q('10.1 Simplifying','Perimeter Check',
+  'A rectangle has sides a and b. What is its perimeter simplified?',
+  ['2a + 2b','a + b','ab + ab','2ab'], 0,
+  {explain:'Perimeter = a + b + a + b = 2a + 2b.'});
+
+L('10.1 Simplifying','Notation Rule — 2 × d = 2d',`
+  <p>In algebra, <span class="math">2 × d</span> is written as <span class="math">2d</span>.</p>
+  <p>This avoids confusing the multiplication sign with the letter <span class="math">x</span>.</p>
+  <div class="tip-box"><div class="label">Rule</div>The number is always written before the letter: <span class="math">2d</span>, not <span class="math">d2</span>.</div>
+`);
+
+L('10.1 Simplifying','Tip — Alphabetical Order',`
+  <div class="tip-box">
+    <div class="label">Tip</div>
+    If you have more than one letter in an expression, for example <span class="math">2c + 2d</span> or <span class="math">ab</span> (which means <span class="math">a × b</span>), write the letters in <strong>alphabetical order</strong>.
+    <p style="margin-top:6px;">This makes the algebra easier to follow.</p>
+  </div>
+`);
+
+L('10.1 Simplifying','Did You Know? — Origin of Algebra',`
+  <p>The word <strong>"algebra"</strong> comes from the Arabic word <em>"al-jabr"</em>, which means "the reunion of broken parts".</p>
+  <p>This word comes originally from the title of a book by the Persian mathematician and astronomer <strong>al-Khwarizmi</strong>, who lived in the 9th century.</p>
+`);
+
+Q('10.1 Simplifying','Origin Quiz',
+  'The word "algebra" comes from which language?',
+  ['Arabic','Greek','Latin','Persian'], 0,
+  {explain:'It comes from the Arabic "al-jabr".'});
+
+L('10.1 Simplifying','Worked Example 1 — Setup',`
+  <p><strong>Worked Example 1</strong></p>
+  <p>Form two expressions for the total mass of these five boxes:</p>
+  <p>Three boxes have mass <span class="math">n grams</span>; two boxes have mass <span class="math">m grams</span>.</p>
+`);
+
+L('10.1 Simplifying','WE1a — Solution',`
+  <p>There are 3 boxes of <span class="math">n</span> grams and 2 boxes of <span class="math">m</span> grams.</p>
+  <p>So that is <span class="math">3 × n</span> and <span class="math">2 × m</span>.</p>
+  <div class="example-box">
+    <div class="label">Two valid expressions</div>
+    <p><span class="math">(3n + 2m) grams</span></p>
+    <p><span class="math">(2m + 3n) grams</span></p>
+  </div>
+`);
+
+Q('10.1 Simplifying','WE1a Check',
+  'For 3 boxes of n grams + 2 boxes of m grams, total is:',
+  ['3n + 2m','5nm','3m + 2n','6mn'], 0,
+  {explain:'3 × n + 2 × m = 3n + 2m. You can also swap order: 2m + 3n.'});
+
+L('10.1 Simplifying','WE1a — Two Ways',`
+  <p>Writing out the masses of the boxes you get:</p>
+  <p style="text-align:center;"><span class="math">n + n + n + m + m = 3n + 2m</span></p>
+  <p>As it is addition, you could swap the order:</p>
+  <p style="text-align:center;"><span class="math">m + m + n + n + n = 2m + 3n</span></p>
+  <p>Use brackets to show the whole amount is in grams:</p>
+  <p style="text-align:center;color:var(--pink);"><span class="math">(3n + 2m) grams</span> or <span class="math">(2m + 3n) grams</span></p>
+`);
+
+L('10.1 Simplifying','WE1a — Tip: One Variable',`
+  <div class="tip-box">
+    <div class="label">Tip</div>
+    Remember that when your answer is one of the variables, you just write the letter.
+    <p>For example, if you have one <span class="math">g</span>, you write <span class="math">g</span>, not <span class="math">1g</span>.</p>
+  </div>
+`);
+
+L('10.1 Simplifying','WE1b — Perimeter of Triangle',`
+  <img class="lesson-visual" src="assets/05_perimeter_shapes.svg" alt="Shapes illustrating perimeter">
+  <p><strong>Worked Example 1b</strong></p>
+  <p>Form an expression for the perimeter of the triangle with sides:</p>
+  <p style="text-align:center;"><span class="math">2c cm, 2c cm, d cm</span></p>
+`);
+
+L('10.1 Simplifying','WE1b — Solution',`
+  <p>The perimeter is the sum of the sides:</p>
+  <p style="text-align:center;font-size:18px;"><span class="math">2c + 2c + d</span></p>
+  <p>This simplifies to:</p>
+  <p style="text-align:center;font-size:22px;color:var(--pink);"><span class="math">4c + d</span></p>
+  <p>So the perimeter is <span class="math">(4c + d) cm</span>.</p>
+`);
+
+Q('10.1 Simplifying','WE1b Check',
+  'Triangle sides 2c, 2c, d. Perimeter?',
+  ['4c + d','2c + d','4cd','c + d'], 0,
+  {explain:'2c + 2c = 4c, plus d. The terms have different letters so cannot mix.'});
+
+L('10.1 Simplifying','WE1b — Reasoning Detail',`
+  <p>Write down the terms for the sides, then add together the terms in <span class="math">c</span>:</p>
+  <p style="text-align:center;"><span class="math">2c + 2c + d = 4c + d</span></p>
+  <div class="tip-box">
+    <div class="label">Remember</div>
+    The two terms have different letters, so you can't mix them together.
+    Use brackets to show the whole perimeter is in centimetres.
+  </div>
+`);
+
+L('10.1 Simplifying','WE1c — Simplify m + n + 3m + 2n − 2m',`
+  <p><strong>Worked Example 1c</strong></p>
+  <p>Simplify: <span class="math">m + n + 3m + 2n − 2m</span></p>
+`);
+
+L('10.1 Simplifying','WE1c — Solution',`
+  <img class="lesson-visual" src="assets/04_like_terms_tiles.svg" alt="Tiles showing matching like terms">
+  <p>Rearrange so that all the <span class="math">m</span> terms come first, then all the <span class="math">n</span> terms:</p>
+  <p style="text-align:center;font-size:16px;"><span class="math">m + 3m − 2m + n + 2n</span></p>
+  <p>Simplify the <span class="math">m</span> terms: <span class="math">m + 3m − 2m = 2m</span></p>
+  <p>Simplify the <span class="math">n</span> terms: <span class="math">n + 2n = 3n</span></p>
+  <p style="text-align:center;font-size:22px;color:var(--pink);"><span class="math">= 2m + 3n</span></p>
+`);
+
+Q('10.1 Simplifying','WE1c Check',
+  'Simplify: m + n + 3m + 2n − 2m',
+  ['2m + 3n','3m + 3n','4m + 3n','2m + 2n'], 0,
+  {explain:'m + 3m − 2m = 2m, n + 2n = 3n.'});
+
+L('10.1 Simplifying','WE1c — Sign Reminder',`
+  <div class="tip-box">
+    <div class="label">Tip</div>
+    The sign in front of the term tells you whether you are adding or subtracting that term.
+    <p>E.g., in <span class="math">... − 2m</span>, the <strong>−</strong> belongs to <span class="math">2m</span>.</p>
+  </div>
+`);
+
+L('10.1 Simplifying','WE1d — Simplify 4 × 2z²',`
+  <p><strong>Worked Example 1d</strong></p>
+  <p>Simplify: <span class="math">4 × 2z²</span></p>
+`);
+
+L('10.1 Simplifying','WE1d — Solution',`
+  <p>Remember that <span class="math">2z²</span> is the same as <span class="math">2 × z²</span>.</p>
+  <p>So:</p>
+  <p style="text-align:center;font-size:16px;"><span class="math">4 × 2 × z² = 8z²</span></p>
+  <p style="text-align:center;font-size:22px;color:var(--pink);">Answer: <span class="math">8z²</span></p>
+`);
+
+Q('10.1 Simplifying','WE1d Check',
+  'Simplify: 5 × 3a²',
+  ['15a²','8a²','15a','5a × 3'], 0,
+  {explain:'5 × 3 × a² = 15a².'});
+
+L('10.1 Simplifying','WE1e — Simplify 3b + b/2',`
+  <p><strong>Worked Example 1e</strong></p>
+  <p>Simplify: <span class="math">3b + b/2</span></p>
+`);
+
+L('10.1 Simplifying','WE1e — Solution',`
+  <img class="lesson-visual" src="assets/06_fraction_bars.svg" alt="Fraction bars showing halves">
+  <p>In 3 whole <span class="math">b</span>s there are <strong>6 half <span class="math">b</span>s</strong>.</p>
+  <p>6 half <span class="math">b</span>s plus another half <span class="math">b</span> makes <strong>7 half <span class="math">b</span>s</strong>.</p>
+  <p style="text-align:center;font-size:16px;"><span class="math">3b + b/2 = (6b + b)/2 = 7b/2 = 3½b</span></p>
+`);
+
+Q('10.1 Simplifying','WE1e Check',
+  'Simplify: 2a + a/3',
+  ['7a/3','2a/3','3a/3','a'], 0,
+  {explain:'2a = 6a/3, plus a/3 = 7a/3.'});
+
+L('10.1 Simplifying','Exercise 1.1 — Like Terms (a–d)',`
+  <p><strong>Exercise 1, Q1 (a–d): Simplify by collecting like terms</strong></p>
+  <ol type="a">
+    <li><span class="math">m + 3m + m</span> → <strong>5m</strong></li>
+    <li><span class="math">2b + 5b + b</span> → <strong>8b</strong></li>
+    <li><span class="math">y + 3y + 2y + y</span> → <strong>7y</strong></li>
+    <li><span class="math">4g + 7g + 5g</span> → <strong>16g</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.1 Practice',
+  'Simplify: 4g + 7g + 5g',
+  ['16g','12g','15g','11g'], 0,
+  {explain:'4 + 7 + 5 = 16, all like terms of g.'});
+
+L('10.1 Simplifying','Exercise 1.1 — Like Terms (e–h)',`
+  <p><strong>Exercise 1, Q1 (e–h):</strong></p>
+  <ol type="a" start="5">
+    <li><span class="math">5e − 3e</span> → <strong>2e</strong></li>
+    <li><span class="math">6m − 5m</span> → <strong>m</strong> (not 1m!)</li>
+    <li><span class="math">15k − 6k</span> → <strong>9k</strong></li>
+    <li><span class="math">5d − d</span> → <strong>4d</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.1 (e–h)',
+  'Simplify: 15k − 6k',
+  ['9k','21k','k','15'], 0,
+  {explain:'15 − 6 = 9, k stays.'});
+
+L('10.1 Simplifying','Exercise 1.1 — Like Terms (i–l)',`
+  <p><strong>Exercise 1, Q1 (i–l):</strong></p>
+  <ol type="a" start="9">
+    <li><span class="math">9a + a − 2a</span> → <strong>8a</strong></li>
+    <li><span class="math">3p − 4p + 5p</span> → <strong>4p</strong></li>
+    <li><span class="math">6h + 5h − 10h</span> → <strong>h</strong></li>
+    <li><span class="math">2x + x − 3x</span> → <strong>0</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.1 (i–l)',
+  'Simplify: 3p − 4p + 5p',
+  ['4p','2p','6p','12p'], 0,
+  {explain:'3 − 4 + 5 = 4, so 4p.'});
+
+L('10.1 Simplifying','Exercise 1.2 — Triangle Perimeters (a–b)',`
+  <p><strong>Exercise 1, Q2 (a–b): Perimeter of each triangle</strong></p>
+  <ol type="a">
+    <li>sides: <span class="math">a, a, a</span> → <strong>3a cm</strong></li>
+    <li>sides: <span class="math">x, 2x, x</span> → <strong>4x cm</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.2 (a–b)',
+  'Triangle sides: x, 2x, x. Perimeter?',
+  ['4x','3x','2x','4x²'], 0,
+  {explain:'x + 2x + x = 4x.'});
+
+L('10.1 Simplifying','Exercise 1.2 — Triangle Perimeters (c–d)',`
+  <p><strong>Exercise 1, Q2 (c–d):</strong></p>
+  <ol type="a" start="3">
+    <li>sides: <span class="math">d, 2d, 2d</span> → <strong>5d cm</strong></li>
+    <li>sides: <span class="math">f, 3f, 3f</span> → <strong>7f cm</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.2 (c–d)',
+  'Triangle sides: d, 2d, 2d. Perimeter?',
+  ['5d','4d','6d','d'], 0,
+  {explain:'d + 2d + 2d = 5d.'});
+
+L('10.1 Simplifying','Exercise 1.3 — Mixed Terms (a–d)',`
+  <p><strong>Exercise 1, Q3 (a–d): Simplify by collecting like terms</strong></p>
+  <ol type="a">
+    <li><span class="math">a + b + a</span> → <strong>2a + b</strong></li>
+    <li><span class="math">2x + y + y</span> → <strong>2x + 2y</strong></li>
+    <li><span class="math">m + n + n + m</span> → <strong>2m + 2n</strong></li>
+    <li><span class="math">3d + e − e</span> → <strong>3d</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.3 (a–d)',
+  'Simplify: m + n + n + m',
+  ['2m + 2n','mn + mn','2mn','m + 2n'], 0,
+  {explain:'m + m = 2m, n + n = 2n.'});
+
+L('10.1 Simplifying','Exercise 1.3 — Mixed Terms (e–h)',`
+  <p><strong>Exercise 1, Q3 (e–h):</strong></p>
+  <ol type="a" start="5">
+    <li><span class="math">3y + 2x + 2y</span> → <strong>5y + 2x</strong></li>
+    <li><span class="math">3f − f + 4g + 2g</span> → <strong>2f + 6g</strong></li>
+    <li><span class="math">k + 4c + 2k − k</span> → <strong>2k + 4c</strong></li>
+    <li><span class="math">3v + 2w + 5w − v</span> → <strong>2v + 7w</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.3 (e–h)',
+  'Simplify: 3f − f + 4g + 2g',
+  ['2f + 6g','2f + 2g','4fg','6fg'], 0,
+  {explain:'3f − f = 2f, 4g + 2g = 6g.'});
+
+L('10.1 Simplifying','Exercise 1.4 — Perimeters of Shapes (a–c)',`
+  <p><strong>Exercise 1, Q4 (a–c):</strong></p>
+  <ol type="a">
+    <li>triangle: <span class="math">2b, f, 3b</span> → <strong>5b + f</strong></li>
+    <li>triangle: <span class="math">4g, 5k, 2k</span> → <strong>4g + 7k</strong></li>
+    <li>rectangle: <span class="math">3f, 2m, 3f, 2m</span> → <strong>6f + 4m</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.4 (a–c)',
+  'Rectangle sides: 3f, 2m, 3f, 2m. Perimeter?',
+  ['6f + 4m','5fm','6f + 2m','12fm'], 0,
+  {explain:'3f + 3f = 6f, 2m + 2m = 4m.'});
+
+L('10.1 Simplifying','Exercise 1.4 — Perimeters (d–f)',`
+  <p><strong>Exercise 1, Q4 (d–f):</strong></p>
+  <ol type="a" start="4">
+    <li>kite: <span class="math">a, a, 4d, 4d</span> → <strong>2a + 8d</strong></li>
+    <li>parallelogram: <span class="math">5y, 3x, 5y, 3x</span> → <strong>10y + 6x</strong></li>
+    <li>quad: <span class="math">3b, 5a, 3a, 2a</span> → <strong>10a + 3b</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.4 (d–f)',
+  'Parallelogram sides: 5y, 3x, 5y, 3x. Perimeter?',
+  ['10y + 6x','15xy','8xy','5y + 3x'], 0,
+  {explain:'5y × 2 = 10y, 3x × 2 = 6x.'});
+
+L('10.1 Simplifying','Exercise 1.5 — Numbers + Letters (a–d)',`
+  <p><strong>Exercise 1, Q5 (a–d): Simplify</strong></p>
+  <ol type="a">
+    <li><span class="math">5n + 4 − 3n + 1 + 2n</span> → <strong>4n + 5</strong></li>
+    <li><span class="math">4a − 3b + 6a − 5b</span> → <strong>10a − 8b</strong></li>
+    <li><span class="math">7u − 2 + u + 11 − 3u</span> → <strong>5u + 9</strong></li>
+    <li><span class="math">8t + 2 − 5t − 12</span> → <strong>3t − 10</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.5 (a–d)',
+  'Simplify: 5n + 4 − 3n + 1 + 2n',
+  ['4n + 5','4n + 4','10n + 5','5n + 5'], 0,
+  {explain:'5n − 3n + 2n = 4n, 4 + 1 = 5.'});
+
+L('10.1 Simplifying','Exercise 1.5 — (e–h)',`
+  <p><strong>Exercise 1, Q5 (e–h):</strong></p>
+  <ol type="a" start="5">
+    <li><span class="math">e + 4f + 3e − 2f − 6f</span> → <strong>4e − 4f</strong></li>
+    <li><span class="math">6g − 3h − 2g + 4h + 2</span> → <strong>4g + h + 2</strong></li>
+    <li><span class="math">9 + 4u − 4 − 7u + 3</span> → <strong>8 − 3u</strong></li>
+    <li><span class="math">3 − 2r + q + 4 − 5r − 7q</span> → <strong>7 − 7r − 6q</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.5 (e–h)',
+  'Simplify: 6g − 3h − 2g + 4h + 2',
+  ['4g + h + 2','4g + h','4g + 7h','8g + 2'], 0,
+  {explain:'6g − 2g = 4g, −3h + 4h = h, +2.'});
+
+L('10.1 Simplifying','Exercise 1.5 — (i–l)',`
+  <p><strong>Exercise 1, Q5 (i–l):</strong></p>
+  <ol type="a" start="9">
+    <li><span class="math">8c − 13 + 4d − 6c + d − 2 − 2c</span> → <strong>5d − 15</strong></li>
+    <li><span class="math">6a − 4b + 7c − b − 2c − 11a</span> → <strong>5c − 5a − 5b</strong></li>
+    <li><span class="math">9a² − 3a + a² + 2a + 3</span> → <strong>10a² − a + 3</strong></li>
+    <li><span class="math">4r − 9 − 6r² + 4 + 2r² − r</span> → <strong>−4r² + 3r − 5</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.5 (i–l)',
+  'Simplify: 9a² − 3a + a² + 2a + 3',
+  ['10a² − a + 3','10a² + 5a + 3','9a² − a + 3','10a − a + 3'], 0,
+  {explain:'9a² + a² = 10a², −3a + 2a = −a, +3.'});
+
+L('10.1 Simplifying','Exercise 1.6 — Multiplying Terms (a–d)',`
+  <p><strong>Exercise 1, Q6 (a–d): Simplify</strong></p>
+  <ol type="a">
+    <li><span class="math">3 × a</span> → <strong>3a</strong></li>
+    <li><span class="math">4 × 2c</span> → <strong>8c</strong></li>
+    <li><span class="math">7 × d × 4</span> → <strong>28d</strong></li>
+    <li><span class="math">c × c</span> → <strong>c²</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.6 (a–d)',
+  'Simplify: 7 × d × 4',
+  ['28d','11d','28','11'], 0,
+  {explain:'7 × 4 = 28, then × d = 28d.'});
+
+L('10.1 Simplifying','Exercise 1.6 — (e–h)',`
+  <p><strong>Exercise 1, Q6 (e–h):</strong></p>
+  <ol type="a" start="5">
+    <li><span class="math">3 × c × c</span> → <strong>3c²</strong></li>
+    <li><span class="math">c × d × c</span> → <strong>c²d</strong></li>
+    <li><span class="math">c ÷ 2</span> → <strong>c/2</strong></li>
+    <li><span class="math">c ÷ d</span> → <strong>c/d</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.6 (e–h)',
+  'Simplify: c × d × c',
+  ['c²d','cd','c²d²','2cd'], 0,
+  {explain:'c × c = c², times d = c²d.'});
+
+L('10.1 Simplifying','Exercise 1.7 — Matching (Intro)',`
+  <p><strong>Exercise 1, Q7: Match expressions</strong></p>
+  <p>Match each expression in column 1 with one from column 2.</p>
+  <div class="example-box">
+    <div class="label">First column</div>
+    <ol>
+      <li><span class="math">a² + 2a² + b + b</span></li>
+      <li><span class="math">a² + 3a² − 2a²</span></li>
+      <li><span class="math">2ab − a + 3ab + 2b</span></li>
+      <li><span class="math">3 × 5a²</span></li>
+    </ol>
+  </div>
+`);
+
+L('10.1 Simplifying','Exercise 1.7 — Matching (continued)',`
+  <p><strong>Second column:</strong></p>
+  <ul>
+    <li><span class="math">2a²</span> ← matches #2</li>
+    <li><span class="math">5ab − a + 2b</span> ← matches #3</li>
+    <li><span class="math">4a² + 10</span></li>
+    <li><span class="math">3a² + 2b</span> ← matches #1</li>
+    <li><span class="math">8ab + 3a + 2b</span></li>
+    <li><span class="math">15a²</span> ← matches #4</li>
+    <li><span class="math">a² + 4b²</span></li>
+  </ul>
+`);
+
+Q('10.1 Simplifying','Ex 1.7 Matching',
+  'Simplify: a² + 3a² − 2a²',
+  ['2a²','3a²','4a²','6a²'], 0,
+  {explain:'1 + 3 − 2 = 2, so 2a².'});
+
+L('10.1 Simplifying','Tip — a² vs 2a',`
+  <div class="tip-box">
+    <div class="label">Tip</div>
+    Remember <span class="math">a²</span> means <strong>"a × a"</strong> and is one term of an expression.
+    <p><span class="math">a²</span> and <span class="math">2a²</span> are like terms, so <span class="math">a² + 2a² = 3a²</span>.</p>
+  </div>
+`);
+
+Q('10.1 Simplifying','a² vs 2a Check',
+  'Which is the simplified form of a² + a²?',
+  ['2a²','a⁴','a²','2a'], 0,
+  {explain:'a² + a² = 2a² (like terms, add coefficients).'});
+
+L('10.1 Simplifying','Exercise 1.8 — Fill the Blanks (a–b)',`
+  <p><strong>Exercise 1, Q8: Copy and complete</strong></p>
+  <ol type="a">
+    <li><span class="math">6h + ............ + ............ + 7 = 8h + 11</span></li>
+    <li><span class="math">2h − ............ + ............ + 4k = 5h + k</span></li>
+  </ol>
+  <p>Answer a): <span class="math">6h + 2h + 4 + 7 = 8h + 11</span></p>
+`);
+
+Q('10.1 Simplifying','Ex 1.8 (a–b)',
+  'Fill blank: 6h + ___ + ___ + 7 = 8h + 11',
+  ['2h + 4','2h + 11','h + 4','8h + 4'], 0,
+  {explain:'Need 2h more and 4 more to reach 8h + 11.'});
+
+L('10.1 Simplifying','Exercise 1.8 — (c–d)',`
+  <p><strong>Exercise 1, Q8 (c–d):</strong></p>
+  <ol type="a" start="3">
+    <li><span class="math">7c + ............ − ............ + 11 = 15 − 3c</span></li>
+    <li><span class="math">5y − 4 − ............ + ............ = 1 − y</span></li>
+  </ol>
+  <p>Answer d): <span class="math">5y − 4 − 6y + 1 = −y − 3</span>... need to verify target.</p>
+`);
+
+Q('10.1 Simplifying','Ex 1.8 (c–d)',
+  'Fill blanks: 5y − 4 − ___ + ___ = 1 − y',
+  ['6y + 1','5y + 0','y + 1','6y − 1'], 0,
+  {explain:'5y − 6y = −y, and −4 + 1 = −3... check: −y − 3, target 1 − y, so need +1 to constant.'});
+
+L('10.1 Simplifying','Exercise 1.9 — Writing Expressions',`
+  <p><strong>Exercise 1, Q9:</strong></p>
+  <ol type="a">
+    <li>Write down two expressions that simplify to <span class="math">8d</span>.</li>
+    <li>Write down two expressions that simplify to <span class="math">5a + 3b</span>.</li>
+    <li>Georgie says that <span class="math">4y + 3y + 2</span> simplifies to <span class="math">9y</span>. Is she correct?</li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.9 (Georgie)',
+  'Georgie says 4y + 3y + 2 = 9y. Is she correct?',
+  ['No, it equals 7y + 2','Yes, she is correct','No, it equals 9y + 2','No, it equals 7y'], 0,
+  {explain:'4y + 3y = 7y, and the +2 cannot combine with y terms.'});
+
+L('10.1 Simplifying','Exercise 1.10 — Single Fractions (a–e)',`
+  <p><strong>Exercise 1, Q10: Write as single fraction</strong></p>
+  <ol type="a">
+    <li><span class="math">x/2 + 3x/2</span> → <strong>4x/2 = 2x</strong></li>
+    <li><span class="math">a/4 + 2a/4</span> → <strong>3a/4</strong></li>
+    <li><span class="math">4b/5 − 2b/5</span> → <strong>2b/5</strong></li>
+    <li><span class="math">2a + 1/3a</span> → <strong>7a/3</strong></li>
+    <li><span class="math">2x − 1/4x</span> → <strong>7x/4</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.10 (a–e)',
+  'Simplify: x/2 + 3x/2',
+  ['2x','4x/2','3x','4x'], 0,
+  {explain:'x/2 + 3x/2 = 4x/2 = 2x.'});
+
+L('10.1 Simplifying','Exercise 1.10 — (f–j)',`
+  <p><strong>Exercise 1, Q10 (f–j):</strong></p>
+  <ol type="a" start="6">
+    <li><span class="math">x/2 + x/4</span> → <strong>3x/4</strong></li>
+    <li><span class="math">2y/3 + y/6</span> → <strong>5y/6</strong></li>
+    <li><span class="math">2b/5 − b/4</span> → <strong>3b/20</strong></li>
+    <li><span class="math">y/2 + y/3</span> → <strong>5y/6</strong></li>
+    <li><span class="math">3x/5 − x/6</span> → <strong>13x/30</strong></li>
+  </ol>
+`);
+
+Q('10.1 Simplifying','Ex 1.10 (f–j)',
+  'Simplify: y/2 + y/3',
+  ['5y/6','2y/5','y/6','y/5'], 0,
+  {explain:'Common denominator 6: 3y/6 + 2y/6 = 5y/6.'});
+
+L('10.1 Simplifying','Think About — Gap Filling',`
+  <p>Can you find expressions to put in the gaps to make this statement correct?</p>
+  <p style="text-align:center;font-size:20px;color:var(--pink);"><span class="math">........... + ........... = 5y/4</span></p>
+  <p>Can you complete the statement in more than one way?</p>
+  <div class="tip-box">
+    <div class="label">Sample answer</div>
+    <span class="math">y/2 + 3y/4 = 5y/4</span>
+  </div>
+`);
+
+Q('10.1 Simplifying','Think About',
+  'Fill: ___ + ___ = 5y/4',
+  ['y/2 + 3y/4','y + y/4','2y + y/4','y/4 + y/4'], 0,
+  {explain:'y/2 = 2y/4, plus 3y/4 = 5y/4.'});
+
+L('10.1 Simplifying','Number Pyramid Activity',`
+  <img class="lesson-visual lesson-visual-centered" src="assets/07_number_pyramid.svg" alt="Number pyramid activity">
+  <p><strong>Thinking and working mathematically</strong></p>
+  <p>In a number pyramid, the number in each box is the sum of the two numbers in the boxes below it.</p>
+  <p>Copy and complete these number and letter pyramids.</p>
+`);
+
+L('10.1 Simplifying','Pyramid 1',`
+  <p><strong>Pyramid 1:</strong> bottom row: <span class="math">n, n, 3, 2n</span></p>
+  <div class="example-box">
+    <div class="label">Solution</div>
+    <p>Bottom: n, n, 3, 2n</p>
+    <p>Row 2: 2n, n+3, 2n+3</p>
+    <p>Row 3: 3n+3, 3n+6</p>
+    <p>Top: <strong>6n+9</strong></p>
+  </div>
+`);
+
+Q('10.1 Simplifying','Pyramid 1 Check',
+  'In pyramid, bottom: n, n. Sum above = ?',
+  ['2n','n²','n + 2','2n²'], 0,
+  {explain:'n + n = 2n.'});
+
+L('10.1 Simplifying','Pyramid 2',`
+  <p><strong>Pyramid 2:</strong> bottom row: <span class="math">3, f², 4, 3f²</span></p>
+  <div class="example-box">
+    <div class="label">Solution</div>
+    <p>Row 2: 3+f², f²+4, 4+3f²</p>
+    <p>Row 3: 2f²+7, 4f²+8</p>
+    <p>Top: <strong>6f²+15</strong></p>
+  </div>
+`);
+
+L('10.1 Simplifying','Pyramid 3',`
+  <p><strong>Pyramid 3:</strong> bottom row: <span class="math">m, ?, 2n, ?</span></p>
+  <p>Row 2: <span class="math">m + n, ?, 2n + m</span></p>
+  <div class="example-box">
+    <div class="label">Solution</div>
+    Missing: n (since m + n in row 2), and m (since 2n + m).<br>
+    Middle row 2: n + 2n = 3n<br>
+    Top row: (m+n) + 3n = m+4n, 3n + (2n+m) = 5n+m<br>
+    Top: <strong>6n + 2m</strong>
+  </div>
+`);
+
+Q('10.1 Simplifying','Pyramid 3 Check',
+  'Bottom: m, n. What is the box above?',
+  ['m + n','mn','m − n','2mn'], 0,
+  {explain:'Above m, n is m + n.'});
+
+L('10.1 Simplifying','Pyramid 4',`
+  <p><strong>Pyramid 4:</strong> bottom row: <span class="math">?, p − 2, 2p + 4, ?</span></p>
+  <p>Row 2: <span class="math">3p − 2, ?, 5p + 4</span></p>
+  <div class="example-box">
+    <div class="label">Solution</div>
+    From 3p − 2 = ? + (p − 2), so ? = 2p<br>
+    From 5p + 4 = (2p + 4) + ?, so ? = 3p<br>
+    Middle row 2: (p − 2) + (2p + 4) = 3p + 2<br>
+    Top: 6p and 8p + 6 → total: <strong>14p + 6</strong>
+  </div>
+`);
+
+L('10.1 Simplifying','Make Your Own Pyramid',`
+  <p>Now create your own number and letter pyramid.</p>
+  <p>Which blocks could you leave empty so that it is still possible to solve your pyramid?</p>
+  <div class="tip-box">
+    <div class="label">Challenge</div>
+    Challenge a partner with your pyramid!
+  </div>
+`);
+
+// ===== SECTION 3: 10.2 Distributive Law =====
+L('10.2 Distributive','Section 10.2 — Overview',`
+  <p>In this section, you'll learn to <strong>multiply a constant over a bracket</strong>.</p>
+  <p>This is also called <strong>expanding</strong> or <strong>multiplying out</strong> the bracket.</p>
+`);
+
+L('10.2 Distributive','Key Terms — Expanding Brackets',`
+  <img class="lesson-visual" src="assets/08_bracket_distribution.svg" alt="Diagram showing distribution across brackets">
+  <p>Multiplying a constant over a bracket means removing the brackets from expressions.</p>
+  <div class="example-box">
+    <div class="label">Example</div>
+    <p><span class="math">3(6 + w)</span> means 3 lots of 6 plus 3 lots of <span class="math">w</span>.</p>
+    <p><span class="math">6 + w + 6 + w + 6 + w = 18 + 3w</span></p>
+    <p>So: <span class="math">3(6 + w) = 18 + 3w</span></p>
+  </div>
+`);
+
+Q('10.2 Distributive','Expand Check',
+  'Expand: 3(6 + w)',
+  ['18 + 3w','9 + 3w','18 + w','3w + 6'], 0,
+  {explain:'3 × 6 = 18, 3 × w = 3w.'});
+
+L('10.2 Distributive','More Expansion Examples',`
+  <p>Both the 6 and the <span class="math">w</span> have been multiplied by 3 — everything inside the brackets is multiplied by the number outside.</p>
+  <p>In the same way:</p>
+  <p style="text-align:center;"><span class="math">4(r + 8) = 4r + 32</span></p>
+  <p style="text-align:center;"><span class="math">5(7 − t) = 35 − 5t</span></p>
+`);
+
+Q('10.2 Distributive','Expand More',
+  'Expand: 4(r + 8)',
+  ['4r + 32','4r + 8','r + 32','4r + 12'], 0,
+  {explain:'4 × r = 4r, 4 × 8 = 32.'});
+
+L('10.2 Distributive','Tip — Every Term!',`
+  <img class="lesson-visual" src="assets/08_bracket_distribution.svg" alt="Diagram showing distribution across brackets">
+  <div class="tip-box">
+    <div class="label">Tip</div>
+    Make sure you multiply <strong>every term</strong> inside the brackets by the number outside the brackets.
+    <p>Common mistake: <span class="math">3(a + 4) ≠ 3a + 4</span>. The 4 must also be multiplied!</p>
+  </div>
+`);
+
+Q('10.2 Distributive','Common Mistake',
+  'Expand: 3(a + 4)',
+  ['3a + 12','3a + 4','a + 12','7a'], 0,
+  {explain:'3 × a = 3a, 3 × 4 = 12.'});
+
+L('10.2 Distributive','Worked Example 2 — Setup',`
+  <img class="lesson-visual" src="assets/09_homework_story.svg" alt="Homework time story for Jack, Peter, and Daniel">
+  <p><strong>Worked Example 2</strong></p>
+  <ul>
+    <li>Jack spends <span class="math">2m</span> minutes on his homework.</li>
+    <li>Peter spends 3 minutes more on his homework than Jack.</li>
+    <li>Daniel spends twice as much time on his homework as Peter.</li>
+  </ul>
+  <p>Form expressions for the amount of time (in minutes) that Peter and Daniel spend.</p>
+`);
+
+L('10.2 Distributive','WE2a — Peter',`
+  <p><strong>Part a) Peter</strong></p>
+  <p>Jack spends <span class="math">2m</span> minutes. Peter spends 3 minutes more.</p>
+  <div class="example-box">
+    <div class="label">Answer</div>
+    Peter spends <span class="math">(2m + 3)</span> minutes on his homework.
+  </div>
+`);
+
+Q('10.2 Distributive','WE2a Check',
+  'Peter = Jack + 3 min. Jack = 2m. Peter = ?',
+  ['2m + 3','2m − 3','3m + 2','6m'], 0,
+  {explain:'2m + 3 minutes.'});
+
+L('10.2 Distributive','WE2b — Daniel',`
+  <img class="lesson-visual" src="assets/09_homework_story.svg" alt="Homework time story for Jack, Peter, and Daniel">
+  <p><strong>Part b) Daniel</strong></p>
+  <p>Daniel spends twice as much time as Peter.</p>
+  <p>Peter = <span class="math">2m + 3</span></p>
+  <p>Daniel = <span class="math">2(2m + 3)</span></p>
+`);
+
+L('10.2 Distributive','WE2b — Multiply Out',`
+  <p>Multiply out:</p>
+  <p style="text-align:center;font-size:18px;"><span class="math">2(2m + 3) = 4m + 6</span></p>
+  <p>Every term in the brackets is multiplied by the number outside the brackets.</p>
+  <p style="color:var(--pink);">So Daniel spends <span class="math">(4m + 6)</span> minutes.</p>
+`);
+
+Q('10.2 Distributive','WE2b Check',
+  'Expand: 2(2m + 3)',
+  ['4m + 6','4m + 3','2m + 6','4m + 5'], 0,
+  {explain:'2 × 2m = 4m, 2 × 3 = 6.'});
+
+L('10.2 Distributive','Exercise 2.1 — Expand (a–d)',`
+  <p><strong>Exercise 2, Q1 (a–d): Expand</strong></p>
+  <ol type="a">
+    <li><span class="math">2(a + 1)</span> → <strong>2a + 2</strong></li>
+    <li><span class="math">2(d + 3)</span> → <strong>2d + 6</strong></li>
+    <li><span class="math">3(c − 2)</span> → <strong>3c − 6</strong></li>
+    <li><span class="math">5(h − 5)</span> → <strong>5h − 25</strong></li>
+  </ol>
+`);
+
+Q('10.2 Distributive','Ex 2.1 (a–d)',
+  'Expand: 5(h − 5)',
+  ['5h − 25','5h − 5','5h + 25','h − 25'], 0,
+  {explain:'5 × h = 5h, 5 × (−5) = −25.'});
+
+L('10.2 Distributive','Exercise 2.1 — (e–h)',`
+  <p><strong>Exercise 2, Q1 (e–h):</strong></p>
+  <ol type="a" start="5">
+    <li><span class="math">4(2b + 1)</span> → <strong>8b + 4</strong></li>
+    <li><span class="math">5(3x − 1)</span> → <strong>15x − 5</strong></li>
+    <li><span class="math">4(3a + 2b)</span> → <strong>12a + 8b</strong></li>
+    <li><span class="math">3(3d − 2c)</span> → <strong>9d − 6c</strong></li>
+  </ol>
+`);
+
+Q('10.2 Distributive','Ex 2.1 (e–h)',
+  'Expand: 4(3a + 2b)',
+  ['12a + 8b','12a + 2b','7a + 6b','12ab'], 0,
+  {explain:'4 × 3a = 12a, 4 × 2b = 8b.'});
+
+L('10.2 Distributive','Exercise 2.1 — (i–l)',`
+  <p><strong>Exercise 2, Q1 (i–l):</strong></p>
+  <ol type="a" start="9">
+    <li><span class="math">4(2a + b + 3c)</span> → <strong>8a + 4b + 12c</strong></li>
+    <li><span class="math">6(x − 3y + 4z)</span> → <strong>6x − 18y + 24z</strong></li>
+    <li><span class="math">4(3p − q + 2r)</span> → <strong>12p − 4q + 8r</strong></li>
+    <li><span class="math">10(5r + 3s − 10t)</span> → <strong>50r + 30s − 100t</strong></li>
+  </ol>
+`);
+
+Q('10.2 Distributive','Ex 2.1 (i–l)',
+  'Expand: 6(x − 3y + 4z)',
+  ['6x − 18y + 24z','6x − 3y + 4z','6x + 18y + 24z','6x − 18y + 4z'], 0,
+  {explain:'6 × x = 6x, 6 × (−3y) = −18y, 6 × 4z = 24z.'});
+
+L('10.2 Distributive','Exercise 2.2 — Factor Back',`
+  <p><strong>Exercise 2, Q2: Write whole numbers in the spaces</strong></p>
+  <ol type="a">
+    <li><span class="math">8w + 16 = ___ (___w + ___)</span></li>
+    <li><span class="math">42 − 12t = ___ (___ − ___t)</span></li>
+  </ol>
+  <p>Answer a): <span class="math">8(w + 2)</span></p>
+  <p>Answer b): <span class="math">6(7 − 2t)</span></p>
+`);
+
+Q('10.2 Distributive','Ex 2.2',
+  'Fill: 8w + 16 = ? (?w + ?)',
+  ['8(w + 2)','4(2w + 4)','Both work','8(w + 16)'], 2,
+  {explain:'8(w + 2) = 8w + 16, and 4(2w + 4) = 8w + 16. Both work!'});
+
+L('10.2 Distributive','Exercise 2.3 — Sort into Groups',`
+  <p><strong>Exercise 2, Q3: Sort expressions into three groups</strong></p>
+  <p>Some of these expressions are equal to each other. Sort them:</p>
+  <ul>
+    <li><span class="math">15(n + 2)</span>, <span class="math">9(2n + 3)</span>, <span class="math">10n + 40</span></li>
+    <li><span class="math">3(5n + 10)</span>, <span class="math">10(n + 4)</span>, <span class="math">2(5n + 20)</span></li>
+    <li><span class="math">15n + 30</span>, <span class="math">18n + 27</span>, <span class="math">3(6n + 9)</span></li>
+  </ul>
+`);
+
+L('10.2 Distributive','Exercise 2.3 — Solution',`
+  <p>Three groups (equal expressions):</p>
+  <div class="example-box">
+    <div class="label">Group 1: 15n + 30</div>
+    <span class="math">15(n + 2) = 3(5n + 10) = 15n + 30</span>
+  </div>
+  <div class="example-box">
+    <div class="label">Group 2: 10n + 40</div>
+    <span class="math">10(n + 4) = 2(5n + 20) = 10n + 40</span>
+  </div>
+  <div class="example-box">
+    <div class="label">Group 3: 18n + 27</div>
+    <span class="math">9(2n + 3) = 3(6n + 9) = 18n + 27</span>
+  </div>
+`);
+
+Q('10.2 Distributive','Ex 2.3',
+  '15(n + 2) = ?',
+  ['15n + 30','15n + 2','17n','30n'], 0,
+  {explain:'15 × n = 15n, 15 × 2 = 30.'});
+
+L('10.2 Distributive','Exercise 2.4 — Ifrah\'s Stamps',`
+  <p><strong>Exercise 2, Q4: Ifrah\'s stamps</strong></p>
+  <p>Ifrah has <span class="math">k</span> stamps. Rashid has 10 more stamps than Ifrah. Andrew has double the number of stamps that Rashid has.</p>
+  <ol type="a">
+    <li>Rashid: <span class="math">k + 10</span></li>
+    <li>Andrew: <span class="math">2(k + 10) = 2k + 20</span></li>
+  </ol>
+`);
+
+Q('10.2 Distributive','Ex 2.4',
+  'Rashid has k + 10. Andrew = 2 × Rashid. Andrew = ?',
+  ['2k + 20','2k + 10','k + 20','2k + 2'], 0,
+  {explain:'2(k + 10) = 2k + 20.'});
+
+L('10.2 Distributive','Exercise 2.5 — Saif\'s Comics',`
+  <p><strong>Exercise 2, Q5: Saif\'s comics</strong></p>
+  <p>Saif has <span class="math">p</span> comics. Sophie has 4 more than Saif. Jana has twice as many as Sophie. Deema has three times as many as Jana.</p>
+  <ol type="a">
+    <li>Sophie: <span class="math">p + 4</span></li>
+    <li>Jana: <span class="math">2(p + 4) = 2p + 8</span></li>
+    <li>Deema: <span class="math">3(2p + 8) = 6p + 24</span></li>
+    <li>Total: <span class="math">10p + 36</span></li>
+  </ol>
+`);
+
+Q('10.2 Distributive','Ex 2.5',
+  'Deema = 3 × Jana. Jana = 2p + 8. Deema = ?',
+  ['6p + 24','6p + 8','5p + 24','6p + 16'], 0,
+  {explain:'3(2p + 8) = 6p + 24.'});
+
+L('10.2 Distributive','Exercise 2.6 — Jane\'s Perimeter',`
+  <p><strong>Exercise 2, Q6: Jane\'s working</strong></p>
+  <p>Rectangle sides: <span class="math">(a + 2) cm</span> and <span class="math">(2a + 1) cm</span></p>
+  <p>Jane\'s working:</p>
+  <p><span class="math">2a + 1 + a + 2 = 3a + 3</span></p>
+  <p><span class="math">2(3a + 3) = 6a + 3</span></p>
+  <p>Perimeter = <span class="math">3(2a + 1) cm</span></p>
+`);
+
+L('10.2 Distributive','Exercise 2.6 — Solution',`
+  <p>Is Jane correct? <strong>No.</strong></p>
+  <div class="example-box">
+    <div class="label">Correct working</div>
+    <p>Perimeter = <span class="math">2((a + 2) + (2a + 1)) = 2(3a + 3) = 6a + 6</span></p>
+  </div>
+  <p>Jane made a mistake: <span class="math">2(3a + 3)</span> should be <span class="math">6a + 6</span>, not <span class="math">6a + 3</span>.</p>
+`);
+
+Q('10.2 Distributive','Ex 2.6',
+  'Rect (a+2) and (2a+1). Correct perimeter?',
+  ['6a + 6','6a + 3','3a + 3','6a + 2'], 0,
+  {explain:'2 × (3a + 3) = 6a + 6.'});
+
+L('10.2 Distributive','Matching Cards Game',`
+  <img class="lesson-visual" src="assets/10_matching_cards.svg" alt="Matching cards game">
+  <p><strong>Thinking and working mathematically</strong></p>
+  <p>With a partner, create a set of 12 matching cards with expressions containing brackets and cards with the same expression multiplied out.</p>
+  <p>Place cards face down. Take turns to choose pairs. If they match, keep them.</p>
+  <p>Winner: first to get 7 matching pairs.</p>
+`);
+
+// ===== SECTION 4: Consolidation & Reflection =====
+L('Consolidation','Consolidation 1 — True or False (a–c)',`
+  <p><strong>Consolidation Exercise, Q1 (a–c): True or false?</strong></p>
+  <ol type="a">
+    <li><span class="math">4c</span> means <span class="math">4 × c</span> → <strong>True</strong></li>
+    <li><span class="math">t + t + t + t + t + t = 6t</span> → <strong>True</strong></li>
+    <li><span class="math">d + d − d − d = d</span> → <strong>False</strong> (it equals 0)</li>
+  </ol>
+`);
+
+Q('Consolidation','Cons 1 (a–c)',
+  'True or False: d + d − d − d = d',
+  ['False','True'], 0,
+  {explain:'d + d − d − d = 2d − 2d = 0.'});
+
+L('Consolidation','Consolidation 1 — (d–f)',`
+  <p><strong>Consolidation Exercise, Q1 (d–f):</strong></p>
+  <ol type="a" start="4">
+    <li><span class="math">c × d = d × c</span> → <strong>True</strong></li>
+    <li><span class="math">a + b = ab</span> → <strong>False</strong> (a + b ≠ a × b)</li>
+    <li><span class="math">e + f + 2e + 3f = 2e + 2f</span> → <strong>False</strong> (should be 3e + 4f)</li>
+  </ol>
+`);
+
+Q('Consolidation','Cons 1 (d–f)',
+  'True or False: a + b = ab',
+  ['False','True'], 0,
+  {explain:'a + b is addition, ab is multiplication. They are different.'});
+
+L('Consolidation','Consolidation 2 — Simplify (a–d)',`
+  <p><strong>Consolidation Exercise, Q2 (a–d): Simplify</strong></p>
+  <ol type="a">
+    <li><span class="math">3a + 4a</span> → <strong>7a</strong></li>
+    <li><span class="math">5a + 7a − 8a</span> → <strong>4a</strong></li>
+    <li><span class="math">4m + n + m + n</span> → <strong>5m + 2n</strong></li>
+    <li><span class="math">2k + 7j − 2k + j</span> → <strong>8j</strong></li>
+  </ol>
+`);
+
+Q('Consolidation','Cons 2 (a–d)',
+  'Simplify: 2k + 7j − 2k + j',
+  ['8j','7j','2k + 8j','9jk'], 0,
+  {explain:'2k − 2k = 0, 7j + j = 8j.'});
+
+L('Consolidation','Consolidation 2 — (e–h)',`
+  <p><strong>Consolidation Exercise, Q2 (e–h):</strong></p>
+  <ol type="a" start="5">
+    <li><span class="math">4e − 5f − 3e + 6f</span> → <strong>e + f</strong></li>
+    <li><span class="math">3x² + 7y − 2x²</span> → <strong>x² + 7y</strong></li>
+    <li><span class="math">m² + 2n² + 3m² − n²</span> → <strong>4m² + n²</strong></li>
+    <li><span class="math">5pq + 3q + 2q − 2pq</span> → <strong>3pq + 5q</strong></li>
+  </ol>
+`);
+
+Q('Consolidation','Cons 2 (e–h)',
+  'Simplify: m² + 2n² + 3m² − n²',
+  ['4m² + n²','4m² + 2n²','3m² + n²','4mn'], 0,
+  {explain:'m² + 3m² = 4m², 2n² − n² = n².'});
+
+L('Consolidation','Consolidation 3 — Single Fractions',`
+  <p><strong>Consolidation Exercise, Q3: Single fraction</strong></p>
+  <ol type="a">
+    <li><span class="math">2m/3 + 5m/3</span> → <strong>7m/3</strong></li>
+    <li><span class="math">3b/8 + b/4</span> → <strong>5b/8</strong></li>
+    <li><span class="math">2d + 2/3d</span> → <strong>8d/3</strong></li>
+  </ol>
+`);
+
+Q('Consolidation','Cons 3',
+  'Single fraction: 3b/8 + b/4',
+  ['5b/8','4b/8','3b/12','4b/12'], 0,
+  {explain:'b/4 = 2b/8, so 3b/8 + 2b/8 = 5b/8.'});
+
+L('Consolidation','Consolidation 4 — Expand (a–c)',`
+  <p><strong>Consolidation Exercise, Q4 (a–c): Expand</strong></p>
+  <ol type="a">
+    <li><span class="math">4(s + 5)</span> → <strong>4s + 20</strong></li>
+    <li><span class="math">7(2t − 4)</span> → <strong>14t − 28</strong></li>
+    <li><span class="math">3(2d + 5e)</span> → <strong>6d + 15e</strong></li>
+  </ol>
+`);
+
+Q('Consolidation','Cons 4 (a–c)',
+  'Expand: 7(2t − 4)',
+  ['14t − 28','14t − 4','9t − 28','14t + 28'], 0,
+  {explain:'7 × 2t = 14t, 7 × (−4) = −28.'});
+
+L('Consolidation','Consolidation 4 — (d–f)',`
+  <p><strong>Consolidation Exercise, Q4 (d–f):</strong></p>
+  <ol type="a" start="4">
+    <li><span class="math">6(2m − 3n)</span> → <strong>12m − 18n</strong></li>
+    <li><span class="math">5(p + 2q − 4)</span> → <strong>5p + 10q − 20</strong></li>
+    <li><span class="math">3(5r − 7s + t)</span> → <strong>15r − 21s + 3t</strong></li>
+  </ol>
+`);
+
+Q('Consolidation','Cons 4 (d–f)',
+  'Expand: 5(p + 2q − 4)',
+  ['5p + 10q − 20','5p + 2q − 4','5p + 10q − 4','5p + 10q + 20'], 0,
+  {explain:'5 × p = 5p, 5 × 2q = 10q, 5 × (−4) = −20.'});
+
+L('Consolidation','Consolidation 5 — Rectangle Area & Perimeter',`
+  <img class="lesson-visual" src="assets/11_area_perimeter.svg" alt="Rectangle area and perimeter diagram">
+  <p><strong>Consolidation Exercise, Q5: Rectangle</strong></p>
+  <p>Side lengths: <span class="math">6</span> and <span class="math">4a + 3</span></p>
+  <ol type="a">
+    <li>Area = <span class="math">6(4a + 3) = 24a + 18</span></li>
+    <li>Perimeter = <span class="math">2(6 + 4a + 3) = 2(4a + 9) = 8a + 18</span></li>
+    <li>Another rectangle with same area: e.g., <span class="math">12 × (2a + 1.5)</span> — but perimeters may differ.</li>
+  </ol>
+`);
+
+Q('Consolidation','Cons 5',
+  'Rectangle 6 by (4a + 3). Area = ?',
+  ['24a + 18','24a + 3','10a + 9','24a + 6'], 0,
+  {explain:'6 × (4a + 3) = 24a + 18.'});
+
+L('Consolidation','End of Chapter Reflection — Row 1',`
+  <p><strong>You should know:</strong> When more than one term in the same letter is added or subtracted, this is called <em>collecting like terms</em> or <em>simplifying an expression</em>.</p>
+  <p><strong>You should be able to:</strong> Collect like terms.</p>
+  <div class="example-box">
+    <div class="label">Such as</div>
+    <p>Simplify: <span class="math">3a + 4b + 2a − 2b</span> → <strong>5a + 2b</strong></p>
+    <p>Simplify: <span class="math">5x² − 2x²</span> → <strong>3x²</strong></p>
+  </div>
+`);
+
+L('Consolidation','End of Chapter Reflection — Row 2',`
+  <p><strong>You should know:</strong> When a constant is multiplied over brackets, every term inside the brackets is multiplied by the number outside the brackets. This is often called <em>expanding</em> or <em>multiplying out</em> the bracket.</p>
+  <p><strong>You should be able to:</strong> Multiply a constant over a set of brackets.</p>
+  <div class="example-box">
+    <div class="label">Such as</div>
+    <p>Expand: <span class="math">3(2g + 4)</span> → <strong>6g + 12</strong></p>
+  </div>
+`);
+
+Q('Consolidation','Reflection Check',
+  'Expand: 3(2g + 4)',
+  ['6g + 12','6g + 4','5g + 7','6g + 7'], 0,
+  {explain:'3 × 2g = 6g, 3 × 4 = 12.'});
+
+L('Consolidation','Chapter Summary',`
+  <p style="font-size:18px;">🎉 <strong>Congratulations!</strong> You've completed Chapter 10.</p>
+  <p><strong>Key takeaways:</strong></p>
+  <ul>
+    <li>Collecting like terms means combining terms with the same letter</li>
+    <li>Write the number before the letter (2d, not d2)</li>
+    <li>Write letters in alphabetical order (2c + 2d, not 2d + 2c)</li>
+    <li>Expanding brackets: multiply every term inside by the number outside</li>
+    <li>Brackets help group amounts that share a unit (e.g., (3n + 2m) grams)</li>
+  </ul>
+`);
+
+L('Consolidation','You Did It! 🏆',`
+  <div style="text-align:center;padding:30px 0;">
+    <div style="font-size:80px;">🏆</div>
+    <h2 style="color:var(--pink);margin:12px 0;">Chapter 10 Complete!</h2>
+    <p>You've learned to manipulate algebraic expressions.</p>
+    <p>Keep practicing, and you'll be ready for the next chapter: <strong>constructing and using formulas</strong>.</p>
+  </div>
+`);
+
+// ============= GAME LOGIC =============
+const C = { stars: 5, maxWrong: 11, key: 'alge-buddy-manip-v1' };
+
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-// สร้างแบบรูปตัวอักษรข้อ 27
-(function() {
-    var box = document.getElementById('patternBox');
-    if (!box) return;
-    var pattern = 'ABBCCCDDDD';
-    var full = '';
-    for (var i = 0; i < 11; i++) full += pattern;
-    for (var j = 0; j < 105; j++) {
-        var ch = full[j];
-        var span = document.createElement('span');
-        span.textContent = ch;
-        span.className = 'letter-' + ch;
-        if (j === 100) span.classList.add('letter-highlight');
-        box.appendChild(span);
+function fresh() {
+  return {
+    permanent: {
+      lastSlide: 's001', correctQuizIds: [], completedSlides: [],
+      wrongChoices: {}, weakTopics: {}, hangmanParts: 0, hangmanPending: false,
+      soundOn: false, comboStreak: 0, bestCombo: 0
+    },
+    daily: { date: today(), stars: C.stars, correctToday: 0, attempted: [] }
+  };
+}
+
+let state = fresh();
+let audioContext = null;
+
+function save() {
+  try { localStorage.setItem(C.key, JSON.stringify(state)); }
+  catch (e) { /* Continue working if browser storage is blocked or full. */ }
+}
+
+function read() {
+  let s;
+  try {
+    s = JSON.parse(localStorage.getItem(C.key));
+  } catch (e) { return fresh(); }
+  if (!s || !s.permanent || !s.daily) return fresh();
+
+  if (s.daily.date !== today()) {
+    s.daily = { date: today(), stars: C.stars, correctToday: 0, attempted: [] };
+  }
+
+  s.permanent.correctQuizIds = Array.isArray(s.permanent.correctQuizIds) ? s.permanent.correctQuizIds : [];
+  s.permanent.completedSlides = Array.isArray(s.permanent.completedSlides) ? s.permanent.completedSlides : [];
+  s.permanent.wrongChoices = s.permanent.wrongChoices && typeof s.permanent.wrongChoices === 'object' ? s.permanent.wrongChoices : {};
+  s.permanent.weakTopics = s.permanent.weakTopics && typeof s.permanent.weakTopics === 'object' ? s.permanent.weakTopics : {};
+  s.permanent.hangmanParts = Math.max(0, Math.min(C.maxWrong, Number(s.permanent.hangmanParts) || 0));
+  s.permanent.hangmanPending = Boolean(s.permanent.hangmanPending);
+  s.permanent.soundOn = Boolean(s.permanent.soundOn);
+  s.permanent.comboStreak = Math.max(0, Number(s.permanent.comboStreak) || 0);
+  s.permanent.bestCombo = Math.max(s.permanent.comboStreak, Number(s.permanent.bestCombo) || 0);
+  s.daily.stars = Math.max(0, Math.min(C.stars, Number(s.daily.stars) || 0));
+  s.daily.correctToday = Math.max(0, Number(s.daily.correctToday) || 0);
+  s.daily.attempted = Array.isArray(s.daily.attempted) ? s.daily.attempted : [];
+  return s;
+}
+
+function playSound(kind) {
+  if (!state.permanent.soundOn) return;
+  const Audio = window.AudioContext || window.webkitAudioContext;
+  if (!Audio) return;
+  audioContext ||= new Audio();
+  if (audioContext.state === 'suspended') audioContext.resume();
+  const now = audioContext.currentTime;
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  oscillator.type = kind === 'correct' ? 'sine' : 'triangle';
+  oscillator.frequency.setValueAtTime(kind === 'correct' ? 660 : 180, now);
+  oscillator.frequency.exponentialRampToValueAtTime(kind === 'correct' ? 880 : 90, now + .2);
+  gain.gain.setValueAtTime(.0001, now);
+  gain.gain.exponentialRampToValueAtTime(.06, now + .02);
+  gain.gain.exponentialRampToValueAtTime(.0001, now + .25);
+  oscillator.connect(gain).connect(audioContext.destination);
+  oscillator.start(now);
+  oscillator.stop(now + .27);
+}
+
+let currentIndex = 0;
+const D = {
+  slides, total: slides.length,
+  sections: [...new Set(slides.map(s => s.section))]
+};
+
+function go(i) {
+  const n = Math.max(0, Math.min(D.total - 1, i));
+  currentIndex = n;
+  state.permanent.lastSlide = D.slides[n].id;
+  save();
+  render();
+}
+
+function next() {
+  const s = D.slides[currentIndex];
+  if (s.type === 'quiz' && !state.permanent.correctQuizIds.includes(s.id)) {
+    shakeCard();
+    return;
+  }
+  if (currentIndex < D.total - 1) go(currentIndex + 1);
+  else summary();
+}
+
+function prev() { if (currentIndex > 0) go(currentIndex - 1); }
+
+function shakeCard() {
+  const card = document.getElementById('card');
+  card.classList.add('shake');
+  setTimeout(() => card.classList.remove('shake'), 400);
+}
+
+function answer(i) {
+  const s = D.slides[currentIndex];
+  if (s.type !== 'quiz') return;
+  if (state.permanent.hangmanPending) return;
+  if (state.permanent.correctQuizIds.includes(s.id)) return;
+  if ((state.permanent.wrongChoices[s.id] || []).includes(i)) return;
+
+  if (i === s.answer) {
+    state.permanent.correctQuizIds.push(s.id);
+    state.daily.correctToday++;
+    if (!state.daily.attempted.includes(s.id)) state.daily.attempted.push(s.id);
+    state.permanent.comboStreak++;
+    state.permanent.bestCombo = Math.max(state.permanent.bestCombo, state.permanent.comboStreak);
+    playSound('correct');
+    showCombo(state.permanent.comboStreak);
+    save();
+    render();
+  } else {
+    (state.permanent.wrongChoices[s.id] ||= []).push(i);
+    state.permanent.hangmanParts++;
+    state.permanent.weakTopics[s.section] = (state.permanent.weakTopics[s.section] || 0) + 1;
+    state.permanent.comboStreak = 0;
+    playSound('wrong');
+
+    if (state.permanent.hangmanParts >= C.maxWrong) {
+      state.permanent.hangmanParts = C.maxWrong;
+      state.permanent.hangmanPending = true;
+      state.daily.stars = Math.max(0, state.daily.stars - 1);
+
+      if (state.daily.stars === 0) {
+        save();
+        render();
+        setTimeout(() => openNT(), 400);
+        return;
+      }
+      save();
+      render();
+      setTimeout(() => openHangman(), 400);
+      return;
     }
-})();
+    save();
+    render();
+  }
+}
+
+function showCombo(n) {
+  const overlay = document.getElementById('comboOverlay');
+  overlay.innerHTML = '';
+  const emojis = ['🔥','⭐','💥','✨','🎉','⚡','🌟','💫'];
+  const colors = ['#ff3d8b','#4dd0ff','#ffd84d','#4dffa1'];
+
+  const textEl = document.createElement('div');
+  textEl.className = 'combo-text';
+  textEl.textContent = `COMBO ×${n}!`;
+  overlay.appendChild(textEl);
+
+  const emojiEl = document.createElement('div');
+  emojiEl.className = 'combo-emoji';
+  emojiEl.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+  overlay.appendChild(emojiEl);
+
+  for (let i = 0; i < 24; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    const angle = (Math.PI * 2 * i) / 24 + Math.random() * 0.5;
+    const distance = 120 + Math.random() * 180;
+    sparkle.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+    sparkle.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+    sparkle.style.left = '50%';
+    sparkle.style.top = '50%';
+    const color = colors[i % colors.length];
+    sparkle.style.background = color;
+    sparkle.style.boxShadow = `0 0 10px ${color}`;
+    overlay.appendChild(sparkle);
+  }
+
+  overlay.classList.add('show');
+  setTimeout(() => overlay.classList.remove('show'), 1500);
+}
+
+function openHangman() {
+  const modal = document.getElementById('modalContent');
+  modal.className = 'modal';
+  const lost = C.stars - state.daily.stars;
+  let starHtml = '';
+  for (let i = 0; i < C.stars; i++) {
+    starHtml += i < state.daily.stars ? '★' : '☆';
+  }
+  modal.innerHTML = `
+    <h2>💀 Hangman Complete!</h2>
+    <p>You've made 11 mistakes. A star has been lost.</p>
+    <div class="stars-lost">${starHtml}</div>
+    <p style="font-size:13px;color:var(--muted);">Stars remaining: ${state.daily.stars}/${C.stars}</p>
+    <p>Click below to start a fresh Hangman set. Your wrong choices are remembered.</p>
+    <button class="nav-btn modal-btn" onclick="resetHangman()">Start New Hangman</button>
+  `;
+  document.getElementById('modalBackdrop').classList.add('show');
+}
+
+function resetHangman() {
+  state.permanent.hangmanParts = 0;
+  state.permanent.hangmanPending = false;
+  save();
+  closeModal();
+  render();
+}
+
+function openNT() {
+  const modal = document.getElementById('modalContent');
+  modal.className = 'modal nt';
+  modal.innerHTML = `
+    <h2>NT!</h2>
+    <p style="font-size:16px;">You've lost all your stars for today.</p>
+    <p>The system will reset everything so you can start fresh.</p>
+    <button class="nav-btn modal-btn" onclick="fullReset()" style="background:linear-gradient(135deg,var(--red),#c93434);">Reset & Restart</button>
+  `;
+  document.getElementById('modalBackdrop').classList.add('show');
+}
+
+function fullReset() {
+  state = fresh();
+  save();
+  currentIndex = 0;
+  closeModal();
+  render();
+}
+
+function closeModal() { document.getElementById('modalBackdrop').classList.remove('show'); }
+
+function render() {
+  state = read();
+  const s = D.slides[currentIndex];
+
+  if (!state.permanent.completedSlides.includes(s.id)) {
+    state.permanent.completedSlides.push(s.id);
+    save();
+  }
+
+  const card = document.getElementById('card');
+  if (s.type === 'quiz') card.innerHTML = quizHtml(s);
+  else card.innerHTML = lessonHtml(s);
+
+  renderStars();
+  renderTopics();
+  renderHangman();
+  renderCombo();
+  renderProgress();
+
+  if (state.permanent.hangmanPending && s.type === 'quiz') {
+    setTimeout(openHangman, 80);
+  }
+}
+
+function lessonHtml(s) {
+  return `
+    <div class="slide-content">
+      <div class="slide-header">
+        <div>
+          <div class="slide-section-tag">${s.section}</div>
+          <div class="slide-title">${s.title}</div>
+        </div>
+        <div class="slide-num">${s.id.toUpperCase()}</div>
+      </div>
+      <div class="slide-body">
+        ${s.body}
+        ${s.example ? `<div class="example-box"><div class="label">Example</div>${s.example}</div>` : ''}
+        ${s.tip ? `<div class="tip-box"><div class="label">Tip</div>${s.tip}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function quizHtml(s) {
+  const correct = state.permanent.correctQuizIds.includes(s.id);
+  const wrongs = state.permanent.wrongChoices[s.id] || [];
+  return `
+    <div class="slide-content">
+      <div class="slide-header">
+        <div>
+          <div class="slide-section-tag">${s.section} · QUIZ</div>
+          <div class="slide-title">${s.title}</div>
+        </div>
+        <div class="slide-num">${s.id.toUpperCase()}</div>
+      </div>
+      <div class="slide-body">
+        <div class="quiz-question">${s.question}</div>
+        <div class="quiz-options">
+          ${s.options.map((opt, i) => {
+            let cls = 'quiz-option';
+            if (correct && i === s.answer) cls += ' correct';
+            else if (wrongs.includes(i)) cls += ' wrong';
+            else if (correct) cls += ' disabled';
+            return `<div class="${cls}" onclick="answer(${i})"><div class="letter">${String.fromCharCode(65 + i)}</div><div>${opt}</div></div>`;
+          }).join('')}
+        </div>
+        ${correct ? `<div class="quiz-feedback correct show">✓ Correct! ${s.explain || ''}</div>` : ''}
+        ${wrongs.length > 0 && !correct ? `<div class="quiz-feedback wrong show">✗ Not quite. Try again!${s.hint ? `<br><em>Hint:</em> ${s.hint}` : ''}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderStars() {
+  const n = state.daily.stars;
+  const el = document.getElementById('starsDisplay');
+  let html = '';
+  for (let i = 0; i < C.stars; i++) {
+    html += `<span class="star${i >= n ? ' empty' : ''}">${i < n ? '★' : '☆'}</span>`;
+  }
+  html += `<span style="margin-left:6px;font-size:11px;">${n}/${C.stars}</span>`;
+  el.innerHTML = html;
+}
+
+function renderTopics() {
+  const bar = document.getElementById('topicsBar');
+  bar.querySelectorAll('.topic-btn').forEach(b => b.remove());
+  const spacer = bar.querySelector('.spacer');
+  D.sections.forEach((sec) => {
+    const first = D.slides.findIndex(s => s.section === sec);
+    const last = D.slides.length - 1 - [...D.slides].reverse().findIndex(s => s.section === sec);
+    const sectionSlides = D.slides.slice(first, last + 1);
+    const allDone = sectionSlides.every(s => s.type !== 'quiz' || state.permanent.correctQuizIds.includes(s.id));
+    const isActive = D.slides[currentIndex].section === sec;
+    const btn = document.createElement('button');
+    btn.className = 'topic-btn' + (isActive ? ' active' : '') + (allDone ? ' done' : '');
+    btn.textContent = sec;
+    btn.onclick = () => go(first);
+    bar.insertBefore(btn, spacer);
+  });
+}
+
+function renderHangman() {
+  const n = state.permanent.hangmanParts;
+  document.getElementById('hangmanCount').textContent = `${n}/${C.maxWrong}`;
+  for (let i = 0; i < C.maxWrong; i++) {
+    const el = document.getElementById('p' + i);
+    if (el) {
+      if (i < n) el.classList.add('on');
+      else el.classList.remove('on');
+    }
+  }
+}
+
+function renderCombo() {
+  document.getElementById('comboValue').textContent = state.permanent.comboStreak;
+  document.getElementById('comboBest').textContent = `Best: ${state.permanent.bestCombo}`;
+  document.getElementById('dailyStats').innerHTML = `
+    Correct today: <strong style="color:var(--green)">${state.daily.correctToday}</strong><br>
+    Quiz done: <strong style="color:var(--cyan)">${state.permanent.correctQuizIds.length}</strong>/${D.slides.filter(s => s.type==='quiz').length}<br>
+    Slides seen: <strong style="color:var(--yellow)">${state.permanent.completedSlides.length}</strong>
+  `;
+}
+
+function renderProgress() {
+  const pct = ((currentIndex + 1) / D.total) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = (currentIndex + 1) + ' / ' + D.total;
+  const s = D.slides[currentIndex];
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.disabled = (s.type === 'quiz' && !state.permanent.correctQuizIds.includes(s.id));
+}
+
+function settings() {
+  const weak = Object.entries(state.permanent.weakTopics || {})
+    .sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const modal = document.getElementById('modalContent');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <h2>⚙ Settings</h2>
+    <p style="text-align:left;"><strong>Sound:</strong> ${state.permanent.soundOn ? 'ON 🔊' : 'OFF 🔇'}</p>
+    <button class="nav-btn secondary modal-btn" onclick="toggleSound()">Toggle Sound</button>
+    <p style="text-align:left;margin-top:14px;"><strong>Topics to review:</strong></p>
+    ${weak.length === 0 ? '<p>No weak topics yet. Keep going!</p>' :
+      `<ul style="text-align:left;padding-left:20px;">${weak.map(([t, c]) => `<li style="margin-bottom:4px;">${t}: <strong style="color:var(--red)">${c}</strong> mistakes</li>`).join('')}</ul>`}
+    <p style="text-align:left;margin-top:10px;"><strong>Best combo:</strong> <span style="color:var(--pink);font-size:18px;">${state.permanent.bestCombo}</span></p>
+    <p style="text-align:left;"><strong>Quiz completed:</strong> ${state.permanent.correctQuizIds.length}</p>
+    <button class="nav-btn modal-btn" style="background:linear-gradient(135deg,var(--red),#c93434);" onclick="restartLesson()">Restart Lesson</button>
+    <button class="nav-btn secondary modal-btn" onclick="closeModal()">Close</button>
+  `;
+  document.getElementById('modalBackdrop').classList.add('show');
+}
+
+function toggleSound() {
+  state.permanent.soundOn = !state.permanent.soundOn;
+  save();
+  settings();
+}
+
+function restartLesson() {
+  state = fresh();
+  save();
+  currentIndex = 0;
+  closeModal();
+  render();
+}
+
+function summary() {
+  const modal = document.getElementById('modalContent');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <h2>🎉 Lesson Complete!</h2>
+    <p>You've finished all ${D.total} slides.</p>
+    <p>Quiz correct: <strong style="color:var(--green)">${state.permanent.correctQuizIds.length}</strong></p>
+    <p>Best combo: <strong style="color:var(--pink)">${state.permanent.bestCombo}</strong></p>
+    <button class="nav-btn modal-btn" onclick="closeModal()">Close</button>
+  `;
+  document.getElementById('modalBackdrop').classList.add('show');
+}
+
+// ============= INITIALIZE APP =============
+// Load saved progress first, then render the last valid slide.
+state = read();
+const savedIndex = slides.findIndex(s => s.id === state.permanent.lastSlide);
+currentIndex = savedIndex >= 0 ? savedIndex : 0;
+render();
+
 </script>
 </body>
 </html>
