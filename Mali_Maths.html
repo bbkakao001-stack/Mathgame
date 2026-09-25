@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mali · Stage 7 Maths · Chapters 12–14</title>
+<style>
+:root{
+  --bg:#0a0e27;
+  --bg2:#131a3f;
+  --ink:#f8faff;
+  --muted:#8b94c4;
+  --purple:#a78bfa;
+  --violet:#7c3aed;
+  --teal:#2dd4bf;
+  --emerald:#10b981;
+  --red:#fb7185;
+  --pink:#f472b6;
+  --gold:#fbbf24;
+  --amber:#f59e0b;
+  --cyan:#22d3ee;
+  --card:rgba(255,255,255,.04);
+  --border:rgba(255,255,255,.1);
+  --glow-purple:0 0 60px rgba(167,139,250,.35);
+  --glow-teal:0 0 60px rgba(45,212,191,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+@font-face{font-family:'Mali';src:url('Mali_Maths_assets/fonts/Mali-Regular.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:'Mali';src:url('Mali_Maths_assets/fonts/Mali-Medium.ttf') format('truetype');font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:'Mali';src:url('Mali_Maths_assets/fonts/Mali-SemiBold.ttf') format('truetype');font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:'Mali';src:url('Mali_Maths_assets/fonts/Mali-Bold.ttf') format('truetype');font-style:normal;font-weight:700;font-display:swap}
+html,body{height:100%;background:var(--bg);font-family:'Mali',ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);overflow:hidden}
+
+/* Animated aurora background */
+.aurora{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.aurora::before,.aurora::after,.aurora-blob{
+  content:"";position:absolute;border-radius:50%;opacity:.52;
+  transform:translateZ(0);
+  will-change:transform;
+}
+.aurora::before{
+  width:60vw;height:60vw;background:radial-gradient(circle,rgba(124,58,237,.58) 0%,rgba(124,58,237,.22) 38%,transparent 72%);
+  top:-20vw;left:-10vw;animation:aurora1 25s ease-in-out infinite;
+}
+.aurora::after{
+  width:50vw;height:50vw;background:radial-gradient(circle,rgba(16,185,129,.52) 0%,rgba(16,185,129,.18) 38%,transparent 72%);
+  bottom:-15vw;right:-10vw;animation:aurora2 30s ease-in-out infinite;
+}
+.aurora-blob{
+  width:40vw;height:40vw;background:radial-gradient(circle,rgba(244,114,182,.50) 0%,rgba(244,114,182,.16) 38%,transparent 72%);
+  top:30%;right:20%;animation:aurora3 22s ease-in-out infinite;
+}
+@keyframes aurora1{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(10vw,8vw) scale(1.2)}
+  66%{transform:translate(-5vw,12vw) scale(.9)}
+}
+@keyframes aurora2{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-15vw,-10vw) scale(1.3)}
+}
+@keyframes aurora3{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(-10vw,5vw) scale(1.1)}
+  66%{transform:translate(8vw,-8vw) scale(.85)}
+}
+
+/* Particle dots */
+.particles{position:fixed;inset:0;z-index:1;pointer-events:none;contain:layout paint style;isolation:isolate}
+.particle{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  background:radial-gradient(circle,#fff,transparent);
+  opacity:.6;animation:floatUp linear infinite;
+}
+@keyframes floatUp{
+  from{transform:translateY(100vh) translateX(0);opacity:0}
+  10%{opacity:.6}
+  90%{opacity:.6}
+  to{transform:translateY(-10vh) translateX(30px);opacity:0}
+}
+
+.deck{position:relative;height:100vh;display:grid;place-items:center;z-index:2}
+.stage{
+  position:relative;
+  width:min(100vw,177.78vh);
+  height:min(100vh,56.25vw);
+  background:linear-gradient(135deg,rgba(10,14,39,.85),rgba(19,26,63,.85));
+  backdrop-filter:none;
+  overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 0 120px rgba(124,58,237,.25),inset 0 0 80px rgba(255,255,255,.02);
+  border-radius:8px;
+}
+
+.slide{
+  position:absolute;inset:0;
+  padding:4.5% 5.5%;
+  display:none;flex-direction:column;
+}
+.slide{contain:layout paint style}
+.slide.active{display:flex;animation:slideEnter 1s cubic-bezier(.22,1,.36,1)}
+@keyframes slideEnter{
+  0%{opacity:0;transform:translate3d(0,32px,0) scale(.965)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+
+/* Top bar — glass pill style */
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:2%;font-size:clamp(10px,.9vw,14px);
+  font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);animation:fadeDown .8s both;
+}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-15px)}to{opacity:1;transform:translateY(0)}}
+.kicker{
+  padding:.5em 1.1em;border-radius:999px;
+  background:linear-gradient(135deg,rgba(167,139,250,.25),rgba(45,212,191,.15));
+  border:1px solid rgba(167,139,250,.3);
+  color:#fff;backdrop-filter:none;
+  box-shadow:0 8px 30px rgba(167,139,250,.2);
+  animation:chipGlow 4s ease-in-out infinite;
+}
+.kicker.c12{background:linear-gradient(135deg,rgba(167,139,250,.3),rgba(124,58,237,.15));border-color:rgba(167,139,250,.4)}
+.kicker.c13{background:linear-gradient(135deg,rgba(45,212,191,.3),rgba(16,185,129,.15));border-color:rgba(45,212,191,.4)}
+.kicker.c14{background:linear-gradient(135deg,rgba(251,113,133,.3),rgba(244,114,182,.15));border-color:rgba(251,113,133,.4)}
+@keyframes chipGlow{
+  0%,100%{opacity:.92;transform:translateZ(0) scale(1)}
+  50%{opacity:1;transform:translateZ(0) scale(1.015)}
+}
+@keyframes haloPulse{
+  0%,100%{opacity:.72;transform:translateZ(0) scale(1)}
+  50%{opacity:1;transform:translateZ(0) scale(1.04)}
+}
+.num{font-variant-numeric:tabular-nums;opacity:.6;letter-spacing:.15em}
+
+/* Title with gradient + shimmer */
+h1{
+  font-size:clamp(30px,3.8vw,68px);
+  line-height:1.02;letter-spacing:-.035em;
+  margin:.15em 0 .5em;font-weight:900;
+  background:linear-gradient(135deg,#fff 0%,#c7d2fe 40%,#a5f3fc 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:titleRise 1.2s .15s both cubic-bezier(.22,1,.36,1);
+  position:relative;
+}
+h1::after{
+  content:"";position:absolute;left:0;bottom:-8px;
+  width:80px;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,var(--purple),var(--teal),var(--pink));
+  animation:lineGrow 1s 1s both cubic-bezier(.22,1,.36,1);
+}
+@keyframes titleRise{
+  from{opacity:0;transform:translate3d(0,28px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes lineGrow{from{width:0;opacity:0}to{width:80px;opacity:1}}
+
+.content{flex:1;display:grid;align-items:center;gap:4%;min-height:0}
+.content.hasVisual{grid-template-columns:1.1fr .9fr}
+.text{font-size:clamp(14px,1.4vw,24px);line-height:1.55;color:#d8deff}
+.lead{
+  font-size:1.3em;line-height:1.3;font-weight:800;
+  background:linear-gradient(135deg,#fff,#a5b4fc);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:.4em;
+  animation:titleRise 1s .35s both;
+}
+.text p{animation:textIn 1s .5s both}
+@keyframes textIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Visual */
+.visual{height:100%;display:grid;place-items:center;position:relative}
+.visual::before{
+  content:"";position:absolute;inset:10%;
+  background:radial-gradient(circle,rgba(167,139,250,.22) 0%,rgba(167,139,250,.08) 42%,transparent 72%);
+  animation:haloPulse 5s ease-in-out infinite;
+  transform:translateZ(0);
+}
+.visual img{
+  max-width:100%;max-height:100%;object-fit:contain;
+  filter:drop-shadow(0 25px 50px rgba(167,139,250,.5)) brightness(1.1);
+  animation:imgFloat 7s ease-in-out infinite,imgIn 1.4s .3s both;
+  position:relative;z-index:1;
+}
+.assetVisual img{
+  width:100%;height:100%;max-height:58vh;object-fit:contain;
+  filter:drop-shadow(0 15px 30px rgba(167,139,250,.4));
+  animation:imgFloat 7s ease-in-out infinite,imgIn 1.4s .3s both;
+}
+@keyframes imgFloat{0%,100%{transform:translate3d(0,0,0) rotate(0deg)}50%{transform:translate3d(0,-15px,0) rotate(1deg)}}
+@keyframes imgIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.88) rotate(-3deg)}to{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0)}}
+
+/* Pills */
+.pillrow{display:flex;gap:.7em;flex-wrap:wrap;margin-top:1.5em}
+.pillrow span{
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  backdrop-filter:none;
+  border-radius:999px;padding:.55em 1.2em;
+  font-weight:700;font-size:.8em;color:#fff;
+  animation:chipGlow 5s ease-in-out infinite;
+  transition:transform .3s;
+}
+.pillrow span:nth-child(2){animation-delay:.8s}
+.pillrow span:nth-child(3){animation-delay:1.6s}
+.pillrow span:hover{transform:translateY(-4px) scale(1.05)}
+
+/* Cards — premium glass */
+.grid2,.grid3{display:grid;gap:1.1em}
+.grid2{grid-template-columns:1fr 1fr}
+.grid3{grid-template-columns:repeat(3,1fr)}
+.card{
+  background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  backdrop-filter:none;
+  border-radius:20px;padding:1.2em 1.4em;
+  position:relative;overflow:hidden;
+  animation:cardIn .9s both cubic-bezier(.22,1,.36,1);
+  transition:transform .35s,box-shadow .35s;
+}
+.card::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--purple),var(--teal));
+  box-shadow:0 0 20px rgba(167,139,250,.6);
+}
+.card:nth-child(2)::before{background:linear-gradient(180deg,var(--teal),var(--gold));box-shadow:0 0 20px rgba(45,212,191,.6)}
+.card:nth-child(3)::before{background:linear-gradient(180deg,var(--pink),var(--violet));box-shadow:0 0 20px rgba(244,114,182,.6)}
+.card::after{
+  content:"";position:absolute;top:0;right:0;width:100px;height:100px;
+  background:radial-gradient(circle,rgba(167,139,250,.15),transparent 70%);
+  pointer-events:none;
+}
+.card:hover{
+  transform:translateY(-6px) scale(1.02);
+  box-shadow:0 25px 60px rgba(124,58,237,.3);
+  border-color:rgba(167,139,250,.4);
+}
+.card h3{font-size:1.05em;margin-bottom:.4em;color:#fff;font-weight:800}
+.card p{font-size:.82em;color:#c8d0f5;line-height:1.45}
+@keyframes cardIn{from{opacity:0;transform:translateY(35px) scale(.93)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card:nth-child(1){animation-delay:.25s}
+.card:nth-child(2){animation-delay:.4s}
+.card:nth-child(3){animation-delay:.55s}
+
+/* Roadmap — premium timeline */
+.roadmap{display:grid;gap:.9em}
+.roadmap>div{
+  display:grid;grid-template-columns:70px 1fr;align-items:center;gap:1.2em;
+  background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius:18px;padding:1em 1.4em;
+  backdrop-filter:none;
+  position:relative;overflow:hidden;
+  animation:cardIn .9s both;
+  transition:transform .35s,box-shadow .35s;
+}
+.roadmap>div::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(167,139,250,.08),transparent);
+  transform:translateX(-100%);transition:transform .8s;
+}
+.roadmap>div:hover::before{transform:translateX(100%)}
+.roadmap>div:hover{transform:translateX(8px);box-shadow:0 15px 40px rgba(124,58,237,.25)}
+.roadmap>div:nth-child(1){animation-delay:.2s}
+.roadmap>div:nth-child(2){animation-delay:.4s}
+.roadmap>div:nth-child(3){animation-delay:.6s}
+.roadmap b{
+  font-size:2.5em;font-weight:900;
+  background:linear-gradient(135deg,var(--purple),var(--teal));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-align:center;line-height:1;
+}
+.roadmap>div:nth-child(2) b{background:linear-gradient(135deg,var(--teal),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.roadmap>div:nth-child(3) b{background:linear-gradient(135deg,var(--pink),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Callout */
+.callout{
+  margin-top:1.3em;padding:1em 1.3em;
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(167,139,250,.15),rgba(45,212,191,.08));
+  border:1px solid rgba(167,139,250,.25);
+  font-size:.82em;
+  animation:cardIn .9s .55s both;
+  position:relative;overflow:hidden;
+}
+.callout::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--purple),var(--teal));
+}
+.callout b{color:var(--gold)}
+
+/* Formula */
+.formula{
+  font-size:1.35em;font-weight:800;
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius:14px;padding:.55em 1em;
+  display:inline-block;margin:.4em 0;
+  backdrop-filter:none;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  color:#fff;
+  box-shadow:0 10px 30px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1);
+  animation:cardIn .9s .35s both;
+  position:relative;
+}
+.formula::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--gold),var(--pink));
+  border-radius:14px 0 0 14px;
+}
+
+/* Section slides */
+.slide.section{justify-content:center;align-items:center;text-align:center}
+.section h1{
+  font-size:clamp(60px,8vw,140px);
+  background:linear-gradient(135deg,#fff 0%,var(--purple) 40%,var(--teal) 80%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:sectionTitle 1.5s both;
+  text-shadow:0 0 80px rgba(167,139,250,.5);
+}
+.slide.section.c12 h1{background:linear-gradient(135deg,#fff,var(--purple),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.slide.section.c13 h1{background:linear-gradient(135deg,#fff,var(--teal),var(--emerald));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.slide.section.c14 h1{background:linear-gradient(135deg,#fff,var(--pink),var(--red));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+@keyframes sectionTitle{
+  0%{opacity:0;transform:scale(.78)}
+  60%{opacity:1;transform:scale(1.04)}
+  100%{opacity:1;transform:scale(1)}
+}
+.section h1::after{display:none}
+.section .subtitle{
+  font-size:clamp(18px,2vw,32px);
+  color:var(--muted);
+  margin-top:.4em;letter-spacing:.05em;
+  animation:titleRise 1s .6s both;
+}
+
+/* Question slides */
+.slide.question::after{
+  content:"QUESTION";position:absolute;
+  right:5.5%;top:5.5%;
+  font-weight:900;letter-spacing:.18em;
+  color:#1a1f3a;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  padding:.5em 1.1em;border-radius:999px;font-size:.7em;
+  box-shadow:0 10px 35px rgba(251,191,36,.5);
+  animation:chipGlow 3s ease-in-out infinite;
+}
+.answerBtn{
+  margin-top:1.3em;border:0;cursor:pointer;
+  background:linear-gradient(135deg,var(--violet),var(--purple),var(--teal));
+  background-size:200% 200%;
+  color:#fff;padding:.85em 1.6em;border-radius:14px;
+  font-size:.82em;font-weight:800;letter-spacing:.08em;
+  box-shadow:0 15px 45px rgba(124,58,237,.5),inset 0 1px 0 rgba(255,255,255,.2);
+  transition:transform .3s,box-shadow .3s,background-position .5s;
+  animation:cardIn .8s .5s both;
+}
+.answerBtn:hover{
+  transform:translateY(-4px) scale(1.05);
+  background-position:100% 100%;
+  box-shadow:0 25px 60px rgba(124,58,237,.7);
+}
+.answerPad{
+  width:min(100%,360px);margin:1.05em auto .8em;padding:1.1em;
+  display:grid;gap:.52em;border-radius:22px;
+  background:#f0f3ff;color:#263047;
+  box-shadow:0 12px 32px rgba(12,18,46,.22);
+  font-size:clamp(12px,1vw,16px);text-align:center;
+}
+.answerPad label{color:#8798ad;font-size:.7em;font-weight:900;letter-spacing:.14em}
+.answerInput{
+  width:100%;height:3.45em;border:2px solid #31d7f2;border-radius:13px;
+  background:#fff;color:#263047;text-align:center;font-family:inherit;font-size:1.4em;font-weight:800;
+  outline:none;box-shadow:0 2px 0 rgba(49,215,242,.12)
+}
+.answerInput::placeholder{color:#9aa9aa;opacity:1}
+.answerInput:focus{box-shadow:0 0 0 3px rgba(49,215,242,.22)}
+.keypadGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.45em}
+.answerPad button{
+  min-height:2.8em;border:0;border-radius:12px;cursor:pointer;
+  font-family:inherit;font-size:1em;font-weight:800;box-shadow:0 3px 0 rgba(35,48,70,.12);
+  transition:transform .12s,filter .12s
+}
+.answerPad button:focus-visible{outline:3px solid #31d7f2;outline-offset:2px}
+.answerPad button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.answerPad button:active{transform:translateY(1px);box-shadow:none}
+.keypadGrid button{background:#fff;color:#6734df}
+.keypadGrid button[data-key="-"],.keypadGrid button[data-key="."]{background:#ffca55;color:#273047}
+.answerPad .keypadDelete{background:#ffca55;color:#273047}
+.answerPad .keypadCheck{background:#19cda4;color:#fff}
+.answerFeedback{min-height:1.25em;color:#445065;font-weight:800;font-size:.88em}
+.answerFeedback.correct{color:#07956f}
+.answerFeedback.incorrect{color:#bd5a16}
+.answer{
+  display:none;margin-top:1em;padding:1em 1.2em;
+  background:linear-gradient(135deg,rgba(45,212,191,.12),rgba(251,191,36,.08));
+  border:1px solid rgba(45,212,191,.35);
+  border-radius:14px;
+  animation:answerIn .6s;
+  position:relative;
+}
+.answer::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--teal),var(--gold));
+  border-radius:14px 0 0 14px;
+}
+.answer.show{display:block}
+@keyframes answerIn{from{opacity:0;transform:translateY(15px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.keyHint{
+  margin-top:1em;padding:.7em 1em;border-radius:12px;
+  background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(45,212,191,.06));
+  border:1px solid rgba(167,139,250,.25);font-size:.76em;color:#d8deff;
+}
+.keyHint kbd{
+  display:inline-block;padding:.12em .55em;margin:0 .12em;
+  border:1px solid rgba(255,255,255,.28);border-radius:6px;
+  background:rgba(255,255,255,.1);color:#fff;font:700 .95em ui-monospace,monospace;
+}
+
+/* Tip */
+.tip{
+  margin-top:1em;padding:.9em 1.1em;border-radius:12px;
+  background:linear-gradient(135deg,rgba(45,212,191,.13),rgba(45,212,191,.04));
+  border:1px solid rgba(45,212,191,.25);
+  border-left:4px solid var(--teal);
+  font-size:.82em;
+  animation:cardIn .9s .55s both;
+}
+
+/* Steps */
+.steps{padding-left:0;list-style:none;counter-reset:step}
+.steps li{
+  position:relative;padding:.55em 0 .55em 2.4em;
+  animation:textIn .9s both;
+}
+.steps li::before{
+  counter-increment:step;content:counter(step);
+  position:absolute;left:0;top:.55em;
+  width:1.7em;height:1.7em;
+  background:linear-gradient(135deg,var(--violet),var(--teal));
+  color:#fff;border-radius:50%;
+  display:grid;place-items:center;
+  font-weight:800;font-size:.7em;
+  box-shadow:0 6px 20px rgba(124,58,237,.5);
+}
+.steps li:nth-child(1){animation-delay:.25s}
+.steps li:nth-child(2){animation-delay:.4s}
+.steps li:nth-child(3){animation-delay:.55s}
+.steps li:nth-child(4){animation-delay:.7s}
+.steps li:nth-child(5){animation-delay:.85s}
+
+/* Mistakes */
+.mistakes{display:grid;grid-template-columns:1fr 1fr;gap:.8em}
+.mistakes p{
+  background:linear-gradient(135deg,rgba(251,113,133,.13),rgba(251,113,133,.04));
+  border:1px solid rgba(251,113,133,.3);
+  border-left:4px solid var(--red);
+  border-radius:12px;padding:.85em 1em;font-size:.78em;
+  animation:cardIn .8s both;
+}
+.mistakes p:nth-child(odd){animation-delay:.3s}
+.mistakes p:nth-child(even){animation-delay:.45s}
+
+/* Big data */
+.bigdata{
+  font-size:2.2em;font-weight:900;letter-spacing:.06em;
+  background:linear-gradient(135deg,var(--gold),var(--pink));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:sectionTitle 1s both;
+}
+
+/* Table */
+table{
+  border-collapse:separate;border-spacing:0;
+  width:100%;max-width:700px;
+  background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;
+  font-size:.85em;
+  backdrop-filter:none;
+}
+th,td{
+  padding:.65em .9em;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  text-align:center;
+}
+th{
+  background:linear-gradient(135deg,rgba(167,139,250,.25),rgba(45,212,191,.15));
+  font-weight:800;color:#fff;
+  text-transform:uppercase;letter-spacing:.08em;font-size:.85em;
+}
+tr{animation:cardIn .6s both}
+tr:nth-child(2){animation-delay:.2s}
+tr:nth-child(3){animation-delay:.35s}
+tr:nth-child(4){animation-delay:.5s}
+
+/* Visual grids */
+.visualGrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1em;align-items:center}
+.visualGrid3 img{
+  max-width:100%;max-height:160px;object-fit:contain;
+  filter:drop-shadow(0 15px 30px rgba(167,139,250,.4));
+  animation:imgFloat 6s ease-in-out infinite;
+}
+.visualGrid3 img:nth-child(2){animation-delay:.7s}
+.visualGrid3 img:nth-child(3){animation-delay:1.4s}
+
+/* Decorative orbs in slides */
+.orb{position:absolute;border-radius:50%;opacity:.32;pointer-events:none;animation:orbFloat 14s ease-in-out infinite;will-change:transform;transform:translateZ(0)}
+.orb1{width:280px;height:280px;background:radial-gradient(circle,rgba(167,139,250,.55),rgba(167,139,250,.14) 46%,transparent 74%);top:-100px;right:-80px}
+.orb2{width:200px;height:200px;background:radial-gradient(circle,rgba(45,212,191,.5),rgba(45,212,191,.12) 46%,transparent 74%);bottom:-50px;left:-50px;animation-delay:-4s}
+.orb3{width:160px;height:160px;background:radial-gradient(circle,rgba(244,114,182,.5),rgba(244,114,182,.12) 46%,transparent 74%);top:40%;right:35%;animation-delay:-8s}
+@keyframes orbFloat{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(40px,-30px,0) scale(1.15)}}
+
+/* Controls — premium glass */
+.controls{
+  position:absolute;z-index:20;left:50%;bottom:2.5%;
+  transform:translateX(-50%);display:flex;gap:.5em;
+  opacity:.55;transition:opacity .3s;
+}
+.controls:hover{opacity:1}
+.controls button{
+  border:0;border-radius:999px;padding:.6em 1em;
+  background:rgba(245,247,255,.1);color:#fff;cursor:pointer;
+  backdrop-filter:none;
+  border:1px solid var(--border);
+  font-weight:700;font-size:.85em;
+  transition:transform .25s,background .25s,box-shadow .25s;
+}
+.controls button:hover{
+  transform:translateY(-3px) scale(1.08);
+  background:linear-gradient(135deg,rgba(167,139,250,.4),rgba(45,212,191,.3));
+  box-shadow:0 10px 30px rgba(167,139,250,.4);
+}
+
+.progress{
+  position:absolute;left:0;bottom:0;height:5px;
+  background:linear-gradient(90deg,var(--purple),var(--teal),var(--gold),var(--pink));
+  background-size:200% 100%;
+  z-index:19;transition:width .5s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 0 30px rgba(167,139,250,.7);
+  animation:none;
+}
+@keyframes progressGlow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+
+
+.progress::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),transparent);
+  transform:translate3d(-110%,0,0);
+  animation:progressSweep 3s linear infinite;
+  will-change:transform;
+}
+@keyframes progressSweep{
+  to{transform:translate3d(110%,0,0)}
+}
+
+/* Overview */
+.overview{
+  position:absolute;inset:0;z-index:50;
+  background:rgba(10,14,39,.97);
+  padding:3%;display:none;overflow:auto;
+  backdrop-filter:none;
+}
+.overview.show{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;align-content:start;animation:fadeIn .5s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.thumb{
+  background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  color:#fff;border-radius:14px;padding:14px;min-height:120px;
+  cursor:pointer;font-size:13px;border:1px solid var(--border);
+  transition:transform .3s,box-shadow .3s,border-color .3s;
+  backdrop-filter:none;
+  position:relative;overflow:hidden;
+  content-visibility:auto;contain-intrinsic-size:120px;
+}
+.thumb.is-visible{animation:cardIn .6s both}
+.thumb::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+}
+.thumb.c12::before{background:var(--purple);box-shadow:0 0 15px rgba(167,139,250,.6)}
+.thumb.c13::before{background:var(--teal);box-shadow:0 0 15px rgba(45,212,191,.6)}
+.thumb.c14::before{background:var(--red);box-shadow:0 0 15px rgba(251,113,133,.6)}
+.thumb:hover{
+  transform:translateY(-5px) scale(1.05);
+  box-shadow:0 20px 50px rgba(124,58,237,.4);
+  border-color:rgba(167,139,250,.5);
+}
+.thumb b{display:block;font-size:16px;margin-bottom:8px;color:var(--gold)}
+.thumb span{color:var(--muted);font-size:12px}
+
+.overviewHint{
+  position:fixed;right:20px;bottom:20px;
+  color:#fff;background:linear-gradient(135deg,rgba(167,139,250,.5),rgba(45,212,191,.3));
+  padding:8px 14px;border-radius:10px;font-size:13px;z-index:60;
+  backdrop-filter:none;border:1px solid var(--border);
+  animation:chipGlow 4s ease-in-out infinite;
+}
+
+@media(max-aspect-ratio:4/3){
+  .content.hasVisual{grid-template-columns:1fr}
+  .text{font-size:clamp(13px,1.8vw,20px)}
+  .visual{display:none}
+}
+.controls button:focus-visible,.answerBtn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+.slide{overflow-y:auto;overscroll-behavior:contain}
+
+@media(max-width:700px){
+  .grid2,.grid3,.mistakes{grid-template-columns:1fr}
+  .overview.show{grid-template-columns:repeat(2,1fr)}
+  .slide{padding:4% 5%}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+
+
+/* === Smooth-render patch: preserves features, reduces repaint/compositor pressure === */
+.slide:not(.active) *, .slide:not(.active)::before, .slide:not(.active)::after{
+  animation-play-state:paused !important;
+}
+.slide.active{
+  content-visibility:visible;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+}
+.slide.active .visual img,
+.slide.active .orb,
+.aurora::before,.aurora::after,.aurora-blob,
+.particle{
+  backface-visibility:hidden;
+}
+.particle{
+  will-change:transform;
+  contain:strict;
+}
+.visual img{
+  will-change:transform;
+}
+.progress{
+  will-change:width,background-position;
+}
+.overview:not(.show) .thumb{
+  animation-play-state:paused!important;
+}
+
+</style>
+</head>
+<body>
+
+<div class="aurora"><div class="aurora-blob"></div></div>
+<div class="particles" id="particles"></div>
+
+<div class="deck">
+<main class="stage" id="stage">
+
+  <!-- 1. Title -->
+  <section class="slide" data-chapter="intro" data-title="Stage 7 Maths">
+    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Mali · Stage 7 Maths</span><span class="num">1 / 90</span></div>
+    <h1>Cambridge Lower Secondary Maths · Stage 7</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Chapters 12–14</p>
+        <p>Measures of average and spread · Calculations · Functions and formulae</p>
+        <div class="pillrow"><span>HTML slide deck</span><span>90 slides</span><span>Questions throughout</span></div>
+      </div>
+      <div class="visual"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABagAAAQ+CAYAAAA6bNi7AABcZmNhQlgAAFxmanVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAXEBqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOmViOTY3OGMyLTE4MzYtNGRlOS04OTk3LWM1YWE3MjgwNmMxYwAAAAx8anVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAJ0Wp1bWIAAAA7anVtZEDLDDK7ikidpwsq1vR/Q2kTYzJwYS5pY29uAAAAABhjMnNo9nYc+uuMhXp8Cr4W+UMmPAAAABdiZmRiAGltYWdlL3N2Zyt4bWwAAAAJd2JpZGI8c3ZnIHdpZHRoPSI3MTYiIGhlaWdodD0iNzE2IiB2aWV3Qm94PSIwIDAgNzE2IDcxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUwOC43NDkgMzE3LjM5OUM1MTYuNzc3IDI4Ny4zMTQgNTA0Ljk5MSAyNTMuODg0IDQ4NS4zODkgMjMwLjI4MkM0NjEuNzg4IDIwNi42ODEgNDI4LjM2IDE5OC44OTUgMzk4LjI3MyAyMDYuOTIzQzM3Ni4yMzEgMTg0LjkyOCAzNDMuMzkgMTc0Ljk1NiAzMTEuMTQ4IDE4My41OTZDMjc4LjkwNiAxOTIuMjM0IDI1NS40NSAyMTcuMjkyIDI0Ny4zNiAyNDcuMzYxQzIxNy4yOTEgMjU1LjQ1MSAxOTIuMjMzIDI3OC45MSAxODMuNTk1IDMxMS4xNDlDMTc0Ljk1NyAzNDMuMzkxIDE4NC45MjcgMzc2LjIzMiAyMDYuOTI0IDM5OC4yNzRDMTk4Ljg5NiA0MjguMzU5IDIwNi42ODMgNDYxLjc4OSAyMzAuMjg0IDQ4NS4zOTFDMjUzLjg4NSA1MDguOTkyIDI4Ny4zMTMgNTE2Ljc3OSAzMTcuNDAxIDUwOC43NUMzMzkuNDQyIDUzMC43NDUgMzcyLjI4NiA1NDAuNzE3IDQwNC41MjUgNTMyLjA3OUM0MzYuNzY3IDUyMy40NDEgNDYwLjIyMyA0OTguMzg0IDQ2OC4zMTMgNDY4LjMxNUM0OTguMzgzIDQ2MC4yMjQgNTIzLjQ0IDQzNi43NjYgNTMyLjA3OCA0MDQuNTI2QzU0MC43MTYgMzcyLjI4NSA1MzAuNzQ3IDMzOS40NDMgNTA4Ljc0OSAzMTcuNDAyVjMxNy4zOTlaTTQ3MC44OTkgMjQ0Ljc3NkM0ODYuODkyIDI2MC43NyA0OTMuNDg4IDI4Mi42MDEgNDkwLjY4NyAzMDMuNDEyTDQxNS41NzcgMjYwLjA0NkM0MTIuNDExIDI1OC4yMTggNDA4LjUwOSAyNTguMjE4IDQwNS4zNDUgMjYwLjA0NkwzMTcuNDAxIDMxMC44MlYyNzcuNTI2QzMxNy40MDEgMjc1LjE5MSAzMTguNjUyIDI3My4wMDUgMzIwLjY3NiAyNzEuODM3TDM4Ny42NDQgMjMzLjE3NEM0MTQuMTc4IDIxOC4zNTMgNDQ4LjM0NiAyMjIuMjIzIDQ3MC45MDEgMjQ0Ljc3Nkg0NzAuODk5Wk0zNTcuODM3IDMxMS4xNDRMMzk4LjI3NSAzMzQuNDkxVjM4MS4xODVMMzU3LjgzNyA0MDQuNTMyTDMxNy4zOTggMzgxLjE4NVYzMzQuNDkxTDM1Ny44MzcgMzExLjE0NFpNMjY0Ljc3NiAyNjkuNjkzQzI2NS4yMDcgMjM5LjMwNSAyODUuNjQ0IDIxMS42NDkgMzE2LjQ1MyAyMDMuMzkzQzMzOC4zIDE5Ny41NCAzNjAuNTA1IDIwMi43NDQgMzc3LjEyNyAyMTUuNTczTDMwMi4wMTQgMjU4LjkzN0MyOTguODQ4IDI2MC43NjQgMjk2Ljg5OCAyNjQuMTQ0IDI5Ni44OTggMjY3Ljc5OFYzNjkuMzQ2TDI2OC4wNjUgMzUyLjY5OUMyNjYuMDQzIDM1MS41MzEgMjY0Ljc3NiAzNDkuMzUzIDI2NC43NzYgMzQ3LjAxN1YyNjkuNjkxVjI2OS42OTNaTTIwMy4zOTEgMzE2LjQ1NCAyMDkuMjQ0IDI5NC42MDggMjI0Ljg1NCAyNzcuOTc4IDI0NC4yNzYgMjY5Ljk5OVYzNTYuNzNDMjQ0LjI3NiAzNjAuMzg0IDI0Ni4yMjYgMzYzLjc2MyAyNDkuMzkyIDM2NS41OTFMMzM3LjMzNyA0MTYuMzY1TDMwOC41MDMgNDMzLjAxM0MzMDYuNDgxIDQzNC4xODEgMzAzLjk2MSA0MzQuMTg4IDMwMS45MzkgNDMzLjAyTDIzNC45NzEgMzk0LjM1N0MyMDguODY4IDM3OC43ODkgMTk1LjEzOCAzNDcuMjYxIDIwMy4zOTEgMzE2LjQ1NFpNMjQ0Ljc3NSA0NzAuOUMyMjguNzgxIDQ1NC45MDYgMjIyLjE4NiA0MzMuMDc1IDIyNC45ODYgNDEyLjI2NEwzMDAuMDk2IDQ1NS42M0MzMDMuMjYzIDQ1Ny40NTcgMzA3LjE2NCA0NTcuNDU3IDMxMC4zMjggNDU1LjYzTDM5OC4yNzMgNDA0Ljg1NlY0MzguMTQ5QzM5OC4yNzMgNDQwLjQ4NSAzOTcuMDIyIDQ0Mi42NzEgMzk0Ljk5NyA0NDMuODM5TDMyOC4wMjkgNDgyLjUwMkMzMDEuNDk1IDQ5Ny4zMjIgMjY3LjMyNyA0OTMuNDUyIDI0NC43NzIgNDcwLjlIMjQ0Ljc3NVpNNDUwLjg5NyA0NDUuOTgyQzQ1MC40NjYgNDc2LjM3MSA0MzAuMDI5IDUwNC4wMjcgMzk5LjIyIDUxMi4yODNDMzc3LjM3MyA1MTguMTM2IDM1NS4xNjggNTEyLjkzMiAzMzguNTQ3IDUwMC4xMDJMNDEzLjY1OSA0NTYuNzM4QzQxNi44MjYgNDU0LjkxMSA0MTguNzc1IDQ1MS41MzIgNDE4Ljc3NSA0NDcuODc3VjM0Ni4zMjlMNDQ3LjYwOSAzNjIuOTc3QzQ0OS42MzEgMzY0LjE0NSA0NTAuODk3IDM2Ni4zMjMgNDUwLjg5NyAzNjguNjU5VjQ0NS45ODVWNDQ1Ljk4MlpNNTEyLjI4MiAzOTkuMjIxQzUwNi40MjkgNDIxLjA2OCA0OTAuODE5IDQzNy42OTcgNDcxLjM5NyA0NDUuNjc2VjM1OC45NDZDNDcxLjM5NyAzNTUuMjkyIDQ2OS40NDggMzUxLjkxMiA0NjYuMjgxIDM1MC4wODVMMzc4LjMzNiAyOTkuMzExTDQwNy4xNyAyODIuNjYzQzQwOS4xOTIgMjgxLjQ5NSA0MTEuNzEyIDI4MS40ODcgNDEzLjczNCAyODIuNjU1TDQ4MC43MDIgMzIxLjMxOEM1MDYuODA1IDMzNi44ODcgNTIwLjUzNiAzNjguNDE1IDUxMi4yODIgMzk5LjIyMVoiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPgo=" alt="logo"></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="controls">
+  <button type="button" aria-label="Previous slide" onclick="nav(-1)" title="Previous">◀</button>
+  <button type="button" aria-label="Next slide" onclick="nav(1)" title="Next">▶</button>
+    <button type="button" aria-label="Toggle slide overview" onclick="toggleOverview()" title="Overview">⊕</button>
+</div>
+<div class="progress" id="progress" role="progressbar" aria-label="Presentation progress" aria-valuemin="1" aria-valuemax="90" aria-valuenow="1" style="width:1.1%"></div>
+<div class="overviewHint">Press O for overview</div>
+
+</div>
+
+<script>
+// Create a small number of optional decorative particles.
+const particles = document.getElementById('particles');
+for(let i=0;i<12;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.left=Math.random()*100+'%';
+  p.style.animationDuration=(10+Math.random()*8)+'s';
+  p.style.animationDelay=(-Math.random()*15)+'s';
+  p.style.width=p.style.height=(2+Math.random()*3)+'px';
+  particles.appendChild(p);
+}
+
+// Slides data (90 slides total — same content, premium theme)
+const logoImage = document.querySelector('.slide[data-title="Stage 7 Maths"] .visual img');
+const IMG = logoImage.currentSrc || logoImage.src;
+const logoDecode = logoImage.decode ? logoImage.decode().catch(() => {}) : Promise.resolve();
+const imageDecodeCache = new Map([[IMG, logoDecode]]);
+
+const slidesData = [
+  // 2
+  {ch:'intro',title:'How to use',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker">Stage 7 Maths</span><span class="num">2 / 90</span></div>
+    <h1>How to use this deck</h1>
+    <div class="content">
+      <div class="text">
+        <div class="grid2">
+          <div class="card"><h3>Teach</h3><p>Concept slides use editable HTML text and formulas. PNGs are supporting visuals only.</p></div>
+          <div class="card"><h3>Check</h3><p>On question slides, press <b>1</b> or <b>Numpad 1</b> to reveal the answer.</p></div>
+        </div>
+        <div class="callout">Keyboard: <b>←</b> / <b>→</b> or <b>Space</b>. Press <b>O</b> for overview.</div>
+      </div>
+    </div>`},
+
+  // 3
+  {ch:'intro',title:'Roadmap',html:`
+    <div class="orb orb1"></div><div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Stage 7 Maths</span><span class="num">3 / 90</span></div>
+    <h1>Roadmap</h1>
+    <div class="content">
+      <div class="text">
+        <div class="roadmap">
+          <div><b>12</b><span>Mean · Median · Mode · Range · Frequency tables</span></div>
+          <div><b>13</b><span>Order of operations · Decimal and fraction strategies</span></div>
+          <div><b>14</b><span>Functions · Mappings · Formulae · Substitution</span></div>
+        </div>
+      </div>
+    </div>`},
+
+  // 4
+  {ch:'c12',title:'Chapter 12',section:true,html:`
+    <div class="orb orb1"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">4 / 90</span></div>
+    <h1>Chapter 12</h1>
+    <div class="subtitle">Measures of average and spread</div>`},
+
+  // 5
+  {ch:'c12',title:'Three averages',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">5 / 90</span></div>
+    <h1>Three averages</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Mean · Median · Mode</p>
+        <p>Three different ways to describe the "typical" value in a data set.</p>
+        <div class="grid3" style="margin-top:1em">
+          <div class="card"><h3>Mean</h3><p>Sum of values ÷ how many</p></div>
+          <div class="card"><h3>Median</h3><p>Middle value when ordered</p></div>
+          <div class="card"><h3>Mode</h3><p>Most frequent value</p></div>
+        </div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter12/12_1_number_tiles_mean_median_mode_range.png" alt="Number tiles showing mean, median, mode and range" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 6
+  {ch:'c12',title:'Mean definition',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">6 / 90</span></div>
+    <h1>The Mean</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Add the values, then divide by how many.</p>
+        <div class="formula">mean = (sum of values) ÷ (number of values)</div>
+        <p style="margin-top:.8em">Example: 4, 8, 6, 10, 2 → sum = 30, count = 5 → mean = 6</p>
+        <div class="tip">The mean uses every value — so it is sensitive to extreme results.</div>
+      </div>
+    </div>`},
+
+  // 7
+  {ch:'c12',title:'Median',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">7 / 90</span></div>
+    <h1>The Median</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Order the data — pick the middle.</p>
+        <p>Odd count of values: one middle number.</p>
+        <p>Even count of values: average the two middle numbers.</p>
+        <div class="formula">3, 5, 7, 9, 11 → median = 7</div>
+        <div class="tip">Median is not affected by very large or very small values.</div>
+      </div>
+    </div>`},
+
+  // 8
+  {ch:'c12',title:'Mode',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">8 / 90</span></div>
+    <h1>The Mode</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">The value that appears most often.</p>
+        <p>Example: 2, 4, 4, 4, 7, 9 → mode = 4</p>
+        <p>A set can have <b>no mode</b>, <b>one mode</b>, or <b>more than one mode</b>.</p>
+        <div class="tip">Mode is the only average you can use for non-numerical data (e.g. colours, brands).</div>
+      </div>
+    </div>`},
+
+  // 9
+  {ch:'c12',title:'Range',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">9 / 90</span></div>
+    <h1>The Range</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Range measures how spread out the data is.</p>
+        <div class="formula">range = largest value − smallest value</div>
+        <p style="margin-top:.8em">Example: 3, 8, 11, 4, 9 → range = 11 − 3 = 8</p>
+        <div class="tip">A large range means the data is widely spread.</div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter12/12_1_range_visual.png" alt="Visual explanation of range from minimum to maximum" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 10
+  {ch:'c12',title:'Question: mean',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">10 / 90</span></div>
+    <h1>Find the mean</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">5, 9, 7, 11, 8</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Sum = 40, count = 5 → mean = <b>8</b></div>
+      </div>
+    </div>`},
+
+  // 11
+  {ch:'c12',title:'Question: median',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">11 / 90</span></div>
+    <h1>Find the median</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">12, 3, 7, 9, 15</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Order: 3, 7, 9, 12, 15 → middle = <b>9</b></div>
+      </div>
+    </div>`},
+
+  // 12
+  {ch:'c12',title:'Question: mode and range',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">12 / 90</span></div>
+    <h1>Mode and range</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Find the mode of 2, 5, 5, 5, 8, 9, 9.</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Mode = <b>5</b> (appears 3 times)<br>Range = 9 − 2 = <b>7</b></div>
+      </div>
+    </div>`},
+
+  // 13
+  {ch:'c12',title:'Frequency tables',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">13 / 90</span></div>
+    <h1>Frequency tables</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Tally how often each value occurs.</p>
+        <table>
+          <tr><th>Value</th><th>Tally</th><th>Frequency</th></tr>
+          <tr><td>1</td><td>||</td><td>2</td></tr>
+          <tr><td>2</td><td>||||</td><td>4</td></tr>
+          <tr><td>3</td><td>|||</td><td>3</td></tr>
+        </table>
+        <div class="tip">Frequency = how many times a value appears.</div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter12/12_2_frequency_chart_visual.png" alt="Chart illustrating frequency" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 14
+  {ch:'c12',title:'Mean from frequency table',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">14 / 90</span></div>
+    <h1>Mean from frequency table</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Multiply each value by its frequency, sum, then divide by total frequency.</p>
+        <div class="formula">mean = Σ(value × frequency) ÷ Σ frequency</div>
+        <div class="tip">Use a column for "value × frequency" to keep track.</div>
+      </div>
+    </div>`},
+
+  // 15
+  {ch:'c12',title:'Question: mean from table',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">15 / 90</span></div>
+    <h1>Mean from table</h1>
+    <div class="content">
+      <div class="text">
+        <table>
+          <tr><th>Value</th><th>1</th><th>2</th><th>3</th></tr>
+          <tr><th>Freq</th><td>3</td><td>4</td><td>2</td></tr>
+        </table>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Sum = 3×1 + 4×2 + 2×3 = 17<br>Total freq = 9<br>Mean = 17 ÷ 9 ≈ <b>1.89</b></div>
+      </div>
+    </div>`},
+
+  // 16
+  {ch:'c12',title:'Choosing an average',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">16 / 90</span></div>
+    <h1>Choosing the right average</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <div class="grid3">
+          <div class="card"><h3>Mean</h3><p>When data is fairly even, no extreme values.</p></div>
+          <div class="card"><h3>Median</h3><p>When data has extreme values that skew the mean.</p></div>
+          <div class="card"><h3>Mode</h3><p>For non-numerical data or the most common value.</p></div>
+        </div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter12/12_1_dot_plot_compare_data.png" alt="Dot plots comparing the spread of two data sets" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 17
+  {ch:'c12',title:'Common mistakes',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">17 / 90</span></div>
+    <h1>Common mistakes</h1>
+    <div class="content">
+      <div class="text">
+        <div class="mistakes">
+          <p>Forgetting to order the data before finding the median.</p>
+          <p>Dividing by the wrong count when finding the mean.</p>
+          <p>Confusing mode with the highest value.</p>
+          <p>Forgetting range = largest − smallest.</p>
+        </div>
+      </div>
+    </div>`},
+
+  // 18
+  {ch:'c12',title:'Chapter 12 summary',html:`
+    <div class="orb orb1"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">18 / 90</span></div>
+    <h1>Chapter 12 summary</h1>
+    <div class="content">
+      <div class="text">
+        <ul class="steps">
+          <li>Mean = sum ÷ count — uses every value.</li>
+          <li>Median = middle of ordered data.</li>
+          <li>Mode = most frequent value.</li>
+          <li>Range = spread = largest − smallest.</li>
+          <li>Frequency tables help organise larger data sets.</li>
+        </ul>
+      </div>
+    </div>`},
+
+  // 19
+  {ch:'c13',title:'Chapter 13',section:true,html:`
+    <div class="orb orb2"></div><div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">19 / 90</span></div>
+    <h1>Chapter 13</h1>
+    <div class="subtitle">Calculations with decimals and fractions</div>`},
+
+  // 20
+  {ch:'c13',title:'Order of operations',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">20 / 90</span></div>
+    <h1>Order of operations</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">BODMAS / BIDMAS — work in the correct order.</p>
+        <div class="grid3">
+          <div class="card"><h3>B</h3><p>Brackets first</p></div>
+          <div class="card"><h3>O / I</h3><p>Orders / Indices</p></div>
+          <div class="card"><h3>DM</h3><p>Divide &amp; Multiply (left to right)</p></div>
+        </div>
+        <div class="grid3" style="margin-top:.8em">
+          <div class="card"><h3>AS</h3><p>Add &amp; Subtract (left to right)</p></div>
+        </div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter13/13_1_BODMAS_visual.png" alt="BODMAS order of operations visual" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 21
+  {ch:'c13',title:'Question: BODMAS',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">21 / 90</span></div>
+    <h1>BODMAS question</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">3 + 4 × 2²</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">2² = 4 → 4 × 2 = 8 → 3 + 8 = <b>11</b></div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter13/13_1_order_of_operations_worked_example.png" alt="Worked order of operations example" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 22
+  {ch:'c13',title:'Adding decimals',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">22 / 90</span></div>
+    <h1>Adding decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Line up the decimal points!</p>
+        <div class="formula">3.45 + 2.7 = 6.15</div>
+        <div class="tip">Use zero placeholders: 2.7 → 2.70</div>
+      </div>
+    </div>`},
+
+  // 23
+  {ch:'c13',title:'Multiplying decimals',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">23 / 90</span></div>
+    <h1>Multiplying decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Count the decimal places in the question.</p>
+        <div class="formula">0.4 × 0.3 = 0.12</div>
+        <div class="tip">Total decimal places in answer = sum of decimal places in factors.</div>
+      </div>
+    </div>`},
+
+  // 24
+  {ch:'c13',title:'Question: decimal multiplication',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">24 / 90</span></div>
+    <h1>Decimal multiplication</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">0.6 × 0.05</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">6 × 5 = 30, three decimal places → 0.030 = <b>0.03</b></div>
+      </div>
+    </div>`},
+
+  // 25
+  {ch:'c13',title:'Dividing decimals',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">25 / 90</span></div>
+    <h1>Dividing decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Multiply both numbers by a power of 10 to make the divisor a whole number.</p>
+        <div class="formula">4.5 ÷ 0.5 = 45 ÷ 5 = 9</div>
+      </div>
+    </div>`},
+
+  // 26
+  {ch:'c13',title:'Question: divide decimals',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">26 / 90</span></div>
+    <h1>Divide decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">7.2 ÷ 0.4</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">72 ÷ 4 = <b>18</b></div>
+      </div>
+    </div>`},
+
+  // 27
+  {ch:'c13',title:'Equivalent fractions',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">27 / 90</span></div>
+    <h1>Equivalent fractions</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Multiply or divide top and bottom by the same number.</p>
+        <div class="formula">1/2 = 2/4 = 3/6 = 5/10</div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter13/13_2_fractions_decimals_visual.png" alt="Visual models for fractions and decimals" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 28
+  {ch:'c13',title:'Adding fractions',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">28 / 90</span></div>
+    <h1>Adding fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Same denominator — just add the tops.</p>
+        <p>Different denominators — find a common denominator first.</p>
+        <div class="formula">1/3 + 1/6 = 2/6 + 1/6 = 3/6 = 1/2</div>
+      </div>
+    </div>`},
+
+  // 29
+  {ch:'c13',title:'Question: add fractions',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">29 / 90</span></div>
+    <h1>Add fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">2/5 + 1/3</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Common denominator = 15<br>6/15 + 5/15 = <b>11/15</b></div>
+      </div>
+    </div>`},
+
+  // 30
+  {ch:'c13',title:'Multiplying fractions',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">30 / 90</span></div>
+    <h1>Multiplying fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Multiply tops, multiply bottoms.</p>
+        <div class="formula">2/3 × 4/5 = 8/15</div>
+        <div class="tip">Simplify your answer if possible.</div>
+      </div>
+    </div>`},
+
+  // 31
+  {ch:'c13',title:'Question: multiply fractions',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">31 / 90</span></div>
+    <h1>Multiply fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">3/4 × 2/9</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">6/36 = <b>1/6</b></div>
+      </div>
+    </div>`},
+
+  // 32
+  {ch:'c13',title:'Dividing fractions',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">32 / 90</span></div>
+    <h1>Dividing fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Keep, flip, change — multiply by the reciprocal.</p>
+        <div class="formula">2/3 ÷ 4/5 = 2/3 × 5/4 = 10/12 = 5/6</div>
+      </div>
+    </div>`},
+
+  // 33
+  {ch:'c13',title:'Question: divide fractions',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">33 / 90</span></div>
+    <h1>Divide fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">5/6 ÷ 2/3</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">5/6 × 3/2 = 15/12 = <b>1 1/4</b></div>
+      </div>
+    </div>`},
+
+  // 34
+  {ch:'c13',title:'Mixed numbers',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">34 / 90</span></div>
+    <h1>Mixed numbers</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A whole number plus a fraction.</p>
+        <div class="formula">2 1/3 = 7/3 (improper)</div>
+        <div class="tip">Convert to improper fractions before multiplying or dividing.</div>
+      </div>
+    </div>`},
+
+  // 35
+  {ch:'c13',title:'Fraction of a quantity',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">35 / 90</span></div>
+    <h1>Fraction of a quantity</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Divide by the bottom, multiply by the top.</p>
+        <div class="formula">3/4 of 20 = 20 ÷ 4 × 3 = 15</div>
+      </div>
+    </div>`},
+
+  // 36
+  {ch:'c13',title:'Question: fraction of amount',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">36 / 90</span></div>
+    <h1>Fraction of amount</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">2/5 of 45</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">45 ÷ 5 = 9 → 9 × 2 = <b>18</b></div>
+      </div>
+    </div>`},
+
+  // 37
+  {ch:'c13',title:'Fractions to decimals',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">37 / 90</span></div>
+    <h1>Fractions to decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Divide the top by the bottom.</p>
+        <div class="formula">3/4 = 3 ÷ 4 = 0.75</div>
+        <div class="tip">Some fractions give recurring decimals: 1/3 = 0.333...</div>
+      </div>
+    </div>`},
+
+  // 38
+  {ch:'c13',title:'Decimals to fractions',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">38 / 90</span></div>
+    <h1>Decimals to fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Use the place value of the last digit.</p>
+        <div class="formula">0.6 = 6/10 = 3/5<br>0.25 = 25/100 = 1/4</div>
+      </div>
+    </div>`},
+
+  // 39
+  {ch:'c13',title:'Question: convert fractions',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">39 / 90</span></div>
+    <h1>Convert 5/8 to a decimal</h1>
+    <div class="content">
+      <div class="text">
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">5 ÷ 8 = <b>0.625</b></div>
+      </div>
+    </div>`},
+
+  // 40
+  {ch:'c13',title:'Percentages',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">40 / 90</span></div>
+    <h1>Percentages</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Percent means "out of 100".</p>
+        <div class="formula">25% = 25/100 = 1/4 = 0.25</div>
+      </div>
+    </div>`},
+
+  // 41
+  {ch:'c13',title:'Percentage of amount',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">41 / 90</span></div>
+    <h1>Percentage of an amount</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Find 10% by dividing by 10, then scale.</p>
+        <div class="formula">30% of 80 = 3 × (80÷10) = 3 × 8 = 24</div>
+      </div>
+    </div>`},
+
+  // 42
+  {ch:'c13',title:'Question: percentage',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">42 / 90</span></div>
+    <h1>Find 45% of 200</h1>
+    <div class="content">
+      <div class="text">
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">10% = 20 → 40% = 80 → 5% = 10 → 45% = <b>90</b></div>
+      </div>
+    </div>`},
+
+  // 43
+  {ch:'c13',title:'Rounding',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">43 / 90</span></div>
+    <h1>Rounding</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Look at the next digit — 5 or more, round up.</p>
+        <div class="formula">3.467 → 3.47 (2 dp) → 3.5 (1 dp) → 3 (whole)</div>
+      </div>
+    </div>`},
+
+  // 44
+  {ch:'c13',title:'Question: rounding',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">44 / 90</span></div>
+    <h1>Round 7.856 to 2 dp</h1>
+    <div class="content">
+      <div class="text">
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Third digit is 6 → round up → <b>7.86</b></div>
+      </div>
+    </div>`},
+
+  // 45
+  {ch:'c13',title:'Estimation',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">45 / 90</span></div>
+    <h1>Estimation</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Round first, then calculate.</p>
+        <div class="formula">48 × 2.9 ≈ 50 × 3 = 150</div>
+        <div class="tip">Useful to check whether an exact answer is reasonable.</div>
+      </div>
+    </div>`},
+
+  // 46
+  {ch:'c13',title:'Question: estimation',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">46 / 90</span></div>
+    <h1>Estimate 31 × 4.8</h1>
+    <div class="content">
+      <div class="text">
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">≈ 30 × 5 = <b>150</b></div>
+      </div>
+    </div>`},
+
+  // 47
+  {ch:'c13',title:'Common mistakes — calculations',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">47 / 90</span></div>
+    <h1>Common mistakes</h1>
+    <div class="content">
+      <div class="text">
+        <div class="mistakes">
+          <p>Forgetting BODMAS — doing operations left to right.</p>
+          <p>Not lining up decimal points when adding.</p>
+          <p>Adding denominators when adding fractions.</p>
+          <p>Forgetting to simplify fractions.</p>
+        </div>
+      </div>
+    </div>`},
+
+  // 48
+  {ch:'c13',title:'Chapter 13 summary',html:`
+    <div class="orb orb1"></div><div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">48 / 90</span></div>
+    <h1>Chapter 13 summary</h1>
+    <div class="content">
+      <div class="text">
+        <ul class="steps">
+          <li>BODMAS keeps calculation order correct.</li>
+          <li>Line up decimal points; count decimal places in multiplication.</li>
+          <li>Fractions need common denominators to add or subtract.</li>
+          <li>Multiply fractions: top × top, bottom × bottom.</li>
+          <li>Divide fractions: keep, flip, multiply.</li>
+        </ul>
+      </div>
+    </div>`},
+
+  // 49
+  {ch:'c14',title:'Chapter 14',section:true,html:`
+    <div class="orb orb3"></div><div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">49 / 90</span></div>
+    <h1>Chapter 14</h1>
+    <div class="subtitle">Functions and formulae</div>`},
+
+  // 50
+  {ch:'c14',title:'What is a function?',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">50 / 90</span></div>
+    <h1>What is a function?</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A function takes an input and gives an output.</p>
+        <div class="formula">Input x → Function → Output y</div>
+        <div class="tip">Each input has exactly one output.</div>
+      </div>
+    </div>`},
+
+  // 51
+  {ch:'c14',title:'Function machines',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">51 / 90</span></div>
+    <h1>Function machines</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">A diagram showing a sequence of operations.</p>
+        <div class="formula">Input 5 → ×3 → +2 → Output 17</div>
+        <div class="tip">Work through one operation at a time, left to right.</div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter14/14_1_function_machine_visual.png" alt="Function machine diagram" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 52
+  {ch:'c14',title:'Question: function machine',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">52 / 90</span></div>
+    <h1>Function machine</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Input 4 → ×2 → −5 → Output ?</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">4 × 2 = 8 → 8 − 5 = <b>3</b></div>
+      </div>
+    </div>`},
+
+  // 53
+  {ch:'c14',title:'Inverse function machines',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">53 / 90</span></div>
+    <h1>Inverse function machines</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Work backwards with inverse operations.</p>
+        <div class="formula">Output 17 ← +2 ← ×3 ← Input?</div>
+        <div class="tip">Reverse the order AND reverse each operation.</div>
+      </div>
+    </div>`},
+
+  // 54
+  {ch:'c14',title:'Question: inverse machine',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">54 / 90</span></div>
+    <h1>Find the input</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Output 11 ← ×2 ← +3 ← Input?</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">11 ÷ 2 = 5.5 → 5.5 − 3 = <b>2.5</b></div>
+      </div>
+    </div>`},
+
+  // 55
+  {ch:'c14',title:'Mappings',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">55 / 90</span></div>
+    <h1>Mappings</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">A mapping pairs each input to one output.</p>
+        <div class="formula">x → x² + 1</div>
+        <table>
+          <tr><th>x</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+          <tr><th>y</th><td>1</td><td>2</td><td>5</td><td>10</td></tr>
+        </table>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter14/14_1_mapping_diagram_visual.png" alt="Mapping diagram from inputs to outputs" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 56
+  {ch:'c14',title:'Question: mapping',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">56 / 90</span></div>
+    <h1>Use the mapping</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">y = 3x − 4. Find y when x = 5.</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">y = 3×5 − 4 = 15 − 4 = <b>11</b></div>
+      </div>
+    </div>`},
+
+  // 57
+  {ch:'c14',title:'Formulae',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">57 / 90</span></div>
+    <h1>Formulae</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A formula shows how quantities relate.</p>
+        <div class="formula">Perimeter of square: P = 4 × side</div>
+        <div class="tip">A formula uses letters to stand for quantities.</div>
+      </div>
+    </div>`},
+
+  // 58
+  {ch:'c14',title:'Substitution',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">58 / 90</span></div>
+    <h1>Substitution</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Replace letters with their numerical values.</p>
+        <div class="formula">If a = 3 and b = 4, then a + 2b = 3 + 8 = 11</div>
+      </div>
+    </div>`},
+
+  // 59
+  {ch:'c14',title:'Question: substitution',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">59 / 90</span></div>
+    <h1>Substitute and calculate</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">If p = 5, q = 2: find 3p + q²</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">3×5 + 2² = 15 + 4 = <b>19</b></div>
+      </div>
+    </div>`},
+
+  // 60
+  {ch:'c14',title:'Question: more substitution',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">60 / 90</span></div>
+    <h1>Substitute into formula</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A = ½ × b × h. Find A when b = 8, h = 5.</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">A = ½ × 8 × 5 = 4 × 5 = <b>20</b></div>
+      </div>
+    </div>`},
+
+  // 61
+  {ch:'c14',title:'Writing formulae',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">61 / 90</span></div>
+    <h1>Writing formulae</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Translate words into symbols.</p>
+        <div class="formula">"Add 5 to a number, then double it" → 2(x + 5)</div>
+        <div class="tip">Brackets matter! 2x + 5 is different from 2(x + 5).</div>
+      </div>
+    </div>`},
+
+  // 62
+  {ch:'c14',title:'Question: write a formula',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">62 / 90</span></div>
+    <h1>Write a formula</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">For 4x − 7, find the value when x = 3.</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Substitute x = 3: 4 × 3 − 7 = <b>5</b>.</div>
+      </div>
+    </div>`},
+
+  // 63
+  {ch:'c14',title:'Solving equations',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">63 / 90</span></div>
+    <h1>Solving simple equations</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Do the same to both sides to isolate the variable.</p>
+        <div class="formula">x + 7 = 12 → x = 12 − 7 → x = 5</div>
+      </div>
+    </div>`},
+
+  // 64
+  {ch:'c14',title:'Question: solve equation',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">64 / 90</span></div>
+    <h1>Solve 3x = 18</h1>
+    <div class="content">
+      <div class="text">
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Divide both sides by 3 → x = <b>6</b></div>
+      </div>
+    </div>`},
+
+  // 65
+  {ch:'c14',title:'Question: two-step equation',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">65 / 90</span></div>
+    <h1>Solve 2x + 5 = 13</h1>
+    <div class="content">
+      <div class="text">
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">2x = 13 − 5 = 8 → x = 8 ÷ 2 = <b>4</b></div>
+      </div>
+    </div>`},
+
+  // 66
+  {ch:'c14',title:'Real-life formulae',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">66 / 90</span></div>
+    <h1>Real-life formulae</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Formulae model the real world.</p>
+        <div class="grid2">
+          <div class="card"><h3>Cost</h3><p>C = 5n + 2 (n items, fixed fee 2)</p></div>
+          <div class="card"><h3>Distance</h3><p>d = s × t (speed × time)</p></div>
+        </div>
+      </div>
+      <div class="visual assetVisual"><img data-src="Math_Stage7_Ch12_14_Slide_Assets/Math_Stage7_Ch12_14_Slide_Assets/Chapter14/14_2_formula_real_life_objects.png" alt="Real-life objects used to introduce formulae" loading="lazy" decoding="async"></div>
+    </div>`},
+
+  // 67
+  {ch:'c14',title:'Question: real-life formula',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">67 / 90</span></div>
+    <h1>Use C = 5n + 2</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Find C when n = 6</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">C = 5×6 + 2 = 30 + 2 = <b>32</b></div>
+      </div>
+    </div>`},
+
+  // 68
+  {ch:'c14',title:'Patterns and sequences',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">68 / 90</span></div>
+    <h1>Patterns and sequences</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Number sequences follow a rule.</p>
+        <div class="formula">3, 6, 9, 12, ... → rule: +3</div>
+        <div class="tip">The nth term helps find any term in the sequence.</div>
+      </div>
+    </div>`},
+
+  // 69
+  {ch:'c14',title:'Question: next term',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">69 / 90</span></div>
+    <h1>Find the next term</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">2, 5, 8, 11, ...</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">+3 each time → next term = <b>14</b></div>
+      </div>
+    </div>`},
+
+  // 70
+  {ch:'c14',title:'nth term',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">70 / 90</span></div>
+    <h1>The nth term</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A formula to find any term.</p>
+        <div class="formula">Sequence: 4, 7, 10, 13, ... → nth term = 3n + 1</div>
+        <div class="tip">Test: 10th term = 3×10 + 1 = 31.</div>
+      </div>
+    </div>`},
+
+  // 71
+  {ch:'c14',title:'Question: nth term',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">71 / 90</span></div>
+    <h1>Find the 20th term</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">nth term = 5n − 2</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">5×20 − 2 = 100 − 2 = <b>98</b></div>
+      </div>
+    </div>`},
+
+  // 72
+  {ch:'c14',title:'Coordinates',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">72 / 90</span></div>
+    <h1>Coordinates</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">(x, y) — across first, then up.</p>
+        <div class="formula">(3, 4) → 3 across, 4 up</div>
+      </div>
+    </div>`},
+
+  // 73
+  {ch:'c14',title:'Question: coordinates',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">73 / 90</span></div>
+    <h1>Plot the point</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">What is the x-coordinate of (-2, 5)?</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">The x-coordinate is <b>−2</b>; the point is 2 left and 5 up.</div>
+      </div>
+    </div>`},
+
+  // 74
+  {ch:'c14',title:'Linear graphs',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">74 / 90</span></div>
+    <h1>Linear graphs</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">y = mx + c — straight line graph.</p>
+        <div class="formula">y = 2x + 1</div>
+        <div class="tip">m = gradient (steepness), c = y-intercept.</div>
+      </div>
+    </div>`},
+
+  // 75
+  {ch:'c14',title:'Question: linear graph',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">75 / 90</span></div>
+    <h1>Find y for x = 3</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">y = 2x + 1</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">y = 2×3 + 1 = <b>7</b></div>
+      </div>
+    </div>`},
+
+  // 76
+  {ch:'c14',title:'Real-life graphs',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">76 / 90</span></div>
+    <h1>Real-life graphs</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Graphs tell stories — distance, temperature, cost.</p>
+        <div class="tip">A horizontal section means the value is constant.</div>
+      </div>
+    </div>`},
+
+  // 77
+  {ch:'c14',title:'Common mistakes — functions',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">77 / 90</span></div>
+    <h1>Common mistakes</h1>
+    <div class="content">
+      <div class="text">
+        <div class="mistakes">
+          <p>Forgetting brackets in 2(x + 5).</p>
+          <p>Mixing up input and output direction.</p>
+          <p>Not reversing operations for inverse functions.</p>
+          <p>Forgetting BODMAS during substitution.</p>
+        </div>
+      </div>
+    </div>`},
+
+  // 78
+  {ch:'c14',title:'Chapter 14 summary',html:`
+    <div class="orb orb1"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">78 / 90</span></div>
+    <h1>Chapter 14 summary</h1>
+    <div class="content">
+      <div class="text">
+        <ul class="steps">
+          <li>A function maps inputs to outputs.</li>
+          <li>Function machines show operations in sequence.</li>
+          <li>Substitution puts numbers into formulae.</li>
+          <li>Solve equations by doing the same to both sides.</li>
+          <li>The nth term gives any term in a sequence.</li>
+        </ul>
+      </div>
+    </div>`},
+
+  // 79
+  {ch:'intro',title:'Mixed: averages',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">79 / 90</span></div>
+    <h1>Mixed practice — Averages</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Find the mean of 7, 2, 9, 2, 5, 2.</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">Add the values and divide by 6: 27 ÷ 6 = <b>4.5</b>.</div>
+      </div>
+    </div>`},
+
+  // 80
+  {ch:'intro',title:'Mixed: calculations',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">80 / 90</span></div>
+    <h1>Mixed practice — Calculations</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Calculate 5/8 + 1/4. Give your answer as a decimal.</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">5/8 + 2/8 = 7/8 = <b>0.875</b>.</div>
+      </div>
+    </div>`},
+
+  // 81
+  {ch:'intro',title:'Mixed: functions',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">81 / 90</span></div>
+    <h1>Mixed practice — Functions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">y = 4x − 3, find y when x = 2.5</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">y = 4×2.5 − 3 = 10 − 3 = <b>7</b></div>
+      </div>
+    </div>`},
+
+  // 82
+  {ch:'intro',title:'Mixed: fractions',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">82 / 90</span></div>
+    <h1>Mixed practice — Fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">5/6 ÷ 1/3</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">5/6 × 3/1 = 15/6 = <b>2 1/2</b></div>
+      </div>
+    </div>`},
+
+  // 83
+  {ch:'intro',title:'Mixed: BODMAS',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">83 / 90</span></div>
+    <h1>Mixed practice — BODMAS</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">(6 + 4) × 2 − 3²</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">10 × 2 − 9 = 20 − 9 = <b>11</b></div>
+      </div>
+    </div>`},
+
+  // 84
+  {ch:'intro',title:'Mixed: percentages',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">84 / 90</span></div>
+    <h1>Mixed practice — Percentages</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">15% of 240</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">10% = 24, 5% = 12 → 15% = <b>36</b></div>
+      </div>
+    </div>`},
+
+  // 85
+  {ch:'intro',title:'Mixed: substitution',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">85 / 90</span></div>
+    <h1>Mixed practice — Substitution</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">P = 2l + 2w. Find P when l = 7, w = 4.</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">P = 2×7 + 2×4 = 14 + 8 = <b>22</b></div>
+      </div>
+    </div>`},
+
+  // 86
+  {ch:'intro',title:'Mixed: sequences',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">86 / 90</span></div>
+    <h1>Mixed practice — Sequences</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">nth term = 4n − 1. Find the 15th term.</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">4×15 − 1 = 60 − 1 = <b>59</b></div>
+      </div>
+    </div>`},
+
+  // 87
+  {ch:'intro',title:'Mixed: decimals',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">87 / 90</span></div>
+    <h1>Mixed practice — Decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">3.6 × 0.2</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer">36 × 2 = 72, two decimal places → <b>0.72</b></div>
+      </div>
+    </div>`},
+
+  // 88
+  {ch:'intro',title:'Key vocabulary',html:`
+    <div class="orb orb1"></div><div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Vocabulary</span><span class="num">88 / 90</span></div>
+    <h1>Key vocabulary</h1>
+    <div class="content">
+      <div class="text">
+        <div class="grid3">
+          <div class="card"><h3>Ch. 12</h3><p>Mean · Median · Mode · Range · Frequency</p></div>
+          <div class="card"><h3>Ch. 13</h3><p>BODMAS · Decimal · Fraction · Percentage · Equivalent</p></div>
+          <div class="card"><h3>Ch. 14</h3><p>Function · Mapping · Formula · Substitution · Variable</p></div>
+        </div>
+      </div>
+    </div>`},
+
+  // 89
+  {ch:'intro',title:'Tips for success',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Tips</span><span class="num">89 / 90</span></div>
+    <h1>Tips for success</h1>
+    <div class="content">
+      <div class="text">
+        <ul class="steps">
+          <li>Always show your working — method earns marks.</li>
+          <li>Check your answer makes sense.</li>
+          <li>Use estimation to spot errors.</li>
+          <li>Practise mental maths daily.</li>
+          <li>Learn key vocabulary and formulae.</li>
+        </ul>
+      </div>
+    </div>`},
+
+  // 90
+  {ch:'intro',title:'Well done!',html:`
+    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Mali · Stage 7 Maths</span><span class="num">90 / 90</span></div>
+    <h1>Well done!</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">You completed Chapters 12–14.</p>
+        <p>Keep practising, keep questioning, keep exploring.</p>
+        <div class="pillrow"><span>Mean · Median · Mode</span><span>BODMAS · Fractions</span><span>Functions · Formulae</span></div>
+      </div>
+      <div class="visual"><img data-src="${IMG}" alt="logo" loading="lazy" decoding="async"></div>
+    </div>`},
+];
+
+
+const practiceBank = [
+  // Chapter 12: averages, range and frequency
+  {ch:'c12',topic:'Data practice',title:'Practice: mean',prompt:'Find the mean of 8, 12, 14 and 18.',answer:'(8 + 12 + 14 + 18) ? 4 = <b>13</b>'},
+  {ch:'c12',topic:'Data practice',title:'Practice: median',prompt:'Find the median of 15, 4, 9, 12 and 7.',answer:'Order them: 4, 7, 9, 12, 15. The median is <b>9</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: mode',prompt:'Find the mode of 3, 6, 6, 8, 6, 10 and 3.',answer:'The most frequent value is <b>6</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: range',prompt:'Find the range of 17, 9, 22, 13 and 15.',answer:'22 ? 9 = <b>13</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: mean from a list',prompt:'The temperatures are 21?C, 24?C, 23?C, 20?C and 22?C. Find the mean.',answer:'110 ? 5 = <b>22?C</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: even median',prompt:'Find the median of 2, 14, 8 and 10.',answer:'The middle values are 8 and 10, so the median is (8 + 10) ? 2 = <b>9</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: frequency',prompt:'In 2, 4, 4, 5, 4, 6, 2, how often does 4 appear?',answer:'It appears <b>3</b> times.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: frequency table',prompt:'A value of 1 occurs twice, 2 occurs four times and 3 occurs twice. How many data values are there?',answer:'2 + 4 + 2 = <b>8</b> data values.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: mean from frequency',prompt:'Values 1, 2 and 3 have frequencies 2, 4 and 2. Find the mean.',answer:'(1?2 + 2?4 + 3?2) ? 8 = 16 ? 8 = <b>2</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: missing value',prompt:'The mean of 6, 8 and x is 9. Find x.',answer:'The total must be 9?3 = 27. So x = 27 ? 6 ? 8 = <b>13</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: compare ranges',prompt:'Set A is 4, 7, 9, 11. Set B is 2, 7, 9, 14. What is the range of Set B?',answer:'14 ? 2 = <b>12</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: choose an average',prompt:'Find the mode of the shoe sizes 5, 6, 6, 7, 8, 6, 9.',answer:'The most common shoe size is <b>6</b>.'},
+
+  // Chapter 13: calculations, fractions, decimals and percentages
+  {ch:'c13',topic:'Calculation practice',title:'Practice: order of operations',prompt:'Work out 18 ? 3 + 2 ? 5.',answer:'Do division and multiplication first: 6 + 10 = <b>16</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: brackets',prompt:'Work out (14 ? 6) ? 3.',answer:'8 ? 3 = <b>24</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: add decimals',prompt:'Work out 4.75 + 2.8.',answer:'4.75 + 2.80 = <b>7.55</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: subtract decimals',prompt:'Work out 8.2 ? 3.65.',answer:'8.20 ? 3.65 = <b>4.55</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: multiply decimals',prompt:'Work out 0.6 ? 0.7.',answer:'6 ? 7 = 42, with two decimal places: <b>0.42</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: divide decimals',prompt:'Work out 8.4 ? 0.7.',answer:'84 ? 7 = <b>12</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: add fractions',prompt:'Work out 3/4 + 1/8. Give your answer as a decimal.',answer:'6/8 + 1/8 = 7/8 = <b>0.875</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: subtract fractions',prompt:'Work out 5/6 − 1/3. Give your answer as a decimal.',answer:'5/6 − 2/6 = 1/2 = <b>0.5</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: fraction of an amount',prompt:'Find 2/5 of 70.',answer:'70 ? 5 ? 2 = <b>28</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: percentage',prompt:'Find 15% of 360.',answer:'10% is 36 and 5% is 18, so 15% is <b>54</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: fraction to decimal',prompt:'Write 3/8 as a decimal.',answer:'3 ? 8 = <b>0.375</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: rounding',prompt:'Round 8.746 to 1 decimal place.',answer:'The hundredths digit is 4, so the answer is <b>8.7</b>.'},
+
+  // Chapter 14: functions, formulae, equations and sequences
+  {ch:'c14',topic:'Algebra practice',title:'Practice: substitute',prompt:'Find y when y = 3x + 2 and x = 5.',answer:'3?5 + 2 = <b>17</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: area formula',prompt:'A = l ? w. Find A when l = 8 cm and w = 6 cm.',answer:'8 ? 6 = <b>48 cm?</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: formula',prompt:'Find 4n + 3 when n = 7.',answer:'4?7 + 3 = <b>31</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: solve an equation',prompt:'Solve x + 12 = 25.',answer:'x = 25 ? 12 = <b>13</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: multiplication equation',prompt:'Solve 5x = 45.',answer:'x = 45 ? 5 = <b>9</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: two-step equation',prompt:'Solve 3x + 4 = 25.',answer:'3x = 21, so x = <b>7</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: nth term',prompt:'The nth term is 4n ? 1. Find the 9th term.',answer:'4?9 ? 1 = <b>35</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: sequence',prompt:'Find the next term: 4, 9, 14, 19, ?',answer:'The rule is +5, so the next term is <b>24</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: function machine',prompt:'A machine multiplies the input by 2, then adds 5. Find the output for input 9.',answer:'2?9 + 5 = <b>23</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: inverse operations',prompt:'A machine adds 7 to an input and gives an output of 19. What was the input?',answer:'19 ? 7 = <b>12</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: linear graph',prompt:'Find y when y = 2x ? 3 and x = 8.',answer:'2?8 ? 3 = <b>13</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: coordinates',prompt:'What is the x-coordinate of the point (?3, 7)?',answer:'The x-coordinate is <b>?3</b>.'},
+];
+
+const practiceExpectedAnswers = [
+  13,9,6,13,22,9,3,8,2,13,12,6,
+  16,24,7.55,4.55,0.42,12,0.875,0.5,28,54,0.375,8.7,
+  17,48,31,13,9,7,35,24,23,12,13,-3
+];
+if (practiceBank.length !== practiceExpectedAnswers.length) throw new Error('Practice answer list does not match the question list.');
+practiceBank.forEach((question, index) => { question.expected = practiceExpectedAnswers[index]; });
+
+const extraPracticeSlides = practiceBank.map((q, index) => ({
+  ch:q.ch,
+  title:q.title,
+  q:true,
+  expected:q.expected,
+  html:`
+    <div class="orb orb${index % 3 + 1}"></div>
+    <div class="topbar"><span class="kicker ${q.ch}">${q.topic}</span><span class="num"></span></div>
+    <h1>${q.title}</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">${q.prompt}</p>
+        <p class="keyHint" aria-keyshortcuts="1 Numpad1">Press <kbd>1</kbd> or <kbd>Numpad 1</kbd> to reveal the answer.</p>
+        <div class="answer" aria-hidden="true">${q.answer}</div>
+      </div>
+    </div>`
+}));
+slidesData.splice(slidesData.length - 1, 0, ...extraPracticeSlides);
+
+const stage = document.getElementById('stage');
+const progress = document.getElementById('progress');
+const questionAnswers = {
+  'Question: mean':8, 'Question: median':9, 'Question: mode and range':5,
+  'Question: mean from table':1.89, 'Question: BODMAS':11,
+  'Question: decimal multiplication':0.03, 'Question: divide decimals':18,
+  'Question: add fractions':11/15, 'Question: multiply fractions':1/6,
+  'Question: divide fractions':1.25, 'Question: fraction of amount':18,
+  'Question: convert fractions':0.625, 'Question: percentage':90,
+  'Question: rounding':7.86, 'Question: estimation':150,
+  'Question: function machine':3, 'Question: inverse machine':2.5,
+  'Question: mapping':11, 'Question: substitution':19,
+  'Question: more substitution':20, 'Question: write a formula':5,
+  'Question: solve equation':6, 'Question: two-step equation':4,
+  'Question: real-life formula':32, 'Question: next term':14,
+  'Question: nth term':98, 'Question: coordinates':-2,
+  'Question: linear graph':7, 'Mixed: averages':4.5,
+  'Mixed: calculations':0.875, 'Mixed: functions':7,
+  'Mixed: fractions':2.5, 'Mixed: BODMAS':11,
+  'Mixed: percentages':36, 'Mixed: substitution':22,
+  'Mixed: sequences':59, 'Mixed: decimals':0.72
+};
+
+function createAnswerPad(slideIndex) {
+  const pad = document.createElement('div');
+  pad.className = 'answerPad';
+  pad.setAttribute('role', 'group');
+  pad.setAttribute('aria-label', 'Numeric answer keypad');
+  const inputId = `answer-input-${slideIndex}`;
+  const label = document.createElement('label');
+  label.htmlFor = inputId;
+  label.textContent = 'TYPE YOUR ANSWER';
+  const input = document.createElement('input');
+  input.id = inputId;
+  input.className = 'answerInput';
+  input.type = 'text';
+  input.inputMode = 'none';
+  input.autocomplete = 'off';
+  input.spellcheck = false;
+  input.placeholder = 'Answer';
+  input.setAttribute('aria-label', 'Type your answer');
+  const keys = document.createElement('div');
+  keys.className = 'keypadGrid';
+  ['1','2','3','4','5','6','7','8','9','-','0','.'].forEach(key => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.key = key;
+    button.textContent = key === '-' ? '−' : key;
+    button.setAttribute('aria-label', key === '-' ? 'Minus' : key === '.' ? 'Decimal point' : key);
+    keys.appendChild(button);
+  });
+  const clear = document.createElement('button');
+  clear.type = 'button';
+  clear.className = 'keypadDelete';
+  clear.dataset.action = 'delete';
+  clear.textContent = 'Delete';
+  const check = document.createElement('button');
+  check.type = 'button';
+  check.className = 'keypadCheck';
+  check.dataset.action = 'check';
+  check.textContent = 'Check answer';
+  const feedback = document.createElement('div');
+  feedback.className = 'answerFeedback';
+  feedback.setAttribute('aria-live', 'polite');
+  pad.append(label, input, keys, clear, check, feedback);
+  return pad;
+}
+
+const slideFragment = document.createDocumentFragment();
+const slides = [stage.querySelector('.slide')];
+slidesData.forEach((s, i) => {
+  const sec = document.createElement('section');
+  let cls = 'slide';
+  if (s.section) cls += ' section ' + s.ch;
+  if (s.q) cls += ' question';
+  sec.className = cls;
+  sec.dataset.chapter = s.ch;
+  sec.dataset.title = s.title;
+  sec.innerHTML = s.html;
+  if (s.q) {
+    const expected = s.expected ?? questionAnswers[s.title];
+    if (!Number.isFinite(Number(expected))) throw new Error(`Missing numeric answer for ${s.title}`);
+    sec.dataset.answer = String(expected);
+    sec.querySelectorAll('.keyHint').forEach(hint => hint.remove());
+    const answer = sec.querySelector('.answer');
+    if (answer) {
+      answer.setAttribute('aria-hidden', 'true');
+      answer.parentNode.insertBefore(createAnswerPad(i + 1), answer);
+    }
+  }
+  slides.push(sec);
+  slideFragment.appendChild(sec);
+});
+stage.appendChild(slideFragment);
+let current = 0;
+let activeSlide = -1;
+const total = slides.length;
+slides.forEach((slide, index) => {
+  const number = slide.querySelector('.num');
+  if (number) number.textContent = `${index + 1} / ${total}`;
+});
+const slideCountLabel = slides[0].querySelector('.pillrow span:nth-child(2)');
+if (slideCountLabel) slideCountLabel.textContent = `${total} slides`;
+
+function decodeImageOnce(img, src) {
+  let pending = imageDecodeCache.get(src);
+  if (!pending) {
+    pending = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+    imageDecodeCache.set(src, pending);
+  }
+  return pending;
+}
+
+function preloadNearbyImages(index) {
+  [index, (index + 1) % total, (index - 1 + total) % total].forEach(slideIndex => {
+    slides[slideIndex].querySelectorAll('img[data-src]').forEach(img => {
+      const src = img.dataset.src;
+      img.loading = 'eager';
+      img.src = src;
+      delete img.dataset.src;
+      decodeImageOnce(img, src);
+    });
+  });
+}
+
+function show(i) {
+  if (activeSlide !== i) {
+    if (activeSlide >= 0) slides[activeSlide].classList.remove('active');
+    slides[i].classList.add('active');
+    activeSlide = i;
+  }
+  preloadNearbyImages(i);
+  progress.style.width = ((i+1) / total * 100) + '%';
+  progress.setAttribute('aria-valuemax', total);
+  progress.setAttribute('aria-valuenow', i + 1);
+}
+
+let navigationLocked = false;
+function nav(dir) {
+  if (navigationLocked) return;
+  navigationLocked = true;
+  current = (current + dir + total) % total;
+  show(current);
+  window.setTimeout(() => { navigationLocked = false; }, 120);
+}
+
+function toggleOverview() {
+  let ov = document.querySelector('.overview');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.className = 'overview';
+    const thumbFragment = document.createDocumentFragment();
+    slides.forEach((s, i) => {
+      const ch = s.dataset.chapter;
+      const t = s.dataset.title;
+      const div = document.createElement('div');
+      div.className = 'thumb ' + ch;
+      div.innerHTML = `<b>${i+1}</b><span>${t}</span>`;
+      div.onclick = () => { current = i; show(i); ov.classList.remove('show'); };
+      thumbFragment.appendChild(div);
+    });
+    ov.appendChild(thumbFragment);
+    document.body.appendChild(ov);
+    if ('IntersectionObserver' in window) {
+      const thumbObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const thumb = entry.target;
+            thumb.classList.add('is-visible');
+            thumb.addEventListener('animationend', () => thumb.classList.remove('is-visible'), {once:true});
+            thumbObserver.unobserve(thumb);
+          }
+        });
+      }, {root:ov, rootMargin:'80px'});
+      ov.querySelectorAll('.thumb').forEach(thumb => thumbObserver.observe(thumb));
+    } else {
+      ov.querySelectorAll('.thumb').forEach(thumb => thumb.classList.add('is-visible'));
+    }
+  }
+  ov.classList.toggle('show');
+}
+
+document.addEventListener('animationstart', event => {
+  if (event.animationName === 'slideEnter' && event.target.classList.contains('active')) {
+    event.target.style.willChange = 'transform, opacity, filter';
+  }
+}, true);
+function releaseSlideLayer(event) {
+  if (event.animationName === 'slideEnter') event.target.style.willChange = '';
+}
+document.addEventListener('animationend', releaseSlideLayer, true);
+document.addEventListener('animationcancel', releaseSlideLayer, true);
+
+function sanitizeAnswerInput(input) {
+  let value = input.value.replace(/[^0-9.\-]/g, '');
+  const negative = value.startsWith('-');
+  value = value.replace(/-/g, '');
+  const decimal = value.indexOf('.');
+  if (decimal !== -1) value = value.slice(0, decimal + 1) + value.slice(decimal + 1).replace(/\./g, '');
+  input.value = (negative ? '-' : '') + value;
+}
+
+function addAnswerCharacter(slide, character) {
+  const input = slide.querySelector('.answerInput');
+  if (!input) return;
+  if (character === '-') {
+    if (!input.value) input.value = '-';
+  } else if (character === '.') {
+    if (!input.value.includes('.')) input.value += input.value === '' || input.value === '-' ? '0.' : '.';
+  } else if (/^\d$/.test(character)) {
+    input.value = input.value === '0' ? character : input.value + character;
+  }
+  input.dispatchEvent(new Event('input', {bubbles:true}));
+  input.focus({preventScroll:true});
+}
+
+function checkAnswer(slide) {
+  const input = slide.querySelector('.answerInput');
+  const feedback = slide.querySelector('.answerFeedback');
+  const answer = slide.querySelector('.answer');
+  const value = Number(input?.value);
+  const expected = Number(slide.dataset.answer);
+  if (!input?.value || !Number.isFinite(value)) {
+    feedback.textContent = 'Enter a number first.';
+    feedback.className = 'answerFeedback incorrect';
+    return;
+  }
+  const tolerance = Math.max(0.001, Math.abs(expected) * 0.0001);
+  if (Math.abs(value - expected) <= tolerance) {
+    feedback.textContent = 'Correct!';
+    feedback.className = 'answerFeedback correct';
+    if (answer) {
+      answer.classList.add('show');
+      answer.setAttribute('aria-hidden', 'false');
+    }
+  } else {
+    feedback.textContent = 'Not quite — try again.';
+    feedback.className = 'answerFeedback incorrect';
+  }
+}
+
+stage.addEventListener('input', e => {
+  if (e.target.matches('.answerInput')) sanitizeAnswerInput(e.target);
+});
+
+stage.addEventListener('click', e => {
+  const button = e.target.closest('.answerPad button');
+  if (!button) return;
+  const slide = button.closest('.slide.question');
+  if (!slide) return;
+  if (button.dataset.key) addAnswerCharacter(slide, button.dataset.key);
+  else if (button.dataset.action === 'delete') {
+    const input = slide.querySelector('.answerInput');
+    input.value = '';
+    const feedback = slide.querySelector('.answerFeedback');
+    feedback.textContent = '';
+    feedback.className = 'answerFeedback';
+    input.focus({preventScroll:true});
+  } else if (button.dataset.action === 'check') checkAnswer(slide);
+});
+
+document.addEventListener('keydown', e => {
+  const target = e.target;
+  const isTyping = target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(target.tagName));
+  const question = activeSlide >= 0 && slides[activeSlide].classList.contains('question') ? slides[activeSlide] : null;
+  const answerFocused = target instanceof HTMLElement && target.matches('.answerInput');
+  const pageFocused = target === document.body || target === document.documentElement;
+  if (e.key === 'Enter' && question && (answerFocused || pageFocused)) { e.preventDefault(); checkAnswer(question); return; }
+  if (isTyping && e.key !== 'Escape') return;
+  if (question && !e.ctrlKey && !e.metaKey && !e.altKey && (/^\d$/.test(e.key) || e.key === '.' || e.key === '-')) {
+    e.preventDefault();
+    addAnswerCharacter(question, e.key);
+    return;
+  }
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nav(1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); nav(-1); }
+  else if (e.key.toLowerCase() === 'o') toggleOverview();
+  else if (e.key === 'Escape') {
+    const ov = document.querySelector('.overview');
+    if (ov) ov.classList.remove('show');
+  }
+});
+
+stage.addEventListener('click', e => {
+  if (e.target.closest('.answerPad') || e.target.closest('.overview') || e.target.closest('.answer') || e.target.closest('.answerBtn') || e.target.closest('.keyHint')) return;
+  if (e.clientX > window.innerWidth / 2) nav(1); else nav(-1);
+});
+
+
+document.addEventListener('visibilitychange', () => {
+  const paused = document.hidden ? 'paused' : 'running';
+  document.querySelectorAll('.particle,.aurora-blob').forEach(el => el.style.animationPlayState = paused);
+  document.documentElement.classList.toggle('tab-hidden', document.hidden);
+});
+
+show(0);
+</script>
+</body>
+</html>
