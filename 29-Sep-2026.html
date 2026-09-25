@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Cambridge Stage 7 Chapter 6 — Energy | 70-Slide Interactive Lesson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://media.giphy.com" crossorigin>
+<link rel="dns-prefetch" href="https://media.giphy.com">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050810;--ink:#eaf2ff;--muted:#8194b8;
+  --cyan:#00f0ff;--pink:#ff2d78;--amber:#ffb800;--lime:#a8ff3e;--violet:#b14eff;
+  --line:rgba(255,255,255,.08);
+  --c1:#ff6b6b;--c2:#feca57;--c4:#1dd1a1;--c5:#5f27cd;--paper:#fffdf7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Mali',sans-serif}
+body,body *{font-family:'Mali',sans-serif!important}
+
+#particles{position:fixed;inset:0;z-index:0;opacity:.7}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.4;z-index:0;pointer-events:none;transition:background 1.5s ease}
+.blob.b1{width:520px;height:520px;top:-120px;left:-100px;animation:fb1 22s ease-in-out infinite}
+.blob.b2{width:620px;height:620px;bottom:-200px;right:-160px;animation:fb2 26s ease-in-out infinite}
+.blob.b3{width:400px;height:400px;top:40%;left:50%;animation:fb3 18s ease-in-out infinite}
+@keyframes fb1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(80px,-50px) scale(1.15)}66%{transform:translate(-50px,70px) scale(.9)}}
+@keyframes fb2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-70px,60px) scale(1.1)}66%{transform:translate(50px,-50px) scale(.95)}}
+@keyframes fb3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-30%,-60%) scale(1.2)}}
+
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;padding:0 20px;z-index:50;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(5,8,16,.92),rgba(5,8,16,0));backdrop-filter:blur(10px)}
+.brand{display:flex;align-items:center;gap:8px;font-family:"Syne";font-weight:800;font-size:13px}
+.brand .pulse{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan),0 0 20px var(--cyan);animation:pd 1.6s infinite}
+@keyframes pd{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:.4}}
+.brand small{font-family:"JetBrains Mono";font-size:9px;color:var(--muted);letter-spacing:2px}
+.progress-wrap{display:flex;align-items:center;gap:8px;font-family:"JetBrains Mono";font-size:10px;color:var(--muted)}
+.progress-bar{width:100px;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.progress-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink),var(--amber));width:3%;transition:width .8s cubic-bezier(.7,0,.2,1)}
+.nav-btns{display:flex;gap:4px}
+.nav-btns button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--ink);cursor:pointer;display:grid;place-items:center;transition:.3s;font-size:14px;font-family:inherit}
+.nav-btns button:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px)}
+.nav-btns button:disabled{opacity:.25;cursor:not-allowed}
+
+/* Score box */
+#scoreBox{position:fixed;top:60px;left:12px;z-index:85;background:rgba(12,18,31,.94);border:1px solid rgba(0,240,255,.22);border-radius:14px;padding:.5rem .75rem;box-shadow:0 8px 24px rgba(0,0,0,.34);font-family:'Mali',cursive;font-size:.85rem;color:#c4d1eb;backdrop-filter:blur(8px)}
+#scoreBox b{color:var(--cyan);font-size:.9rem}
+#starsDisplay{font-size:.95rem;letter-spacing:1px;color:var(--amber)}
+
+/* Hangman */
+#hangman{position:fixed;top:68px;right:16px;z-index:75;width:440px;min-height:256px;background:transparent;border:0;border-radius:0;padding:24px 28px;color:#fff;font-weight:700;font-family:'Mali',cursive;box-shadow:none;display:flex;align-items:center;justify-content:center;gap:1.5rem}
+#hangman svg{width:224px;height:176px;flex:none}
+.gallows{stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round}
+.hang-part{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;opacity:.14;transition:opacity .25s}
+.hang-part.point{fill:#fff;stroke:none}
+.hang-part.show{opacity:1}
+.hang-info{font-size:2rem;min-width:150px;line-height:1.35}
+.hang-info b{display:block;color:#fff;font-size:2.4rem}
+
+/* Success popup */
+#successPop{position:fixed;inset:0;z-index:180;display:none;pointer-events:none;align-items:center;justify-content:center}
+#successPop.show{display:flex}
+.success-card{background:linear-gradient(145deg,rgba(13,20,35,.98),rgba(19,27,45,.98));border:1px solid rgba(0,240,255,.24);border-radius:24px;padding:1.3rem 1.6rem;box-shadow:0 24px 70px rgba(0,0,0,.48),0 0 34px rgba(0,240,255,.12);animation:sb 3s ease both;display:flex;align-items:center;gap:1.2rem;max-width:92vw}
+.success-card img{width:240px;height:240px;object-fit:contain;border:0;border-radius:18px}
+.success-card h3{font-size:1.7rem;color:var(--cyan);font-family:'Mali',cursive}
+.success-card p{color:#c4d1eb;font-size:1rem;font-family:'Mali',cursive}
+@keyframes sb{0%{transform:scale(.35) rotate(-8deg);opacity:0}10%{transform:scale(1.08) rotate(3deg);opacity:1}18%,82%{transform:scale(1);opacity:1}100%{transform:scale(.92);opacity:0}}
+
+/* Hangman modal */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(2,5,12,.78);display:none;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(7px)}
+.modal-overlay.show{display:flex}
+.modal{max-width:520px;width:100%;background:linear-gradient(145deg,#0d1423,#151d30);border:1px solid rgba(0,240,255,.26);border-radius:24px;padding:1.8rem;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.56),0 0 36px rgba(0,240,255,.1);font-family:'Mali',cursive;color:var(--ink)}
+.modal h2{color:var(--pink);font-size:1.7rem;margin-bottom:.55rem}
+.modal p{color:#c4d1eb;line-height:1.6}
+.modal-actions{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.8rem}
+.modal-btn{border:1px solid rgba(0,240,255,.46);border-radius:12px;padding:.7rem 1.2rem;background:rgba(0,240,255,.15);color:#eaf2ff;font-weight:700;cursor:pointer;font-family:'Mali',cursive}
+.modal-btn.alt{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#d7e3f7}
+.modal-btn:hover{opacity:.85}
+
+/* Confetti */
+.confetti{position:fixed;width:9px;height:9px;border-radius:2px;z-index:190;pointer-events:none;animation:cb .9s ease-out forwards}
+@keyframes cb{to{transform:translate(var(--tx),var(--ty)) rotate(360deg) scale(0);opacity:0}}
+.confetti-rain{position:fixed;top:-24px;z-index:191;pointer-events:none;border-radius:2px;animation:cr var(--dur) cubic-bezier(.18,.75,.32,1) forwards}
+@keyframes cr{0%{transform:translate3d(0,-10px,0) rotate(0deg);opacity:1}100%{transform:translate3d(var(--drift),105vh,0) rotate(var(--spin));opacity:.92}}
+
+/* Stage & slides */
+.stage{position:fixed;inset:56px 0 0 0;z-index:2;overflow:hidden}
+.deck{position:absolute;inset:0;display:flex;transition:transform .9s cubic-bezier(.76,0,.24,1)}
+.slide{position:relative;min-width:100%;height:100%;padding:20px 48px 30px;overflow:hidden;display:flex;flex-direction:column;animation:se .8s ease-out}
+@keyframes se{from{opacity:.5}to{opacity:1}}
+.snum{position:absolute;left:48px;bottom:12px;font-family:"JetBrains Mono";font-size:9px;color:var(--muted);letter-spacing:2px;z-index:5}
+.snum b{color:var(--ink);font-weight:500}
+.deco{position:absolute;right:36px;top:8px;font-family:"Syne";font-weight:800;font-size:clamp(120px,18vw,220px);line-height:1;color:rgba(255,255,255,.025);pointer-events:none;letter-spacing:-6px;z-index:0}
+
+.tagline{display:flex;align-items:center;gap:8px;font-family:"JetBrains Mono";font-size:9px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:4px}
+.tagline::before{content:"";width:20px;height:1px;background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+h1.disp{font-family:"Syne";font-weight:800;font-size:clamp(32px,4.5vw,64px);line-height:.95;letter-spacing:-1.5px;margin-bottom:8px}
+h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line-height:1;letter-spacing:-1px;margin-bottom:10px}
+.lead{font-size:16px;line-height:1.6;color:#c4d1eb;max-width:70ch;margin-bottom:12px}
+
+.stagger>*{opacity:0;transform:translateY(24px) scale(.98);animation:rv .8s cubic-bezier(.2,.8,.2,1) forwards}
+.stagger>*:nth-child(1){animation-delay:.05s}.stagger>*:nth-child(2){animation-delay:.15s}.stagger>*:nth-child(3){animation-delay:.25s}.stagger>*:nth-child(4){animation-delay:.35s}.stagger>*:nth-child(5){animation-delay:.45s}.stagger>*:nth-child(6){animation-delay:.55s}.stagger>*:nth-child(7){animation-delay:.65s}
+@keyframes rv{to{opacity:1;transform:translateY(0) scale(1)}}
+
+.card{border:1px solid var(--line);border-radius:14px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));position:relative;overflow:hidden;transition:.4s}
+.card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 12px 36px rgba(0,240,255,.15)}
+
+/* Cover */
+.cover{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;height:100%;gap:30px}
+.cover h1{font-family:"Syne";font-weight:800;font-size:clamp(52px,7vw,120px);line-height:.88;letter-spacing:-3px;background:linear-gradient(180deg,#fff,#b9c8ff 60%,#5f7bb5);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
+.cover h1 .energy{background:linear-gradient(90deg,var(--cyan),var(--pink) 50%,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:gs4 4s linear infinite;display:inline-block;filter:drop-shadow(0 0 30px rgba(0,240,255,.5))}
+@keyframes gs4{to{background-position:200% 0}}
+.cover .sub{font-size:16px;color:#a3b3d6;max-width:48ch;line-height:1.6}
+.cover .meta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.cover .meta div{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}
+.cover .meta div span{display:block;font-family:"JetBrains Mono";font-size:8px;color:var(--muted);letter-spacing:2px}
+.cover .meta div b{font-family:"Syne";font-size:12px;font-weight:700}
+
+.orb-wrap{position:relative;width:100%;max-width:380px;aspect-ratio:1;margin:auto}
+.orb-ring{position:absolute;inset:0;border-radius:50%;border:1px solid var(--line)}
+.orb-ring.r1{animation:sp 20s linear infinite}
+.orb-ring.r2{inset:8%;border:1px dashed rgba(0,240,255,.25);animation:sp 14s linear infinite reverse}
+.orb-ring.r3{inset:18%;border-color:rgba(255,45,120,.25);animation:sp 26s linear infinite}
+.orb-ring.r4{inset:28%;border-color:rgba(255,184,0,.2);animation:sp 18s linear infinite reverse}
+.orb-ring::before{content:"";position:absolute;width:9px;height:9px;border-radius:50%;top:-4px;left:50%;transform:translateX(-50%)}
+.orb-ring.r1::before{background:var(--cyan);box-shadow:0 0 14px var(--cyan),0 0 28px var(--cyan)}
+.orb-ring.r2::before{background:var(--pink);box-shadow:0 0 14px var(--pink),0 0 28px var(--pink)}
+.orb-ring.r3::before{background:var(--amber);box-shadow:0 0 14px var(--amber),0 0 28px var(--amber)}
+.orb-ring.r4::before{background:var(--lime);box-shadow:0 0 14px var(--lime),0 0 28px var(--lime)}
+@keyframes sp{to{transform:rotate(360deg)}}
+.orb-core{position:absolute;inset:36%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--cyan) 35%,#006677 75%,#001);box-shadow:0 0 80px rgba(0,240,255,.7),0 0 140px rgba(0,240,255,.3),inset 0 0 30px rgba(0,0,0,.4);animation:br 3.5s ease-in-out infinite}
+@keyframes br{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.orb-pulse{position:absolute;inset:36%;border-radius:50%;border:2px solid var(--cyan);animation:op 3s ease-out infinite}
+@keyframes op{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.5);opacity:0}}
+
+/* Split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:24px;height:100%;align-items:center}
+
+/* Quiz zone */
+.quiz-zone{margin-top:12px;padding:14px 16px;background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.2);border-radius:14px}
+.quiz-zone .qz-label{font-family:"JetBrains Mono";font-size:12px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.quiz-zone .qz-question{font-family:"Syne";font-weight:700;font-size:19px;color:#fff;margin-bottom:10px;line-height:1.35}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.opt-btn{border:0;border-radius:10px;background:rgba(255,255,255,.06);color:#c4d1eb;font-weight:600;font-size:16px;padding:.7em .9em;cursor:pointer;transition:.2s;font-family:inherit;border:1px solid var(--line)}
+.opt-btn:hover{background:rgba(0,240,255,.1);border-color:var(--cyan);transform:translateY(-1px)}
+.opt-btn.right{background:rgba(168,255,62,.2);color:var(--lime);border-color:var(--lime)}
+.opt-btn.wrong{background:rgba(255,45,120,.2);color:var(--pink);border-color:var(--pink)}
+.opt-btn.disabled{pointer-events:none;opacity:.5}
+.quiz-feedback{min-height:1.4em;font-size:14px;font-weight:700;margin-top:8px;text-align:center}
+.number-entry{grid-column:1/-1;width:min(100%,420px);margin:0 auto}
+.number-readout{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.number-value{flex:1;min-width:0;height:58px;border:1px solid rgba(0,240,255,.45);border-radius:12px;background:rgba(0,0,0,.32);color:#fff;text-align:right;padding:8px 14px;font:700 28px 'Mali',sans-serif;outline:none}
+.number-value:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,240,255,.14)}
+.number-unit{font-size:20px;font-weight:700;color:var(--cyan);min-width:32px}
+.number-pad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.num-key,.number-submit{border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.07);color:var(--ink);font:700 20px 'Mali',sans-serif;min-height:50px;cursor:pointer;touch-action:manipulation}
+.num-key:hover,.number-submit:hover{background:rgba(0,240,255,.14);border-color:var(--cyan)}
+.number-submit{width:100%;margin-top:9px;background:rgba(0,240,255,.14);border-color:rgba(0,240,255,.4);font-size:17px}
+.number-entry.complete .num-key,.number-entry.complete .number-submit{opacity:.5;pointer-events:none}
+.extra-layout{width:min(1160px,100%);margin:auto;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.extra-layout h2.disp{font-size:clamp(30px,3.5vw,52px);margin-bottom:4px}
+.extra-layout .lead{max-width:78ch}
+.extra-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.extra-card{min-height:92px;padding:13px 15px;border:1px solid rgba(0,240,255,.2);border-left:4px solid var(--extra-accent,var(--cyan));border-radius:12px;background:linear-gradient(135deg,rgba(12,18,31,.86),rgba(255,255,255,.025));}
+.extra-card b{display:block;margin-bottom:4px;color:var(--extra-accent,var(--cyan));font-size:16px}
+.extra-card span{display:block;color:#dbe6f8;font-size:16px;line-height:1.45}
+.extra-figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px}
+.extra-figure{display:flex;flex-direction:column;width:min(100%,900px);height:min(34vh,320px);margin:10px auto 0;padding:8px;border:1px solid rgba(0,240,255,.18);border-radius:14px;background:#080d18;overflow:hidden}
+.extra-figures .extra-figure{width:100%;height:min(30vh,280px);margin:0}
+.extra-figure img{display:block;flex:1;min-height:0;width:100%;height:100%;object-fit:contain;filter:brightness(.82) contrast(1.04) saturate(.9)}
+.extra-figure figcaption{display:block;flex:none;padding-top:5px;color:var(--muted);font-size:11px;text-align:center;line-height:1.2}
+.extra-table-wrap{overflow-x:auto;margin-top:8px;border:1px solid rgba(0,240,255,.2);border-radius:12px}
+.extra-table{width:100%;border-collapse:collapse;min-width:520px;background:rgba(8,13,24,.8);color:#dbe6f8;font-size:15px}
+.extra-table th,.extra-table td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left}
+.extra-table th{color:var(--cyan);background:rgba(0,240,255,.06)}
+.extra-table tr:last-child td{border-bottom:0}
+.extra-layout .quiz-zone{margin-top:10px}
+
+/* Grids */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.g2c,.g3c,.g4c{padding:14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.02);text-align:center;transition:.35s}
+.g2c:hover,.g3c:hover,.g4c:hover{transform:translateY(-4px);border-color:var(--cyan)}
+.g2c .ic,.g3c .ic,.g4c .ic{font-size:24px;display:block;margin-bottom:4px}
+.g2c h4,.g3c h4,.g4c h4{font-family:"Syne";font-size:12px;font-weight:700}
+.g2c p,.g3c p,.g4c p{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* Formula */
+.formula-box{margin-top:10px;padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,rgba(5,8,16,.88),rgba(0,240,255,.08));border:1px solid rgba(0,240,255,.28)}
+.formula-box .lab{font-family:"JetBrains Mono";font-size:9px;color:var(--amber);letter-spacing:2px}
+.formula-box .eq{font-family:"Syne";font-weight:700;font-size:17px;margin-top:4px}
+.formula-box .eq span{color:var(--amber)}
+
+/* Seq */
+.seq{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.seq-item{padding:9px 13px;border-left:3px solid var(--cyan);background:rgba(0,240,255,.05);border-radius:0 8px 8px 0;font-size:15px;transition:.3s}
+.seq-item:hover{transform:translateX(4px)}
+.seq-item.b2{border-color:var(--pink);background:rgba(255,45,120,.05)}
+.seq-item.b3{border-color:var(--amber);background:rgba(255,184,0,.05)}
+.seq-item.b4{border-color:var(--lime);background:rgba(168,255,62,.05)}
+
+/* Image */
+.img-side{border-radius:16px;overflow:hidden;border:1px solid rgba(0,240,255,.2);height:78%;background:#050810;box-shadow:0 16px 50px rgba(0,0,0,.5);position:relative}
+.img-side img{width:100%;height:100%;object-fit:contain;filter:brightness(.76) contrast(1.08) saturate(.88);transition:filter .6s}
+.img-side:hover img{filter:brightness(.88) contrast(1.08) saturate(.96)}
+.img-side .lbl{position:absolute;left:10px;bottom:10px;padding:5px 9px;border-radius:6px;background:rgba(0,0,0,.6);font-family:"JetBrains Mono";font-size:8px;letter-spacing:2px;backdrop-filter:blur(4px)}
+.split-img{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;height:100%;align-items:center}
+.split-img.r{grid-template-columns:1fr 1.1fr}
+
+/* Final */
+.final{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center}
+.final h1{font-family:"Syne";font-weight:800;font-size:clamp(40px,5.5vw,84px);line-height:.95;letter-spacing:-2px;background:linear-gradient(90deg,var(--cyan),var(--pink) 50%,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:gs4 5s linear infinite;filter:drop-shadow(0 0 30px rgba(0,240,255,.3))}
+.final p{font-size:13px;color:#a3b3d6;max-width:60ch;margin-top:10px;line-height:1.55}
+.final .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;max-width:680px}
+.final .facts div{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02);text-align:left;font-size:11px;color:#c4d1eb}
+.final .facts div b{font-family:"JetBrains Mono";font-size:8px;letter-spacing:2px;color:var(--cyan);display:block;margin-bottom:3px}
+.restart-btn{margin-top:16px;padding:10px 22px;border:1px solid var(--cyan);background:rgba(0,240,255,.08);color:var(--cyan);font-family:"JetBrains Mono";font-size:10px;letter-spacing:2px;border-radius:30px;cursor:pointer;transition:.3s}
+.restart-btn:hover{background:rgba(0,240,255,.18);box-shadow:0 0 40px rgba(0,240,255,.4);transform:scale(1.05)}
+
+
+/* Compact bottom-right topic and reset controls */
+.float-tools{position:fixed;right:18px;bottom:18px;z-index:92;display:flex}
+.float-tools button{border:1px solid rgba(0,240,255,.24);border-radius:9px;padding:7px 12px;background:rgba(10,16,29,.88);color:var(--ink);font-size:12px;line-height:1;cursor:pointer;backdrop-filter:blur(10px);box-shadow:0 5px 18px rgba(0,0,0,.25);transition:background .2s,border-color .2s,transform .2s}
+.float-tools button:hover,.float-tools button[aria-expanded="true"]{border-color:var(--cyan);background:rgba(0,240,255,.12);transform:translateY(-2px)}
+.topic-menu{position:fixed;right:18px;bottom:60px;z-index:91;width:min(320px,calc(100vw - 24px));max-height:min(62vh,520px);overflow:auto;padding:8px;border:1px solid rgba(0,240,255,.2);border-radius:12px;background:rgba(8,13,25,.96);box-shadow:0 14px 40px rgba(0,0,0,.48);backdrop-filter:blur(14px)}
+.topic-menu[hidden]{display:none}
+.topic-menu button{width:100%;display:block;text-align:left;border:0;border-radius:7px;padding:8px 10px;background:transparent;color:var(--ink);font-size:12px;cursor:pointer}
+.topic-menu button:hover,.topic-menu button[aria-current="true"]{background:rgba(0,240,255,.11);color:var(--cyan)}
+.topic-menu button small{display:block;margin-bottom:2px;color:var(--muted);font-size:9px;letter-spacing:.7px}
+.topic-menu .topic-reset{margin-top:7px;border-top:1px solid var(--line);border-radius:0 0 7px 7px;padding-top:12px;color:#ff8bad}
+.topic-menu .topic-reset:hover{background:rgba(255,45,120,.12);color:#ff8bad}
+@media(max-width:600px){.float-tools{right:10px;bottom:10px}.topic-menu{right:10px;bottom:50px}.float-tools button{padding:8px 11px;font-size:12px}}
+
+.dots{position:fixed;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:4px;z-index:50}
+.dots button{width:6px;height:6px;border-radius:50%;border:none;cursor:pointer;background:rgba(255,255,255,.2);transition:.3s;padding:0}
+.dots button.active{background:var(--cyan);box-shadow:0 0 10px var(--cyan);transform:scale(1.6)}
+
+.hint{position:fixed;left:50%;bottom:6px;transform:translateX(-50%);font-family:"JetBrains Mono";font-size:8px;color:var(--muted);letter-spacing:2px;z-index:50}
+.hint kbd{padding:1px 4px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.05);color:#fff;font-size:8px}
+
+@media(max-width:1200px), (hover:none) and (pointer:coarse) and (max-width:1400px){
+  .slide{padding:210px 20px 34px;overflow-y:auto;overscroll-behavior:contain}.cover,.split,.split-img{grid-template-columns:1fr;gap:14px}
+  .g4{grid-template-columns:repeat(2,1fr)}.deco{display:none}
+  .success-card img{width:210px;height:210px}
+  #scoreBox{top:58px;left:8px;font-size:.7rem}
+  #hangman{top:62px;right:8px;left:auto;bottom:auto;width:min(300px,calc(100vw - 16px));min-height:176px;padding:14px 16px;gap:.75rem}
+  #hangman svg{width:150px;height:118px}
+  .hang-info{font-size:1.25rem;min-width:100px}
+  .hang-info b{font-size:1.6rem}
+  .slide h1.disp{font-size:clamp(38px,5vw,58px)}
+  .slide h2.disp{font-size:clamp(34px,4.5vw,50px);line-height:1.08}
+  .slide p{font-size:18px!important;line-height:1.55}
+  .slide .tagline{font-size:13px;letter-spacing:1.5px}
+  .slide .cover .meta div span{font-size:12px}
+  .slide .cover .meta div b{font-size:16px}
+  .slide .g2c h4,.slide .g3c h4,.slide .g4c h4{font-size:18px!important}
+  .slide .g2c p,.slide .g3c p,.slide .g4c p{font-size:16px!important}
+  .slide .g2c .ic,.slide .g3c .ic,.slide .g4c .ic{font-size:28px!important}
+  .slide .seq-item{font-size:17px;line-height:1.5;padding:11px 14px}
+  .slide .quiz-zone{padding:18px 20px}
+  .slide .quiz-zone .qz-label{font-size:13px;letter-spacing:1.5px}
+  .slide .quiz-zone .qz-question{font-size:22px}
+  .opt-btn{font-size:18px;min-height:50px}
+  .quiz-feedback{font-size:16px}
+  .quiz-opts{grid-template-columns:1fr}
+  .slide .img-side{height:auto;aspect-ratio:4/3;max-height:60vh}
+  .slide .img-side .lbl{font-size:12px;padding:7px 10px}
+  .slide table{font-size:16px!important}
+  .slide table th,.slide table td{font-size:16px!important;padding:10px 12px!important;line-height:1.4}
+  .slide .formula-box .lab{font-size:13px}
+  .slide .formula-box .eq{font-size:23px}
+  .slide .snum{font-size:11px;letter-spacing:1px}
+  .hint{font-size:10px;letter-spacing:1px}
+  .extra-layout{margin:0;gap:3px}
+  .extra-layout h2.disp{font-size:clamp(32px,4.5vw,48px)}
+  .extra-cards{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .extra-card{min-height:82px;padding:11px 13px}
+  .extra-card b,.extra-card span{font-size:17px}
+  .extra-figure{height:min(32vh,280px)}
+  .extra-figures .extra-figure{height:min(26vh,220px)}
+  .extra-table{font-size:15px!important}
+}
+@media(max-width:600px){
+  .success-card{flex-direction:column;gap:.65rem;text-align:center;padding:1rem;max-width:92vw}
+  .success-card img{width:min(220px,65vw);height:min(220px,65vw)}
+  .success-card h3{font-size:1.4rem}
+  .success-card p{font-size:.95rem}
+  #hangman{top:60px;right:6px;width:min(300px,calc(100vw - 12px));min-height:176px;padding:12px 14px;gap:.6rem;border-radius:24px}
+  #hangman svg{width:138px;height:112px}
+  .hang-info{font-size:1.15rem;min-width:96px}
+  .hang-info b{font-size:1.45rem}
+  .slide{padding:190px 12px 32px}
+  .slide h1.disp{font-size:clamp(34px,9vw,46px)}
+  .slide h2.disp{font-size:clamp(30px,8vw,42px)}
+  .slide p{font-size:16px!important}
+  .slide .seq-item{font-size:15px}
+  .slide .quiz-zone .qz-question{font-size:19px}
+  .opt-btn{font-size:16px;min-height:48px}
+  .slide table th,.slide table td{font-size:14px!important;padding:8px 9px!important}
+  .slide .img-side{aspect-ratio:1/1;max-height:52vh}
+  .extra-cards{grid-template-columns:1fr}
+  .extra-card{min-height:0}
+  .extra-figure{height:min(28vh,220px)}
+  .extra-figures{grid-template-columns:1fr}
+  .extra-figures .extra-figure{height:min(27vh,220px)}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+
+<!-- Gamification overlay -->
+<div id="scoreBox">
+  <div>วันนี้ / Today</div>
+  <div><span id="starsDisplay">★★★★★</span> <b id="starCount">5 / 5</b></div>
+  <div id="correctCount">0 correct</div>
+</div>
+
+<div id="hangman">
+  <svg viewBox="0 0 150 110">
+    <path class="gallows" d="M8 103H142M28 103V8H96M28 23L43 8M96 8V22"/>
+    <circle class="hang-part" id="hpart1" cx="96" cy="34" r="10"/>
+    <path class="hang-part" id="hpart2" d="M96 44V70"/>
+    <path class="hang-part" id="hpart3" d="M96 70L82 91"/>
+    <path class="hang-part" id="hpart4" d="M96 70L110 91"/>
+    <path class="hang-part" id="hpart5" d="M96 50L114 59"/>
+    <path class="hang-part" id="hpart6" d="M96 50L78 59"/>
+    <path class="hang-part" id="hpart7" d="M88 28L94 34M94 28L88 34"/>
+    <path class="hang-part" id="hpart8" d="M98 28L104 34M104 28L98 34"/>
+    <path class="hang-part" id="hpart9" d="M91 41 Q96 37 101 41"/>
+  </svg>
+  <div class="hang-info">Hangman<b><span id="wrongCount">0</span> / 9</b></div>
+</div>
+
+<div id="successPop">
+  <div class="success-card">
+    <img id="successGif" src="" alt="GIF">
+    <div><h3 id="successTitle">Correct! 🎉</h3><p id="successText">Nice work!</p></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="hangmanModal">
+  <div class="modal">
+    <div style="font-size:2.5rem">💀</div>
+    <h2>Hangman Complete!</h2>
+    <p>ครบ 9 ส่วนแล้ว — เสีย 1 ดาว แต่คำตอบที่ทำถูกยังอยู่ และยังเรียนต่อได้</p>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="G.restartHangman()">Restart Hangman</button>
+      <button class="modal-btn alt" onclick="G.closeHangmanModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating shapes -->
+<div style="position:fixed;top:15%;right:8%;width:60px;height:60px;opacity:.1;z-index:1;pointer-events:none;animation:sp 8s linear infinite">
+  <svg viewBox="0 0 100 100" style="width:100%;height:100%"><polygon points="50,5 95,80 5,80" fill="none" stroke="#00f0ff" stroke-width="2"/></svg>
+</div>
+
+<header class="topbar">
+  <div class="brand"><span class="pulse"></span>ENERGY <small>· QUIZ + GAMIFICATION</small></div>
+  <div class="progress-wrap">
+    <span id="curIdx">01</span>
+    <div class="progress-bar"><i id="barFill"></i></div>
+    <span id="totIdx">/ 18</span>
+  </div>
+  <div class="nav-btns"><button id="prev">‹</button><button id="next">›</button></div>
+</header>
+
+<nav class="dots" id="dots"></nav>
+<div class="hint">USE <kbd>←</kbd> <kbd>→</kbd> · CLICK · SWIPE</div>
+<div class="float-tools" aria-label="Deck controls">
+  <button id="topicToggle" type="button" aria-expanded="false" aria-controls="topicMenu">Topic</button>
+</div>
+<nav class="topic-menu" id="topicMenu" aria-label="Choose a topic" hidden></nav>
+
+
+<main class="stage">
+<div class="deck" id="deck">
+
+<!-- 1. COVER -->
+<section class="slide cover">
+  <div class="stagger">
+    <div class="tagline">CAMBRIDGE STAGE 7 · CHAPTER 6 · ENERGY</div>
+    <h1>ENERGY<span class="energy">.</span></h1>
+    <p class="sub">Learn energy concepts — then answer quiz questions to earn rewards. Get it right: confetti + meme GIF. Get it wrong: Hangman grows. Reach 9/9: lose a star. Restart and keep learning.</p>
+    <div class="meta">
+      <div><span>SLIDES</span><b>18</b></div>
+      <div><span>QUIZ Qs</span><b>8</b></div>
+      <div><span>GIFs</span><b>36</b></div>
+      <div><span>STARS</span><b>5/day</b></div>
+    </div>
+  </div>
+  <div class="orb-wrap">
+    <div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="orb-ring r3"></div><div class="orb-ring r4"></div>
+    <div class="orb-core"></div><div class="orb-pulse"></div>
+  </div>
+  <div class="snum"><b>01</b> / 18</div>
+</section>
+
+<!-- 2. JOULES + QUIZ -->
+<section class="slide">
+  <span class="deco">01</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="tagline">8.3 · ENERGY MEASUREMENT</div>
+    <h2 class="disp">Energy is measured<br>in <span style="color:var(--cyan)">Joules.</span></h2>
+    <p class="lead">The SI unit of energy. One joule = work done when 1 N moves an object 1 m. Daily amounts use kilojoules (kJ).</p>
+    <div class="formula-box">
+      <div class="lab">CONVERSION</div>
+      <div class="eq">1 kJ = <span>1000</span> J</div>
+    </div>
+    <div class="quiz-zone" data-qid="q1">
+      <div class="qz-label">⚡ QUICK QUIZ</div>
+      <div class="qz-question">How many joules are in 3 kJ?</div>
+      <div class="quiz-opts"></div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="snum"><b>02</b> / 18 — JOULES + QUIZ</div>
+</section>
+
+<!-- 3. SANKEY + QUIZ -->
+<section class="slide">
+  <span class="deco">02</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="tagline">8.3 · SANKEY DIAGRAMS</div>
+    <h2 class="disp">Sankey shows<br>energy transfers.</h2>
+    <p class="lead">Input = Useful + Wasted. Width of arrows = amount of energy. Input enters left, useful continues right, wasted branches down.</p>
+    <div class="formula-box">
+      <div class="lab">RULE</div>
+      <div class="eq">Wasted = Input − <span>Useful</span></div>
+    </div>
+    <div class="quiz-zone" data-qid="q2">
+      <div class="qz-label">⚡ QUICK QUIZ</div>
+      <div class="qz-question">Input is 200 J, useful output is 150 J. How much is wasted?</div>
+      <div class="quiz-opts"></div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="snum"><b>03</b> / 18 — SANKEY + QUIZ</div>
+</section>
+
+<!-- 4. ENERGY STORES + QUIZ -->
+<section class="slide">
+  <span class="deco">03</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="tagline" style="color:var(--violet)">6.1 · ENERGY STORES</div>
+    <h2 class="disp">Five ways to<br>store energy.</h2>
+    <div class="g4" style="margin-top:8px">
+      <div class="g4c" style="border-color:rgba(255,184,0,.25)"><span class="ic">🔋</span><h4>Chemical</h4><p>Food, fuels, batteries</p></div>
+      <div class="g4c" style="border-color:rgba(0,240,255,.25)"><span class="ic">🏃</span><h4>Kinetic</h4><p>Moving objects</p></div>
+      <div class="g4c" style="border-color:rgba(255,45,120,.25)"><span class="ic">⛰️</span><h4>Grav. PE</h4><p>Raised objects</p></div>
+      <div class="g4c" style="border-color:rgba(168,255,62,.25)"><span class="ic">🌡️</span><h4>Thermal</h4><p>Particle motion</p></div>
+    </div>
+    <div class="quiz-zone" data-qid="q3" style="margin-top:10px">
+      <div class="qz-label">⚡ QUICK QUIZ</div>
+      <div class="qz-question">What type of energy is stored in food?</div>
+      <div class="quiz-opts"></div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="snum"><b>04</b> / 18 — ENERGY STORES + QUIZ</div>
+</section>
+
+<!-- 5. DOING WORK + QUIZ -->
+<section class="slide">
+  <span class="deco">04</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="tagline" style="color:var(--violet)">6.1 · DOING WORK</div>
+    <h2 class="disp">Work = Force ×<br>Distance.</h2>
+    <p class="lead">When a force causes an object to move, energy is transferred. Scientists call this "doing work".</p>
+    <div class="formula-box">
+      <div class="lab">FORMULA</div>
+      <div class="eq">W = F × <span>d</span></div>
+    </div>
+    <div class="quiz-zone" data-qid="q4" style="margin-top:8px">
+      <div class="qz-label">⚡ QUICK QUIZ</div>
+      <div class="qz-question">A force of 10 N moves an object 5 m. How much work is done?</div>
+      <div class="quiz-opts"></div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="snum"><b>05</b> / 18 — DOING WORK + QUIZ</div>
+</section>
+
+<!-- 6. HOT WATER TANK IMAGE -->
+<section class="slide">
+  <div class="split-img stagger">
+    <div class="img-side">
+      <img src="https://z-cdn-media.chatglm.cn/files/35674502-f1e5-4c3e-9309-5ac89e100517.png?auth_key=1890318539-3fc4466560d04dc1a5c1b98142ede229-0-e0ca770e1960e541b494b1658a6336b2" alt="Hot water tank">
+      <div class="lbl">CASE STUDY · HOT WATER TANK</div>
+    </div>
+    <div>
+      <div class="tagline" style="color:var(--violet)">6.1 · CASE STUDY</div>
+      <h2 class="disp">Hot water<br>tank.</h2>
+      <p style="font-size:12px;color:#c4d1eb;line-height:1.5">A heater transfers energy to water. Insulation wraps the tank to slow unwanted energy loss.</p>
+      <div class="seq">
+        <div class="seq-item"><b style="color:var(--cyan)">HEATER</b> — transfers energy to water</div>
+        <div class="seq-item b2"><b style="color:var(--pink)">PARTICLES</b> — move faster as water warms</div>
+        <div class="seq-item b3"><b style="color:var(--amber)">STORED</b> — thermal energy stored in water</div>
+        <div class="seq-item b4"><b style="color:var(--lime)">INSULATION</b> — reduces loss to surroundings</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum"><b>06</b> / 18 — HOT WATER TANK</div>
+</section>
+
+<!-- 7. FALLING BALL IMAGE + QUIZ -->
+<section class="slide">
+  <div class="split-img r stagger">
+    <div>
+      <div class="tagline" style="color:var(--violet)">6.1 · CASE STUDY</div>
+      <h2 class="disp">Falling ball<br>energy.</h2>
+      <p style="font-size:12px;color:#c4d1eb;line-height:1.5">A ball held high stores gravitational PE. As it falls, PE → kinetic. On impact, some dissipates as sound + thermal.</p>
+      <div class="seq">
+        <div class="seq-item b3"><b style="color:var(--amber)">HELD HIGH</b> — stores gravitational PE</div>
+        <div class="seq-item"><b style="color:var(--cyan)">FALLING</b> — PE → Kinetic (increases)</div>
+        <div class="seq-item b2"><b style="color:var(--pink)">IMPACT</b> — some dissipated as sound + thermal</div>
+        <div class="seq-item b4"><b style="color:var(--lime)">REBOUND</b> — bounces back with less energy</div>
+      </div>
+      <div class="quiz-zone" data-qid="q5" style="margin-top:8px">
+        <div class="qz-label">⚡ QUICK QUIZ</div>
+        <div class="qz-question">As a ball falls, what energy transfer happens?</div>
+        <div class="quiz-opts"></div>
+        <div class="quiz-feedback" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="img-side">
+      <img src="assets/chapter6-energy/12_bouncing_ball_energy.jpg" alt="Falling ball">
+      <div class="lbl">CASE STUDY · FALLING BALL</div>
+    </div>
+  </div>
+  <div class="snum"><b>07</b> / 18 — FALLING BALL + QUIZ</div>
+</section>
+
+<!-- 8. DISSIPATION + QUIZ -->
+<section class="slide">
+  <span class="deco">05</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="tagline" style="color:var(--violet)">6.2 · ENERGY DISSIPATION</div>
+    <h2 class="disp">Useful vs<br>wasted energy.</h2>
+    <p class="lead">Every useful transfer has some less-useful transfer. When energy spreads into surroundings, it is <b style="color:var(--violet)">dissipated</b>.</p>
+    <div class="g2" style="margin-top:8px">
+      <div class="g2c" style="border-color:rgba(168,255,62,.25);background:rgba(168,255,62,.04)"><div style="font-size:22px">✅</div><h4>USEFUL</h4><p style="font-size:10px">Light, motion, heat cooking food</p></div>
+      <div class="g2c" style="border-color:rgba(255,45,120,.25);background:rgba(255,45,120,.04)"><div style="font-size:22px">❌</div><h4>WASTED</h4><p style="font-size:10px">Heat to surroundings, sound, vibration</p></div>
+    </div>
+    <div class="quiz-zone" data-qid="q6" style="margin-top:8px">
+      <div class="qz-label">⚡ QUICK QUIZ</div>
+      <div class="qz-question">A lamp produces light (useful) and heat (wasted). What is the wasted energy?</div>
+      <div class="quiz-opts"></div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="snum"><b>08</b> / 18 — DISSIPATION + QUIZ</div>
+</section>
+
+<!-- 9. FAN OVEN IMAGE -->
+<section class="slide">
+  <div class="split-img stagger">
+    <div class="img-side">
+      <img src="https://z-cdn-media.chatglm.cn/files/8a99a1a2-6944-49a6-bd97-78abbcabb95b.png?auth_key=1890318539-a4929313d73144389dacfaec521b9449-0-8c4b8d623215478282a06e7ce8b7970c" alt="Fan oven">
+      <div class="lbl">CASE STUDY · FAN OVEN</div>
+    </div>
+    <div>
+      <div class="tagline" style="color:var(--violet)">6.2 · CASE STUDY</div>
+      <h2 class="disp">Fan oven<br>energy.</h2>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+        <div style="padding:7px 10px;border-left:3px solid var(--lime);background:rgba(168,255,62,.05);border-radius:0 8px 8px 0;font-size:11px"><b style="color:var(--lime)">USEFUL</b> · Fan spreads heat · Thermal heats food</div>
+        <div style="padding:7px 10px;border-left:3px solid var(--pink);background:rgba(255,45,120,.05);border-radius:0 8px 8px 0;font-size:11px"><b style="color:var(--pink)">WASTED</b> · Sound · Casing heat · Energy to room</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum"><b>09</b> / 18 — FAN OVEN</div>
+</section>
+
+<!-- 10. BICYCLE DYNAMO IMAGE -->
+<section class="slide">
+  <div class="split-img r stagger">
+    <div>
+      <div class="tagline" style="color:var(--violet)">6.2 · CASE STUDY</div>
+      <h2 class="disp">Bicycle<br>dynamo chain.</h2>
+      <div class="seq">
+        <div class="seq-item b3"><b style="color:var(--amber)">1.</b> Chemical energy in cyclist</div>
+        <div class="seq-item"><b style="color:var(--cyan)">2.</b> Kinetic energy of wheel</div>
+        <div class="seq-item b2"><b style="color:var(--pink)">3.</b> Electrical energy from dynamo</div>
+        <div class="seq-item b4"><b style="color:var(--lime)">4.</b> Light energy from lamp</div>
+      </div>
+    </div>
+    <div class="img-side">
+      <img src="https://z-cdn-media.chatglm.cn/files/567b012c-b149-4a68-95e5-61faace5726a.png?auth_key=1890318539-ca84cbcd9fa649bdbb245c5eb90f856e-0-2d7a675aa156c4dcb0cfd73ebf47cb45" alt="Bicycle dynamo">
+      <div class="lbl">CASE STUDY · BICYCLE DYNAMO</div>
+    </div>
+  </div>
+  <div class="snum"><b>10</b> / 18 — BICYCLE DYNAMO</div>
+</section>
+
+<!-- 11. FOSSIL FUELS + QUIZ -->
+<section class="slide">
+  <div class="split-img stagger">
+    <div class="img-side">
+      <img src="assets/chapter6-energy/03_fossil_fuels_formation.jpg" alt="Fossil fuels">
+      <div class="lbl">FOSSIL FUELS · FORMATION</div>
+    </div>
+    <div>
+      <div class="tagline">NON-RENEWABLE</div>
+      <h2 class="disp">Formed over<br>millions of years.</h2>
+      <p style="font-size:12px;color:#c4d1eb;line-height:1.5">Coal, oil and gas formed from organisms over millions of years. Their stored chemical energy came from ancient sunlight.</p>
+      <div class="quiz-zone" data-qid="q7" style="margin-top:8px">
+        <div class="qz-label">⚡ QUICK QUIZ</div>
+        <div class="qz-question">Why are fossil fuels classified as non-renewable?</div>
+        <div class="quiz-opts"></div>
+        <div class="quiz-feedback" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+  <div class="snum"><b>11</b> / 18 — FOSSIL FUELS + QUIZ</div>
+</section>
+
+<!-- 12. RENEWABLE + QUIZ -->
+<section class="slide">
+  <span class="deco">06</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="tagline">RENEWABLE · NATURALLY REPLENISHED</div>
+    <h2 class="disp">The Sun powers<br>almost everything.</h2>
+    <p class="lead">Renewable resources are replenished by natural processes within a human timescale.</p>
+    <div class="g4" style="margin-top:8px">
+      <div class="g4c" style="border-color:rgba(255,184,0,.25)"><span class="ic">☀️</span><h4>Solar</h4><p>Sunlight</p></div>
+      <div class="g4c" style="border-color:rgba(0,240,255,.25)"><span class="ic">💨</span><h4>Wind</h4><p>Moving air</p></div>
+      <div class="g4c" style="border-color:rgba(255,45,120,.25)"><span class="ic">🌊</span><h4>Tidal</h4><p>Moon gravity</p></div>
+      <div class="g4c" style="border-color:rgba(168,255,62,.25)"><span class="ic">🌋</span><h4>Geo</h4><p>Earth's heat</p></div>
+    </div>
+    <div class="quiz-zone" data-qid="q8" style="margin-top:8px">
+      <div class="qz-label">⚡ QUICK QUIZ</div>
+      <div class="qz-question">Which renewable resource is driven mainly by the Moon's gravity?</div>
+      <div class="quiz-opts"></div>
+      <div class="quiz-feedback" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="snum"><b>12</b> / 18 — RENEWABLE + QUIZ</div>
+</section>
+
+<!-- 13. POWER STATION FLOW -->
+<section class="slide">
+  <span class="deco">07</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="tagline">THERMAL POWER STATION</div>
+    <h2 class="disp">From heat<br>to electrons.</h2>
+    <p class="lead">Fuel → boiler → steam → turbine → generator → electricity</p>
+    <div style="display:flex;align-items:center;gap:0;justify-content:center;margin-top:12px;flex-wrap:wrap">
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🪵</div><div style="font-family:'Syne';font-size:11px;font-weight:700">FUEL</div><div style="font-family:'JetBrains Mono';font-size:8px;color:var(--cyan)">CHEMICAL</div></div>
+      <div style="font-size:16px;color:var(--cyan);padding:0 4px">→</div>
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🔥</div><div style="font-family:'Syne';font-size:11px;font-weight:700">BOILER</div><div style="font-family:'JetBrains Mono';font-size:8px;color:var(--amber)">THERMAL</div></div>
+      <div style="font-size:16px;color:var(--cyan);padding:0 4px">→</div>
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">⚙️</div><div style="font-family:'Syne';font-size:11px;font-weight:700">TURBINE</div><div style="font-family:'JetBrains Mono';font-size:8px;color:var(--pink)">KINETIC</div></div>
+      <div style="font-size:16px;color:var(--cyan);padding:0 4px">→</div>
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🔌</div><div style="font-family:'Syne';font-size:11px;font-weight:700">GENERATOR</div><div style="font-family:'JetBrains Mono';font-size:8px;color:var(--lime)">ELECTRICAL</div></div>
+    </div>
+    <div class="formula-box" style="margin-top:12px">
+      <div class="lab">CONVERSION SEQUENCE</div>
+      <div class="eq">Chemical → Thermal → Kinetic → <span style="color:var(--lime)">Electrical</span></div>
+    </div>
+  </div>
+  <div class="snum"><b>13</b> / 18 — POWER STATION</div>
+</section>
+
+<!-- 14. BOUNCING BALL IMAGE -->
+<section class="slide">
+  <div class="split-img stagger">
+    <div class="img-side">
+      <img src="assets/chapter6-energy/12_bouncing_ball_energy.jpg" alt="Bouncing ball">
+      <div class="lbl">CASE STUDY · BOUNCING BALL</div>
+    </div>
+    <div>
+      <div class="tagline">CONNECT YOUR UNDERSTANDING</div>
+      <h2 class="disp">Bouncing<br>ball physics.</h2>
+      <div class="seq">
+        <div class="seq-item"><b style="color:var(--cyan)">FALL</b> — Gravitational PE → Kinetic</div>
+        <div class="seq-item b2"><b style="color:var(--pink)">IMPACT</b> — Kinetic → Elastic PE + Thermal</div>
+        <div class="seq-item b3"><b style="color:var(--amber)">REBOUND</b> — Elastic PE → Kinetic → Gravitational</div>
+        <div class="seq-item b4"><b style="color:var(--lime)">LOSS</b> — Some warms ball & floor</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum"><b>14</b> / 18 — BOUNCING BALL</div>
+</section>
+
+<!-- 15. POLE VAULT IMAGE -->
+<section class="slide">
+  <div class="split-img r stagger">
+    <div>
+      <div class="tagline">APPLY · EFFICIENCY IN SPORT</div>
+      <h2 class="disp">Pole vault:<br>energy in motion.</h2>
+      <div class="g2" style="margin-top:8px">
+        <div class="g2c" style="border-color:rgba(0,240,255,.25);background:rgba(0,240,255,.04)"><div style="font-size:18px">🎯</div><h4 style="font-size:11px">USEFUL</h4><p style="font-size:9px">Kinetic + GPE</p></div>
+        <div class="g2c" style="border-color:rgba(168,255,62,.25);background:rgba(168,255,62,.04)"><div style="font-size:18px">🔋</div><h4 style="font-size:11px">IN FOOD</h4><p style="font-size:9px">Chemical</p></div>
+        <div class="g2c" style="border-color:rgba(255,45,120,.25);background:rgba(255,45,120,.04)"><div style="font-size:18px">💧</div><h4 style="font-size:11px">WASTED</h4><p style="font-size:9px">Thermal — sweat</p></div>
+        <div class="g2c" style="border-color:rgba(255,184,0,.25);background:rgba(255,184,0,.04)"><div style="font-size:18px">📊</div><h4 style="font-size:11px">DIAGRAM</h4><p style="font-size:9px">Sankey</p></div>
+      </div>
+    </div>
+    <div class="img-side">
+      <img src="assets/chapter6-energy/13_pole_vault.jpg" alt="Pole vault">
+      <div class="lbl">CASE STUDY · POLE VAULT</div>
+    </div>
+  </div>
+  <div class="snum"><b>15</b> / 18 — POLE VAULT</div>
+</section>
+
+<!-- 16. RENEWABLE TABLE -->
+<section class="slide">
+  <span class="deco">08</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column">
+    <div class="tagline">TYPES OF RENEWABLE ENERGY</div>
+    <h2 class="disp">Seven sources.</h2>
+    <table style="width:100%;border-collapse:separate;border-spacing:0;font-size:11px;margin-top:8px">
+      <thead><tr><th style="text-align:left;padding:8px 10px;background:rgba(0,240,255,.06);border-bottom:1px solid rgba(0,240,255,.25);font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:var(--cyan)">Resource</th><th style="text-align:left;padding:8px 10px;background:rgba(0,240,255,.06);border-bottom:1px solid rgba(0,240,255,.25);font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:var(--cyan)">How Renewed</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Hydroelectricity</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Rainfall & water cycle</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Wind turbines</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Weather from solar heating</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Solar panels</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Sunlight</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Tidal power</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Moon's gravity</td></tr>
+        <tr><td style="padding:6px 10px;color:#c4d1eb;font-weight:700">Geothermal</td><td style="padding:6px 10px;color:#c4d1eb">Earth's internal heat</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="snum"><b>16</b> / 18 — RENEWABLE TABLE</div>
+</section>
+
+<!-- 17. KEY FACTS -->
+<section class="slide">
+  <span class="deco">09</span>
+  <div class="stagger" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="tagline">KEY FACTS</div>
+    <h2 class="disp">Remember<br>these.</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
+      <div class="card" style="border-color:rgba(0,240,255,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--cyan);letter-spacing:2px">01</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Energy measured in J or kJ</p></div>
+      <div class="card" style="border-color:rgba(255,45,120,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--pink);letter-spacing:2px">02</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Sankey: width = amount</p></div>
+      <div class="card" style="border-color:rgba(255,184,0,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--amber);letter-spacing:2px">03</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Wasted = Input − Useful</p></div>
+      <div class="card" style="border-color:rgba(168,255,62,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--lime);letter-spacing:2px">04</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Fossil fuels: millions of years</p></div>
+      <div class="card" style="border-color:rgba(177,78,255,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--violet);letter-spacing:2px">05</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Renewables: naturally replaced</p></div>
+      <div class="card" style="border-color:rgba(0,240,255,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--cyan);letter-spacing:2px">06</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Energy can't be created/destroyed</p></div>
+    </div>
+  </div>
+  <div class="snum"><b>17</b> / 18 — KEY FACTS</div>
+</section>
+
+<!-- 18. FINAL -->
+<section class="slide">
+  <div class="final stagger">
+    <div class="tagline" style="justify-content:center;display:flex">CHALLENGE · END OF CHAPTER</div>
+    <h1>Where does the<br>energy <span style="color:var(--cyan)">go?</span></h1>
+    <p>A vacuum cleaner in a closed room gradually warms it. Explain the sequence of energy transfers — and why all electrical energy eventually becomes thermal energy.</p>
+    <div class="facts">
+      <div><b>FACT 01</b>Fossil fuels take millions of years — non-renewable.</div>
+      <div><b>FACT 02</b>Burning fossil fuels releases waste gases.</div>
+      <div><b>FACT 03</b>Renewables are naturally replaced.</div>
+      <div><b>FACT 04</b>Every useful transfer has dissipation.</div>
+    </div>
+    <button class="restart-btn" id="restart">↺ RESTART</button>
+  </div>
+  <div class="snum"><b>18</b> / 18 — FINAL</div>
+</section>
+
+</div>
+</main>
+
+<script src="energy-extra-slides.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════
+   GAMIFICATION SYSTEM (integrated into Energy slides)
+   Hangman → Stars → GIF Rewards
+   ═══════════════════════════════════════════════════ */
+
+/* === 36 GIF DATASET (1:1 from spec) === */
+const SUCCESS_MEDIA=[
+{src:"https://media.giphy.com/media/62bRBJV1ccA9nyLmKy/giphy.gif",tier:"normal",title:"ได้อยู่ 🥲👍",text:"รอดอีกข้อ"},
+{src:"https://media.giphy.com/media/gXXFrjHFJIMoqKr8UT/giphy.gif",tier:"normal",title:"เอ้า ถูก",text:"ไปต่อๆ"},
+{src:"https://media.giphy.com/media/jfKiMjWolBzuWkdbw0/giphy.gif",tier:"normal",title:"โอเค๊",text:"อันนี้ให้"},
+{src:"https://media.giphy.com/media/125E8v90blHqtr4HrB/giphy.gif",tier:"normal",title:"เฉียบ",text:"ไม่ต้องชม เดี๋ยวเหลิง"},
+{src:"https://media.giphy.com/media/pH1swuo2JsnACovyRA/giphy.gif",tier:"normal",title:"เลขเริ่มคุยกันรู้เรื่องละ",text:"555"},
+{src:"https://media.giphy.com/media/AgNNmOHIZ0LJoNqMuf/giphy.gif",tier:"normal",title:"ทรงดี",text:"มาอีก"},
+{src:"https://media.giphy.com/media/XCsACkMFiPrwJI9rQv/giphy.gif",tier:"normal",title:"เออได้",text:"ไม่แย่นะ"},
+{src:"https://media.giphy.com/media/zOowlkUroZBoUb9sAl/giphy.gif",tier:"normal",title:"ถูกเฉย",text:"รับทราบครับ"},
+{src:"https://media.giphy.com/media/MOWPkhRAUbR7i/giphy.gif",tier:"normal",title:"ของจริง",text:"ข้อนี้ผ่าน"},
+{src:"https://media.giphy.com/media/qr2Pn7fMU59x1TB5D2/giphy.gif",tier:"normal",title:"โอ้",text:"ยังไหว"},
+{src:"https://media.giphy.com/media/bXkgg0a8BKM6QBLm7a/giphy.gif",tier:"normal",title:"เอ้า ได้อีก",text:"ฟอร์มมา"},
+{src:"https://media.giphy.com/media/JsVlBMEaHdOEGQKLXB/giphy.gif",tier:"normal",title:"ถูกแบบงงๆ",text:"แต่ถูก"},
+{src:"https://media.giphy.com/media/XEgmzMLDhFQAga8umN/giphy.gif",tier:"normal",title:"เคครับนาย",text:"ไปข้อหน้า"},
+{src:"https://media.giphy.com/media/pbKSEFrEEudOIclaL8/giphy.gif",tier:"normal",title:"นี่แหละ",text:"เอาอีกดิ"},
+{src:"https://media.giphy.com/media/qGmLWDPFAzOAz8DU2L/giphy.gif",tier:"normal",title:"ดีจัด",text:"หนึ่งแต้ม"},
+{src:"https://media.giphy.com/media/XaYigEghuWAyS3HOoA/giphy.gif",tier:"normal",title:"ผ่านนน",text:"ยังไม่จบ 555"},
+{src:"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXdsanVvcHluMDJsZmw2aXFmMXAyNzl4NmhpNGNqdDk1aWNzNnliZyZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/LPFNd1AJBoYcVUExmE/giphy.gif",tier:"normal",title:"น่ารักอะ ถูก!",text:"ไปข้อต่อไปกัน"},
+{src:"https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3eGNwdWJ4b3kwNmg2M213eTNyd2xwMmQ3Z2szMWU2aXdsaDZodXBudSZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/Zwkxqa2c6C4avWnrq3/giphy.gif",tier:"normal",title:"เก่งมากก",text:"เฉลิมฉลองก่อน 555"},
+{src:"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa290aGl3M3Vwd2VwcTMzbThkNXdubHMyYjlydHU0MzZ6dWRiM3dsdyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Od0QRnzwRBYmDU3eEO/giphy.gif",tier:"normal",title:"เยสสส ถูกต้อง",text:"ไปต่อแบบลื่นๆ"},
+{src:"https://media.giphy.com/media/FaFu1s2hO1xYHdpk6N/giphy.gif",tier:"streak",title:"เดี๋ยวนะ...",text:"ถูกติดกันอีกละ 555"},
+{src:"https://media.giphy.com/media/3o85xoi6nNqJQJ95Qc/giphy.gif",tier:"streak",title:"พอๆ เก่งเกิน",text:"ระบบเริ่มระแวง"},
+{src:"https://media.giphy.com/media/pY8jLmZw0ElqvVeRH4/giphy.gif",tier:"streak",title:"อีกละ",text:"เครื่องติดแล้ว"},
+{src:"https://media.giphy.com/media/plhTLBh39Whm6w1GW7/giphy.gif",tier:"streak",title:"ลากยาวเลยดิ",text:"ฟอร์มกำลังมา"},
+{src:"https://media.giphy.com/media/jTAkn6hKyy2esWjOOZ/giphy.gif",tier:"streak",title:"นี่คนเดิมปะ",text:"ทำไมถูกติดกัน"},
+{src:"https://media.giphy.com/media/TKa7fQzChHylCQ89to/giphy.gif",tier:"streak",title:"โอ้โห",text:"ยังถูกอีก"},
+{src:"https://media.giphy.com/media/MCQWRoaxAtxrhdC9Al/giphy.gif",tier:"streak",title:"พักก่อนไหม",text:"ไม่พักสินะ"},
+{src:"https://media.giphy.com/media/sBjrE2oBznsWsCNrKa/giphy.gif",tier:"streak",title:"คะแนนไหลละ",text:"อย่าหยุดตอนนี้"},
+{src:"https://media.giphy.com/media/2LmgEyEwBQvtM8Le9M/giphy.gif",tier:"streak",title:"เอาจริงดิ",text:"มาเป็นชุดเลย"},
+{src:"https://media.giphy.com/media/sg3JambRg9UlX3fq5G/giphy.gif",tier:"streak",title:"ฟอร์มนี้น่ากลัว",text:"555"},
+{src:"https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3eGNwdWJ4b3kwNmg2M213eTNyd2xwMmQ3Z2szMWU2aXdsaDZodXBudSZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/lvHS55YwAFHWJAkauX/giphy.gif",tier:"streak",title:"ถูกอีกแล้ววว",text:"ฟอร์มดีมาก"},
+{src:"https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MzNvejN5aG1hbDFtOWlnYW45cWxsYm1wY2I4dW15eng1d25ubWxseiZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/FBgW0cfxFgzGfrVDsk/giphy.gif",tier:"streak",title:"เล่นใหญ่ไปอีก",text:"ถูกแบบมีสไตล์"},
+{src:"https://media.giphy.com/media/mBcAMbc1Nu3UDYd9l4/giphy.gif",tier:"tired",title:"เมื่อไรจะเลิกกก 😭",text:"ยังมีอีกนะ"},
+{src:"https://media.giphy.com/media/l4FGpa3DuEFMrghKE/giphy.gif",tier:"tired",title:"ยังอีกเหรอ",text:"พอได้ยัง 555"},
+{src:"https://media.giphy.com/media/3o7bufrhglm1BTsfra/giphy.gif",tier:"tired",title:"โอเคๆ รู้แล้วว่าเก่ง",text:"ขอพักก่อน"},
+{src:"https://media.giphy.com/media/MQGNf0r6Xagrw5KfVL/giphy.gif",tier:"tired",title:"ระบบเหนื่อยแทนละ",text:"แต่เธอยังไปต่อ"},
+{src:"https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa290aGl3M3Vwd2VwcTMzbThkNXdubHMyYjlydHU0MzZ6dWRiM3dsdyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/4AaiHSWhEqLKVzB3AC/giphy.gif",tier:"tired",title:"โอเค รู้แล้วว่าเก่ง 😆",text:"แต่ยังมีอีกนะ"},
+];
+const SUCCESS_FALLBACK="https://media.giphy.com/media/62bRBJV1ccA9nyLmKy/giphy.gif";
+const SUCCESS_POP_MS=3000;
+
+/* === Quiz Questions === */
+const QUIZ_QUESTIONS=[
+{id:"q1",type:"number",question:"How many joules are in 3 kJ?",answer:3000,unit:"J",explanation:"1 kJ = 1000 J, so 3 kJ = 3000 J"},
+{id:"q2",type:"number",question:"Input is 200 J, useful is 150 J. Wasted = ?",answer:50,unit:"J",explanation:"Wasted = 200 − 150 = 50 J"},
+{id:"q3",question:"What type of energy is stored in food?",options:["Kinetic","Thermal","Chemical","Elastic PE"],answer:2,explanation:"Food stores chemical energy in its molecular bonds"},
+{id:"q4",type:"number",question:"Force 10 N moves object 5 m. Work = ?",answer:50,unit:"J",explanation:"W = F × d = 10 × 5 = 50 J"},
+{id:"q5",question:"As a ball falls, what energy transfer happens?",options:["Kinetic → Gravitational PE","Gravitational PE → Kinetic","Thermal → Chemical","Elastic → Sound"],answer:1,explanation:"Height decreases (PE↓), speed increases (KE↑)"},
+{id:"q6",question:"A lamp produces light (useful) and heat (wasted). Wasted = ?",options:["Light","Heat","Electrical","Sound"],answer:1,explanation:"Heat to surroundings is the unwanted transfer"},
+{id:"q7",question:"Why are fossil fuels non-renewable?",options:["They are too expensive","They take millions of years to form","They produce too much energy","They are hard to transport"],answer:1,explanation:"Cannot be replaced quickly enough to keep up with use"},
+{id:"q8",question:"Which renewable is driven by the Moon's gravity?",options:["Solar","Wind","Tidal","Geothermal"],answer:2,explanation:"Tides are caused mainly by the Moon's gravitational pull"},
+];
+
+/* === Gamification State === */
+const STORAGE_KEY='energy_gamification_v1';
+let state={date:'',stars:5,hangmanParts:0,correct:[],wrongChoices:{}};
+let lastSuccessIdx=-1;
+let hangmanModalTimer=null,gameOverPending=false;
+const SUCCESS_READY=new Set();
+const SUCCESS_FAILED=new Set();
+const SUCCESS_CACHE=new Map();
+let preloadStarted=false;
+const SUCCESS_RECENT=[];
+const SUCCESS_BAGS={normal:[],streak:[],tired:[]};
+let autoAdvanceTimer=null;
+
+const today=()=>new Date().toDateString();
+function loadState(){
+  try{
+    const p=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+    if(p&&p.date===today()){
+      state={...state,...p};
+      if(state.correct.includes('q1')){state.correct=state.correct.filter(id=>id!=='q1');saveState()}
+    }
+    else state.date=today();
+  }catch(e){state.date=today()}
+}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){}}
+
+/* === GIF Pool === */
+function preloadGif(i){
+  if(i<0||i>=SUCCESS_MEDIA.length||SUCCESS_READY.has(i)||SUCCESS_FAILED.has(i)||SUCCESS_CACHE.has(i))return;
+  const img=new Image();img.decoding='async';
+  SUCCESS_CACHE.set(i,img);
+  img.onload=()=>SUCCESS_READY.add(i);
+  img.onerror=()=>{SUCCESS_FAILED.add(i);SUCCESS_CACHE.delete(i)};
+  img.src=SUCCESS_MEDIA[i].src;
+}
+function startPreload(){
+  if(preloadStarted)return;preloadStarted=true;
+  [0,19,32].filter(i=>i<SUCCESS_MEDIA.length).forEach(i=>preloadGif(i));
+  SUCCESS_MEDIA.forEach((_,i)=>setTimeout(()=>preloadGif(i),200+i*120));
+}
+function shuffleArr(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function refillBag(tier){
+  let pool=SUCCESS_MEDIA.map((m,i)=>m.tier===tier&&!SUCCESS_FAILED.has(i)?i:-1).filter(i=>i>=0);
+  const recent=new Set(SUCCESS_RECENT.slice(-6));
+  let fresh=pool.filter(i=>!recent.has(i));
+  if(fresh.length<Math.min(3,pool.length))fresh=pool;
+  SUCCESS_BAGS[tier]=shuffleArr(fresh);
+}
+function pickGif(correctCount){
+  const r=Math.random();let tier='normal';
+  if(correctCount>=22&&r<0.42)tier='tired';
+  else if(correctCount>=7&&r<0.72)tier='streak';
+  if(!SUCCESS_BAGS[tier]||!SUCCESS_BAGS[tier].length)refillBag(tier);
+  let bag=SUCCESS_BAGS[tier];
+  const recent=new Set(SUCCESS_RECENT.slice(-6));
+  let pos=bag.findIndex(i=>!recent.has(i)&&i!==lastSuccessIdx);
+  if(pos<0)pos=bag.findIndex(i=>i!==lastSuccessIdx);
+  if(pos<0)pos=0;
+  const idx=bag.splice(pos,1)[0];
+  SUCCESS_RECENT.push(idx);if(SUCCESS_RECENT.length>10)SUCCESS_RECENT.shift();
+  lastSuccessIdx=idx;
+  return{index:Number.isInteger(idx)?idx:0,...SUCCESS_MEDIA[idx]};
+}
+
+/* === Sound === */
+let audioCtx=null;
+function playCorrectSound(){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    if(!audioCtx)audioCtx=new AC();
+    const ctx=audioCtx;if(ctx.state==='suspended')ctx.resume();
+    const now=ctx.currentTime;
+    [659.25,783.99,1046.50].forEach((freq,i)=>{
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.type=i===2?'triangle':'sine';osc.frequency.setValueAtTime(freq,now+i*.075);
+      gain.gain.setValueAtTime(.0001,now+i*.075);
+      gain.gain.exponentialRampToValueAtTime(.16,now+i*.075+.018);
+      gain.gain.exponentialRampToValueAtTime(.0001,now+i*.075+.23);
+      osc.connect(gain);gain.connect(ctx.destination);osc.start(now+i*.075);osc.stop(now+i*.075+.25);
+    });
+  }catch(e){}
+}
+
+/* === Confetti === */
+function launchConfettiRain(){
+  const colors=['#fbbf24','#5eead4','#fb7185','#a78bfa','#54a0ff','#f472b6','#34d399'];
+  for(let i=0;i<64;i++){
+    const c=document.createElement('div');c.className='confetti-rain';
+    c.style.left=(Math.random()*100)+'vw';c.style.width=(6+Math.random()*8)+'px';c.style.height=(10+Math.random()*12)+'px';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.setProperty('--drift',(-120+Math.random()*240)+'px');
+    c.style.setProperty('--spin',(-720+Math.random()*1440)+'deg');
+    c.style.setProperty('--dur',(1.25+Math.random()*.9)+'s');
+    c.style.animationDelay=(Math.random()*.28)+'s';
+    document.body.appendChild(c);setTimeout(()=>c.remove(),2500);
+  }
+}
+function launchConfettiBurst(anchor){
+  if(!anchor)return;
+  const r=anchor.getBoundingClientRect();const colors=['#fbbf24','#5eead4','#fb7185','#a78bfa','#54a0ff'];
+  for(let i=0;i<28;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left=(r.left+r.width/2)+'px';c.style.top=(r.top+r.height/2)+'px';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    const a=Math.random()*Math.PI*2,v=90+Math.random()*150;
+    c.style.setProperty('--tx',Math.cos(a)*v+'px');c.style.setProperty('--ty',(Math.sin(a)*v-60)+'px');
+    document.body.appendChild(c);setTimeout(()=>c.remove(),1000);
+  }
+}
+
+/* === Reward (sound + confetti + GIF) === */
+function celebrate(anchor){
+  playCorrectSound();
+  launchConfettiRain();
+  startPreload();
+  const pick=pickGif(state.correct.length);
+  const gifEl=document.getElementById('successGif'),titleEl=document.getElementById('successTitle'),textEl=document.getElementById('successText'),pop=document.getElementById('successPop');
+  const showPop=(src,title,text)=>{
+    if(gifEl){gifEl.onerror=null;if(gifEl.src!==src)gifEl.src=src}
+    if(titleEl)titleEl.textContent=title;
+    if(textEl)textEl.textContent=text;
+    if(pop){pop.classList.remove('show');void pop.offsetWidth;pop.classList.add('show');setTimeout(()=>pop.classList.remove('show'),SUCCESS_POP_MS)}
+  };
+  if(SUCCESS_READY.has(pick.index)){
+    showPop(pick.src,pick.title,pick.text);
+  }else{
+    showPop(SUCCESS_FALLBACK,'ถูกละ','ไปต่อดิ 555');
+    let settled=false;
+    const fastImg=SUCCESS_CACHE.get(pick.index)||new Image();
+    if(!SUCCESS_CACHE.has(pick.index))SUCCESS_CACHE.set(pick.index,fastImg);
+    fastImg.onload=()=>{if(settled)return;settled=true;SUCCESS_READY.add(pick.index);if(pop&&pop.classList.contains('show'))showPop(pick.src,pick.title,pick.text)};
+    fastImg.onerror=()=>{settled=true;SUCCESS_FAILED.add(pick.index)};
+    if(!fastImg.src)fastImg.src=pick.src;
+    setTimeout(()=>{settled=true},1300);
+  }
+  launchConfettiBurst(anchor);
+}
+
+/* === Gamification core === */
+function correct(qid,anchor){
+  if(state.correct.includes(qid))return;
+  state.correct.push(qid);
+  saveState();updateUI();
+  celebrate(anchor);
+}
+function wrong(qid,anchor){
+  if(gameOverPending||state.hangmanParts>=9)return;
+  state.hangmanParts=Math.min(9,state.hangmanParts+1);
+  saveState();updateUI();
+  if(state.hangmanParts>=9){
+    if(state.stars>0)state.stars--;
+    saveState();updateUI();
+    gameOverPending=true;
+    clearTimeout(hangmanModalTimer);
+    hangmanModalTimer=setTimeout(()=>{document.getElementById('hangmanModal').classList.add('show');hangmanModalTimer=null},700);
+  }
+}
+function restartHangman(){clearTimeout(hangmanModalTimer);hangmanModalTimer=null;gameOverPending=false;state.hangmanParts=0;saveState();updateUI();document.getElementById('hangmanModal').classList.remove('show')}
+function closeHangmanModal(){document.getElementById('hangmanModal').classList.remove('show');gameOverPending=false}
+function updateUI(){
+  let st='';for(let i=0;i<5;i++)st+=i<state.stars?'★':'☆';
+  document.getElementById('starsDisplay').textContent=st;
+  document.getElementById('starCount').textContent=`${state.stars} / 5`;
+  document.getElementById('correctCount').textContent=`${state.correct.length} correct`;
+  document.getElementById('wrongCount').textContent=state.hangmanParts;
+  for(let i=1;i<=9;i++){const p=document.getElementById('hpart'+i);if(p)p.classList.toggle('show',i<=state.hangmanParts)}
+}
+
+/* === Build quiz UIs === */
+function buildNumericQuiz(zone,q,optsWrap,feedback){
+  const entry=document.createElement('div');entry.className='number-entry';
+  entry.innerHTML=`<div class="number-readout"><input class="number-value" type="text" inputmode="none" autocomplete="off" maxlength="8" aria-label="Answer in ${q.unit}" placeholder="0"><span class="number-unit">${q.unit}</span></div><div class="number-pad" aria-label="Number pad">${['1','2','3','4','5','6','7','8','9'].map(n=>`<button type="button" class="num-key" data-digit="${n}" aria-label="${n}">${n}</button>`).join('')}<button type="button" class="num-key" data-action="clear" aria-label="Clear answer">C</button><button type="button" class="num-key" data-digit="0" aria-label="0">0</button><button type="button" class="num-key" data-action="backspace" aria-label="Delete last digit">⌫</button></div><button type="button" class="number-submit">Check answer</button>`;
+  optsWrap.appendChild(entry);
+  const input=entry.querySelector('.number-value');
+  const keys=[...entry.querySelectorAll('.num-key')];
+  const submit=entry.querySelector('.number-submit');
+  const solved=()=>state.correct.includes(q.id);
+  const setFeedback=(message,color)=>{feedback.textContent=message;feedback.style.color=color};
+  const lock=()=>{input.value=String(q.answer);input.disabled=true;entry.classList.add('complete');keys.forEach(key=>key.disabled=true);submit.disabled=true;setFeedback(`✅ ${q.explanation}`,'var(--lime)')};
+  if(solved()){lock();return}
+  keys.forEach(key=>key.addEventListener('click',()=>{
+    if(solved()||gameOverPending)return;
+    if(key.dataset.digit!==undefined){if(input.value.length<8)input.value+=key.dataset.digit}
+    else if(key.dataset.action==='clear')input.value='';
+    else if(key.dataset.action==='backspace')input.value=input.value.slice(0,-1);
+  }));
+  input.addEventListener('input',()=>{input.value=input.value.replace(/\D/g,'').slice(0,8)});
+  const check=()=>{
+    if(solved()||gameOverPending)return;
+    const entered=input.value.trim();
+    if(!entered){setFeedback('Enter a number first.','var(--amber)');return}
+    if(Number(entered)===q.answer){lock();correct(q.id,submit)}
+    else{setFeedback('❌ Not quite — Hangman +1','var(--pink)');input.value='';wrong(q.id,submit)}
+  };
+  submit.addEventListener('click',check);
+  input.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();check()}});
+}
+
+function buildQuizzes(){
+  document.querySelectorAll('.quiz-zone').forEach(zone=>{
+    const q=QUIZ_QUESTIONS.find(x=>x.id===zone.dataset.qid);if(!q)return;
+    const optsWrap=zone.querySelector('.quiz-opts');
+    const feedback=zone.querySelector('.quiz-feedback');
+    if(q.type==='number'){buildNumericQuiz(zone,q,optsWrap,feedback);return}
+    q.options.forEach((opt,idx)=>{
+      const b=document.createElement('button');b.className='opt-btn';b.textContent=opt;
+      b.onclick=()=>{
+        if(state.correct.includes(q.id)||gameOverPending)return;
+        if(idx===q.answer){
+          b.classList.add('right');
+          [...optsWrap.children].forEach(x=>x.classList.add('disabled'));
+          feedback.innerHTML=`✅ ${q.explanation}`;feedback.style.color='var(--lime)';
+          correct(q.id,b);
+        }else{
+          b.classList.add('wrong');
+          feedback.textContent='❌ Not quite — Hangman +1';feedback.style.color='var(--pink)';
+          wrong(q.id,b);
+        }
+      };
+      if(state.correct.includes(q.id)){
+        b.classList.add('disabled');
+        if(idx===q.answer)b.classList.add('right');
+      }
+      optsWrap.appendChild(b);
+    });
+    if(state.correct.includes(q.id)){
+      feedback.innerHTML=`✅ ${q.explanation}`;feedback.style.color='var(--lime)';
+    }
+  });
+}
+
+/* === Particle background === */
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
+resize();addEventListener('resize',resize);
+const particles=[];const PC=50;const colors=['#00f0ff','#ff2d78','#ffb800','#a8ff3e'];
+for(let i=0;i<PC;i++)particles.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*1.5+.5,c:colors[Math.floor(Math.random()*colors.length)],pulse:Math.random()*Math.PI*2});
+let mx=W/2,my=H/2;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+function animate(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<particles.length;i++){
+    const p=particles[i];p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+    p.pulse+=.02;const r=p.r+Math.sin(p.pulse)*.5;
+    const dx=mx-p.x,dy=my-p.y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<180){p.x+=dx/d*.25;p.y+=dy/d*.25}
+    for(let j=i+1;j<particles.length;j++){
+      const q=particles[j],dx2=p.x-q.x,dy2=p.y-q.y,d2=Math.sqrt(dx2*dx2+dy2*dy2);
+      if(d2<130){ctx.strokeStyle=`rgba(0,240,255,${(1-d2/130)*.15})`;ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}
+    }
+    ctx.fillStyle=p.c;ctx.shadowBlur=8;ctx.shadowColor=p.c;
+    ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fill();
+  }
+  ctx.shadowBlur=0;requestAnimationFrame(animate);
+}
+animate();
+
+/* === Slide navigation === */
+const deck=document.getElementById('deck');
+const EXTRA_SLIDES=window.EXTRA_SLIDES||[];
+const escapeHTML=value=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function renderExtraSlide(slide,index){
+  const cards=(slide.items||[]).map(item=>`<div class="extra-card"><b>${escapeHTML(item.label)}</b><span>${escapeHTML(item.text)}</span></div>`).join('');
+  const imageList=slide.images|| (slide.image?[{src:slide.image,alt:slide.imageAlt||slide.title,credit:slide.credit||''}]:[]);
+  const images=imageList.length?`<div class="extra-figures">${imageList.map(image=>`<figure class="extra-figure"><img src="${escapeHTML(image.src)}" alt="${escapeHTML(image.alt)}" loading="lazy"><figcaption>${escapeHTML(image.credit||'')}</figcaption></figure>`).join('')}</div>`:'';
+  const table=slide.table?`<div class="extra-table-wrap"><table class="extra-table"><thead><tr>${slide.table.heads.map(cell=>`<th>${escapeHTML(cell)}</th>`).join('')}</tr></thead><tbody>${slide.table.rows.map(row=>`<tr>${row.map(cell=>`<td>${escapeHTML(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
+  const quiz=slide.quiz?`<div class="quiz-zone" data-qid="${escapeHTML(slide.quiz.id)}"><div class="qz-label">QUICK CHECK</div><div class="qz-question">${escapeHTML(slide.quiz.question)}</div><div class="quiz-opts"></div><div class="quiz-feedback" aria-live="polite"></div></div>`:'';
+  return `<section class="slide extra-slide"><div class="extra-layout stagger"><div class="tagline">${escapeHTML(slide.section)}</div><h2 class="disp">${escapeHTML(slide.title)}</h2><p class="lead">${escapeHTML(slide.lead)}</p>${images}${cards?`<div class="extra-cards">${cards}</div>`:''}${table}${quiz}</div><div class="snum"><b>${String(19+index).padStart(2,'0')}</b> / 70 — ${escapeHTML(slide.section)}</div></section>`;
+}
+EXTRA_SLIDES.forEach(slide=>{if(slide.quiz)QUIZ_QUESTIONS.push(slide.quiz)});
+deck.insertAdjacentHTML('beforeend',EXTRA_SLIDES.map(renderExtraSlide).join(''));
+const slides=deck.querySelectorAll('.slide');
+const total=slides.length;
+document.querySelector('.cover .meta div:first-child b').textContent=String(total);
+document.querySelector('.cover .meta div:nth-child(2) b').textContent=String(QUIZ_QUESTIONS.length);
+document.querySelectorAll('.snum').forEach((label,i)=>{
+  const suffix=label.textContent.replace(/^\s*\d+\s*\/\s*\d+\s*/,'').trim().replace(/^[—–-]\s*/, '');
+  label.innerHTML=`<b>${String(i+1).padStart(2,'0')}</b> / ${String(total).padStart(2,'0')}${suffix?` — ${escapeHTML(suffix)}`:''}`;
+});
+let idx=0;
+const dotsWrap=document.getElementById('dots');
+for(let i=0;i<total;i++){const b=document.createElement('button');b.addEventListener('click',()=>go(i));dotsWrap.appendChild(b)}
+const dots=dotsWrap.querySelectorAll('button');
+const cur=document.getElementById('curIdx');
+const tot=document.getElementById('totIdx');
+const bar=document.getElementById('barFill');
+const prevBtn=document.getElementById('prev');
+const nextBtn=document.getElementById('next');
+tot.textContent='/ '+String(total).padStart(2,'0');
+
+const themes=[
+  {c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},{c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},
+  {c:'#00f0ff',p:'#a8ff3e',a:'#ff2d78'},{c:'#b14eff',p:'#ffb800',a:'#00f0ff'},
+  {c:'#b14eff',p:'#00f0ff',a:'#ffb800'},{c:'#ffb800',p:'#b14eff',a:'#00f0ff'},
+  {c:'#ffb800',p:'#b14eff',a:'#00f0ff'},{c:'#b14eff',p:'#a8ff3e',a:'#ff2d78'},
+  {c:'#ffb800',p:'#b14eff',a:'#a8ff3e'},{c:'#a8ff3e',p:'#b14eff',a:'#00f0ff'},
+  {c:'#ffb800',p:'#ff2d78',a:'#00f0ff'},{c:'#a8ff3e',p:'#00f0ff',a:'#ffb800'},
+  {c:'#00f0ff',p:'#ffb800',a:'#a8ff3e'},{c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},
+  {c:'#a8ff3e',p:'#00f0ff',a:'#ffb800'},{c:'#a8ff3e',p:'#00f0ff',a:'#ffb800'},
+  {c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},{c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},
+];
+function go(i){
+  idx=Math.max(0,Math.min(total-1,i));
+  deck.style.transform=`translateX(-${idx*100}%)`;
+  cur.textContent=String(idx+1).padStart(2,'0');
+  bar.style.width=((idx+1)/total*100)+'%';
+  dots.forEach((d,k)=>d.classList.toggle('active',k===idx));
+  prevBtn.disabled=idx===0;nextBtn.disabled=idx===total-1;
+  const t=themes[idx]||themes[0];
+  document.querySelector('.b1').style.background=t.c;
+  document.querySelector('.b2').style.background=t.p;
+  document.querySelector('.b3').style.background=t.a;
+  const active=slides[idx];
+  active.querySelectorAll('.stagger > *').forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
+}
+
+const topicToggle=document.getElementById('topicToggle');
+const topicMenu=document.getElementById('topicMenu');
+slides.forEach((slide,slideIndex)=>{
+  const title=slide.querySelector('h1,h2');
+  const topic=slide.querySelector('.tagline');
+  const item=document.createElement('button');
+  item.type='button';item.dataset.slide=String(slideIndex);
+  const label=document.createElement('span');label.textContent=title?.textContent.trim()||`Slide ${slideIndex+1}`;
+  const group=document.createElement('small');group.textContent=topic?.textContent.trim()||`SLIDE ${String(slideIndex+1).padStart(2,'0')}`;
+  item.append(group,label);
+  item.addEventListener('click',()=>{go(slideIndex);topicMenu.hidden=true;topicToggle.setAttribute('aria-expanded','false')});
+  topicMenu.appendChild(item);
+});
+const resetItem=document.createElement('button');
+resetItem.type='button';resetItem.className='topic-reset';resetItem.textContent='Reset';
+resetItem.addEventListener('click',()=>{
+  if(window.confirm('Reset all lesson progress and return to slide 1?')){
+    try{localStorage.removeItem(STORAGE_KEY)}catch(e){}
+    location.reload();
+  }
+});
+topicMenu.appendChild(resetItem);
+topicToggle.addEventListener('click',()=>{
+  topicMenu.hidden=!topicMenu.hidden;
+  topicToggle.setAttribute('aria-expanded',String(!topicMenu.hidden));
+});
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&!topicMenu.hidden){topicMenu.hidden=true;topicToggle.setAttribute('aria-expanded','false')}
+});
+
+prevBtn.addEventListener('click',()=>go(idx-1));
+nextBtn.addEventListener('click',()=>go(idx+1));
+document.getElementById('restart').addEventListener('click',()=>go(0));
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='BUTTON')return;
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(idx+1)}
+  if(e.key==='ArrowLeft'){e.preventDefault();go(idx-1)}
+  if(e.key==='Home')go(0);if(e.key==='End')go(total-1);
+});
+document.querySelector('.stage').addEventListener('click',e=>{
+  if(e.target.closest('button')||e.target.closest('.quiz-zone')||e.target.closest('a'))return;
+  go(idx+1);
+});
+let startX=0;
+addEventListener('touchstart',e=>{startX=e.touches[0].clientX});
+addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>60)go(dx<0?idx+1:idx-1)});
+
+/* === Init === */
+window.G={restartHangman,closeHangmanModal};
+loadState();buildQuizzes();updateUI();go(0);
+setTimeout(startPreload,500);
+</script>
+</body>
+</html>
