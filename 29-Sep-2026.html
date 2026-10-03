@@ -1,7 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cambridge Stage 7 Chapter 6 — Energy | 70-Slide Interactive Lesson</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,11 +14,10 @@
   --bg:#050810;--ink:#eaf2ff;--muted:#8194b8;
   --cyan:#00f0ff;--pink:#ff2d78;--amber:#ffb800;--lime:#a8ff3e;--violet:#b14eff;
   --line:rgba(255,255,255,.08);
-  --c1:#ff6b6b;--c2:#feca57;--c4:#1dd1a1;--c5:#5f27cd;--paper:#fffdf7;
+  --c1:#ff6b6b;--c2:#feca57;--c4:#1dd1a1;--c5:#5f27cd;--paper:rgba(12,18,31,.82);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Mali',sans-serif}
-body,body *{font-family:'Mali',sans-serif!important}
 
 #particles{position:fixed;inset:0;z-index:0;opacity:.7}
 .blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.4;z-index:0;pointer-events:none;transition:background 1.5s ease}
@@ -29,11 +29,11 @@ body,body *{font-family:'Mali',sans-serif!important}
 @keyframes fb3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-30%,-60%) scale(1.2)}}
 
 .topbar{position:fixed;top:0;left:0;right:0;height:56px;padding:0 20px;z-index:50;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(5,8,16,.92),rgba(5,8,16,0));backdrop-filter:blur(10px)}
-.brand{display:flex;align-items:center;gap:8px;font-family:"Syne";font-weight:800;font-size:13px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font);font-weight:700;font-size:13px}
 .brand .pulse{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan),0 0 20px var(--cyan);animation:pd 1.6s infinite}
 @keyframes pd{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:.4}}
-.brand small{font-family:"JetBrains Mono";font-size:9px;color:var(--muted);letter-spacing:2px}
-.progress-wrap{display:flex;align-items:center;gap:8px;font-family:"JetBrains Mono";font-size:10px;color:var(--muted)}
+.brand small{font-family:var(--font);color:var(--muted);letter-spacing:2px}
+.progress-wrap{display:flex;align-items:center;gap:8px;font-family:var(--font);color:var(--muted)}
 .progress-bar{width:100px;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
 .progress-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink),var(--amber));width:3%;transition:width .8s cubic-bezier(.7,0,.2,1)}
 .nav-btns{display:flex;gap:4px}
@@ -47,8 +47,12 @@ body,body *{font-family:'Mali',sans-serif!important}
 #starsDisplay{font-size:.95rem;letter-spacing:1px;color:var(--amber)}
 
 /* Hangman */
-#hangman{position:fixed;top:68px;right:16px;z-index:75;width:440px;min-height:256px;background:transparent;border:0;border-radius:0;padding:24px 28px;color:#fff;font-weight:700;font-family:'Mali',cursive;box-shadow:none;display:flex;align-items:center;justify-content:center;gap:1.5rem}
-#hangman svg{width:224px;height:176px;flex:none}
+#hangman{position:fixed;left:12px;bottom:56px;z-index:75;width:176px;min-height:126px;background:rgba(8,13,25,.92);border:1px solid rgba(0,240,255,.2);border-radius:14px;padding:8px;color:#fff;font-weight:700;font-family:'Mali',cursive;box-shadow:0 8px 24px rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;gap:.35rem;cursor:pointer}
+#hangman:not(.expanded){width:116px;min-height:36px;padding:4px}
+#hangman:not(.expanded) svg{display:none}
+#hangman:not(.expanded) .hang-info{font-size:.78rem;min-width:0;line-height:1}
+#hangman:not(.expanded) .hang-info b{display:inline;margin-left:3px;font-size:.95rem}
+#hangman svg{width:50%;height:100%;flex:none}
 .gallows{stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round}
 .hang-part{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;opacity:.14;transition:opacity .25s}
 .hang-part.point{fill:#fff;stroke:none}
@@ -61,6 +65,7 @@ body,body *{font-family:'Mali',sans-serif!important}
 #successPop.show{display:flex}
 .success-card{background:linear-gradient(145deg,rgba(13,20,35,.98),rgba(19,27,45,.98));border:1px solid rgba(0,240,255,.24);border-radius:24px;padding:1.3rem 1.6rem;box-shadow:0 24px 70px rgba(0,0,0,.48),0 0 34px rgba(0,240,255,.12);animation:sb 3s ease both;display:flex;align-items:center;gap:1.2rem;max-width:92vw}
 .success-card img{width:240px;height:240px;object-fit:contain;border:0;border-radius:18px}
+.success-card .gif-fallback{width:240px;height:240px;flex:none;border-radius:18px;background:rgba(12,18,31,.82)}
 .success-card h3{font-size:1.7rem;color:var(--cyan);font-family:'Mali',cursive}
 .success-card p{color:#c4d1eb;font-size:1rem;font-family:'Mali',cursive}
 @keyframes sb{0%{transform:scale(.35) rotate(-8deg);opacity:0}10%{transform:scale(1.08) rotate(3deg);opacity:1}18%,82%{transform:scale(1);opacity:1}100%{transform:scale(.92);opacity:0}}
@@ -85,16 +90,16 @@ body,body *{font-family:'Mali',sans-serif!important}
 /* Stage & slides */
 .stage{position:fixed;inset:56px 0 0 0;z-index:2;overflow:hidden}
 .deck{position:absolute;inset:0;display:flex;transition:transform .9s cubic-bezier(.76,0,.24,1)}
-.slide{position:relative;min-width:100%;height:100%;padding:20px 48px 30px;overflow:hidden;display:flex;flex-direction:column;animation:se .8s ease-out}
+.slide{position:relative;min-width:100%;height:100%;padding:20px 48px 30px;overflow:hidden;overscroll-behavior:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);animation:se .8s ease-out}
 @keyframes se{from{opacity:.5}to{opacity:1}}
-.snum{position:absolute;left:48px;bottom:12px;font-family:"JetBrains Mono";font-size:9px;color:var(--muted);letter-spacing:2px;z-index:5}
+.snum{position:absolute;left:48px;bottom:12px;font-family:var(--font);color:var(--muted);letter-spacing:2px;z-index:5}
 .snum b{color:var(--ink);font-weight:500}
-.deco{position:absolute;right:36px;top:8px;font-family:"Syne";font-weight:800;font-size:clamp(120px,18vw,220px);line-height:1;color:rgba(255,255,255,.025);pointer-events:none;letter-spacing:-6px;z-index:0}
+.deco{position:absolute;right:36px;top:8px;font-family:var(--font);font-weight:700;font-size:clamp(120px,18vw,220px);line-height:1;color:rgba(255,255,255,.025);pointer-events:none;letter-spacing:-0.3px;z-index:0}
 
-.tagline{display:flex;align-items:center;gap:8px;font-family:"JetBrains Mono";font-size:9px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:4px}
+.tagline{display:flex;align-items:center;gap:8px;font-family:var(--font);letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:4px}
 .tagline::before{content:"";width:20px;height:1px;background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
-h1.disp{font-family:"Syne";font-weight:800;font-size:clamp(32px,4.5vw,64px);line-height:.95;letter-spacing:-1.5px;margin-bottom:8px}
-h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line-height:1;letter-spacing:-1px;margin-bottom:10px}
+h1.disp{font-family:var(--font);font-weight:700;font-size:clamp(32px,4.5vw,64px);line-height:.95;letter-spacing:-0.3px;margin-bottom:8px}
+h2.disp{font-family:var(--font);font-weight:700;font-size:clamp(26px,3.2vw,46px);line-height:1;letter-spacing:-0.3px;margin-bottom:10px}
 .lead{font-size:16px;line-height:1.6;color:#c4d1eb;max-width:70ch;margin-bottom:12px}
 
 .stagger>*{opacity:0;transform:translateY(24px) scale(.98);animation:rv .8s cubic-bezier(.2,.8,.2,1) forwards}
@@ -106,14 +111,14 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
 
 /* Cover */
 .cover{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;height:100%;gap:30px}
-.cover h1{font-family:"Syne";font-weight:800;font-size:clamp(52px,7vw,120px);line-height:.88;letter-spacing:-3px;background:linear-gradient(180deg,#fff,#b9c8ff 60%,#5f7bb5);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
+.cover h1{font-family:var(--font);font-weight:700;font-size:clamp(52px,7vw,120px);line-height:.88;letter-spacing:-0.3px;background:linear-gradient(180deg,#fff,#b9c8ff 60%,#5f7bb5);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
 .cover h1 .energy{background:linear-gradient(90deg,var(--cyan),var(--pink) 50%,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:gs4 4s linear infinite;display:inline-block;filter:drop-shadow(0 0 30px rgba(0,240,255,.5))}
 @keyframes gs4{to{background-position:200% 0}}
 .cover .sub{font-size:16px;color:#a3b3d6;max-width:48ch;line-height:1.6}
 .cover .meta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
 .cover .meta div{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}
-.cover .meta div span{display:block;font-family:"JetBrains Mono";font-size:8px;color:var(--muted);letter-spacing:2px}
-.cover .meta div b{font-family:"Syne";font-size:12px;font-weight:700}
+.cover .meta div span{display:block;font-family:var(--font);color:var(--muted);letter-spacing:2px}
+.cover .meta div b{font-family:var(--font);font-weight:700}
 
 .orb-wrap{position:relative;width:100%;max-width:380px;aspect-ratio:1;margin:auto}
 .orb-ring{position:absolute;inset:0;border-radius:50%;border:1px solid var(--line)}
@@ -137,8 +142,8 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
 
 /* Quiz zone */
 .quiz-zone{margin-top:12px;padding:14px 16px;background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.2);border-radius:14px}
-.quiz-zone .qz-label{font-family:"JetBrains Mono";font-size:12px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.quiz-zone .qz-question{font-family:"Syne";font-weight:700;font-size:19px;color:#fff;margin-bottom:10px;line-height:1.35}
+.quiz-zone .qz-label{font-family:var(--font);color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.quiz-zone .qz-question{font-family:var(--font);font-weight:700;font-size:19px;color:#fff;margin-bottom:10px;line-height:1.35}
 .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .opt-btn{border:0;border-radius:10px;background:rgba(255,255,255,.06);color:#c4d1eb;font-weight:600;font-size:16px;padding:.7em .9em;cursor:pointer;transition:.2s;font-family:inherit;border:1px solid var(--line)}
 .opt-btn:hover{background:rgba(0,240,255,.1);border-color:var(--cyan);transform:translateY(-1px)}
@@ -167,8 +172,8 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
 .extra-figure{display:flex;flex-direction:column;width:min(100%,900px);height:min(34vh,320px);margin:10px auto 0;padding:8px;border:1px solid rgba(0,240,255,.18);border-radius:14px;background:#080d18;overflow:hidden}
 .extra-figures .extra-figure{width:100%;height:min(30vh,280px);margin:0}
 .extra-figure img{display:block;flex:1;min-height:0;width:100%;height:100%;object-fit:contain;filter:brightness(.82) contrast(1.04) saturate(.9)}
-.extra-figure figcaption{display:block;flex:none;padding-top:5px;color:var(--muted);font-size:11px;text-align:center;line-height:1.2}
-.extra-table-wrap{overflow-x:auto;margin-top:8px;border:1px solid rgba(0,240,255,.2);border-radius:12px}
+.extra-figure figcaption{display:block;flex:none;padding-top:5px;color:var(--muted);text-align:center;line-height:1.2}
+.extra-table-wrap{overflow:hidden;margin-top:8px;border:1px solid rgba(0,240,255,.2);border-radius:12px}
 .extra-table{width:100%;border-collapse:collapse;min-width:520px;background:rgba(8,13,24,.8);color:#dbe6f8;font-size:15px}
 .extra-table th,.extra-table td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left}
 .extra-table th{color:var(--cyan);background:rgba(0,240,255,.06)}
@@ -182,13 +187,13 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
 .g2c,.g3c,.g4c{padding:14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.02);text-align:center;transition:.35s}
 .g2c:hover,.g3c:hover,.g4c:hover{transform:translateY(-4px);border-color:var(--cyan)}
 .g2c .ic,.g3c .ic,.g4c .ic{font-size:24px;display:block;margin-bottom:4px}
-.g2c h4,.g3c h4,.g4c h4{font-family:"Syne";font-size:12px;font-weight:700}
-.g2c p,.g3c p,.g4c p{font-size:10px;color:var(--muted);margin-top:2px}
+.g2c h4,.g3c h4,.g4c h4{font-family:var(--font);font-weight:700}
+.g2c p,.g3c p,.g4c p{color:var(--muted);margin-top:2px}
 
 /* Formula */
 .formula-box{margin-top:10px;padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,rgba(5,8,16,.88),rgba(0,240,255,.08));border:1px solid rgba(0,240,255,.28)}
-.formula-box .lab{font-family:"JetBrains Mono";font-size:9px;color:var(--amber);letter-spacing:2px}
-.formula-box .eq{font-family:"Syne";font-weight:700;font-size:17px;margin-top:4px}
+.formula-box .lab{font-family:var(--font);color:var(--amber);letter-spacing:2px}
+.formula-box .eq{font-family:var(--font);font-weight:700;font-size:17px;margin-top:4px}
 .formula-box .eq span{color:var(--amber)}
 
 /* Seq */
@@ -200,58 +205,57 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
 .seq-item.b4{border-color:var(--lime);background:rgba(168,255,62,.05)}
 
 /* Image */
-.img-side{border-radius:16px;overflow:hidden;border:1px solid rgba(0,240,255,.2);height:78%;background:#050810;box-shadow:0 16px 50px rgba(0,0,0,.5);position:relative}
+.img-side{border-radius:16px;overflow:hidden;border:1px solid rgba(0,240,255,.2);height:78%;background:rgba(12,18,31,.82);box-shadow:0 16px 50px rgba(0,0,0,.5);position:relative}
 .img-side img{width:100%;height:100%;object-fit:contain;filter:brightness(.76) contrast(1.08) saturate(.88);transition:filter .6s}
+.img-side>svg{display:block;width:100%;height:100%;object-fit:contain}
 .img-side:hover img{filter:brightness(.88) contrast(1.08) saturate(.96)}
-.img-side .lbl{position:absolute;left:10px;bottom:10px;padding:5px 9px;border-radius:6px;background:rgba(0,0,0,.6);font-family:"JetBrains Mono";font-size:8px;letter-spacing:2px;backdrop-filter:blur(4px)}
+.img-side .lbl{position:absolute;left:10px;bottom:10px;padding:5px 9px;border-radius:6px;background:rgba(0,0,0,.6);font-family:var(--font);letter-spacing:2px;backdrop-filter:blur(4px)}
 .split-img{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;height:100%;align-items:center}
 .split-img.r{grid-template-columns:1fr 1.1fr}
 
 /* Final */
 .final{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center}
-.final h1{font-family:"Syne";font-weight:800;font-size:clamp(40px,5.5vw,84px);line-height:.95;letter-spacing:-2px;background:linear-gradient(90deg,var(--cyan),var(--pink) 50%,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:gs4 5s linear infinite;filter:drop-shadow(0 0 30px rgba(0,240,255,.3))}
+.final h1{font-family:var(--font);font-weight:700;font-size:clamp(40px,5.5vw,84px);line-height:.95;letter-spacing:-0.3px;background:linear-gradient(90deg,var(--cyan),var(--pink) 50%,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:gs4 5s linear infinite;filter:drop-shadow(0 0 30px rgba(0,240,255,.3))}
 .final p{font-size:13px;color:#a3b3d6;max-width:60ch;margin-top:10px;line-height:1.55}
 .final .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;max-width:680px}
-.final .facts div{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02);text-align:left;font-size:11px;color:#c4d1eb}
-.final .facts div b{font-family:"JetBrains Mono";font-size:8px;letter-spacing:2px;color:var(--cyan);display:block;margin-bottom:3px}
-.restart-btn{margin-top:16px;padding:10px 22px;border:1px solid var(--cyan);background:rgba(0,240,255,.08);color:var(--cyan);font-family:"JetBrains Mono";font-size:10px;letter-spacing:2px;border-radius:30px;cursor:pointer;transition:.3s}
+.final .facts div{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02);text-align:left;color:#c4d1eb}
+.final .facts div b{font-family:var(--font);letter-spacing:2px;color:var(--cyan);display:block;margin-bottom:3px}
+.restart-btn{margin-top:16px;padding:10px 22px;border:1px solid var(--cyan);background:rgba(0,240,255,.08);color:var(--cyan);font-family:var(--font);letter-spacing:2px;border-radius:30px;cursor:pointer;transition:.3s}
 .restart-btn:hover{background:rgba(0,240,255,.18);box-shadow:0 0 40px rgba(0,240,255,.4);transform:scale(1.05)}
 
 
 /* Compact bottom-right topic and reset controls */
 .float-tools{position:fixed;right:18px;bottom:18px;z-index:92;display:flex}
-.float-tools button{border:1px solid rgba(0,240,255,.24);border-radius:9px;padding:7px 12px;background:rgba(10,16,29,.88);color:var(--ink);font-size:12px;line-height:1;cursor:pointer;backdrop-filter:blur(10px);box-shadow:0 5px 18px rgba(0,0,0,.25);transition:background .2s,border-color .2s,transform .2s}
+.float-tools button{border:1px solid rgba(0,240,255,.24);border-radius:9px;padding:7px 12px;background:rgba(10,16,29,.88);color:var(--ink);line-height:1;cursor:pointer;backdrop-filter:blur(10px);box-shadow:0 5px 18px rgba(0,0,0,.25);transition:background .2s,border-color .2s,transform .2s}
 .float-tools button:hover,.float-tools button[aria-expanded="true"]{border-color:var(--cyan);background:rgba(0,240,255,.12);transform:translateY(-2px)}
 .topic-menu{position:fixed;right:18px;bottom:60px;z-index:91;width:min(320px,calc(100vw - 24px));max-height:min(62vh,520px);overflow:auto;padding:8px;border:1px solid rgba(0,240,255,.2);border-radius:12px;background:rgba(8,13,25,.96);box-shadow:0 14px 40px rgba(0,0,0,.48);backdrop-filter:blur(14px)}
 .topic-menu[hidden]{display:none}
-.topic-menu button{width:100%;display:block;text-align:left;border:0;border-radius:7px;padding:8px 10px;background:transparent;color:var(--ink);font-size:12px;cursor:pointer}
+.topic-menu button{width:100%;display:block;text-align:left;border:0;border-radius:7px;padding:8px 10px;background:transparent;color:var(--ink);cursor:pointer}
 .topic-menu button:hover,.topic-menu button[aria-current="true"]{background:rgba(0,240,255,.11);color:var(--cyan)}
-.topic-menu button small{display:block;margin-bottom:2px;color:var(--muted);font-size:9px;letter-spacing:.7px}
+.topic-menu button small{display:block;margin-bottom:2px;color:var(--muted);letter-spacing:.7px}
 .topic-menu .topic-reset{margin-top:7px;border-top:1px solid var(--line);border-radius:0 0 7px 7px;padding-top:12px;color:#ff8bad}
 .topic-menu .topic-reset:hover{background:rgba(255,45,120,.12);color:#ff8bad}
-@media(max-width:600px){.float-tools{right:10px;bottom:10px}.topic-menu{right:10px;bottom:50px}.float-tools button{padding:8px 11px;font-size:12px}}
+@media(max-width:600px){.float-tools{right:10px;bottom:10px}.topic-menu{right:10px;bottom:50px}.float-tools button{padding:8px 11px;}}
 
-.dots{position:fixed;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:4px;z-index:50}
+.dots{display:none}
 .dots button{width:6px;height:6px;border-radius:50%;border:none;cursor:pointer;background:rgba(255,255,255,.2);transition:.3s;padding:0}
 .dots button.active{background:var(--cyan);box-shadow:0 0 10px var(--cyan);transform:scale(1.6)}
 
-.hint{position:fixed;left:50%;bottom:6px;transform:translateX(-50%);font-family:"JetBrains Mono";font-size:8px;color:var(--muted);letter-spacing:2px;z-index:50}
-.hint kbd{padding:1px 4px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.05);color:#fff;font-size:8px}
+.hint{position:fixed;left:50%;bottom:6px;transform:translateX(-50%);font-family:var(--font);color:var(--muted);letter-spacing:2px;z-index:50}
+.hint kbd{padding:1px 4px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.05);color:#fff;}
 
 @media(max-width:1200px), (hover:none) and (pointer:coarse) and (max-width:1400px){
-  .slide{padding:210px 20px 34px;overflow-y:auto;overscroll-behavior:contain}.cover,.split,.split-img{grid-template-columns:1fr;gap:14px}
+  .slide{padding:72px 20px 34px}.cover,.split,.split-img{grid-template-columns:1fr;gap:14px}
   .g4{grid-template-columns:repeat(2,1fr)}.deco{display:none}
   .success-card img{width:210px;height:210px}
   #scoreBox{top:58px;left:8px;font-size:.7rem}
-  #hangman{top:62px;right:8px;left:auto;bottom:auto;width:min(300px,calc(100vw - 16px));min-height:176px;padding:14px 16px;gap:.75rem}
-  #hangman svg{width:150px;height:118px}
-  .hang-info{font-size:1.25rem;min-width:100px}
-  .hang-info b{font-size:1.6rem}
+  #hangman{left:8px;bottom:54px;top:auto;right:auto;width:156px;min-height:106px;padding:6px;gap:.25rem}
+  .hang-info{font-size:.8rem;min-width:64px}
+  .hang-info b{font-size:1rem}
   .slide h1.disp{font-size:clamp(38px,5vw,58px)}
   .slide h2.disp{font-size:clamp(34px,4.5vw,50px);line-height:1.08}
   .slide p{font-size:18px!important;line-height:1.55}
   .slide .tagline{font-size:13px;letter-spacing:1.5px}
-  .slide .cover .meta div span{font-size:12px}
   .slide .cover .meta div b{font-size:16px}
   .slide .g2c h4,.slide .g3c h4,.slide .g4c h4{font-size:18px!important}
   .slide .g2c p,.slide .g3c p,.slide .g4c p{font-size:16px!important}
@@ -264,13 +268,13 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
   .quiz-feedback{font-size:16px}
   .quiz-opts{grid-template-columns:1fr}
   .slide .img-side{height:auto;aspect-ratio:4/3;max-height:60vh}
-  .slide .img-side .lbl{font-size:12px;padding:7px 10px}
+  .slide .img-side .lbl{padding:7px 10px}
   .slide table{font-size:16px!important}
   .slide table th,.slide table td{font-size:16px!important;padding:10px 12px!important;line-height:1.4}
   .slide .formula-box .lab{font-size:13px}
   .slide .formula-box .eq{font-size:23px}
-  .slide .snum{font-size:11px;letter-spacing:1px}
-  .hint{font-size:10px;letter-spacing:1px}
+  .slide .snum{letter-spacing:1px}
+  .hint{letter-spacing:1px}
   .extra-layout{margin:0;gap:3px}
   .extra-layout h2.disp{font-size:clamp(32px,4.5vw,48px)}
   .extra-cards{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
@@ -281,15 +285,21 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
   .extra-table{font-size:15px!important}
 }
 @media(max-width:600px){
+  .topbar{height:50px;padding:0 8px;gap:4px}
+  .brand{gap:5px;white-space:nowrap}
+  .brand small{display:none}
+  .progress-wrap{gap:4px;white-space:nowrap}
+  .progress-bar{width:44px}
+  .nav-btns{gap:3px}
+  .nav-btns button{width:27px;height:28px}
   .success-card{flex-direction:column;gap:.65rem;text-align:center;padding:1rem;max-width:92vw}
   .success-card img{width:min(220px,65vw);height:min(220px,65vw)}
   .success-card h3{font-size:1.4rem}
   .success-card p{font-size:.95rem}
-  #hangman{top:60px;right:6px;width:min(300px,calc(100vw - 12px));min-height:176px;padding:12px 14px;gap:.6rem;border-radius:24px}
-  #hangman svg{width:138px;height:112px}
-  .hang-info{font-size:1.15rem;min-width:96px}
-  .hang-info b{font-size:1.45rem}
-  .slide{padding:190px 12px 32px}
+  #hangman{left:6px;bottom:52px;top:auto;right:auto;width:150px;min-height:100px;padding:5px;gap:.2rem;border-radius:14px}
+  .hang-info{font-size:.76rem;min-width:62px}
+  .hang-info b{font-size:.96rem}
+  .slide{padding:70px 12px 32px}
   .slide h1.disp{font-size:clamp(34px,9vw,46px)}
   .slide h2.disp{font-size:clamp(30px,8vw,42px)}
   .slide p{font-size:16px!important}
@@ -304,6 +314,137 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
   .extra-figures{grid-template-columns:1fr}
   .extra-figures .extra-figure{height:min(27vh,220px)}
 }
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+.ev-panel{transform-origin:center;animation:ev-panel-in .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--panel-index,0)*90ms)}
+.ev-animate{animation:ev-flow 1.5s linear infinite;stroke-dasharray:12 10}
+.ev-ball{animation:ev-drop 1.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.ev-turbine,.ev-wheel{animation:ev-spin 5s linear infinite;transform-box:fill-box;transform-origin:center}
+.ev-bubble{animation:ev-rise 1.4s ease-in infinite alternate}
+.ev-bar{animation:ev-bar-grow .7s ease-out both;transform-box:fill-box;transform-origin:bottom}
+@keyframes ev-panel-in{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes ev-flow{to{stroke-dashoffset:-44}}
+@keyframes ev-drop{to{transform:translateY(20px)}}
+@keyframes ev-spin{to{transform:rotate(360deg)}}
+@keyframes ev-rise{to{transform:translateY(-13px);opacity:.55}}
+@keyframes ev-bar-grow{from{transform:scaleY(.1)}to{transform:scaleY(1)}}
+.slide:not(.visual-active) .ev-animate,.slide:not(.visual-active) .ev-panel,.slide:not(.visual-active) .ev-ball,.slide:not(.visual-active) .ev-turbine,.slide:not(.visual-active) .ev-wheel,.slide:not(.visual-active) .ev-bubble,.slide:not(.visual-active) .ev-bar,.slide:not(.visual-active) .ev-particles circle{animation-play-state:paused}
+
+/* Fit-to-page lesson layout, glass science art, and readable Mali typography. */
+:root{--font:'Mali',sans-serif;--fs-body:clamp(14px,1.9vh,20px);--fs-title:clamp(26px,3.3vw,48px)}
+body,body *,svg text{font-family:'Mali',sans-serif!important}
+body *,svg text{font-weight:400}
+button,b,strong,h1,h2,h3,h4{font-weight:700}
+.stage{inset:56px 0 0}
+.slide{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:clamp(6px,1.2vh,14px);height:100%;padding:12px 28px 28px;overflow:hidden;overscroll-behavior:none;align-items:stretch}
+.slide>.stagger,.slide>.extra-layout{grid-column:1;grid-row:1;min-width:0;min-height:0;width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:clamp(4px,.7vh,9px)}
+.slide>.energy-visual-slot{grid-column:2;grid-row:1;align-self:stretch;justify-self:stretch;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:12px;border-radius:18px;background:rgba(12,18,31,.82);border:1px solid rgba(0,240,255,.22);backdrop-filter:blur(12px);box-shadow:0 0 26px color-mix(in srgb,var(--cyan) 12%,transparent);overflow:hidden;position:relative}
+.slide.cover{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.cover>.stagger{grid-column:1}.cover>.energy-visual-slot{grid-column:2}.cover .orb-wrap{display:none}
+.energy-visual-slot svg{display:block;width:100%;height:100%;min-width:0;max-width:100%;margin:auto}
+.energy-visual-slot svg text{font-size:32px!important;font-weight:700!important;fill:var(--ink)}
+.energy-visual-slot svg text.ev-small-text{font-size:64px!important}
+.ev-storyboard{position:relative;width:100%;height:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));align-content:center;align-items:stretch;gap:18px;padding:24px}
+.ev-panel{position:relative;min-width:0;display:grid;grid-template-rows:minmax(0,1fr) auto;border:2px solid rgba(0,240,255,.52);border-radius:16px;padding:10px;background:linear-gradient(145deg,rgba(12,18,31,.96),rgba(12,18,31,.72));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 12px 25px rgba(0,0,0,.28);overflow:visible;animation:ev-panel-in .55s ease both;animation-delay:calc(var(--panel-index,0)*80ms)}
+.ev-number{position:absolute;z-index:3;left:-10px;top:-10px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:2px solid var(--cyan);color:var(--cyan);font-weight:700;font-size:14px}
+.ev-art{min-height:0;display:grid;place-items:center;overflow:hidden;border-radius:10px;background:rgba(3,7,15,.46)}
+.ev-storyboard{align-content:stretch;grid-template-rows:repeat(auto-fit,minmax(0,1fr))}
+.ev-panel{min-height:0}
+.ev-panel:last-child:nth-child(odd){grid-column:1/-1}
+.ev-art svg{max-height:100%}
+.ev-art svg{grid-area:1/1}
+.ev-compact{display:none!important}
+.ev-caption{min-height:32px;display:grid;place-items:center;text-align:center;color:var(--ink);font-size:14px;font-weight:700;line-height:1.2;padding:4px 2px}
+.ev-chain-types{position:absolute;z-index:4;left:8px;right:8px;bottom:8px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
+.ev-chain-types span{padding:4px 2px;border:1px solid rgba(0,240,255,.24);border-radius:8px;background:rgba(5,8,16,.94);color:var(--ink);text-align:center;font-size:13px;line-height:1.05}
+.ev-chain-types b{color:var(--lime);font-weight:700}
+.ev-connector{position:absolute;right:-25px;top:42%;z-index:4;color:var(--lime);font-size:20px;text-shadow:0 0 12px var(--lime);animation:ev-flow 1.5s linear infinite}
+.ev-mascot{position:absolute;right:8px;top:8px;z-index:5;width:auto;height:58px;display:flex;align-items:center;gap:2px;filter:drop-shadow(0 0 10px rgba(0,240,255,.2));pointer-events:none}
+.ev-mascot svg{width:58px;height:58px;flex:none}
+.ev-speech{padding:5px 8px;border:1px solid rgba(0,240,255,.36);border-radius:10px;background:rgba(8,13,25,.96);color:var(--ink);font-size:13px;line-height:1.1;white-space:nowrap}
+.ev-label text{font-size:58px!important;font-weight:700!important;fill:var(--ink)}
+.energy-visual-slot>svg text{font-size:32px!important}
+.ev-flow{stroke-dasharray:14 10;animation:ev-flow 1.5s linear infinite}
+.ev-ball{animation:ev-drop 1.2s ease-in-out infinite alternate}
+.ev-wheel,.ev-fan{transform-box:fill-box;transform-origin:center;animation:ev-spin 5s linear infinite}
+.ev-particles circle{animation:ev-rise 1s ease-in-out infinite alternate}
+.extra-layout h2.disp{font-size:var(--fs-title);line-height:1.08;margin:0}
+.extra-layout .lead,.slide .lead{font-size:var(--fs-body);line-height:1.4;margin:0;max-width:70ch}
+.slide h1.disp,.slide h2.disp{font-family:var(--font);font-weight:700;letter-spacing:0;line-height:1.05;margin:0}
+.slide h1.disp{font-size:clamp(30px,4.2vw,60px)}
+.slide h2.disp{font-size:var(--fs-title)}
+.slide p,.extra-card span,.extra-card b,.quiz-zone,.opt-btn,.formula-box,.seq-item,.g2c h4,.g3c h4,.g4c h4{font-size:var(--fs-body);line-height:1.35}
+.tagline,.snum,.brand small,.progress-wrap,.hint,.quiz-zone .qz-label,.formula-box .lab,.img-side .lbl,.final .facts div b,.restart-btn{font-size:14px;letter-spacing:0}
+.quiz-zone{padding:10px 12px;margin:4px 0 0;background:rgba(0,240,255,.04);border-color:rgba(0,240,255,.2);border-radius:12px}
+.quiz-zone .qz-label{font-size:13px;margin-bottom:4px}
+.quiz-zone .qz-question{font:700 16px/1.3 var(--font);margin-bottom:6px}
+.quiz-opts{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.opt-btn{min-height:40px;padding:6px 8px;font-size:14px}
+.number-entry{width:100%;max-width:360px}
+.number-readout{margin-bottom:5px}.number-value{height:40px;font-size:18px}
+.number-pad{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.num-key,.number-submit{min-height:38px;font-size:15px}
+.number-submit{margin-top:5px}
+.extra-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:5px}
+.extra-card{min-height:0;padding:8px 10px;border-radius:10px}
+.extra-card b,.extra-card span{font-size:14px;line-height:1.25}
+.extra-card b{margin-bottom:2px}
+.extra-table-wrap{min-height:0;overflow:hidden;margin-top:5px;background:rgba(12,18,31,.82)}
+.extra-table{min-width:0;font-size:14px}.extra-table th,.extra-table td{padding:5px 7px}
+.img-side,.extra-figure{background:rgba(12,18,31,.82)!important;border-color:rgba(0,240,255,.22)!important;backdrop-filter:blur(12px);box-shadow:0 0 22px rgba(0,240,255,.1)}
+.quiz-toggle{display:none}
+.fit-warning{outline:2px solid var(--pink)!important}
+#scoreBox{top:58px;left:8px;max-width:148px;padding:5px 8px;font-size:13px;z-index:60}
+#hangman{top:132px;bottom:auto;left:12px;right:auto;width:116px;min-height:36px;z-index:59}
+#hangman.expanded{width:148px;height:84px;min-height:84px}
+.hang-info{font-size:14px;min-width:65px}.hang-info b{font-size:18px}
+#hangman:not(.expanded) .hang-info{font-size:14px}
+#hangman:not(.expanded) .hang-info b{font-size:16px}
+.snum{left:14px;bottom:5px}
+@media(min-width:900px){.stage{inset:56px 0 0}.extra-layout{margin:0}.extra-layout .quiz-zone{margin-top:4px}.ev-compact{display:none!important}.ev-wide{display:block!important}}
+@media(max-width:899px){
+ .stage{inset:50px 0 0}.slide{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(120px,34vh);gap:6px;padding:50px 14px 27px}
+ .slide>.stagger,.slide>.extra-layout{grid-column:1;grid-row:1;justify-content:center}
+ .slide>.energy-visual-slot{grid-column:1;grid-row:2;padding:6px}
+ .slide.cover{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(120px,34vh)}
+ .cover>.energy-visual-slot{grid-column:1;grid-row:2}
+ .cover h1{font-size:clamp(34px,10vw,56px);letter-spacing:0}
+ .cover .sub{font-size:14px;line-height:1.32}.cover .meta{margin-top:5px;gap:5px}.cover .meta div{padding:4px 7px}
+ .slide h1.disp{font-size:clamp(25px,7vw,40px)}.slide h2.disp{font-size:clamp(23px,6vw,36px)}
+ .slide .lead,.extra-layout .lead{font-size:14px;line-height:1.3}
+ .slide .g4{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:3px!important}
+ .slide .g4c{padding:5px 3px}
+ .slide .g4c .ic{font-size:16px!important;margin-bottom:0}
+ .slide .g4c h4{font-size:14px!important}.slide .g4c p{font-size:14px!important;line-height:1.1}
+ .slide>.stagger{gap:3px}.slide .formula-box{padding:7px 10px;margin:3px 0}.slide .formula-box .eq{font-size:14px;margin:0}
+ .slide .extra-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.slide .extra-card{padding:5px 7px}.slide .extra-card b,.slide .extra-card span{font-size:13px}
+ .slide .tagline{font-size:14px;letter-spacing:0}.slide .quiz-zone{margin:3px 0;padding:7px 9px}
+ .slide .quiz-zone .qz-question{font-size:14px;line-height:1.2;margin-bottom:4px}
+ .slide .quiz-zone:not(.sheet-open) .qz-label,.slide .quiz-zone:not(.sheet-open) .qz-question,.slide .quiz-zone:not(.sheet-open) .quiz-feedback{display:none}
+ .slide .quiz-zone .qz-label{font-size:14px;margin-bottom:2px}.slide .quiz-opts{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+ .slide .opt-btn{min-height:36px;padding:4px;font-size:14px}.slide .quiz-feedback{min-height:0;font-size:13px;margin-top:2px}
+ .slide .number-entry{display:none}.slide .quiz-toggle{display:block;min-height:38px;padding:6px 12px;border:1px solid var(--cyan);border-radius:10px;background:rgba(0,240,255,.12);color:var(--ink);font:700 14px var(--font)}
+ .slide .quiz-zone{position:relative}.slide .quiz-zone.sheet-open .number-entry,.slide .quiz-zone.sheet-open .quiz-opts{display:grid}
+ .slide .quiz-zone:not(.sheet-open) .quiz-opts{display:none}.slide .quiz-zone.sheet-open{position:fixed;z-index:150;left:0;right:0;bottom:0;max-height:72vh;overflow:auto;padding:18px 16px calc(18px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0;background:rgba(8,13,25,.98);box-shadow:0 -16px 60px rgba(0,0,0,.6)}
+ .slide .quiz-zone.sheet-open .quiz-toggle{margin-bottom:10px}.slide .number-pad{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .extra-layout{gap:3px}.extra-layout h2.disp{font-size:clamp(23px,6vw,36px)}.extra-table th,.extra-table td{font-size:13px;padding:4px}
+ .ev-wide{display:block!important}.ev-compact{display:none!important}.energy-visual-slot svg text:not(.ev-small-text){display:none}
+ .ev-storyboard{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);align-content:stretch;gap:8px;padding:20px 5px 5px;overflow:hidden}
+ .ev-panel{padding:4px;overflow:hidden}.ev-art{height:100%}.ev-art svg{max-width:100%}.ev-caption{font-size:13px;min-height:22px}.ev-number{width:26px;height:26px;font-size:13px}.ev-connector{right:-17px;font-size:16px}
+ .ev-compact{display:none!important}.ev-wide{display:block!important}
+ .ev-mascot{width:auto;height:48px;top:3px;right:3px}.ev-mascot svg{width:48px;height:48px}.ev-speech{font-size:13px;padding:3px 5px}
+ .slide .final{justify-content:center;gap:3px}
+ .slide .final h1{font-size:30px;line-height:1.05}
+ .slide .final p{font-size:14px;line-height:1.24;margin-top:3px}
+ .slide .final .facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:4px}
+ .slide .final .facts div{padding:5px 7px;font-size:14px;line-height:1.18}
+ .slide .final .facts div b{font-size:14px;margin-bottom:1px}
+ .slide .final .restart-btn{margin-top:4px;font-size:14px;padding:6px 16px}
+ #scoreBox{top:52px;left:6px;padding:3px 6px;font-size:13px}#hangman{top:52px;left:auto;right:6px;bottom:auto;min-height:32px;width:102px;padding:3px}
+ #hangman.expanded{width:126px;height:74px;min-height:74px}.hang-info{font-size:13px;min-width:55px}.hang-info b{font-size:16px}
+ .hint{display:none}.snum{left:8px;bottom:4px;font-size:13px}
+ .float-tools{right:8px;bottom:8px}.float-tools button{font-size:13px;min-height:34px}
+}
+@media(prefers-reduced-motion:reduce){.ev-panel,.ev-flow,.ev-ball,.ev-wheel,.ev-fan,.ev-particles circle{animation:none!important}}
 </style>
 </head>
 <body>
@@ -320,8 +461,8 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
   <div id="correctCount">0 correct</div>
 </div>
 
-<div id="hangman">
-  <svg viewBox="0 0 150 110">
+<div id="hangman" class="collapsed" role="button" tabindex="0" aria-label="Hangman progress. Activate to expand or collapse." aria-expanded="false">
+  <svg viewBox="0 0 150 110" preserveAspectRatio="xMidYMid meet" width="100%" height="100%">
     <path class="gallows" d="M8 103H142M28 103V8H96M28 23L43 8M96 8V22"/>
     <circle class="hang-part" id="hpart1" cx="96" cy="34" r="10"/>
     <path class="hang-part" id="hpart2" d="M96 44V70"/>
@@ -357,7 +498,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
 
 <!-- Floating shapes -->
 <div style="position:fixed;top:15%;right:8%;width:60px;height:60px;opacity:.1;z-index:1;pointer-events:none;animation:sp 8s linear infinite">
-  <svg viewBox="0 0 100 100" style="width:100%;height:100%"><polygon points="50,5 95,80 5,80" fill="none" stroke="#00f0ff" stroke-width="2"/></svg>
+  <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" width="100%" height="100%"><polygon points="50,5 95,80 5,80" fill="none" stroke="#00f0ff" stroke-width="2"/></svg>
 </div>
 
 <header class="topbar">
@@ -370,7 +511,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
   <div class="nav-btns"><button id="prev">‹</button><button id="next">›</button></div>
 </header>
 
-<nav class="dots" id="dots"></nav>
+<nav class="dots" id="dots" aria-hidden="true"></nav>
 <div class="hint">USE <kbd>←</kbd> <kbd>→</kbd> · CLICK · SWIPE</div>
 <div class="float-tools" aria-label="Deck controls">
   <button id="topicToggle" type="button" aria-expanded="false" aria-controls="topicMenu">Topic</button>
@@ -398,7 +539,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
     <div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="orb-ring r3"></div><div class="orb-ring r4"></div>
     <div class="orb-core"></div><div class="orb-pulse"></div>
   </div>
-  <div class="snum"><b>01</b> / 18</div>
+  <figure class="energy-visual-slot" data-scene="chapterCover" aria-label="Science illustration"></figure><div class="snum"><b>01</b> / 18</div>
 </section>
 
 <!-- 2. JOULES + QUIZ -->
@@ -419,7 +560,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       <div class="quiz-feedback" aria-live="polite"></div>
     </div>
   </div>
-  <div class="snum"><b>02</b> / 18 — JOULES + QUIZ</div>
+  <figure class="energy-visual-slot" data-scene="joule" aria-label="Science illustration"></figure><div class="snum"><b>02</b> / 18 — JOULES + QUIZ</div>
 </section>
 
 <!-- 3. SANKEY + QUIZ -->
@@ -440,7 +581,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       <div class="quiz-feedback" aria-live="polite"></div>
     </div>
   </div>
-  <div class="snum"><b>03</b> / 18 — SANKEY + QUIZ</div>
+  <figure class="energy-visual-slot" data-scene="sankey" data-props="{&quot;input&quot;:200,&quot;useful&quot;:150,&quot;wasted&quot;:50}" aria-label="Science illustration"></figure><div class="snum"><b>03</b> / 18 — SANKEY + QUIZ</div>
 </section>
 
 <!-- 4. ENERGY STORES + QUIZ -->
@@ -454,6 +595,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       <div class="g4c" style="border-color:rgba(0,240,255,.25)"><span class="ic">🏃</span><h4>Kinetic</h4><p>Moving objects</p></div>
       <div class="g4c" style="border-color:rgba(255,45,120,.25)"><span class="ic">⛰️</span><h4>Grav. PE</h4><p>Raised objects</p></div>
       <div class="g4c" style="border-color:rgba(168,255,62,.25)"><span class="ic">🌡️</span><h4>Thermal</h4><p>Particle motion</p></div>
+      <div class="g4c" style="border-color:rgba(177,78,255,.3)"><span class="ic">🪀</span><h4>Elastic PE</h4><p>Stretched or compressed</p></div>
     </div>
     <div class="quiz-zone" data-qid="q3" style="margin-top:10px">
       <div class="qz-label">⚡ QUICK QUIZ</div>
@@ -462,7 +604,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       <div class="quiz-feedback" aria-live="polite"></div>
     </div>
   </div>
-  <div class="snum"><b>04</b> / 18 — ENERGY STORES + QUIZ</div>
+  <figure class="energy-visual-slot" data-scene="stores" aria-label="Science illustration"></figure><div class="snum"><b>04</b> / 18 — ENERGY STORES + QUIZ</div>
 </section>
 
 <!-- 5. DOING WORK + QUIZ -->
@@ -483,20 +625,20 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       <div class="quiz-feedback" aria-live="polite"></div>
     </div>
   </div>
-  <div class="snum"><b>05</b> / 18 — DOING WORK + QUIZ</div>
+  <figure class="energy-visual-slot" data-scene="work" aria-label="Science illustration"></figure><div class="snum"><b>05</b> / 18 — DOING WORK + QUIZ</div>
 </section>
 
 <!-- 6. HOT WATER TANK IMAGE -->
 <section class="slide">
   <div class="split-img stagger">
     <div class="img-side">
-      <img src="https://z-cdn-media.chatglm.cn/files/35674502-f1e5-4c3e-9309-5ac89e100517.png?auth_key=1890318539-3fc4466560d04dc1a5c1b98142ede229-0-e0ca770e1960e541b494b1658a6336b2" alt="Hot water tank">
+      
       <div class="lbl">CASE STUDY · HOT WATER TANK</div>
     </div>
     <div>
       <div class="tagline" style="color:var(--violet)">6.1 · CASE STUDY</div>
       <h2 class="disp">Hot water<br>tank.</h2>
-      <p style="font-size:12px;color:#c4d1eb;line-height:1.5">A heater transfers energy to water. Insulation wraps the tank to slow unwanted energy loss.</p>
+      <p style="color:#c4d1eb;line-height:1.5">A heater transfers energy to water. Insulation wraps the tank to slow unwanted energy loss.</p>
       <div class="seq">
         <div class="seq-item"><b style="color:var(--cyan)">HEATER</b> — transfers energy to water</div>
         <div class="seq-item b2"><b style="color:var(--pink)">PARTICLES</b> — move faster as water warms</div>
@@ -505,7 +647,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       </div>
     </div>
   </div>
-  <div class="snum"><b>06</b> / 18 — HOT WATER TANK</div>
+  <figure class="energy-visual-slot" data-scene="hotWaterTank" aria-label="Science illustration"></figure><div class="snum"><b>06</b> / 18 — HOT WATER TANK</div>
 </section>
 
 <!-- 7. FALLING BALL IMAGE + QUIZ -->
@@ -514,7 +656,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
     <div>
       <div class="tagline" style="color:var(--violet)">6.1 · CASE STUDY</div>
       <h2 class="disp">Falling ball<br>energy.</h2>
-      <p style="font-size:12px;color:#c4d1eb;line-height:1.5">A ball held high stores gravitational PE. As it falls, PE → kinetic. On impact, some dissipates as sound + thermal.</p>
+      <p style="color:#c4d1eb;line-height:1.5">A ball held high stores gravitational PE. As it falls, PE → kinetic. On impact, some dissipates as sound + thermal.</p>
       <div class="seq">
         <div class="seq-item b3"><b style="color:var(--amber)">HELD HIGH</b> — stores gravitational PE</div>
         <div class="seq-item"><b style="color:var(--cyan)">FALLING</b> — PE → Kinetic (increases)</div>
@@ -529,11 +671,11 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       </div>
     </div>
     <div class="img-side">
-      <img src="assets/chapter6-energy/12_bouncing_ball_energy.jpg" alt="Falling ball">
+      
       <div class="lbl">CASE STUDY · FALLING BALL</div>
     </div>
   </div>
-  <div class="snum"><b>07</b> / 18 — FALLING BALL + QUIZ</div>
+  <figure class="energy-visual-slot" data-scene="fallingBall" aria-label="Science illustration"></figure><div class="snum"><b>07</b> / 18 — FALLING BALL + QUIZ</div>
 </section>
 
 <!-- 8. DISSIPATION + QUIZ -->
@@ -544,8 +686,8 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
     <h2 class="disp">Useful vs<br>wasted energy.</h2>
     <p class="lead">Every useful transfer has some less-useful transfer. When energy spreads into surroundings, it is <b style="color:var(--violet)">dissipated</b>.</p>
     <div class="g2" style="margin-top:8px">
-      <div class="g2c" style="border-color:rgba(168,255,62,.25);background:rgba(168,255,62,.04)"><div style="font-size:22px">✅</div><h4>USEFUL</h4><p style="font-size:10px">Light, motion, heat cooking food</p></div>
-      <div class="g2c" style="border-color:rgba(255,45,120,.25);background:rgba(255,45,120,.04)"><div style="font-size:22px">❌</div><h4>WASTED</h4><p style="font-size:10px">Heat to surroundings, sound, vibration</p></div>
+      <div class="g2c" style="border-color:rgba(168,255,62,.25);background:rgba(168,255,62,.04)"><div style="font-size:22px">✅</div><h4>USEFUL</h4><p>Light, motion, heat cooking food</p></div>
+      <div class="g2c" style="border-color:rgba(255,45,120,.25);background:rgba(255,45,120,.04)"><div style="font-size:22px">❌</div><h4>WASTED</h4><p>Heat to surroundings, sound, vibration</p></div>
     </div>
     <div class="quiz-zone" data-qid="q6" style="margin-top:8px">
       <div class="qz-label">⚡ QUICK QUIZ</div>
@@ -554,26 +696,26 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       <div class="quiz-feedback" aria-live="polite"></div>
     </div>
   </div>
-  <div class="snum"><b>08</b> / 18 — DISSIPATION + QUIZ</div>
+  <figure class="energy-visual-slot" data-scene="dissipation" aria-label="Science illustration"></figure><div class="snum"><b>08</b> / 18 — DISSIPATION + QUIZ</div>
 </section>
 
 <!-- 9. FAN OVEN IMAGE -->
 <section class="slide">
   <div class="split-img stagger">
     <div class="img-side">
-      <img src="https://z-cdn-media.chatglm.cn/files/8a99a1a2-6944-49a6-bd97-78abbcabb95b.png?auth_key=1890318539-a4929313d73144389dacfaec521b9449-0-8c4b8d623215478282a06e7ce8b7970c" alt="Fan oven">
+      
       <div class="lbl">CASE STUDY · FAN OVEN</div>
     </div>
     <div>
       <div class="tagline" style="color:var(--violet)">6.2 · CASE STUDY</div>
       <h2 class="disp">Fan oven<br>energy.</h2>
       <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
-        <div style="padding:7px 10px;border-left:3px solid var(--lime);background:rgba(168,255,62,.05);border-radius:0 8px 8px 0;font-size:11px"><b style="color:var(--lime)">USEFUL</b> · Fan spreads heat · Thermal heats food</div>
-        <div style="padding:7px 10px;border-left:3px solid var(--pink);background:rgba(255,45,120,.05);border-radius:0 8px 8px 0;font-size:11px"><b style="color:var(--pink)">WASTED</b> · Sound · Casing heat · Energy to room</div>
+        <div style="padding:7px 10px;border-left:3px solid var(--lime);background:rgba(168,255,62,.05);border-radius:0 8px 8px 0;"><b style="color:var(--lime)">USEFUL</b> · Fan spreads heat · Thermal heats food</div>
+        <div style="padding:7px 10px;border-left:3px solid var(--pink);background:rgba(255,45,120,.05);border-radius:0 8px 8px 0;"><b style="color:var(--pink)">WASTED</b> · Sound · Casing heat · Energy to room</div>
       </div>
     </div>
   </div>
-  <div class="snum"><b>09</b> / 18 — FAN OVEN</div>
+  <figure class="energy-visual-slot" data-scene="fanOven" aria-label="Science illustration"></figure><div class="snum"><b>09</b> / 18 — FAN OVEN</div>
 </section>
 
 <!-- 10. BICYCLE DYNAMO IMAGE -->
@@ -590,24 +732,24 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       </div>
     </div>
     <div class="img-side">
-      <img src="https://z-cdn-media.chatglm.cn/files/567b012c-b149-4a68-95e5-61faace5726a.png?auth_key=1890318539-ca84cbcd9fa649bdbb245c5eb90f856e-0-2d7a675aa156c4dcb0cfd73ebf47cb45" alt="Bicycle dynamo">
+      
       <div class="lbl">CASE STUDY · BICYCLE DYNAMO</div>
     </div>
   </div>
-  <div class="snum"><b>10</b> / 18 — BICYCLE DYNAMO</div>
+  <figure class="energy-visual-slot" data-scene="bicycleDynamo" aria-label="Science illustration"></figure><div class="snum"><b>10</b> / 18 — BICYCLE DYNAMO</div>
 </section>
 
 <!-- 11. FOSSIL FUELS + QUIZ -->
 <section class="slide">
   <div class="split-img stagger">
     <div class="img-side">
-      <img src="assets/chapter6-energy/03_fossil_fuels_formation.jpg" alt="Fossil fuels">
+      
       <div class="lbl">FOSSIL FUELS · FORMATION</div>
     </div>
     <div>
       <div class="tagline">NON-RENEWABLE</div>
       <h2 class="disp">Formed over<br>millions of years.</h2>
-      <p style="font-size:12px;color:#c4d1eb;line-height:1.5">Coal, oil and gas formed from organisms over millions of years. Their stored chemical energy came from ancient sunlight.</p>
+      <p style="color:#c4d1eb;line-height:1.5">Coal, oil and gas formed from organisms over millions of years. Their stored chemical energy came from ancient sunlight.</p>
       <div class="quiz-zone" data-qid="q7" style="margin-top:8px">
         <div class="qz-label">⚡ QUICK QUIZ</div>
         <div class="qz-question">Why are fossil fuels classified as non-renewable?</div>
@@ -616,7 +758,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       </div>
     </div>
   </div>
-  <div class="snum"><b>11</b> / 18 — FOSSIL FUELS + QUIZ</div>
+  <figure class="energy-visual-slot" data-scene="fossilFuelLayers" aria-label="Science illustration"></figure><div class="snum"><b>11</b> / 18 — FOSSIL FUELS + QUIZ</div>
 </section>
 
 <!-- 12. RENEWABLE + QUIZ -->
@@ -639,7 +781,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       <div class="quiz-feedback" aria-live="polite"></div>
     </div>
   </div>
-  <div class="snum"><b>12</b> / 18 — RENEWABLE + QUIZ</div>
+  <figure class="energy-visual-slot" data-scene="renewable" aria-label="Science illustration"></figure><div class="snum"><b>12</b> / 18 — RENEWABLE + QUIZ</div>
 </section>
 
 <!-- 13. POWER STATION FLOW -->
@@ -650,27 +792,29 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
     <h2 class="disp">From heat<br>to electrons.</h2>
     <p class="lead">Fuel → boiler → steam → turbine → generator → electricity</p>
     <div style="display:flex;align-items:center;gap:0;justify-content:center;margin-top:12px;flex-wrap:wrap">
-      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🪵</div><div style="font-family:'Syne';font-size:11px;font-weight:700">FUEL</div><div style="font-family:'JetBrains Mono';font-size:8px;color:var(--cyan)">CHEMICAL</div></div>
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🪵</div><div style="font-family:var(--font);font-weight:700">FUEL</div><div style="font-family:var(--font);color:var(--cyan)">CHEMICAL</div></div>
       <div style="font-size:16px;color:var(--cyan);padding:0 4px">→</div>
-      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🔥</div><div style="font-family:'Syne';font-size:11px;font-weight:700">BOILER</div><div style="font-family:'JetBrains Mono';font-size:8px;color:var(--amber)">THERMAL</div></div>
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🔥</div><div style="font-family:var(--font);font-weight:700">BOILER</div><div style="font-family:var(--font);color:var(--amber)">THERMAL</div></div>
       <div style="font-size:16px;color:var(--cyan);padding:0 4px">→</div>
-      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">⚙️</div><div style="font-family:'Syne';font-size:11px;font-weight:700">TURBINE</div><div style="font-family:'JetBrains Mono';font-size:8px;color:var(--pink)">KINETIC</div></div>
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">♨️</div><div style="font-family:var(--font);font-weight:700">STEAM</div><div style="font-family:var(--font);color:var(--amber)">THERMAL</div></div>
       <div style="font-size:16px;color:var(--cyan);padding:0 4px">→</div>
-      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🔌</div><div style="font-family:'Syne';font-size:11px;font-weight:700">GENERATOR</div><div style="font-family:'JetBrains Mono';font-size:8px;color:var(--lime)">ELECTRICAL</div></div>
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">⚙️</div><div style="font-family:var(--font);font-weight:700">TURBINE</div><div style="font-family:var(--font);color:var(--pink)">KINETIC</div></div>
+      <div style="font-size:16px;color:var(--cyan);padding:0 4px">→</div>
+      <div style="padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);min-width:80px"><div style="font-size:20px">🔌</div><div style="font-family:var(--font);font-weight:700">GENERATOR</div><div style="font-family:var(--font);color:var(--lime)">ELECTRICAL</div></div>
     </div>
     <div class="formula-box" style="margin-top:12px">
       <div class="lab">CONVERSION SEQUENCE</div>
-      <div class="eq">Chemical → Thermal → Kinetic → <span style="color:var(--lime)">Electrical</span></div>
+      <div class="eq">Chemical → Thermal → Steam → Kinetic → <span style="color:var(--lime)">Electrical</span></div>
     </div>
   </div>
-  <div class="snum"><b>13</b> / 18 — POWER STATION</div>
+  <figure class="energy-visual-slot" data-scene="powerStation" aria-label="Science illustration"></figure><div class="snum"><b>13</b> / 18 — POWER STATION</div>
 </section>
 
 <!-- 14. BOUNCING BALL IMAGE -->
 <section class="slide">
   <div class="split-img stagger">
     <div class="img-side">
-      <img src="assets/chapter6-energy/12_bouncing_ball_energy.jpg" alt="Bouncing ball">
+      
       <div class="lbl">CASE STUDY · BOUNCING BALL</div>
     </div>
     <div>
@@ -684,7 +828,7 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       </div>
     </div>
   </div>
-  <div class="snum"><b>14</b> / 18 — BOUNCING BALL</div>
+  <figure class="energy-visual-slot" data-scene="bouncingBall" aria-label="Science illustration"></figure><div class="snum"><b>14</b> / 18 — BOUNCING BALL</div>
 </section>
 
 <!-- 15. POLE VAULT IMAGE -->
@@ -694,18 +838,18 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
       <div class="tagline">APPLY · EFFICIENCY IN SPORT</div>
       <h2 class="disp">Pole vault:<br>energy in motion.</h2>
       <div class="g2" style="margin-top:8px">
-        <div class="g2c" style="border-color:rgba(0,240,255,.25);background:rgba(0,240,255,.04)"><div style="font-size:18px">🎯</div><h4 style="font-size:11px">USEFUL</h4><p style="font-size:9px">Kinetic + GPE</p></div>
-        <div class="g2c" style="border-color:rgba(168,255,62,.25);background:rgba(168,255,62,.04)"><div style="font-size:18px">🔋</div><h4 style="font-size:11px">IN FOOD</h4><p style="font-size:9px">Chemical</p></div>
-        <div class="g2c" style="border-color:rgba(255,45,120,.25);background:rgba(255,45,120,.04)"><div style="font-size:18px">💧</div><h4 style="font-size:11px">WASTED</h4><p style="font-size:9px">Thermal — sweat</p></div>
-        <div class="g2c" style="border-color:rgba(255,184,0,.25);background:rgba(255,184,0,.04)"><div style="font-size:18px">📊</div><h4 style="font-size:11px">DIAGRAM</h4><p style="font-size:9px">Sankey</p></div>
+        <div class="g2c" style="border-color:rgba(0,240,255,.25);background:rgba(0,240,255,.04)"><div style="font-size:18px">🎯</div><h4>USEFUL</h4><p>Kinetic + GPE</p></div>
+        <div class="g2c" style="border-color:rgba(168,255,62,.25);background:rgba(168,255,62,.04)"><div style="font-size:18px">🔋</div><h4>IN FOOD</h4><p>Chemical</p></div>
+        <div class="g2c" style="border-color:rgba(255,45,120,.25);background:rgba(255,45,120,.04)"><div style="font-size:18px">💧</div><h4>WASTED</h4><p>Thermal — sweat</p></div>
+        <div class="g2c" style="border-color:rgba(255,184,0,.25);background:rgba(255,184,0,.04)"><div style="font-size:18px">📊</div><h4>DIAGRAM</h4><p>Sankey</p></div>
       </div>
     </div>
     <div class="img-side">
-      <img src="assets/chapter6-energy/13_pole_vault.jpg" alt="Pole vault">
+      
       <div class="lbl">CASE STUDY · POLE VAULT</div>
     </div>
   </div>
-  <div class="snum"><b>15</b> / 18 — POLE VAULT</div>
+  <figure class="energy-visual-slot" data-scene="poleVault" aria-label="Science illustration"></figure><div class="snum"><b>15</b> / 18 — POLE VAULT</div>
 </section>
 
 <!-- 16. RENEWABLE TABLE -->
@@ -714,18 +858,20 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
   <div class="stagger" style="height:100%;display:flex;flex-direction:column">
     <div class="tagline">TYPES OF RENEWABLE ENERGY</div>
     <h2 class="disp">Seven sources.</h2>
-    <table style="width:100%;border-collapse:separate;border-spacing:0;font-size:11px;margin-top:8px">
-      <thead><tr><th style="text-align:left;padding:8px 10px;background:rgba(0,240,255,.06);border-bottom:1px solid rgba(0,240,255,.25);font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:var(--cyan)">Resource</th><th style="text-align:left;padding:8px 10px;background:rgba(0,240,255,.06);border-bottom:1px solid rgba(0,240,255,.25);font-family:'JetBrains Mono';font-size:9px;letter-spacing:2px;color:var(--cyan)">How Renewed</th></tr></thead>
+    <table style="width:100%;border-collapse:separate;border-spacing:0;margin-top:8px">
+      <thead><tr><th style="text-align:left;padding:8px 10px;background:rgba(0,240,255,.06);border-bottom:1px solid rgba(0,240,255,.25);font-family:var(--font);letter-spacing:2px;color:var(--cyan)">Resource</th><th style="text-align:left;padding:8px 10px;background:rgba(0,240,255,.06);border-bottom:1px solid rgba(0,240,255,.25);font-family:var(--font);letter-spacing:2px;color:var(--cyan)">How Renewed</th></tr></thead>
       <tbody>
         <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Hydroelectricity</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Rainfall & water cycle</td></tr>
         <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Wind turbines</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Weather from solar heating</td></tr>
         <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Solar panels</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Sunlight</td></tr>
         <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Tidal power</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Moon's gravity</td></tr>
-        <tr><td style="padding:6px 10px;color:#c4d1eb;font-weight:700">Geothermal</td><td style="padding:6px 10px;color:#c4d1eb">Earth's internal heat</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Geothermal</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Earth's internal heat</td></tr>
+        <tr><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb;font-weight:700">Biomass</td><td style="padding:6px 10px;border-bottom:1px solid var(--line);color:#c4d1eb">Plants grow using sunlight</td></tr>
+        <tr><td style="padding:6px 10px;color:#c4d1eb;font-weight:700">Wave power</td><td style="padding:6px 10px;color:#c4d1eb">Waves are continually renewed by wind</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="snum"><b>16</b> / 18 — RENEWABLE TABLE</div>
+  <figure class="energy-visual-slot" data-scene="sources" aria-label="Science illustration"></figure><div class="snum"><b>16</b> / 18 — RENEWABLE TABLE</div>
 </section>
 
 <!-- 17. KEY FACTS -->
@@ -735,15 +881,15 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
     <div class="tagline">KEY FACTS</div>
     <h2 class="disp">Remember<br>these.</h2>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
-      <div class="card" style="border-color:rgba(0,240,255,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--cyan);letter-spacing:2px">01</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Energy measured in J or kJ</p></div>
-      <div class="card" style="border-color:rgba(255,45,120,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--pink);letter-spacing:2px">02</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Sankey: width = amount</p></div>
-      <div class="card" style="border-color:rgba(255,184,0,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--amber);letter-spacing:2px">03</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Wasted = Input − Useful</p></div>
-      <div class="card" style="border-color:rgba(168,255,62,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--lime);letter-spacing:2px">04</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Fossil fuels: millions of years</p></div>
-      <div class="card" style="border-color:rgba(177,78,255,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--violet);letter-spacing:2px">05</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Renewables: naturally replaced</p></div>
-      <div class="card" style="border-color:rgba(0,240,255,.2)"><b style="font-family:'JetBrains Mono';font-size:8px;color:var(--cyan);letter-spacing:2px">06</b><p style="font-size:11px;color:#c4d1eb;margin-top:4px">Energy can't be created/destroyed</p></div>
+      <div class="card" style="border-color:rgba(0,240,255,.2)"><b style="font-family:var(--font);color:var(--cyan);letter-spacing:2px">01</b><p style="color:#c4d1eb;margin-top:4px">Energy measured in J or kJ</p></div>
+      <div class="card" style="border-color:rgba(255,45,120,.2)"><b style="font-family:var(--font);color:var(--pink);letter-spacing:2px">02</b><p style="color:#c4d1eb;margin-top:4px">Sankey: width = amount</p></div>
+      <div class="card" style="border-color:rgba(255,184,0,.2)"><b style="font-family:var(--font);color:var(--amber);letter-spacing:2px">03</b><p style="color:#c4d1eb;margin-top:4px">Wasted = Input − Useful</p></div>
+      <div class="card" style="border-color:rgba(168,255,62,.2)"><b style="font-family:var(--font);color:var(--lime);letter-spacing:2px">04</b><p style="color:#c4d1eb;margin-top:4px">Fossil fuels: millions of years</p></div>
+      <div class="card" style="border-color:rgba(177,78,255,.2)"><b style="font-family:var(--font);color:var(--violet);letter-spacing:2px">05</b><p style="color:#c4d1eb;margin-top:4px">Renewables: naturally replaced</p></div>
+      <div class="card" style="border-color:rgba(0,240,255,.2)"><b style="font-family:var(--font);color:var(--cyan);letter-spacing:2px">06</b><p style="color:#c4d1eb;margin-top:4px">Energy can't be created/destroyed</p></div>
     </div>
   </div>
-  <div class="snum"><b>17</b> / 18 — KEY FACTS</div>
+  <figure class="energy-visual-slot" data-scene="facts" aria-label="Science illustration"></figure><div class="snum"><b>17</b> / 18 — KEY FACTS</div>
 </section>
 
 <!-- 18. FINAL -->
@@ -760,13 +906,14 @@ h2.disp{font-family:"Syne";font-weight:800;font-size:clamp(26px,3.2vw,46px);line
     </div>
     <button class="restart-btn" id="restart">↺ RESTART</button>
   </div>
-  <div class="snum"><b>18</b> / 18 — FINAL</div>
+  <figure class="energy-visual-slot" data-scene="vacuumCleaner" aria-label="Science illustration"></figure><div class="snum"><b>18</b> / 18 — FINAL</div>
 </section>
 
 </div>
 </main>
 
 <script src="energy-extra-slides.js"></script>
+<script src="energy-visuals.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════
    GAMIFICATION SYSTEM (integrated into Energy slides)
@@ -846,7 +993,6 @@ function loadState(){
     const p=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
     if(p&&p.date===today()){
       state={...state,...p};
-      if(state.correct.includes('q1')){state.correct=state.correct.filter(id=>id!=='q1');saveState()}
     }
     else state.date=today();
   }catch(e){state.date=today()}
@@ -998,7 +1144,7 @@ function updateUI(){
 /* === Build quiz UIs === */
 function buildNumericQuiz(zone,q,optsWrap,feedback){
   const entry=document.createElement('div');entry.className='number-entry';
-  entry.innerHTML=`<div class="number-readout"><input class="number-value" type="text" inputmode="none" autocomplete="off" maxlength="8" aria-label="Answer in ${q.unit}" placeholder="0"><span class="number-unit">${q.unit}</span></div><div class="number-pad" aria-label="Number pad">${['1','2','3','4','5','6','7','8','9'].map(n=>`<button type="button" class="num-key" data-digit="${n}" aria-label="${n}">${n}</button>`).join('')}<button type="button" class="num-key" data-action="clear" aria-label="Clear answer">C</button><button type="button" class="num-key" data-digit="0" aria-label="0">0</button><button type="button" class="num-key" data-action="backspace" aria-label="Delete last digit">⌫</button></div><button type="button" class="number-submit">Check answer</button>`;
+  entry.innerHTML=`<div class="number-readout"><button type="button" class="num-key num-clear" data-action="clear" aria-label="Clear answer">C</button><input class="number-value" type="text" inputmode="none" autocomplete="off" maxlength="8" aria-label="Answer in ${q.unit}" placeholder="0"><button type="button" class="num-key num-backspace" data-action="backspace" aria-label="Delete last digit">⌫</button><span class="number-unit">${q.unit}</span></div><div class="number-pad" aria-label="Number pad">${['1','2','3','4','5','6','7','8','9','0'].map(n=>`<button type="button" class="num-key" data-digit="${n}" aria-label="${n}">${n}</button>`).join('')}</div><button type="button" class="number-submit">Check answer</button>`;
   optsWrap.appendChild(entry);
   const input=entry.querySelector('.number-value');
   const keys=[...entry.querySelectorAll('.num-key')];
@@ -1085,7 +1231,7 @@ function animate(){
   }
   ctx.shadowBlur=0;requestAnimationFrame(animate);
 }
-animate();
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches)animate();
 
 /* === Slide navigation === */
 const deck=document.getElementById('deck');
@@ -1093,16 +1239,37 @@ const EXTRA_SLIDES=window.EXTRA_SLIDES||[];
 const escapeHTML=value=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function renderExtraSlide(slide,index){
   const cards=(slide.items||[]).map(item=>`<div class="extra-card"><b>${escapeHTML(item.label)}</b><span>${escapeHTML(item.text)}</span></div>`).join('');
-  const imageList=slide.images|| (slide.image?[{src:slide.image,alt:slide.imageAlt||slide.title,credit:slide.credit||''}]:[]);
-  const images=imageList.length?`<div class="extra-figures">${imageList.map(image=>`<figure class="extra-figure"><img src="${escapeHTML(image.src)}" alt="${escapeHTML(image.alt)}" loading="lazy"><figcaption>${escapeHTML(image.credit||'')}</figcaption></figure>`).join('')}</div>`:'';
+  const visual=slide.visual?`<figure class="energy-visual-slot" data-scene="${escapeHTML(slide.visual.type)}" data-props="${escapeHTML(JSON.stringify(slide.visual.props||{}))}" aria-label="Science illustration"></figure>`:slide.panels?`<figure class="energy-visual-slot" data-storyboard="${escapeHTML(JSON.stringify(slide.panels))}" aria-label="Science storyboard"></figure>`:'';
   const table=slide.table?`<div class="extra-table-wrap"><table class="extra-table"><thead><tr>${slide.table.heads.map(cell=>`<th>${escapeHTML(cell)}</th>`).join('')}</tr></thead><tbody>${slide.table.rows.map(row=>`<tr>${row.map(cell=>`<td>${escapeHTML(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
   const quiz=slide.quiz?`<div class="quiz-zone" data-qid="${escapeHTML(slide.quiz.id)}"><div class="qz-label">QUICK CHECK</div><div class="qz-question">${escapeHTML(slide.quiz.question)}</div><div class="quiz-opts"></div><div class="quiz-feedback" aria-live="polite"></div></div>`:'';
-  return `<section class="slide extra-slide"><div class="extra-layout stagger"><div class="tagline">${escapeHTML(slide.section)}</div><h2 class="disp">${escapeHTML(slide.title)}</h2><p class="lead">${escapeHTML(slide.lead)}</p>${images}${cards?`<div class="extra-cards">${cards}</div>`:''}${table}${quiz}</div><div class="snum"><b>${String(19+index).padStart(2,'0')}</b> / 70 — ${escapeHTML(slide.section)}</div></section>`;
+  return `<section class="slide extra-slide"><div class="extra-layout stagger"><div class="tagline">${escapeHTML(slide.section)}</div><h2 class="disp">${escapeHTML(slide.title)}</h2><p class="lead">${escapeHTML(slide.lead)}</p>${cards?`<div class="extra-cards">${cards}</div>`:''}${table}${quiz}</div>${visual}<div class="snum"><b>${String(19+index).padStart(2,'0')}</b> / 70 — ${escapeHTML(slide.section)}</div></section>`;
 }
 EXTRA_SLIDES.forEach(slide=>{if(slide.quiz)QUIZ_QUESTIONS.push(slide.quiz)});
 deck.insertAdjacentHTML('beforeend',EXTRA_SLIDES.map(renderExtraSlide).join(''));
+document.querySelectorAll('.energy-visual-slot[data-scene]').forEach(node=>{
+  let props={};try{props=JSON.parse(node.dataset.props||'{}')}catch(e){}
+  EnergyVisuals.mount(node,node.dataset.scene,props);
+});
+document.querySelectorAll('.energy-visual-slot[data-storyboard]').forEach(node=>{
+  let panels=[];try{panels=JSON.parse(node.dataset.storyboard||'[]')}catch(e){}
+  EnergyVisuals.mount(node,'storyboard',{panels});
+});
 const slides=deck.querySelectorAll('.slide');
 const total=slides.length;
+slides.forEach((slide,i)=>{
+  slide.dataset.index=String(i);
+  const visual=slide.querySelector('.extra-layout>.energy-visual-slot');
+  if(visual)slide.appendChild(visual);
+  slide.querySelectorAll('.stagger svg').forEach(svg=>svg.remove());
+  slide.querySelectorAll('.img-side').forEach(node=>node.remove());
+  slide.querySelectorAll('.energy-visual-slot').forEach((node,n)=>{if(n>0)node.remove()});
+  slide.querySelectorAll('.quiz-zone').forEach(zone=>{
+    if(zone.querySelector('.quiz-toggle'))return;
+    const toggle=document.createElement('button');toggle.type='button';toggle.className='quiz-toggle';toggle.textContent='ทำควิซ';toggle.setAttribute('aria-expanded','false');
+    toggle.addEventListener('click',()=>{const open=zone.classList.toggle('sheet-open');toggle.setAttribute('aria-expanded',String(open))});
+    zone.insertBefore(toggle,zone.firstChild);
+  });
+});
 document.querySelector('.cover .meta div:first-child b').textContent=String(total);
 document.querySelector('.cover .meta div:nth-child(2) b').textContent=String(QUIZ_QUESTIONS.length);
 document.querySelectorAll('.snum').forEach((label,i)=>{
@@ -1110,9 +1277,6 @@ document.querySelectorAll('.snum').forEach((label,i)=>{
   label.innerHTML=`<b>${String(i+1).padStart(2,'0')}</b> / ${String(total).padStart(2,'0')}${suffix?` — ${escapeHTML(suffix)}`:''}`;
 });
 let idx=0;
-const dotsWrap=document.getElementById('dots');
-for(let i=0;i<total;i++){const b=document.createElement('button');b.addEventListener('click',()=>go(i));dotsWrap.appendChild(b)}
-const dots=dotsWrap.querySelectorAll('button');
 const cur=document.getElementById('curIdx');
 const tot=document.getElementById('totIdx');
 const bar=document.getElementById('barFill');
@@ -1120,29 +1284,54 @@ const prevBtn=document.getElementById('prev');
 const nextBtn=document.getElementById('next');
 tot.textContent='/ '+String(total).padStart(2,'0');
 
-const themes=[
-  {c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},{c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},
-  {c:'#00f0ff',p:'#a8ff3e',a:'#ff2d78'},{c:'#b14eff',p:'#ffb800',a:'#00f0ff'},
-  {c:'#b14eff',p:'#00f0ff',a:'#ffb800'},{c:'#ffb800',p:'#b14eff',a:'#00f0ff'},
-  {c:'#ffb800',p:'#b14eff',a:'#00f0ff'},{c:'#b14eff',p:'#a8ff3e',a:'#ff2d78'},
-  {c:'#ffb800',p:'#b14eff',a:'#a8ff3e'},{c:'#a8ff3e',p:'#b14eff',a:'#00f0ff'},
-  {c:'#ffb800',p:'#ff2d78',a:'#00f0ff'},{c:'#a8ff3e',p:'#00f0ff',a:'#ffb800'},
-  {c:'#00f0ff',p:'#ffb800',a:'#a8ff3e'},{c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},
-  {c:'#a8ff3e',p:'#00f0ff',a:'#ffb800'},{c:'#a8ff3e',p:'#00f0ff',a:'#ffb800'},
-  {c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},{c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},
+function fitSlide(slide){
+  const content=slide.querySelector(':scope > .stagger,:scope > .extra-layout');
+  if(!content)return;
+  content.style.zoom='1';
+  let scale=1;
+  for(let attempt=0;attempt<6;attempt++){
+    const h=content.scrollHeight, w=content.scrollWidth, ah=content.clientHeight, aw=content.clientWidth;
+    if(h<=ah+1&&w<=aw+1)break;
+    const ratio=Math.min(ah/Math.max(h,1),aw/Math.max(w,1));
+    scale=Math.max(.78,scale*Math.min(.98,ratio));
+    content.style.zoom=String(scale);
+  }
+  slide.dataset.fitScale=scale.toFixed(2);
+  const overflow=content.scrollHeight>content.clientHeight+2||content.scrollWidth>content.clientWidth+2;
+  slide.classList.toggle('fit-warning',overflow);
+  if(overflow)console.warn(`fitSlide overflow: ${slide.querySelector('h1,h2')?.textContent.trim()||'Untitled slide'} (${slide.dataset.index||'?'})`);
+}
+function fitAllSlides(){slides.forEach(fitSlide)}
+fitAllSlides();
+addEventListener('resize',()=>requestAnimationFrame(fitAllSlides));
+
+const sectionThemes=[
+  {c:'#00f0ff',p:'#ff2d78',a:'#ffb800'},{c:'#b14eff',p:'#ffb800',a:'#00f0ff'},
+  {c:'#a8ff3e',p:'#00f0ff',a:'#ffb800'},{c:'#ffb800',p:'#b14eff',a:'#00f0ff'},
+  {c:'#ff6b6b',p:'#00f0ff',a:'#a8ff3e'},{c:'#00f0ff',p:'#ff2d78',a:'#ffb800'}
 ];
+const themes=Array.from(slides, (slide,i)=>{
+  const section=EXTRA_SLIDES[i-18]?.section||slide.querySelector('.tagline')?.textContent||'';
+  const group=/6\.2|SANKEY|DISSIPATION|WASTED|EFFICIENCY/i.test(section)?2:
+    /RENEWABLE|WIND|SOLAR|TIDAL|HYDRO|GEOTHERMAL|BIOMASS/i.test(section)?3:
+    /6\.1|STORE|WORK|TRANSFER|SOURCE/i.test(section)?1:
+    /END QUESTION|EXIT TICKET|FINAL CHALLENGE/i.test(section)?4:0;
+  return sectionThemes[group];
+});
 function go(i){
   idx=Math.max(0,Math.min(total-1,i));
+  fitSlide(slides[idx]);
   deck.style.transform=`translateX(-${idx*100}%)`;
   cur.textContent=String(idx+1).padStart(2,'0');
   bar.style.width=((idx+1)/total*100)+'%';
-  dots.forEach((d,k)=>d.classList.toggle('active',k===idx));
   prevBtn.disabled=idx===0;nextBtn.disabled=idx===total-1;
   const t=themes[idx]||themes[0];
   document.querySelector('.b1').style.background=t.c;
   document.querySelector('.b2').style.background=t.p;
   document.querySelector('.b3').style.background=t.a;
   const active=slides[idx];
+  slides.forEach((slide,k)=>EnergyVisuals.activate(slide,k===idx));
+  slides.forEach((slide,k)=>slide.querySelectorAll('img').forEach(img=>{img.loading=Math.abs(k-idx)<=1?'eager':'lazy'}));
   active.querySelectorAll('.stagger > *').forEach(el=>{el.style.animation='none';void el.offsetWidth;el.style.animation=''});
 }
 
@@ -1179,24 +1368,48 @@ document.addEventListener('keydown',event=>{
 prevBtn.addEventListener('click',()=>go(idx-1));
 nextBtn.addEventListener('click',()=>go(idx+1));
 document.getElementById('restart').addEventListener('click',()=>go(0));
+const hangmanPanel=document.getElementById('hangman');
+function toggleHangmanPanel(){const expanded=hangmanPanel.classList.toggle('expanded');hangmanPanel.classList.toggle('collapsed',!expanded);hangmanPanel.setAttribute('aria-expanded',String(expanded))}
+hangmanPanel.addEventListener('click',toggleHangmanPanel);
+hangmanPanel.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleHangmanPanel()}});
 document.addEventListener('keydown',e=>{
-  if(e.target.tagName==='BUTTON')return;
+  if(e.target.tagName==='BUTTON'||e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.closest('#hangman'))return;
   if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(idx+1)}
   if(e.key==='ArrowLeft'){e.preventDefault();go(idx-1)}
   if(e.key==='Home')go(0);if(e.key==='End')go(total-1);
 });
 document.querySelector('.stage').addEventListener('click',e=>{
-  if(e.target.closest('button')||e.target.closest('.quiz-zone')||e.target.closest('a'))return;
+  if(e.target.closest('button')||e.target.closest('.quiz-zone')||e.target.closest('a,figure,svg,.panel,.card'))return;
   go(idx+1);
 });
-let startX=0;
-addEventListener('touchstart',e=>{startX=e.touches[0].clientX});
-addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>60)go(dx<0?idx+1:idx-1)});
+let startX=0,swipeStartTarget=null;
+addEventListener('touchstart',e=>{startX=e.touches[0].clientX;swipeStartTarget=e.target},{passive:true});
+addEventListener('touchend',e=>{
+  if(!swipeStartTarget)return;
+  if(swipeStartTarget.closest('.quiz-zone,.extra-table-wrap'))return;
+  for(let node=swipeStartTarget;node&&node!==document.body;node=node.parentElement){
+    const style=getComputedStyle(node);
+    const canScrollY=/(auto|scroll)/.test(style.overflowY)&&node.scrollHeight>node.clientHeight+1;
+    const canScrollX=/(auto|scroll)/.test(style.overflowX)&&node.scrollWidth>node.clientWidth+1;
+    if(canScrollY||canScrollX)return;
+  }
+  const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>60)go(dx<0?idx+1:idx-1);
+},{passive:true});
 
 /* === Init === */
 window.G={restartHangman,closeHangmanModal};
+document.addEventListener('error',event=>{
+  const img=event.target;
+  if(!(img instanceof HTMLImageElement)||img.dataset.svgFallback)return;
+  img.dataset.svgFallback='true';
+  const fallback=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  fallback.setAttribute('viewBox','0 0 320 180');fallback.setAttribute('preserveAspectRatio','xMidYMid meet');fallback.setAttribute('width','100%');fallback.setAttribute('height','100%');fallback.setAttribute('class','gif-fallback');fallback.setAttribute('role','img');fallback.setAttribute('aria-label','Reward image placeholder');
+  fallback.innerHTML='<rect x="20" y="20" width="280" height="140" rx="24" fill="rgba(12,18,31,.82)" stroke="var(--cyan)" stroke-width="4"/><path d="M105 112h110m-75-38 38 38 38-38" fill="none" stroke="var(--lime)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>';
+  img.replaceWith(fallback);
+},true);
 loadState();buildQuizzes();updateUI();go(0);
 setTimeout(startPreload,500);
 </script>
 </body>
 </html>
+
