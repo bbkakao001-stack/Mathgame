@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mali · Stage 7 Maths · Chapters 12–14</title>
+<link rel="stylesheet" href="mali-maths.css">
+</head>
+<body>
+
+<div class="aurora"><div class="aurora-blob"></div></div>
+<div class="particles" id="particles"></div>
+
+<svg class="icon-definitions" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="icon-basket" viewBox="0 0 64 64">
+      <g fill="none" stroke="var(--purple)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 27h40l-5 26H17z"/><path d="m21 27 8-15m14 15-8-15M24 34v12m8-12v12m8-12v12"/></g><path d="M18 26h28l-2 7H20z" fill="var(--teal)" opacity=".8"/>
+    </symbol>
+    <symbol id="icon-shopping-bag" viewBox="0 0 64 64">
+      <path d="M13 22h38l-3 34H16z" fill="#202a46" stroke="var(--purple)" stroke-width="3.5" stroke-linejoin="round"/><path d="M23 24v-7a9 9 0 0 1 18 0v7" fill="none" stroke="var(--teal)" stroke-width="3.5" stroke-linecap="round"/><path d="M24 37h16" stroke="var(--gold)" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-car" viewBox="0 0 64 64">
+      <path d="M8 39 13 26q2-5 8-5h22q5 0 8 6l5 12v12H8z" fill="#202a46" stroke="var(--teal)" stroke-width="3.5" stroke-linejoin="round"/><path d="m17 28 4-6h20l6 9H14z" fill="var(--purple)" opacity=".55" stroke="var(--purple)" stroke-width="2.5"/><path d="M10 39h45" stroke="var(--gold)" stroke-width="3"/><circle cx="19" cy="50" r="5" fill="#0a0e27" stroke="var(--pink)" stroke-width="3.5"/><circle cx="46" cy="50" r="5" fill="#0a0e27" stroke="var(--pink)" stroke-width="3.5"/>
+    </symbol>
+    <symbol id="icon-clock" viewBox="0 0 64 64">
+      <circle cx="32" cy="34" r="23" fill="#202a46" stroke="var(--teal)" stroke-width="3.5"/><path d="M32 18v17l12 7" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M25 7h14M32 11v4" stroke="var(--purple)" stroke-width="3.5" stroke-linecap="round"/><circle cx="32" cy="34" r="2.8" fill="var(--pink)"/>
+    </symbol>
+    <symbol id="icon-dice-5" viewBox="0 0 64 64">
+      <rect x="9" y="9" width="46" height="46" rx="9" fill="#202a46" stroke="var(--purple)" stroke-width="3.5"/><g fill="var(--gold)"><circle cx="20" cy="20" r="4"/><circle cx="44" cy="20" r="4"/><circle cx="32" cy="32" r="4"/><circle cx="20" cy="44" r="4"/><circle cx="44" cy="44" r="4"/></g>
+    </symbol>
+    <symbol id="icon-shoe" viewBox="0 0 64 64">
+      <path d="M9 40q8 0 13-11l7 4q7 5 15 6l9 2q4 1 4 6v6H10q-4 0-4-4v-4q0-5 3-5z" fill="#202a46" stroke="var(--pink)" stroke-width="3.5" stroke-linejoin="round"/><path d="m23 31 7 4m4-1 5 4M10 48h45" stroke="var(--gold)" stroke-width="3.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-coin" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="24" fill="#202a46" stroke="var(--gold)" stroke-width="4"/><circle cx="32" cy="32" r="17" fill="none" stroke="var(--teal)" stroke-width="2.5"/><path d="M37 22q-2-3-6-3-6 0-6 5t7 6q7 2 6 7t-7 6q-4 0-7-3m7-24v32" fill="none" stroke="var(--gold)" stroke-width="3.2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-ruler" viewBox="0 0 64 64">
+      <path d="M9 19h46v27H9z" fill="#202a46" stroke="var(--teal)" stroke-width="3.5" stroke-linejoin="round"/><path d="M17 20v12m8-12v7m8-7v12m8-12v7m8-7v12" stroke="var(--gold)" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-ruler-2" viewBox="0 0 64 64">
+      <path d="M8 22 49 10l8 27-41 12z" fill="#202a46" stroke="var(--purple)" stroke-width="3.5" stroke-linejoin="round"/><path d="m18 21 4 11m4-14 3 8m5-10 4 11m4-14 3 8m5-10 4 11" stroke="var(--gold)" stroke-width="2.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-chart-bar" viewBox="0 0 64 64">
+      <path d="M10 54V12M10 54h47" fill="none" stroke="var(--teal)" stroke-width="3.5" stroke-linecap="round"/><rect x="18" y="36" width="9" height="18" rx="2" fill="var(--purple)"/><rect x="32" y="25" width="9" height="29" rx="2" fill="var(--gold)"/><rect x="46" y="15" width="9" height="39" rx="2" fill="var(--pink)"/>
+    </symbol>
+    <symbol id="icon-thermometer" viewBox="0 0 64 64">
+      <path d="M26 37V15a8 8 0 0 1 16 0v22a15 15 0 1 1-16 0z" fill="#202a46" stroke="var(--purple)" stroke-width="3.5"/><path d="M34 21v26" stroke="var(--pink)" stroke-width="5" stroke-linecap="round"/><circle cx="34" cy="48" r="7" fill="var(--pink)"/><path d="M42 22h5m-5 8h5" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-bottle" viewBox="0 0 64 64">
+      <path d="M26 8h12v10l7 7v29q0 4-4 4H23q-4 0-4-4V25l7-7z" fill="#202a46" stroke="var(--teal)" stroke-width="3.5" stroke-linejoin="round"/><path d="M22 38h20v10H22z" fill="var(--purple)" opacity=".85"/><path d="M26 13h12" stroke="var(--gold)" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-wallet" viewBox="0 0 64 64">
+      <path d="M10 19q0-5 5-5h35q4 0 4 5v34H15q-5 0-5-5z" fill="#202a46" stroke="var(--purple)" stroke-width="3.5" stroke-linejoin="round"/><path d="M10 23h44v13H39q-5 0-5-5t5-5h15" fill="none" stroke="var(--teal)" stroke-width="3.5" stroke-linejoin="round"/><circle cx="42" cy="30" r="2.5" fill="var(--gold)"/>
+    </symbol>
+    <symbol id="icon-receipt" viewBox="0 0 64 64">
+      <path d="M16 8 21 12 26 8 32 12 38 8 43 12 49 8v48l-6-4-6 4-5-4-6 4-5-4-5 4z" fill="#202a46" stroke="var(--pink)" stroke-width="3.5" stroke-linejoin="round"/><path d="M23 22h19M23 31h19M23 40h11" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"/><path d="M23 47h9" stroke="var(--gold)" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-shopping-cart" viewBox="0 0 64 64">
+      <path d="M8 12h7l7 31h29l7-22H19" fill="none" stroke="var(--teal)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="52" r="4" fill="var(--gold)"/><circle cx="47" cy="52" r="4" fill="var(--purple)"/><path d="M25 30h26m-22 7h20" stroke="var(--pink)" stroke-width="2.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-ticket" viewBox="0 0 64 64">
+      <path d="M10 19q8 0 8 8t-8 8v10h44V35q-8 0-8-8t8-8V9H10z" fill="#202a46" stroke="var(--gold)" stroke-width="3.5" stroke-linejoin="round"/><path d="M32 13v5m0 5v5m0 5v5m0 5v5" stroke="var(--teal)" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-book-2" viewBox="0 0 64 64">
+      <path d="M8 15q13-5 24 3v38Q21 48 8 53zM56 15q-13-5-24 3v38q11-8 24-3z" fill="#202a46" stroke="var(--purple)" stroke-width="3.5" stroke-linejoin="round"/><path d="M14 24q8-2 14 2m-14 7q8-2 14 2m22-11q-8-2-14 2m14 7q-8-2-14 2" fill="none" stroke="var(--teal)" stroke-width="2.8" stroke-linecap="round"/><path d="M32 18v38" stroke="var(--gold)" stroke-width="2.5"/>
+    </symbol>
+    <symbol id="icon-balance" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="57" rx="22" ry="4" fill="#05091b" opacity=".6"/><path d="M32 13v37m-8 0h16L32 25zM9 51h46" fill="#26364d" stroke="var(--purple)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 17 32 20 56 17M15 18 10 39m10-21 5 21m24-21-5 21m10-21 5 21" fill="none" stroke="var(--teal)" stroke-width="2.8" stroke-linecap="round"/><path d="M7 39q9 7 18 0M39 39q9 7 18 0" fill="none" stroke="var(--gold)" stroke-width="3.2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-chocolate" viewBox="0 0 64 64">
+      <path d="m13 20 34-9 7 33-34 9z" fill="#5b3470" stroke="var(--pink)" stroke-width="3.5" stroke-linejoin="round"/><path d="m22 18 7 33m9-36 7 33M17 34l34-9" fill="none" stroke="var(--gold)" stroke-width="2.6"/><path d="m21 23 10-3 2 10-10 3zm17-5 10-3 2 10-10 3z" fill="var(--purple)" opacity=".8"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="deck">
+<main class="stage" id="stage">
+
+  <!-- 1. Title -->
+  <section class="slide" data-chapter="intro" data-title="Stage 7 Maths">
+    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Stage 7 Maths</span><span class="num">1 / 1</span></div>
+    <h1>Cambridge Lower Secondary Maths · Stage 7</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Chapters 12–14</p>
+        <p>Measures of average and spread · Calculations · Functions and formulae</p>
+        <div class="pillrow"><span>HTML slide deck</span><span>1 slides</span><span>Questions throughout</span></div>
+      </div>
+      <div class="visual"><svg class="math-emblem" viewBox="0 0 420 300" role="img" aria-label="A graph, sigma and balanced equation"><path d="M40 240V55M40 220H370" fill="none" stroke="#aeb8d7" stroke-width="7" stroke-linecap="round"/><path d="M72 185 142 145 207 165 300 82" fill="none" stroke="#2dd4bf" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="142" cy="155" r="11" fill="#fbbf24"/><circle cx="300" cy="82" r="11" fill="#fbbf24"/><text x="72" y="105" fill="#c7b9ff" font-size="54" font-weight="700">Σ</text><text x="224" y="260" fill="#f4f3ed" font-size="32" font-weight="700" font-family="Arial,sans-serif">x + 7 = 12</text></svg></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="controls">
+  <button type="button" id="previousSlide" aria-label="Previous" onclick="nav(-1)" title="Previous">◀</button>
+  <button type="button" id="showAllSteps" hidden title="Show all steps">Show all</button>
+  <button type="button" id="nextSlide" aria-label="Next" onclick="nav(1)" title="Next">▶</button>
+    <button type="button" aria-label="Toggle slide overview" onclick="toggleOverview()" title="Overview">⊕</button>
+</div>
+<div class="progress" id="progress" role="progressbar" aria-label="Presentation progress" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1" style="width:0%"></div>
+<div class="overviewHint">Press O for overview</div>
+
+</div>
+
+<script src="math-scene-kit.js"></script>
+<script>
+// Create a small number of optional decorative particles.
+const particles = document.getElementById('particles');
+for(let i=0;i<6;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.left=Math.random()*100+'%';
+  p.style.animationDuration=(10+Math.random()*8)+'s';
+  p.style.animationDelay=(-Math.random()*15)+'s';
+  p.style.width=p.style.height=(2+Math.random()*3)+'px';
+  particles.appendChild(p);
+}
+
+// Slides data for the full deck; question order is applied after all slides are defined.
+const imageDecodeCache = new Map();
+const slidesData = [
+  // 2
+  {ch:'intro',title:'How to use',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker">Stage 7 Maths</span><span class="num">1 / 1</span></div>
+    <h1>How to use this deck</h1>
+    <div class="content">
+      <div class="text">
+        <div class="grid2">
+          <div class="card"><h3>Teach</h3><p>Concept slides use editable HTML text and formulas. PNGs are supporting visuals only.</p></div>
+          <div class="card"><h3>Check</h3><p>Type your answer using the on-screen keypad or keyboard, then press Check.</p></div>
+        </div>
+        <div class="callout">Keyboard: <b>←</b> / <b>→</b> or <b>Space</b>. Press <b>O</b> for overview.</div>
+      </div>
+    </div>`},
+
+  // 3
+  {ch:'intro',title:'Roadmap',html:`
+    <div class="orb orb1"></div><div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Stage 7 Maths</span><span class="num">1 / 1</span></div>
+    <h1>Roadmap</h1>
+    <div class="content">
+      <div class="text">
+        <div class="roadmap">
+          <div><b>12</b><span>Mean · Median · Mode · Range · Frequency tables</span></div>
+          <div><b>13</b><span>Order of operations · Decimal and fraction strategies</span></div>
+          <div><b>14</b><span>Functions · Mappings · Formulae · Substitution</span></div>
+        </div>
+      </div>
+    </div>`},
+
+  // 4
+  {ch:'c12',title:'Chapter 12',section:true,html:`
+    <div class="orb orb1"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Chapter 12</h1>
+    <div class="subtitle">Measures of average and spread</div>`},
+
+  // 5
+  {ch:'c12',title:'Three averages',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Three averages</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Mean · Median · Mode</p>
+        <p>Three different ways to describe the "typical" value in a data set.</p>
+        <div class="grid3" style="margin-top:1em">
+          <div class="card"><h3>Mean</h3><p>Sum of values ÷ how many</p></div>
+          <div class="card"><h3>Median</h3><p>Middle value when ordered</p></div>
+          <div class="card"><h3>Mode</h3><p>Most frequent value</p></div>
+        </div>
+      </div>
+      
+    </div>`},
+
+  // 6
+  {ch:'c12',title:'Mean definition',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>The Mean</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Add the values, then divide by how many.</p>
+        <div class="formula">mean = (sum of values) ÷ (number of values)</div>
+        <p style="margin-top:.8em">Example: 4, 8, 6, 10, 2 → sum = 30, count = 5 → mean = 6</p>
+        <div class="tip">The mean uses every value — so it is sensitive to extreme results.</div>
+      </div>
+    </div>`},
+
+  // 7
+  {ch:'c12',title:'Median',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>The Median</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Order the data — pick the middle.</p>
+        <p>Odd count of values: one middle number.</p>
+        <p>Even count of values: average the two middle numbers.</p>
+        <div class="formula">3, 5, 7, 9, 11 → median = 7</div>
+        <div class="tip">Median is not affected by very large or very small values.</div>
+      </div>
+    </div>`},
+
+  // 8
+  {ch:'c12',title:'Mode',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>The Mode</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">The value that appears most often.</p>
+        <p>Example: 2, 4, 4, 4, 7, 9 → mode = 4</p>
+        <p>A set can have <b>no mode</b>, <b>one mode</b>, or <b>more than one mode</b>.</p>
+        <div class="tip">Mode is the only average you can use for non-numerical data (e.g. colours, brands).</div>
+      </div>
+    </div>`},
+
+  // 9
+  {ch:'c12',title:'Range',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>The Range</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Range measures how spread out the data is.</p>
+        <div class="formula">range = largest value − smallest value</div>
+        <p style="margin-top:.8em">Example: 3, 8, 11, 4, 9 → range = 11 − 3 = 8</p>
+        <div class="tip">A large range means the data is widely spread.</div>
+      </div>
+      
+    </div>`},
+
+  // 10
+  {ch:'c12',title:'Question: mean',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Find the mean</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">5, 9, 7, 11, 8</p>
+        
+        <div class="answer">Sum = 40, count = 5 → mean = <b>8</b></div>
+      </div>
+    </div>`},
+
+  // 11
+  {ch:'c12',title:'Question: median',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Find the median</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">12, 3, 7, 9, 15</p>
+        
+        <div class="answer">Order: 3, 7, 9, 12, 15 → middle = <b>9</b></div>
+      </div>
+    </div>`},
+
+  // 12
+  {ch:'c12',title:'Question: mode and range',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Mode and range</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Find the mode of 2, 5, 5, 5, 8, 9, 9.</p>
+        
+        <div class="answer">Mode = <b>5</b> (appears 3 times)<br>Range = 9 − 2 = <b>7</b></div>
+      </div>
+    </div>`},
+
+  // 13
+  {ch:'c12',title:'Frequency tables',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Frequency tables</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Tally how often each value occurs.</p>
+        <table>
+          <tr><th>Value</th><th>Tally</th><th>Frequency</th></tr>
+          <tr><td>1</td><td>||</td><td>2</td></tr>
+          <tr><td>2</td><td>||||</td><td>4</td></tr>
+          <tr><td>3</td><td>|||</td><td>3</td></tr>
+        </table>
+        <div class="tip">Frequency = how many times a value appears.</div>
+      </div>
+      
+    </div>`},
+
+  // 14
+  {ch:'c12',title:'Mean from frequency table',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Mean from frequency table</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Multiply each value by its frequency, sum, then divide by total frequency.</p>
+        <div class="formula">mean = Σ(value × frequency) ÷ Σ frequency</div>
+        <div class="tip">Use a column for "value × frequency" to keep track.</div>
+      </div>
+    </div>`},
+
+  // 15
+  {ch:'c12',title:'Question: mean from table',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Mean from table</h1>
+    <div class="content">
+      <div class="text">
+        <table>
+          <tr><th>Value</th><th>1</th><th>2</th><th>3</th></tr>
+          <tr><th>Freq</th><td>3</td><td>4</td><td>2</td></tr>
+        </table>
+        
+        <div class="answer">Sum = 3×1 + 4×2 + 2×3 = 17<br>Total freq = 9<br>Mean = 17 ÷ 9 ≈ <b>1.89</b></div>
+      </div>
+    </div>`},
+
+  // 16
+  {ch:'c12',title:'Choosing an average',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Choosing the right average</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <div class="grid3">
+          <div class="card"><h3>Mean</h3><p>When data is fairly even, no extreme values.</p></div>
+          <div class="card"><h3>Median</h3><p>When data has extreme values that skew the mean.</p></div>
+          <div class="card"><h3>Mode</h3><p>For non-numerical data or the most common value.</p></div>
+        </div>
+      </div>
+      
+    </div>`},
+
+  // 17
+  {ch:'c12',title:'Common mistakes',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Common mistakes</h1>
+    <div class="content">
+      <div class="text">
+        <div class="mistakes">
+          <p>Forgetting to order the data before finding the median.</p>
+          <p>Dividing by the wrong count when finding the mean.</p>
+          <p>Confusing mode with the highest value.</p>
+          <p>Forgetting range = largest − smallest.</p>
+        </div>
+      </div>
+    </div>`},
+
+  // 18
+  {ch:'c12',title:'Chapter 12 summary',html:`
+    <div class="orb orb1"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c12">Chapter 12</span><span class="num">1 / 1</span></div>
+    <h1>Chapter 12 summary</h1>
+    <div class="content">
+      <div class="text">
+        <ul class="steps">
+          <li>Mean = sum ÷ count — uses every value.</li>
+          <li>Median = middle of ordered data.</li>
+          <li>Mode = most frequent value.</li>
+          <li>Range = spread = largest − smallest.</li>
+          <li>Frequency tables help organise larger data sets.</li>
+        </ul>
+      </div>
+    </div>`},
+
+  // 19
+  {ch:'c13',title:'Chapter 13',section:true,html:`
+    <div class="orb orb2"></div><div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Chapter 13</h1>
+    <div class="subtitle">Calculations with decimals and fractions</div>`},
+
+  // 20
+  {ch:'c13',title:'Order of operations',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Order of operations</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">BODMAS / BIDMAS — work in the correct order.</p>
+        <div class="grid3">
+          <div class="card"><h3>B</h3><p>Brackets first</p></div>
+          <div class="card"><h3>O / I</h3><p>Orders / Indices</p></div>
+          <div class="card"><h3>DM</h3><p>Divide &amp; Multiply (left to right)</p></div>
+        </div>
+        <div class="grid3" style="margin-top:.8em">
+          <div class="card"><h3>AS</h3><p>Add &amp; Subtract (left to right)</p></div>
+        </div>
+      </div>
+      
+    </div>`},
+
+  // 21
+  {ch:'c13',title:'Question: BODMAS',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>BODMAS question</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">3 + 4 × 2²</p>
+        
+        <div class="answer">2² = 4 → 4 × 2 = 8 → 3 + 8 = <b>11</b></div>
+      </div>
+      
+    </div>`},
+
+  // 22
+  {ch:'c13',title:'Adding decimals',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Adding decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Line up the decimal points!</p>
+        <div class="formula">3.45 + 2.7 = 6.15</div>
+        <div class="tip">Use zero placeholders: 2.7 → 2.70</div>
+      </div>
+    </div>`},
+
+  // 23
+  {ch:'c13',title:'Multiplying decimals',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Multiplying decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Count the decimal places in the question.</p>
+        <div class="formula">0.4 × 0.3 = 0.12</div>
+        <div class="tip">Total decimal places in answer = sum of decimal places in factors.</div>
+      </div>
+    </div>`},
+
+  // 24
+  {ch:'c13',title:'Question: decimal multiplication',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Decimal multiplication</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">0.6 × 0.05</p>
+        
+        <div class="answer">6 × 5 = 30, three decimal places → 0.030 = <b>0.03</b></div>
+      </div>
+    </div>`},
+
+  // 25
+  {ch:'c13',title:'Dividing decimals',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Dividing decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Multiply both numbers by a power of 10 to make the divisor a whole number.</p>
+        <div class="formula">4.5 ÷ 0.5 = 45 ÷ 5 = 9</div>
+      </div>
+    </div>`},
+
+  // 26
+  {ch:'c13',title:'Question: divide decimals',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Divide decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">7.2 ÷ 0.4</p>
+        
+        <div class="answer">72 ÷ 4 = <b>18</b></div>
+      </div>
+    </div>`},
+
+  // 27
+  {ch:'c13',title:'Equivalent fractions',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Equivalent fractions</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Multiply or divide top and bottom by the same number.</p>
+        <div class="formula">1/2 = 2/4 = 3/6 = 5/10</div>
+      </div>
+      
+    </div>`},
+
+  // 28
+  {ch:'c13',title:'Adding fractions',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Adding fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Same denominator — just add the tops.</p>
+        <p>Different denominators — find a common denominator first.</p>
+        <div class="formula">1/3 + 1/6 = 2/6 + 1/6 = 3/6 = 1/2</div>
+      </div>
+    </div>`},
+
+  // 29
+  {ch:'c13',title:'Question: add fractions',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Add fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">2/5 + 1/3</p>
+        
+        <div class="answer">Common denominator = 15<br>6/15 + 5/15 = <b>11/15</b></div>
+      </div>
+    </div>`},
+
+  // 30
+  {ch:'c13',title:'Multiplying fractions',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Multiplying fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Multiply tops, multiply bottoms.</p>
+        <div class="formula">2/3 × 4/5 = 8/15</div>
+        <div class="tip">Simplify your answer if possible.</div>
+      </div>
+    </div>`},
+
+  // 31
+  {ch:'c13',title:'Question: multiply fractions',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Multiply fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">3/4 × 2/9</p>
+        
+        <div class="answer">6/36 = <b>1/6</b></div>
+      </div>
+    </div>`},
+
+  // 32
+  {ch:'c13',title:'Dividing fractions',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Dividing fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Keep, flip, change — multiply by the reciprocal.</p>
+        <div class="formula">2/3 ÷ 4/5 = 2/3 × 5/4 = 10/12 = 5/6</div>
+      </div>
+    </div>`},
+
+  // 33
+  {ch:'c13',title:'Question: divide fractions',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Divide fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">5/6 ÷ 2/3</p>
+        
+        <div class="answer">5/6 × 3/2 = 15/12 = <b>1 1/4</b></div>
+      </div>
+    </div>`},
+
+  // 34
+  {ch:'c13',title:'Mixed numbers',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Mixed numbers</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A whole number plus a fraction.</p>
+        <div class="formula">2 1/3 = 7/3 (improper)</div>
+        <div class="tip">Convert to improper fractions before multiplying or dividing.</div>
+      </div>
+    </div>`},
+
+  // 35
+  {ch:'c13',title:'Fraction of a quantity',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Fraction of a quantity</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Divide by the bottom, multiply by the top.</p>
+        <div class="formula">3/4 of 20 = 20 ÷ 4 × 3 = 15</div>
+      </div>
+    </div>`},
+
+  // 36
+  {ch:'c13',title:'Question: fraction of amount',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Fraction of amount</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">2/5 of 45</p>
+        
+        <div class="answer">45 ÷ 5 = 9 → 9 × 2 = <b>18</b></div>
+      </div>
+    </div>`},
+
+  // 37
+  {ch:'c13',title:'Fractions to decimals',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Fractions to decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Divide the top by the bottom.</p>
+        <div class="formula">3/4 = 3 ÷ 4 = 0.75</div>
+        <div class="tip">Some fractions give recurring decimals: 1/3 = 0.333...</div>
+      </div>
+    </div>`},
+
+  // 38
+  {ch:'c13',title:'Decimals to fractions',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Decimals to fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Use the place value of the last digit.</p>
+        <div class="formula">0.6 = 6/10 = 3/5<br>0.25 = 25/100 = 1/4</div>
+      </div>
+    </div>`},
+
+  // 39
+  {ch:'c13',title:'Question: convert fractions',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Convert 5/8 to a decimal</h1>
+    <div class="content">
+      <div class="text">
+        
+        <div class="answer">5 ÷ 8 = <b>0.625</b></div>
+      </div>
+    </div>`},
+
+  // 40
+  {ch:'c13',title:'Percentages',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Percentages</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Percent means "out of 100".</p>
+        <div class="formula">25% = 25/100 = 1/4 = 0.25</div>
+      </div>
+    </div>`},
+
+  // 41
+  {ch:'c13',title:'Percentage of amount',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Percentage of an amount</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Find 10% by dividing by 10, then scale.</p>
+        <div class="formula">30% of 80 = 3 × (80÷10) = 3 × 8 = 24</div>
+      </div>
+    </div>`},
+
+  // 42
+  {ch:'c13',title:'Question: percentage',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Find 45% of 200</h1>
+    <div class="content">
+      <div class="text">
+        
+        <div class="answer">10% = 20 → 40% = 80 → 5% = 10 → 45% = <b>90</b></div>
+      </div>
+    </div>`},
+
+  // 43
+  {ch:'c13',title:'Rounding',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Rounding</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Look at the next digit — 5 or more, round up.</p>
+        <div class="formula">3.467 → 3.47 (2 dp) → 3.5 (1 dp) → 3 (whole)</div>
+      </div>
+    </div>`},
+
+  // 44
+  {ch:'c13',title:'Question: rounding',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Round 7.856 to 2 dp</h1>
+    <div class="content">
+      <div class="text">
+        
+        <div class="answer">Third digit is 6 → round up → <b>7.86</b></div>
+      </div>
+    </div>`},
+
+  // 45
+  {ch:'c13',title:'Estimation',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Estimation</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Round first, then calculate.</p>
+        <div class="formula">48 × 2.9 ≈ 50 × 3 = 150</div>
+        <div class="tip">Useful to check whether an exact answer is reasonable.</div>
+      </div>
+    </div>`},
+
+  // 46
+  {ch:'c13',title:'Question: estimation',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Estimate 31 × 4.8</h1>
+    <div class="content">
+      <div class="text">
+        
+        <div class="answer">≈ 30 × 5 = <b>150</b></div>
+      </div>
+    </div>`},
+
+  // 47
+  {ch:'c13',title:'Common mistakes — calculations',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Common mistakes</h1>
+    <div class="content">
+      <div class="text">
+        <div class="mistakes">
+          <p>Forgetting BODMAS — doing operations left to right.</p>
+          <p>Not lining up decimal points when adding.</p>
+          <p>Adding denominators when adding fractions.</p>
+          <p>Forgetting to simplify fractions.</p>
+        </div>
+      </div>
+    </div>`},
+
+  // 48
+  {ch:'c13',title:'Chapter 13 summary',html:`
+    <div class="orb orb1"></div><div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c13">Chapter 13</span><span class="num">1 / 1</span></div>
+    <h1>Chapter 13 summary</h1>
+    <div class="content">
+      <div class="text">
+        <ul class="steps">
+          <li>BODMAS keeps calculation order correct.</li>
+          <li>Line up decimal points; count decimal places in multiplication.</li>
+          <li>Fractions need common denominators to add or subtract.</li>
+          <li>Multiply fractions: top × top, bottom × bottom.</li>
+          <li>Divide fractions: keep, flip, multiply.</li>
+        </ul>
+      </div>
+    </div>`},
+
+  // 49
+  {ch:'c14',title:'Chapter 14',section:true,html:`
+    <div class="orb orb3"></div><div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Chapter 14</h1>
+    <div class="subtitle">Functions and formulae</div>`},
+
+  // 50
+  {ch:'c14',title:'What is a function?',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>What is a function?</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A function takes an input and gives an output.</p>
+        <div class="formula">Input x → Function → Output y</div>
+        <div class="tip">Each input has exactly one output.</div>
+      </div>
+    </div>`},
+
+  // 51
+  {ch:'c14',title:'Function machines',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Function machines</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">A diagram showing a sequence of operations.</p>
+        <div class="formula">Input 5 → ×3 → +2 → Output 17</div>
+        <div class="tip">Work through one operation at a time, left to right.</div>
+      </div>
+      
+    </div>`},
+
+  // 52
+  {ch:'c14',title:'Question: function machine',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Function machine</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Input 4 → ×2 → −5 → Output ?</p>
+        
+        <div class="answer">4 × 2 = 8 → 8 − 5 = <b>3</b></div>
+      </div>
+    </div>`},
+
+  // 53
+  {ch:'c14',title:'Inverse function machines',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Inverse function machines</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Work backwards with inverse operations.</p>
+        <div class="formula">Output 17 ← +2 ← ×3 ← Input?</div>
+        <div class="tip">Reverse the order AND reverse each operation.</div>
+      </div>
+    </div>`},
+
+  // 54
+  {ch:'c14',title:'Question: inverse machine',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Find the input</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Output 11 ← ×2 ← +3 ← Input?</p>
+        
+        <div class="answer">11 ÷ 2 = 5.5 → 5.5 − 3 = <b>2.5</b></div>
+      </div>
+    </div>`},
+
+  // 55
+  {ch:'c14',title:'Mappings',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Mappings</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">A mapping pairs each input to one output.</p>
+        <div class="formula">x → x² + 1</div>
+        <table>
+          <tr><th>x</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+          <tr><th>y</th><td>1</td><td>2</td><td>5</td><td>10</td></tr>
+        </table>
+      </div>
+      
+    </div>`},
+
+  // 56
+  {ch:'c14',title:'Question: mapping',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Use the mapping</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">y = 3x − 4. Find y when x = 5.</p>
+        
+        <div class="answer">y = 3×5 − 4 = 15 − 4 = <b>11</b></div>
+      </div>
+    </div>`},
+
+  // 57
+  {ch:'c14',title:'Formulae',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Formulae</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A formula shows how quantities relate.</p>
+        <div class="formula">Perimeter of square: P = 4 × side</div>
+        <div class="tip">A formula uses letters to stand for quantities.</div>
+      </div>
+    </div>`},
+
+  // 58
+  {ch:'c14',title:'Substitution',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Substitution</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Replace letters with their numerical values.</p>
+        <div class="formula">If a = 3 and b = 4, then a + 2b = 3 + 8 = 11</div>
+      </div>
+    </div>`},
+
+  // 59
+  {ch:'c14',title:'Question: substitution',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Substitute and calculate</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">If p = 5, q = 2: find 3p + q²</p>
+        
+        <div class="answer">3×5 + 2² = 15 + 4 = <b>19</b></div>
+      </div>
+    </div>`},
+
+  // 60
+  {ch:'c14',title:'Question: more substitution',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Substitute into formula</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A = ½ × b × h. Find A when b = 8, h = 5.</p>
+        
+        <div class="answer">A = ½ × 8 × 5 = 4 × 5 = <b>20</b></div>
+      </div>
+    </div>`},
+
+  // 61
+  {ch:'c14',title:'Writing formulae',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Writing formulae</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Translate words into symbols.</p>
+        <div class="formula">"Add 5 to a number, then double it" → 2(x + 5)</div>
+        <div class="tip">Brackets matter! 2x + 5 is different from 2(x + 5).</div>
+      </div>
+    </div>`},
+
+  // 62
+  {ch:'c14',title:'Question: write a formula',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Write a formula</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">For 4x − 7, find the value when x = 3.</p>
+        
+        <div class="answer">Substitute x = 3: 4 × 3 − 7 = <b>5</b>.</div>
+      </div>
+    </div>`},
+
+  // 63
+  {ch:'c14',title:'Solving equations',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Solving simple equations</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Do the same to both sides to isolate the variable.</p>
+        <div class="formula">x + 7 = 12 → x = 12 − 7 → x = 5</div>
+      </div>
+    </div>`},
+
+  // 64
+  {ch:'c14',title:'Question: solve equation',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Solve 3x = 18</h1>
+    <div class="content">
+      <div class="text">
+        
+        <div class="answer">Divide both sides by 3 → x = <b>6</b></div>
+      </div>
+    </div>`},
+
+  // 65
+  {ch:'c14',title:'Question: two-step equation',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Solve 2x + 5 = 13</h1>
+    <div class="content">
+      <div class="text">
+        
+        <div class="answer">2x = 13 − 5 = 8 → x = 8 ÷ 2 = <b>4</b></div>
+      </div>
+    </div>`},
+
+  // 66
+  {ch:'c14',title:'Real-life formulae',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Real-life formulae</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">Formulae model the real world.</p>
+        <div class="grid2">
+          <div class="card"><h3>Cost</h3><p>C = 5n + 2 (n items, fixed fee 2)</p></div>
+          <div class="card"><h3>Distance</h3><p>d = s × t (speed × time)</p></div>
+        </div>
+      </div>
+      
+    </div>`},
+
+  // 67
+  {ch:'c14',title:'Question: real-life formula',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Use C = 5n + 2</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Find C when n = 6</p>
+        
+        <div class="answer">C = 5×6 + 2 = 30 + 2 = <b>32</b></div>
+      </div>
+    </div>`},
+
+  // 68
+  {ch:'c14',title:'Patterns and sequences',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Patterns and sequences</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Number sequences follow a rule.</p>
+        <div class="formula">3, 6, 9, 12, ... → rule: +3</div>
+        <div class="tip">The nth term helps find any term in the sequence.</div>
+      </div>
+    </div>`},
+
+  // 69
+  {ch:'c14',title:'Question: next term',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Find the next term</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">2, 5, 8, 11, ...</p>
+        
+        <div class="answer">+3 each time → next term = <b>14</b></div>
+      </div>
+    </div>`},
+
+  // 70
+  {ch:'c14',title:'nth term',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>The nth term</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">A formula to find any term.</p>
+        <div class="formula">Sequence: 4, 7, 10, 13, ... → nth term = 3n + 1</div>
+        <div class="tip">Test: 10th term = 3×10 + 1 = 31.</div>
+      </div>
+    </div>`},
+
+  // 71
+  {ch:'c14',title:'Question: nth term',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Find the 20th term</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">nth term = 5n − 2</p>
+        
+        <div class="answer">5×20 − 2 = 100 − 2 = <b>98</b></div>
+      </div>
+    </div>`},
+
+  // 72
+  {ch:'c14',title:'Coordinates',html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Coordinates</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">(x, y) — across first, then up.</p>
+        <div class="formula">(3, 4) → 3 across, 4 up</div>
+      </div>
+    </div>`},
+
+  // 73
+  {ch:'c14',title:'Question: coordinates',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Plot the point</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">What is the x-coordinate of (-2, 5)?</p>
+        
+        <div class="answer">The x-coordinate is <b>−2</b>; the point is 2 left and 5 up.</div>
+      </div>
+    </div>`},
+
+  // 74
+  {ch:'c14',title:'Linear graphs',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Linear graphs</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">y = mx + c — straight line graph.</p>
+        <div class="formula">y = 2x + 1</div>
+        <div class="tip">m = gradient (steepness), c = y-intercept.</div>
+      </div>
+    </div>`},
+
+  // 75
+  {ch:'c14',title:'Question: linear graph',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Find y for x = 3</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">y = 2x + 1</p>
+        
+        <div class="answer">y = 2×3 + 1 = <b>7</b></div>
+      </div>
+    </div>`},
+
+  // 76
+  {ch:'c14',title:'Real-life graphs',html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Real-life graphs</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Graphs tell stories — distance, temperature, cost.</p>
+        <div class="tip">A horizontal section means the value is constant.</div>
+      </div>
+    </div>`},
+
+  // 77
+  {ch:'c14',title:'Common mistakes — functions',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Common mistakes</h1>
+    <div class="content">
+      <div class="text">
+        <div class="mistakes">
+          <p>Forgetting brackets in 2(x + 5).</p>
+          <p>Mixing up input and output direction.</p>
+          <p>Not reversing operations for inverse functions.</p>
+          <p>Forgetting BODMAS during substitution.</p>
+        </div>
+      </div>
+    </div>`},
+
+  // 78
+  {ch:'c14',title:'Chapter 14 summary',html:`
+    <div class="orb orb1"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker c14">Chapter 14</span><span class="num">1 / 1</span></div>
+    <h1>Chapter 14 summary</h1>
+    <div class="content">
+      <div class="text">
+        <ul class="steps">
+          <li>A function maps inputs to outputs.</li>
+          <li>Function machines show operations in sequence.</li>
+          <li>Substitution puts numbers into formulae.</li>
+          <li>Solve equations by doing the same to both sides.</li>
+          <li>The nth term gives any term in a sequence.</li>
+        </ul>
+      </div>
+    </div>`},
+
+  // 79
+  {ch:'intro',title:'Mixed: averages',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — Averages</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Find the mean of 7, 2, 9, 2, 5, 2.</p>
+        
+        <div class="answer">Add the values and divide by 6: 27 ÷ 6 = <b>4.5</b>.</div>
+      </div>
+    </div>`},
+
+  // 80
+  {ch:'intro',title:'Mixed: calculations',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — Calculations</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">Calculate 5/8 + 1/4. Give your answer as a decimal.</p>
+        
+        <div class="answer">5/8 + 2/8 = 7/8 = <b>0.875</b>.</div>
+      </div>
+    </div>`},
+
+  // 81
+  {ch:'intro',title:'Mixed: functions',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — Functions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">y = 4x − 3, find y when x = 2.5</p>
+        
+        <div class="answer">y = 4×2.5 − 3 = 10 − 3 = <b>7</b></div>
+      </div>
+    </div>`},
+
+  // 82
+  {ch:'intro',title:'Mixed: fractions',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — Fractions</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">5/6 ÷ 1/3</p>
+        
+        <div class="answer">5/6 × 3/1 = 15/6 = <b>2 1/2</b></div>
+      </div>
+    </div>`},
+
+  // 83
+  {ch:'intro',title:'Mixed: BODMAS',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — BODMAS</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">(6 + 4) × 2 − 3²</p>
+        
+        <div class="answer">10 × 2 − 9 = 20 − 9 = <b>11</b></div>
+      </div>
+    </div>`},
+
+  // 84
+  {ch:'intro',title:'Mixed: percentages',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — Percentages</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">15% of 240</p>
+        
+        <div class="answer">10% = 24, 5% = 12 → 15% = <b>36</b></div>
+      </div>
+    </div>`},
+
+  // 85
+  {ch:'intro',title:'Mixed: substitution',q:true,html:`
+    <div class="orb orb1"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — Substitution</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">P = 2l + 2w. Find P when l = 7, w = 4.</p>
+        
+        <div class="answer">P = 2×7 + 2×4 = 14 + 8 = <b>22</b></div>
+      </div>
+    </div>`},
+
+  // 86
+  {ch:'intro',title:'Mixed: sequences',q:true,html:`
+    <div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — Sequences</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">nth term = 4n − 1. Find the 15th term.</p>
+        
+        <div class="answer">4×15 − 1 = 60 − 1 = <b>59</b></div>
+      </div>
+    </div>`},
+
+  // 87
+  {ch:'intro',title:'Mixed: decimals',q:true,html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Mixed Practice</span><span class="num">1 / 1</span></div>
+    <h1>Mixed practice — Decimals</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">3.6 × 0.2</p>
+        
+        <div class="answer">36 × 2 = 72, two decimal places → <b>0.72</b></div>
+      </div>
+    </div>`},
+
+  // 88
+  {ch:'intro',title:'Key vocabulary',html:`
+    <div class="orb orb1"></div><div class="orb orb2"></div>
+    <div class="topbar"><span class="kicker">Vocabulary</span><span class="num">1 / 1</span></div>
+    <h1>Key vocabulary</h1>
+    <div class="content">
+      <div class="text">
+        <div class="grid3">
+          <div class="card"><h3>Ch. 12</h3><p>Mean · Median · Mode · Range · Frequency</p></div>
+          <div class="card"><h3>Ch. 13</h3><p>BODMAS · Decimal · Fraction · Percentage · Equivalent</p></div>
+          <div class="card"><h3>Ch. 14</h3><p>Function · Mapping · Formula · Substitution · Variable</p></div>
+        </div>
+      </div>
+    </div>`},
+
+  // 89
+  {ch:'intro',title:'Tips for success',html:`
+    <div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Tips</span><span class="num">1 / 1</span></div>
+    <h1>Tips for success</h1>
+    <div class="content">
+      <div class="text">
+        <ul class="steps">
+          <li>Always show your working — method earns marks.</li>
+          <li>Check your answer makes sense.</li>
+          <li>Use estimation to spot errors.</li>
+          <li>Practise mental maths daily.</li>
+          <li>Learn key vocabulary and formulae.</li>
+        </ul>
+      </div>
+    </div>`},
+
+  // 90
+  {ch:'intro',title:'Well done!',html:`
+    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+    <div class="topbar"><span class="kicker">Stage 7 Maths</span><span class="num">1 / 1</span></div>
+    <h1>Well done!</h1>
+    <div class="content hasVisual">
+      <div class="text">
+        <p class="lead">You completed Chapters 12–14.</p>
+        <p>Keep practising, keep questioning, keep exploring.</p>
+        <div class="pillrow"><span>Mean · Median · Mode</span><span>BODMAS · Fractions</span><span>Functions · Formulae</span></div>
+      </div>
+      <div class="visual"><svg class="math-emblem" viewBox="0 0 420 300" role="img" aria-label="A graph, sigma and balanced equation"><path d="M40 240V55M40 220H370" fill="none" stroke="#aeb8d7" stroke-width="7" stroke-linecap="round"/><path d="M72 185 142 145 207 165 300 82" fill="none" stroke="#2dd4bf" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="142" cy="155" r="11" fill="#fbbf24"/><circle cx="300" cy="82" r="11" fill="#fbbf24"/><text x="72" y="105" fill="#c7b9ff" font-size="54" font-weight="700">Σ</text><text x="224" y="260" fill="#f4f3ed" font-size="32" font-weight="700" font-family="Arial,sans-serif">x + 7 = 12</text></svg></div>
+    </div>`},
+];
+
+
+const comparisonLessons = [
+ {ch:'c12',title:'Compare averages',html:`<div class="topbar"><span class="kicker c12">Chapter 12</span></div><h1>Mean, median and mode</h1><div class="content"><div class="text"><table class="compare-table"><tr><th>Mean</th><th>Median</th><th>Mode</th></tr><tr><td>Share the total equally</td><td>Find the middle after sorting</td><td>Find the most frequent value</td></tr></table><p class="lead">Try 2, 3, 3, 4, 18</p><p>Mean = 6; median = 3; mode = 3. The outlier 18 pulls the mean up, while the median and mode stay 3.</p></div></div>`},
+ {ch:'c13',title:'Fraction, decimal and percentage',html:`<div class="topbar"><span class="kicker c13">Chapter 13</span></div><h1>Three forms, one value</h1><div class="content"><div class="text"><table class="compare-table"><tr><th>Fraction</th><th>Decimal</th><th>Percentage</th></tr><tr><td>1/2</td><td>0.5</td><td>50%</td></tr><tr><td>1/4</td><td>0.25</td><td>25%</td></tr><tr><td>3/4</td><td>0.75</td><td>75%</td></tr></table><p class="tip">Divide numerator by denominator to convert a fraction to a decimal; multiply by 100 to get a percentage.</p></div></div>`},
+ {ch:'c14',title:'Function, formula and equation',html:`<div class="topbar"><span class="kicker c14">Chapter 14</span></div><h1>Function, formula and equation</h1><div class="content"><div class="text"><table class="compare-table"><tr><th>Function</th><th>Formula</th><th>Equation</th></tr><tr><td>A rule maps input to output</td><td>Shows a relationship</td><td>Two expressions are equal</td></tr><tr><td>f(x) = 2x + 1</td><td>A = l &times; w</td><td>2x + 1 = 9</td></tr></table></div></div>`},
+ {ch:'c13',title:'Worked example: add fractions',html:`<div class="topbar"><span class="kicker c13">Worked example</span></div><h1>Add fractions with unlike denominators</h1><div class="content"><div class="text"><ol class="steps"><li>Find a common denominator: 1/2 = 3/6.</li><li>Rewrite: 1/2 + 1/3 = 3/6 + 2/6.</li><li>Add the numerators: 5/6.</li></ol></div></div>`},
+ {ch:'c13',title:'Worked example: divide decimals',html:`<div class="topbar"><span class="kicker c13">Worked example</span></div><h1>Divide decimals</h1><div class="content"><div class="text"><ol class="steps"><li>Make the divisor a whole number: 4.8 &divide; 0.6 becomes 48 &divide; 6.</li><li>Multiply both numbers by 10 so the quotient stays the same.</li><li>Calculate: 48 &divide; 6 = 8.</li></ol></div></div>`}
+];
+for(const lesson of comparisonLessons){
+ const summary=lesson.ch==='c12'?'Chapter 12 summary':lesson.ch==='c14'?'Chapter 14 summary':null;
+ if(summary){const idx=slidesData.findIndex(s=>s.title===summary);slidesData.splice(idx,0,lesson);}
+ else if(lesson.title.startsWith('Fraction, decimal')){const idx=slidesData.findIndex(s=>s.title==='Chapter 13 summary');slidesData.splice(idx,0,lesson);}
+ else if(lesson.title.startsWith('Function, formula')){const idx=slidesData.findIndex(s=>s.title==='Chapter 14 summary');slidesData.splice(idx,0,lesson);}
+ else {const anchor=lesson.title.includes('add fractions')?'Adding fractions':'Dividing decimals';const idx=slidesData.findIndex(s=>s.title===anchor);slidesData.splice(idx+1,0,lesson);}
+}
+
+const practiceBank = [
+  // Chapter 12: averages, range and frequency
+  {ch:'c12',topic:'Data practice',title:'Practice: mean',prompt:'Find the mean of 8, 12, 14 and 18.',answer:'(8 + 12 + 14 + 18) ÷ 4 = <b>13</b>'},
+  {ch:'c12',topic:'Data practice',title:'Practice: median',prompt:'Find the median of 15, 4, 9, 12 and 7.',answer:'Order them: 4, 7, 9, 12, 15. The median is <b>9</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: mode',prompt:'Find the mode of 3, 6, 6, 8, 6, 10 and 3.',answer:'The most frequent value is <b>6</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: range',prompt:'Find the range of 17, 9, 22, 13 and 15.',answer:'22 − 9 = <b>13</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: mean from a list',prompt:'The temperatures are 21°C, 24°C, 23°C, 20°C and 22°C. Find the mean.',answer:'110 ÷ 5 = <b>22°C</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: even median',prompt:'Find the median of 2, 14, 8 and 10.',answer:'The middle values are 8 and 10, so the median is (8 + 10) ÷ 2 = <b>9</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: frequency',prompt:'In 2, 4, 4, 5, 4, 6, 2, how often does 4 appear?',answer:'It appears <b>3</b> times.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: frequency table',prompt:'A value of 1 occurs twice, 2 occurs four times and 3 occurs twice. How many data values are there?',answer:'2 + 4 + 2 = <b>8</b> data values.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: mean from frequency',prompt:'Values 1, 2 and 3 have frequencies 2, 4 and 2. Find the mean.',answer:'(1×2 + 2×4 + 3×2) ÷ 8 = 16 ÷ 8 = <b>2</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: missing value',prompt:'The mean of 6, 8 and x is 9. Find x.',answer:'The total must be 9×3 = 27. So x = 27 − 6 − 8 = <b>13</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: compare ranges',prompt:'Set A is 4, 7, 9, 11. Set B is 2, 7, 9, 14. What is the range of Set B?',answer:'14 − 2 = <b>12</b>.'},
+  {ch:'c12',topic:'Data practice',title:'Practice: choose an average',prompt:'Find the mode of the shoe sizes 5, 6, 6, 7, 8, 6, 9.',answer:'The most common shoe size is <b>6</b>.'},
+
+  // Chapter 13: calculations, fractions, decimals and percentages
+  {ch:'c13',topic:'Calculation practice',title:'Practice: order of operations',prompt:'Work out 18 ÷ 3 + 2 × 5.',answer:'Do division and multiplication first: 6 + 10 = <b>16</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: brackets',prompt:'Work out (14 − 6) × 3.',answer:'8 × 3 = <b>24</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: add decimals',prompt:'Work out 4.75 + 2.8.',answer:'4.75 + 2.80 = <b>7.55</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: subtract decimals',prompt:'Work out 8.2 − 3.65.',answer:'8.20 − 3.65 = <b>4.55</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: multiply decimals',prompt:'Work out 0.6 × 0.7.',answer:'6 × 7 = 42, with two decimal places: <b>0.42</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: divide decimals',prompt:'Work out 8.4 ÷ 0.7.',answer:'84 ÷ 7 = <b>12</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: add fractions',prompt:'Work out 3/4 + 1/8. Give your answer as a decimal.',answer:'6/8 + 1/8 = 7/8 = <b>0.875</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: subtract fractions',prompt:'Work out 5/6 − 1/3. Give your answer as a decimal.',answer:'5/6 − 2/6 = 1/2 = <b>0.5</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: fraction of an amount',prompt:'Find 2/5 of 70.',answer:'70 ÷ 5 × 2 = <b>28</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: percentage',prompt:'Find 15% of 360.',answer:'10% is 36 and 5% is 18, so 15% is <b>54</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: fraction to decimal',prompt:'Write 3/8 as a decimal.',answer:'3 ÷ 8 = <b>0.375</b>.'},
+  {ch:'c13',topic:'Calculation practice',title:'Practice: rounding',prompt:'Round 8.746 to 1 decimal place.',answer:'The hundredths digit is 4, so the answer is <b>8.7</b>.'},
+
+  // Chapter 14: functions, formulae, equations and sequences
+  {ch:'c14',topic:'Algebra practice',title:'Practice: substitute',prompt:'Find y when y = 3x + 2 and x = 5.',answer:'3×5 + 2 = <b>17</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: area formula',prompt:'A = l × w. Find A when l = 8 cm and w = 6 cm.',answer:'8 × 6 = <b>48 cm²</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: formula',prompt:'Find 4n + 3 when n = 7.',answer:'4×7 + 3 = <b>31</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: solve an equation',prompt:'Solve x + 12 = 25.',answer:'x = 25 − 12 = <b>13</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: multiplication equation',prompt:'Solve 5x = 45.',answer:'x = 45 ÷ 5 = <b>9</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: two-step equation',prompt:'Solve 3x + 4 = 25.',answer:'3x = 21, so x = <b>7</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: nth term',prompt:'The nth term is 4n − 1. Find the 9th term.',answer:'4×9 − 1 = <b>35</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: sequence',prompt:'Find the next term: 4, 9, 14, 19, ?',answer:'The rule is +5, so the next term is <b>24</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: function machine',prompt:'A machine multiplies the input by 2, then adds 5. Find the output for input 9.',answer:'2×9 + 5 = <b>23</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: inverse operations',prompt:'A machine adds 7 to an input and gives an output of 19. What was the input?',answer:'19 − 7 = <b>12</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: linear graph',prompt:'Find y when y = 2x − 3 and x = 8.',answer:'2×8 − 3 = <b>13</b>.'},
+  {ch:'c14',topic:'Algebra practice',title:'Practice: coordinates',prompt:'What is the x-coordinate of the point (-3, 7)?',answer:'The x-coordinate is <b>−3</b>.'},
+];
+
+const practiceExpectedAnswers = [
+  13,9,6,13,22,9,3,8,2,13,12,6,
+  16,24,7.55,4.55,0.42,12,0.875,0.5,28,54,0.375,8.7,
+  17,48,31,13,9,7,35,24,23,12,13,-3
+];
+if (practiceBank.length !== practiceExpectedAnswers.length) throw new Error('Practice answer list does not match the question list.');
+practiceBank.forEach((question, index) => { question.expected = practiceExpectedAnswers[index]; });
+
+const extraPracticeSlides = practiceBank.map((q, index) => ({
+  ch:q.ch,
+  title:q.title,
+  q:true,
+  expected:q.expected,
+  html:`
+    <div class="orb orb${index % 3 + 1}"></div>
+    <div class="topbar"><span class="kicker ${q.ch}">${q.topic}</span><span class="num"></span></div>
+    <h1>${q.title}</h1>
+    <div class="content">
+      <div class="text">
+        <p class="lead">${q.prompt}</p>
+        
+        <div class="answer" aria-hidden="true">${q.answer}</div>
+      </div>
+    </div>`
+}));
+slidesData.splice(slidesData.length - 1, 0, ...extraPracticeSlides);
+
+// Keep every existing question attached to its lesson while preserving question and answer content.
+const questionAfter = {
+  'Question: mean':'Mean definition','Practice: mean':'Mean definition','Practice: mean from a list':'Three averages','Practice: missing value':'Choosing an average',
+  'Question: median':'Median','Practice: median':'Median','Practice: even median':'Three averages',
+  'Question: mode and range':'Range','Practice: mode':'Mode','Practice: range':'Range','Practice: compare ranges':'Common mistakes','Practice: choose an average':'Choosing an average',
+  'Question: mean from table':'Mean from frequency table','Practice: frequency':'Frequency tables','Practice: frequency table':'Frequency tables','Practice: mean from frequency':'Mean from frequency table',
+  'Question: BODMAS':'Order of operations','Practice: order of operations':'Order of operations','Practice: brackets':'Common mistakes \u2014 calculations',
+  'Practice: add decimals':'Adding decimals','Practice: subtract decimals':'Adding decimals','Question: decimal multiplication':'Multiplying decimals','Practice: multiply decimals':'Multiplying decimals','Question: divide decimals':'Dividing decimals','Practice: divide decimals':'Dividing decimals',
+  'Question: add fractions':'Adding fractions','Practice: add fractions':'Adding fractions','Practice: subtract fractions':'Adding fractions','Question: multiply fractions':'Multiplying fractions','Question: divide fractions':'Dividing fractions','Question: fraction of amount':'Fraction of a quantity','Practice: fraction of an amount':'Fraction of a quantity','Question: convert fractions':'Decimals to fractions','Practice: fraction to decimal':'Fractions to decimals',
+  'Question: percentage':'Percentage of amount','Practice: percentage':'Percentage of amount','Question: rounding':'Rounding','Practice: rounding':'Rounding','Question: estimation':'Estimation',
+  'Question: function machine':'Function machines','Practice: function machine':'Function machines','Question: inverse machine':'Inverse function machines','Practice: inverse operations':'Inverse function machines','Question: mapping':'Mappings',
+  'Question: substitution':'Substitution','Practice: substitute':'Substitution','Question: more substitution':'Formulae','Practice: area formula':'Real-life formulae','Question: write a formula':'Writing formulae','Practice: formula':'Formulae',
+  'Question: solve equation':'Solving equations','Practice: solve an equation':'Solving equations','Practice: multiplication equation':'Solving equations','Question: two-step equation':'Solving equations','Practice: two-step equation':'Common mistakes \u2014 functions','Question: real-life formula':'Real-life formulae',
+  'Question: next term':'Patterns and sequences','Practice: sequence':'Patterns and sequences','Question: nth term':'nth term','Practice: nth term':'nth term','Question: coordinates':'Coordinates','Practice: coordinates':'Coordinates','Question: linear graph':'Linear graphs','Practice: linear graph':'Linear graphs',
+  'Mixed: averages':'Choosing an average','Mixed: calculations':'Common mistakes \u2014 calculations','Mixed: functions':'Common mistakes \u2014 functions','Mixed: fractions':'Fractions to decimals','Mixed: BODMAS':'Order of operations','Mixed: percentages':'Percentage of amount','Mixed: substitution':'Substitution','Mixed: sequences':'Patterns and sequences','Mixed: decimals':'Adding decimals'
+};
+{
+  const original=[...slidesData], lessons=new Map(original.filter(s=>!s.q).map(s=>[s.title,s])), attached=new Map(), moved=new Set();
+  for(const q of original.filter(s=>s.q)) {
+    const anchor=questionAfter[q.title];
+    if(!anchor) continue;
+    if(!lessons.has(anchor)) throw new Error(`Missing lesson slide ${anchor} for ${q.title}`);
+    q.ch=lessons.get(anchor).ch;
+    const group=attached.get(anchor)||[];group.push(q);attached.set(anchor,group);moved.add(q);
+  }
+  const ordered=[];
+  for(const lesson of original) {
+    if(lesson.q&&moved.has(lesson)) continue;
+    ordered.push(lesson,...(attached.get(lesson.title)||[]));
+  }
+  slidesData.splice(0,slidesData.length,...ordered);
+  for(const [exampleTitle,anchorTitle] of [['Worked example: add fractions','Adding fractions'],['Worked example: divide decimals','Dividing decimals']]){
+    const exampleIndex=slidesData.findIndex(s=>s.title===exampleTitle), anchorIndex=slidesData.findIndex(s=>s.title===anchorTitle);
+    if(exampleIndex>=0&&anchorIndex>=0){const [example]=slidesData.splice(exampleIndex,1);const adjustedAnchor=slidesData.findIndex(s=>s.title===anchorTitle);slidesData.splice(adjustedAnchor+1,0,example);}
+  }
+  if(slidesData.length!==original.length) throw new Error('Question reorder changed the slide count');
+  const loose=original.filter(s=>s.q&&!moved.has(s)).map(s=>s.title);
+  if(loose.length) throw new Error(`Unattached question slides: ${loose.join(', ')}`);
+}
+
+const stage = document.getElementById('stage');
+const progress = document.getElementById('progress');
+const questionAnswers = {
+  'Question: mean':8, 'Question: median':9, 'Question: mode and range':5,
+  'Question: mean from table':1.89, 'Question: BODMAS':11,
+  'Question: decimal multiplication':0.03, 'Question: divide decimals':18,
+  'Question: add fractions':11/15, 'Question: multiply fractions':1/6,
+  'Question: divide fractions':1.25, 'Question: fraction of amount':18,
+  'Question: convert fractions':0.625, 'Question: percentage':90,
+  'Question: rounding':7.86, 'Question: estimation':150,
+  'Question: function machine':3, 'Question: inverse machine':2.5,
+  'Question: mapping':11, 'Question: substitution':19,
+  'Question: more substitution':20, 'Question: write a formula':5,
+  'Question: solve equation':6, 'Question: two-step equation':4,
+  'Question: real-life formula':32, 'Question: next term':14,
+  'Question: nth term':98, 'Question: coordinates':-2,
+  'Question: linear graph':7, 'Mixed: averages':4.5,
+  'Mixed: calculations':0.875, 'Mixed: functions':7,
+  'Mixed: fractions':2.5, 'Mixed: BODMAS':11,
+  'Mixed: percentages':36, 'Mixed: substitution':22,
+  'Mixed: sequences':59, 'Mixed: decimals':0.72
+};
+
+function createAnswerPad(slideIndex) {
+  const pad = document.createElement('div');
+  pad.className = 'answerPad';
+  pad.setAttribute('role', 'group');
+  pad.setAttribute('aria-label', 'Numeric answer keypad');
+  const inputId = `answer-input-${slideIndex}`;
+  const label = document.createElement('label');
+  label.htmlFor = inputId;
+  label.textContent = 'TYPE YOUR ANSWER';
+  const input = document.createElement('input');
+  input.id = inputId;
+  input.className = 'answerInput';
+  input.type = 'text';
+  input.inputMode = 'none';
+  input.autocomplete = 'off';
+  input.spellcheck = false;
+  input.placeholder = 'Answer';
+  input.setAttribute('aria-label', 'Type your answer');
+  const keys = document.createElement('div');
+  keys.className = 'keypadGrid';
+  ['1','2','3','4','5','6','7','8','9','-','0','.'].forEach(key => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.key = key;
+    button.textContent = key === '-' ? '−' : key;
+    button.setAttribute('aria-label', key === '-' ? 'Minus' : key === '.' ? 'Decimal point' : key);
+    keys.appendChild(button);
+  });
+  const clear = document.createElement('button');
+  clear.type = 'button';
+  clear.className = 'keypadDelete';
+  clear.dataset.action = 'delete';
+  clear.textContent = 'Delete';
+  const reveal = document.createElement('button');
+  reveal.type = 'button'; reveal.className = 'keypadReveal'; reveal.dataset.action = 'reveal'; reveal.textContent = 'Reveal answer';
+  const check = document.createElement('button');
+  check.type = 'button';
+  check.className = 'keypadCheck';
+  check.dataset.action = 'check';
+  check.textContent = 'Check answer';
+  const feedback = document.createElement('div');
+  feedback.className = 'answerFeedback';
+  feedback.setAttribute('aria-live', 'polite');
+  pad.append(label, input, keys, clear, check, reveal, feedback);
+  return pad;
+}
+
+const slideFragment = document.createDocumentFragment();
+// Reusable inline SVG visual system: all diagrams are topic-specific and local.
+const svgText = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const chapterAccent = ch => ch === 'c12' ? '#a78bfa' : ch === 'c13' ? '#2dd4bf' : ch === 'c14' ? '#fb7185' : '#fbbf24';
+const STORYBOARD = Object.freeze({
+  'Chapter 12': {layout:'chapter-hero',visual:'chapter-preview',headline:'Patterns in data',builds:['Meet the data','Compare typical values','Measure the spread']},
+  'Chapter 13': {layout:'chapter-hero',visual:'chapter-preview',headline:'See the structure',builds:['Spot the operators','Change the representation','Check the size']},
+  'Chapter 14': {layout:'chapter-hero',visual:'chapter-preview',headline:'Follow the rule',builds:['Send in an input','Apply the relationship','Read the output']},
+  'Three averages': {layout:'before-after',visual:'averages-comparison',headline:'Three ways to describe data',builds:['See the whole set','Mark the mean','Find the middle and repeat']},
+  'Mean definition': {layout:'object-story',visual:'fair-share',headline:'A fair share',builds:['See 4, 8, 6, 10, 2','Combine to make 30','Share across five values','Mean = 6']},
+  'Median': {layout:'before-after',visual:'sortable-line',headline:'Find the middle',builds:['Scatter 3, 5, 7, 9, 11','Sort into order','Close in from both ends','Median = 7']},
+  'Mode': {layout:'object-story',visual:'size-clusters',headline:'Spot the largest group',builds:['See 2, 4, 4, 4, 7, 9','Gather matching values','One cluster stands tallest','Mode = 4']},
+  'Range': {layout:'hero-object',visual:'endpoint-span',headline:'Measure the full spread',builds:['Plot 3, 8, 11, 4, 9','Order the measurements','Keep endpoints 3 and 11','Range = 8']},
+  'Frequency tables': {layout:'focus-zoom',visual:'objects-to-bars',headline:'From objects to bars',builds:['Raw observations','Group matching values','Stack each group','Read the bar heights']},
+  'Mean from frequency table': {layout:'focus-zoom',visual:'weighted-values',headline:'Count each value fairly',builds:['Pair values with counts','Multiply each pair','Add the weighted totals','Divide by total frequency']},
+  'Choosing an average': {layout:'object-story',visual:'averages-context',headline:'Choose a useful summary',builds:['Notice the unusual value','See the mean move','Compare the middle','Choose for the story']},
+  'Common mistakes': {layout:'focus-zoom',visual:'error-spotlight',headline:'Catch the easy-to-miss step',builds:['Read the data carefully','Check the order','Compare endpoints']},
+  'Chapter 12 summary': {layout:'recap-map',visual:'chapter-map',headline:'Data tells a story',builds:['Typical value','How often','How far apart']},
+  'Order of operations': {layout:'build-on-canvas',visual:'bodmas-expression',headline:'One expression, four moves',builds:['Find the brackets','Evaluate the power','Multiply before adding','Reveal the result']},
+  'Adding decimals': {layout:'build-on-canvas',visual:'place-value',headline:'Let the decimal points line up',builds:['Place the first number','Align the second','Add each column']},
+  'Multiplying decimals': {layout:'focus-zoom',visual:'decimal-scale',headline:'Scale the whole product',builds:['Temporarily ignore the points','Count hundredths','Place the decimal']},
+  'Dividing decimals': {layout:'before-after',visual:'decimal-division',headline:'Scale both numbers together',builds:['See the awkward divisor','Shift both values','Divide whole numbers']},
+  'Equivalent fractions': {layout:'focus-zoom',visual:'fraction-equivalence',headline:'Same amount, more pieces',builds:['Shade one half','Split into fourths and sixths','Compare tenths too']},
+  'Adding fractions': {layout:'before-after',visual:'fraction-area',headline:'Make equal pieces',builds:['Show one half','Split into quarters','Line up the pieces','Combine the shaded area']},
+  'Multiplying fractions': {layout:'focus-zoom',visual:'fraction-product',headline:'Multiply the numerators and denominators',builds:['Shade four fifths','Take two thirds of that part','Read the eight fifteenths']},
+  'Dividing fractions': {layout:'object-story',visual:'fraction-division',headline:'Flip the divisor, then multiply',builds:['Read both fractions','Keep, flip, change','Simplify ten twelfths']},
+  'Mixed numbers': {layout:'before-after',visual:'mixed-number',headline:'Trade wholes for parts',builds:['Read 2 and 1/3','Trade each whole for thirds','2 1/3 = 7/3']},
+  'Fraction of a quantity': {layout:'object-story',visual:'fraction-quantity',headline:'Share, then take',builds:['Split into equal groups','Take three groups','Count the selected objects']},
+  'Fractions to decimals': {layout:'focus-zoom',visual:'fraction-decimal',headline:'Locate the fraction on a scale',builds:['Mark zero and one','Divide into four equal parts','Read the decimal position']},
+  'Decimals to fractions': {layout:'before-after',visual:'decimal-fraction',headline:'Read the place value',builds:['See six tenths','Write ten equal parts','Simplify the fraction']},
+  'Percentages': {layout:'focus-zoom',visual:'survey-grid',headline:'One square, one percent',builds:['Start with a whole','Fill one quarter','Focus on the shaded part','Name the percentage']},
+  'Percentage of amount': {layout:'object-story',visual:'percent-amount',headline:'Build the percentage in parts',builds:['Find ten percent','Repeat three groups of ten percent','Join the parts']},
+  'Rounding': {layout:'hero-object',visual:'rounding-line',headline:'Choose the nearer mark at each place',builds:['Locate 3.467','Round to 3.47','Round to 3.5','Round to the nearest whole: 3']},
+  'Estimation': {layout:'before-after',visual:'estimate-close',headline:'Use nearby friendly numbers',builds:['Start with the exact values','Round to friendly values','Estimate the product']},
+  'Common mistakes — calculations': {layout:'focus-zoom',visual:'error-spotlight',headline:'Pause before the final step',builds:['Spot the tempting shortcut','Follow the structure','Check the result']},
+  'Chapter 13 summary': {layout:'recap-map',visual:'chapter-map',headline:'One idea, many forms',builds:['Place value','Equivalent parts','Reasonable answers']},
+  'What is a function?': {layout:'build-on-canvas',visual:'function-bridge',headline:'One input, one output',builds:['Choose an input','Apply a rule','Check the output']},
+  'Function machines': {layout:'build-on-canvas',visual:'two-stage-machine',headline:'Follow the input',builds:['Start with the token','Pass through times three','Then add two','Read the output']},
+  'Inverse function machines': {layout:'build-on-canvas',visual:'reverse-machine',headline:'Run the same machine backwards',builds:['Start from output 17','Subtract two to reach 15','Divide by three to reach 5','Check by running forward']},
+  'Mappings': {layout:'build-on-canvas',visual:'mapping-flow',headline:'One rule pairs each input with one output',builds:['List inputs 0 to 3','Map to 1, 2, 5, 10','Use y = x? + 1']},
+  'Formulae': {layout:'build-on-canvas',visual:'square-perimeter',headline:'A formula links a perimeter to its side',builds:['Meet the square','Mark its equal sides','Build P = 4 x side']},
+  'Substitution': {layout:'object-story',visual:'variable-slot',headline:'A value takes x\'s place',builds:['Meet the value','Fill the x slot','Evaluate the expression','Reveal y']},
+  'Writing formulae': {layout:'object-story',visual:'variable-rule',headline:'Translate the words in order',builds:['Start with x','Add five inside brackets','Double the whole result']},
+  'Solving equations': {layout:'object-story',visual:'equation-balance',headline:'Keep the balance level',builds:['Balance both sides','Remove seven on the left','Remove seven on the right','See what x must be']},
+  'Real-life formulae': {layout:'story-scene',visual:'formula-real-world',headline:'Distance depends on speed and time',builds:['See the car and clock','Combine speed with time','Reveal the distance rule']},
+  'Patterns and sequences': {layout:'object-story',visual:'sequence-hop',headline:'Make the step visible',builds:['See 3, 6, 9, 12','Reveal each jump of three','Say the rule']},
+  'nth term': {layout:'build-on-canvas',visual:'nth-position',headline:'Connect position to value',builds:['Line up positions','Compare 4, 7, 10, 13','Build 3n + 1']},
+  'Coordinates': {layout:'build-on-canvas',visual:'walk-the-grid',headline:'Across, then up',builds:['Find the origin','Walk three across','Climb four up','Name the point']},
+  'Linear graphs': {layout:'build-on-canvas',visual:'linear-graph',headline:'A rule draws a straight line',builds:['Mark the axes','Plot each ordered pair','Connect the points']},
+  'Real-life graphs': {layout:'story-scene',visual:'story-graph',headline:'Read what changes over time',builds:['Begin at the starting point','Track the changing quantity','Read the story in the slope']},
+  'Common mistakes — functions': {layout:'focus-zoom',visual:'error-spotlight',headline:'Check the rule and the order',builds:['Follow the arrows','Undo in reverse','Read coordinates carefully']},
+  'Chapter 14 summary': {layout:'recap-map',visual:'chapter-map',headline:'Rules connect inputs to outputs',builds:['Substitute a value','Follow the operations','Plot the relationship']}
+});
+
+function artDirectedScene(slide, spec) {
+  const A=chapterAccent(slide.dataset.chapter), C='#f4f3ed', M='#aab4c8', G='#2dd4bf', Y='#fbbf24', R='#fb7185';
+  const kitScene=window.MathSceneKit&&window.MathSceneKit.build(slide,spec,A); if(kitScene) return kitScene;
+  const T=(x,y,s,size=34,color=C,weight=700,anchor='middle')=>`<text x="${x}" y="${y}" text-anchor="${anchor}" fill="${color}" font-size="${size}" font-weight="${weight}" class="${/^\d+$/.test(String(s))?'numeric-svg':''}" font-family="${/^\d+$/.test(String(s))?'Arial,sans-serif':'Mali,Arial,sans-serif'}">${svgText(s)}</text>`;
+  const L=(x1,y1,x2,y2,color=M,w=4)=>`<path d="M${x1} ${y1} L${x2} ${y2}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`;
+  const D=(x,y,r,color=A)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${color}"/>`;
+  const O=(name,x,y,w,h)=>`<use href="#icon-${name}" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+  const build=(n,inside,cls='')=>`<g data-build="${n}" class="${cls}">${inside}</g>`;
+  const pile=(x,y,count,color=A,cols=4,spacing=34)=>Array.from({length:count},(_,i)=>O('coin',x+(i%cols-(Math.min(count,cols)-1)/2)*spacing-12,y-Math.floor(i/cols)*spacing-12,24,24)).join('');
+  let art='', aria=spec.headline;
+  switch(spec.visual){
+    case 'chapter-preview': {
+      if(slide.dataset.chapter==='c12'){
+        const nums=[3,7,7,9,12].map((v,i)=>D(250+i*170,320,29,[A,G,Y,R,A][i])+T(250+i*170,331,String(v),23,'#10172a',900)).join('');
+        const bars=[0,1,2,3].map((v,i)=>`<rect x="${710+v*62}" y="${420-(v+1)*52}" width="46" height="${(v+1)*52}" fill="${[A,G,Y,R][v]}"/>`).join('');
+        art=build(1,nums)+build(2,nums+L(185,420,1000,420,M,3)+bars)+build(3,nums+L(185,420,1000,420,M,3)+bars+`<path d="M230 505 H970" stroke="${Y}" stroke-width="8"/><path d="M230 488 V522 M970 488 V522" stroke="${Y}" stroke-width="7"/>${T(600,565,'TYPICAL VALUE  /  FREQUENCY  /  SPREAD',25,C,800)}`);
+      } else if(slide.dataset.chapter==='c13'){
+        const grid=Array.from({length:16},(_,i)=>`<rect x="780" y="${210+Math.floor(i/4)*48}" width="40" height="40" rx="4" fill="${i<4?G:'#26344b'}" stroke="#8994a9"/>`).join('');
+        art=build(1,T(350,355,'+',150,A,900)+T(610,355,'x',140,G,900)+T(850,355,'/',128,Y,900))+build(2,T(250,350,'+',150,A,900)+T(525,350,'x',140,G,900)+T(775,350,'/',128,Y,900)+`<rect x="930" y="230" width="118" height="118" rx="4" fill="none" stroke="${C}" stroke-width="4"/>${grid}`)+build(3,T(300,350,'0.4',88,C,900)+T(600,350,'x',112,G,900)+T(920,350,'25%',82,Y,900)+T(600,470,'OPERATE  /  COMPARE  /  ESTIMATE',25,M,800));
+      } else {
+        const pipe=`<path d="M120 320 H370 M830 320 H1080" stroke="${G}" stroke-width="9" stroke-linecap="round"/><path d="M355 302 l28 18 -28 18 M842 302 l-28 18 28 18" fill="${G}"/>`;
+        const nodes=[0,1,2,3,4].map(i=>L(160+i*125,510,160+i*125,555,'#3c4964',3)).join('');
+        const cols=Array.from({length:6},(_,i)=>L(160+i*125,500,160+i*125,565,'#51617e',2)).join('');
+        art=build(1,D(165,320,54,Y)+T(165,332,'x',45,'#10172a',900)+pipe+`<path d="M430 180 H770 Q815 180 815 225 V415 Q815 460 770 460 H430 Q385 460 385 415 V225 Q385 180 430 180 Z" fill="#18233a" stroke="${A}" stroke-width="5"/>${T(600,340,'RULE',44,C,900)}`)+build(2,D(165,320,54,Y)+T(165,332,'x',45,'#10172a',900)+pipe+`<path d="M430 180 H770 Q815 180 815 225 V415 Q815 460 770 460 H430 Q385 460 385 415 V225 Q385 180 430 180 Z" fill="#18233a" stroke="${A}" stroke-width="5"/>${T(600,340,'f(x)',56,G,900)}${cols}${nodes}`)+build(3,D(165,320,54,Y)+T(165,332,'5',45,'#10172a',900)+pipe+`<path d="M430 180 H770 Q815 180 815 225 V415 Q815 460 770 460 H430 Q385 460 385 415 V225 Q385 180 430 180 Z" fill="#18233a" stroke="${A}" stroke-width="5"/>${T(600,340,'2x + 1',54,C,900)}${T(1030,337,'11',48,Y,900)}${cols}${nodes}`);
+      }break;
+    }
+    case 'averages-comparison': {
+      const vals=[2,3,3,4,8], dots=vals.map((v,i)=>D(265+i*165,325,28,i===4?R:A)+T(265+i*165,336,String(v),24,'#10172a',900)).join('');
+      art=build(1,dots+O('book-2',105,250,90,105)+T(600,165,'ONE DATA SET',24,M,800))+build(2,dots+L(265,420,925,420,G,4)+D(595,420,17,G)+T(595,485,'MEAN = 4',30,G,900))+build(3,dots+`<path d="M530 260 H695" stroke="${Y}" stroke-width="7"/><circle cx="595" cy="325" r="50" fill="none" stroke="${Y}" stroke-width="6"/>${T(595,490,'MEDIAN = 3   /   MODE = 3',28,Y,900)}`);break;
+    }
+    case 'averages-context': {
+      const vals=[4,4,4,5,13], dots=vals.map((v,i)=>D(265+i*165,325,30,v===13?R:A)+T(265+i*165,337,String(v),24,'#10172a',900)).join('');
+      art=build(1,dots+O('thermometer',85,270,92,135)+T(600,470,'4  /  4  /  4  /  5  /  13',29,C,800))+build(2,dots+L(265,435,925,435,Y,5)+D(595,435,20,Y)+T(595,495,'mean shifts toward 13',28,Y,800))+build(3,dots+`<circle cx="430" cy="325" r="54" fill="none" stroke="${G}" stroke-width="7"/>${T(430,465,'median = 4',27,G,800)}${T(600,545,'Pick the measure that answers the question',23,C)}${T(595,495,'mean = 6',25,Y,800)}`);break;
+    }
+    case 'error-spotlight': {
+      art=build(1,T(600,210,'18 / 3 + 2 x 5',64,C,900)+T(600,440,'Where might a shortcut go wrong?',26,M))+build(2,T(600,205,'18 / 3 + 2 x 5',64,C,900)+`<path d="M205 238 H505" stroke="${Y}" stroke-width="8"/>${T(355,320,'division and multiplication first',25,Y,800)}`)+build(3,T(600,200,'6 + 10',72,G,900)+T(600,360,'16',108,Y,900)+T(600,475,'check each step against the structure',25,M));break;
+    }
+    case 'chapter-map': {
+      const labels=slide.dataset.chapter==='c12'?['mean','median','mode','range']:slide.dataset.chapter==='c13'?['place value','fractions','percent','estimate']:['input','rule','equation','graph'];
+      const coords=[[230,260],[500,200],[770,320],[1000,230]];
+      const edge=(p,q,color)=>{const dx=q[0]-p[0],dy=q[1]-p[1],length=Math.hypot(dx,dy),r=48;return L(p[0]+dx/length*r,p[1]+dy/length*r,q[0]-dx/length*r,q[1]-dy/length*r,color,5)};
+      const path=edge(coords[0],coords[1],A)+edge(coords[1],coords[2],G)+edge(coords[2],coords[3],Y);
+      const nodes=coords.map((p,i)=>D(p[0],p[1],48,[A,G,Y,R][i])+T(p[0],p[1]+85,labels[i],24,C,800)).join('');
+      art=build(1,D(coords[0][0],coords[0][1],48,A)+T(coords[0][0],coords[0][1]+85,labels[0],24,C,800))+build(2,path+nodes)+build(3,path+nodes+T(600,510,'USE THE RIGHT MODEL FOR THE QUESTION',24,M,800));break;
+    }
+    case 'place-value': {
+      const headings=['ONES','TENTHS','HUNDREDTHS'];
+      const positions=[390,600,810];
+      const labels=headings.map((v,i)=>T(positions[i],210,v,22,M,800)).join('');
+      const row=(vals,y,color)=>vals.map((v,i)=>T(positions[i],y,v,68,color,900)).join('')+T(490,y,'.',68,Y,900);
+      art=build(1,labels+row(['3','4','5'],330,C))+build(2,labels+row(['3','4','5'],315,C)+row(['2','7','0'],405,G)+T(190,405,'+',38,G,900,'start')+`<path d="M370 435 H855" stroke="${Y}" stroke-width="5"/>`)+build(3,labels+row(['6','1','5'],315,Y)+T(600,500,'3.45 + 2.70 = 6.15',43,Y,900));break;
+    }
+    case 'decimal-scale': {
+      const grid=()=>Array.from({length:100},(_,i)=>{const selected=i%10<4&&Math.floor(i/10)<3;return `<rect x="${400+(i%10)*39}" y="${155+Math.floor(i/10)*39}" width="34" height="34" rx="3" fill="${selected?A:'#26344b'}" stroke="#8793a9"/>`}).join('');
+      art=build(1,T(600,105,'0.4 x 0.3',55,C,900)+T(600,500,'4 tenths by 3 tenths',34,G,800))+build(2,grid()+T(600,115,'12 HUNDREDTHS',26,M,800))+build(3,grid()+T(600,580,'12 / 100 = 0.12',50,Y,900));break;
+    }
+    case 'decimal-division': {
+      art=build(1,T(600,250,'4.5 / 0.5',84,C,900)+T(600,425,'how many halves in 4.5?',30,M,800))+build(2,T(600,240,'4.5 x 10',58,G,900)+T(600,360,'0.5 x 10',58,Y,900)+T(600,485,'multiply both by 10',29,M,800))+build(3,T(600,250,'45 / 5',84,C,900)+T(600,430,'= 9',72,Y,900));break;
+    }
+    case 'fraction-equivalence': {
+      const bar=(y,n,k,color)=>`<rect x="280" y="${y}" width="640" height="50" fill="none" stroke="${C}" stroke-width="3"/>${Array.from({length:n},(_,i)=>`<rect x="${280+i*640/n}" y="${y}" width="${640/n}" height="50" fill="${i<k?color:'transparent'}" stroke="#929db2" stroke-width="2"/>`).join('')}`;
+      art=build(1,bar(230,2,1,A)+T(600,205,'ONE HALF',30,C,900))+build(2,bar(200,2,1,A)+bar(290,4,2,G)+T(600,390,'same part of the whole',26,M))+build(3,bar(100,2,1,A)+bar(195,4,2,G)+bar(290,6,3,Y)+bar(385,10,5,R)+T(600,510,'1/2 = 2/4 = 3/6 = 5/10',34,Y,900));break;
+    }
+    case 'fraction-product': {
+      const x=310,y=150,w=580,h=350;
+      const grid=(fillW,fillH,color)=>`<rect x="${x}" y="${y}" width="${fillW}" height="${fillH}" fill="${color}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${C}" stroke-width="4"/>${[1,2].map(i=>L(x+i*w/3,y,x+i*w/3,y+h,M,2)).join('')}${[1,2,3,4].map(i=>L(x,y+i*h/5,x+w,y+i*h/5,M,2)).join('')}`;
+      art=build(1,grid(w,h*4/5,G)+O('chocolate',145,140,90,90)+T(600,115,'SHADE 4/5',27,C,800))+build(2,grid(w*2/3,h*4/5,Y)+T(600,115,'TAKE 2/3 OF THE SHADED PART',25,C,800))+build(3,grid(w*2/3,h*4/5,Y)+T(600,555,'2/3 x 4/5 = 8/15',43,Y,900));break;
+    }
+    case 'fraction-division': {
+      art=build(1,T(600,260,'2/3',104,A,900)+T(600,390,'?',72,Y,900)+T(600,520,'4/5',104,G,900))+build(2,T(600,240,'2/3 x 5/4',82,C,900)+T(600,420,'KEEP  /  FLIP  /  CHANGE',30,Y,800))+build(3,T(600,260,'10/12',92,C,900)+T(600,420,'= 5/6',84,Y,900)+T(600,520,'SIMPLIFY',28,G,800));break;
+    }
+    case 'mixed-number': {
+      const x=390,y=265,w=420,h=150;
+      art=build(1,T(600,205,'2 1/3',100,A,900)+T(600,475,'two wholes and one third',30,M,800))+build(2,T(390,220,'2 wholes',40,C,800,'start')+`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${C}" stroke-width="4"/><rect x="${x}" y="${y}" width="${w/3}" height="${h}" fill="${G}"/>${[1,2].map(i=>L(x+i*w/3,y,x+i*w/3,y+h,C,3)).join('')}`+T(600,475,'each whole is 3 thirds',29,M,800))+build(3,`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${C}" stroke-width="4"/><rect x="${x}" y="${y}" width="${w/3}" height="${h}" fill="${Y}"/>${[1,2].map(i=>L(x+i*w/3,y,x+i*w/3,y+h,C,3)).join('')}${T(600,500,'6/3 + 1/3 = 7/3',44,Y,900)}`);break;
+    }
+    case 'fraction-quantity': {
+      const dots=(selected)=>Array.from({length:20},(_,i)=>D(390+(i%4)*120,195+Math.floor(i/4)*66,20,selected&&i%4<3?A:'#313d54')).join('');
+      art=build(1,dots(false)+T(600,555,'20 objects in 4 equal groups',28,M,800))+build(2,dots(true)+T(600,555,'three of the four groups',30,G,800))+build(3,dots(true)+`<path d="M320 145 V475 H680 V145" fill="none" stroke="${Y}" stroke-width="7"/>`+T(600,555,'3 groups x 5 = 15 objects',36,Y,900));break;
+    }
+    case 'fraction-decimal':
+    case 'decimal-fraction': {
+      const reverse=spec.visual==='decimal-fraction';
+      const marks=Array.from({length:5},(_,i)=>L(220+i*190,340,220+i*190,375,M,3)).join('');
+      if(!reverse)art=build(1,L(220,355,980,355,C,5)+marks+T(220,420,'0',24,M)+T(980,420,'1',24,M)+D(790,355,17,A))+build(2,L(220,355,980,355,C,5)+marks+Array.from({length:4},(_,i)=>L(220+i*190,355,220+i*190,388,A,4)).join('')+D(790,355,19,Y)+T(790,305,'3/4',31,Y,900))+build(3,L(220,355,980,355,C,5)+marks+D(790,355,19,Y)+T(790,305,'3/4 = 0.75',39,Y,900));
+      else art=build(1,T(600,280,'0.6',100,G,900)+T(600,410,'six tenths',30,M))+build(2,Array.from({length:10},(_,i)=>`<rect x="${230+i*74}" y="250" width="66" height="130" fill="${i<6?A:'transparent'}" stroke="${C}" stroke-width="2"/>`).join('')+T(600,470,'6/10',44,Y,900))+build(3,T(600,230,'0.6',80,G,900)+T(600,370,'= 6/10',48,C,800)+T(600,490,'= 3/5',56,Y,900));break;
+    }
+    case 'percent-amount': {
+      art=build(1,T(600,220,'80',96,C,900)+O('basket',400,265,100,100)+O('shopping-bag',520,265,100,100)+O('receipt',640,265,82,100)+O('wallet',750,265,85,100)+T(600,440,'find 30% of 80',32,M,800)+O('ticket',900,265,90,72))+build(2,O('basket',290,245,95,95)+T(450,310,'10% = 8',48,G,900)+T(600,310,'x 3',48,Y,900)+T(800,310,'8 + 8 + 8',42,C,900))+build(3,O('basket',375,235,95,95)+O('coin',850,375,72,72)+T(600,370,'3 x 8 = 24',68,Y,900)+T(600,470,'30% of 80 = 24',38,G,900));break;
+    }
+    case 'rounding-line': {
+      art=build(1,O('ruler-2',480,110,240,60)+L(250,340,950,340,C,5)+[250,600,950].map(x=>L(x,315,x,365,M,3)).join('')+D(720,340,22,R)+T(250,410,'3.4',28,C)+T(950,410,'3.5',28,C)+T(720,280,'3.467',30,R,900))+build(2,L(250,340,950,340,C,5)+[250,600,950].map(x=>L(x,315,x,365,M,3)).join('')+D(720,340,24,R)+T(720,280,'3.467',30,R,900)+T(800,235,'hundredths digit is 6',24,Y,800)+T(600,490,'3.467 rounds to 3.47',35,C,800))+build(3,L(250,340,950,340,C,5)+[250,600,950].map(x=>L(x,315,x,365,M,3)).join('')+L(250,325,250,355,G,5)+L(950,315,950,365,Y,8)+T(250,410,'3.4',28,G)+T(950,410,'3.5',28,Y)+D(950,340,28,Y)+T(600,510,'3.467 rounds to 3.5',42,Y,900))+build(4,T(200,300,'3.467',42,C,900)+T(390,300,'→',42,M,800)+T(520,300,'3.47',42,G,900)+T(700,300,'→',42,M,800)+T(820,300,'3.5',42,Y,900)+T(1010,300,'→ 3',42,R,900)+T(600,455,'nearest hundredth, tenth, then whole',27,M,800));break;
+    }
+    case 'estimate-close': {
+      art=build(1,T(600,280,'48 x 2.9',74,C,900)+T(600,420,'exact values',26,M))+build(2,T(400,270,'48 -> 50',48,G,900)+T(800,270,'2.9 -> 3',48,Y,900)+T(600,430,'round each factor',26,M))+build(3,T(600,250,'50 x 3',76,C,900)+T(600,420,'about 150',62,Y,900));break;
+    }
+    case 'function-bridge': {
+      art=build(1,D(240,315,55,Y)+T(240,328,'3',42,'#10172a',900)+T(240,420,'INPUT',20,M,800))+build(2,D(240,315,55,Y)+T(240,328,'3',42,'#10172a',900)+L(300,315,460,315,A,7)+`<path d="M460 180 H740 Q780 180 780 220 V410 Q780 450 740 450 H460 Q420 450 420 410 V220 Q420 180 460 180Z" fill="#1c2941" stroke="${A}" stroke-width="5"/>${T(600,330,'x 2 + 1',46,C,900)}`)+build(3,D(240,315,55,Y)+T(240,328,'3',42,'#10172a',900)+L(300,315,420,315,A,7)+`<path d="M460 180 H740 Q780 180 780 220 V410 Q780 450 740 450 H460 Q420 450 420 410 V220 Q420 180 460 180Z" fill="#1c2941" stroke="${A}" stroke-width="5"/>${T(600,330,'x 2 + 1',46,C,900)}`+L(780,315,930,315,G,7)+D(990,315,55,G)+T(990,328,'7',42,'#10172a',900)+T(990,420,'OUTPUT',20,M,800));break;
+    }
+    case 'mapping-flow': {
+      const pairs=[['0','1'],['1','2'],['2','5'],['3','10']];
+      const links=(last=false)=>pairs.map((p,i)=>D(265,190+i*92,25,A)+T(265,198+i*92,p[0],21,'#10172a',900)+L(305,190+i*92,820,190+i*92,G,4)+D(875,190+i*92,25,Y)+T(875,198+i*92,p[1],21,'#10172a',900)).join('')+(last?T(600,590,'y = x? + 1',38,Y,900):'');
+      art=build(1,T(265,115,'INPUT x',23,M,800)+pairs.map((p,i)=>D(265,190+i*92,25,A)+T(265,198+i*92,p[0],21,'#10172a',900)).join(''))+build(2,links()+T(875,115,'OUTPUT y',23,M,800))+build(3,links(true)+T(600,535,'square the input, then add one',26,C,800));break;
+    }
+    case 'square-perimeter': {
+      const sq=`<rect x="410" y="180" width="380" height="300" fill="#1c2941" stroke="${A}" stroke-width="7"/>`;
+      art=build(1,sq+T(600,345,'square',38,M,700))+build(2,sq+T(600,150,'side',28,Y,800)+T(410,345,'s',34,G,800,'start')+T(790,345,'s',34,G,800,'end')+T(600,515,'all four sides have the same length',25,C,800))+build(3,sq+T(600,150,'s',30,Y,800)+T(600,345,'P = s + s + s + s',46,C,900)+T(600,525,'P = 4 x side',48,Y,900));break;
+    }
+    case 'formula-real-world': {
+      const car=O('car',270,270,350,190);
+      const clock=O('clock',720,230,190,190);
+      art=build(1,car+clock+T(400,520,'SPEED',24,M,800)+T(820,460,'TIME',24,G,800))+build(2,car+clock+L(610,330,705,330,Y,7)+T(650,295,'speed x time',25,Y,800)+T(400,520,'SPEED',24,M,800)+T(820,460,'TIME',24,G,800))+build(3,car+clock+T(600,555,'distance = speed x time',34,Y,900)+O('shopping-cart',260,80,86,80)+O('receipt',840,75,76,85)+O('shopping-bag',410,80,82,80)+O('wallet',590,80,86,80)+O('coin',720,80,82,80)+T(600,175,'COST = 5n + 2',30,G,900));break;
+    }
+    case 'variable-rule': {
+      art=build(1,D(230,310,46,Y)+T(230,324,'x',40,'#10172a',900)+L(280,310,390,310,A,7)+T(485,310,'+ 5',58,G,900)+L(575,310,700,310,A,7)+T(815,310,'x 2',58,Y,900))+build(2,T(600,250,'(x + 5) x 2',78,C,900)+T(600,430,'do the addition inside the brackets first',28,G,800))+build(3,T(600,235,'2(x + 5)',96,Y,900)+T(600,430,'not 2x + 5',40,R,800));break;
+    }
+    case 'sequence-hop': {
+      const nums=[3,6,9,12];
+      art=build(1,nums.map((v,i)=>T(240+i*240,330,String(v),70,C,900)).join(''))+build(2,nums.map((v,i)=>T(240+i*240,330,String(v),70,C,900)).join('')+nums.slice(0,3).map((_,i)=>T(360+i*240,245,'+3',31,G,900)).join(''))+build(3,nums.map((v,i)=>T(240+i*240,330,String(v),70,C,900)).join('')+nums.slice(0,3).map((_,i)=>T(360+i*240,245,'+3',31,G,900)).join('')+T(600,490,'add three each time',38,Y,900));break;
+    }
+    case 'nth-position': {
+      art=build(1,T(200,200,'position n',23,M,800,'start')+[1,2,3,4].map((v,i)=>T(350+i*180,205,String(v),35,C,900)).join('')+T(200,370,'term value',23,M,800,'start')+[4,7,10,13].map((v,i)=>T(350+i*180,375,String(v),35,G,900)).join(''))+build(2,[1,2,3,4].map((v,i)=>T(350+i*180,205,String(v),35,C,900)).join('')+[4,7,10,13].map((v,i)=>T(350+i*180,375,String(v),35,G,900)).join('')+T(600,490,'value is two times the position, then add one',25,Y,800))+build(3,T(600,320,'term = 3n + 1',62,Y,900));break;
+    }
+    case 'linear-graph':
+    case 'story-graph': {
+      const axes=L(170,500,1050,500,C,4)+L(170,500,170,125,C,4)+T(1060,520,spec.visual==='linear-graph'?'x':'time',22,Y,800)+T(150,120,spec.visual==='linear-graph'?'y':'distance',22,G,800);
+      const pts=[[170,440],[370,360],[570,280],[770,200],[970,120]];
+      const dots=pts.map((p,i)=>D(p[0],p[1],12,i===0?A:G)).join('');
+      const path=`<path d="M${pts.map(p=>p.join(' ')).join(' L')}" fill="none" stroke="${A}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`;
+      art=build(1,axes+(spec.visual==='story-graph'?O('bottle',1025,115,85,105):'')+T(600,570,spec.visual==='linear-graph'?'START WITH THE AXES':'time moves along the bottom',22,M,800))+build(2,axes+(spec.visual==='story-graph'?O('bottle',1025,115,85,105):'')+dots+T(600,570,'each point pairs two quantities',24,C))+build(3,axes+(spec.visual==='story-graph'?O('bottle',1025,115,85,105):'')+path+dots+T(600,570,spec.visual==='linear-graph'?'straight rule, straight line':'steeper means faster change',25,Y,800));break;
+    }
+    case 'fair-share': {
+      const xs=[220,410,600,790,980],values=[4,8,6,10,2];
+      const unequal=values.map((v,i)=>pile(xs[i],390,v,[A,G,Y,R,A][i],3)).join('');
+      const equal=xs.map((x,i)=>pile(x,390,6,[A,G,Y,R,A][i],3)).join('');
+      const labels=(nums,color=C)=>values.map((v,i)=>T(xs[i],470,String(nums==='values'?v:6),27,color,800)).join('');
+      art=build(1,unequal+labels('values')+T(600,135,'4 + 8 + 6 + 10 + 2 = 30',31,M,800))+
+        build(2,`<g opacity=".2">${unequal}</g>${equal}${labels('equal')}`+L(350,300,430,300,Y,7)+T(600,135,'REDISTRIBUTE 30 INTO 5 GROUPS',25,C,800))+
+        build(3,equal+labels('equal')+T(600,135,'30 / 5 = 6',39,Y,900))+
+        build(4,equal+labels('equal')+T(600,135,'MEAN = TOTAL / COUNT = 6',31,Y,900)); break;
+    }
+    case 'sortable-line': {
+      const vals=['9','3','11','5','7'], scattered=[[190,210],[430,380],[620,180],[835,355],[1015,205]];
+      const scatter=vals.map((v,i)=>D(scattered[i][0],scattered[i][1],50,i===1?G:A)+T(scattered[i][0],scattered[i][1]+12,v,34,'#10172a',800)).join('');
+      const sorted=vals.slice().sort((a,b)=>+a-+b).map((v,i)=>D(235+i*182,310,52,i===2?Y:A)+T(235+i*182,322,v,34,'#10172a',800)).join('');
+      const line=`<path d="M180 425 H1020" stroke="${M}" stroke-width="4" stroke-linecap="round"/>`;
+      const ruler=O('ruler',475,500,250,58);
+      art=build(1,scatter+ruler+T(600,100,'DATA, BEFORE ORDER',24,M,700))+
+       build(2,line+sorted+ruler+T(600,475,'least',22,M)+T(600,475,'',1))+
+       build(3,`<g opacity=".24">${line}${sorted}</g>${D(599,310,65,Y)}${T(599,322,'7',40,'#10172a',900)}${ruler}${T(599,438,'the outside values pair away',24,M)}`)+
+       build(4,line+sorted.replace('i===\'2\'?Y:A','Y')+D(599,310,67,Y)+T(599,322,'9',40,'#10172a',900)+ruler+T(599,438,'MEDIAN = THE MIDDLE VALUE',26,Y,800)); break;
+    }
+    case 'size-clusters': {
+      const tag=(x,y,n,color)=>`<path d="M${x-37} ${y-22} H${x+21} L${x+39} ${y} L${x+21} ${y+22} H${x-37} Z" fill="${color}"/><circle cx="${x+19}" cy="${y}" r="4" fill="#111827"/>${T(x-8,y+8,String(n),26,'#111827',900)}`;
+      const loose=[[210,200,2],[430,385,4],[610,180,4],[790,400,4],[1000,220,7],[540,410,9]];
+      const shoe=O('shoe',58,255,128,110);
+      const raw=shoe+loose.map((v,i)=>tag(v[0],v[1],v[2],[A,G,Y,R][v[2]%4])).join('');
+      const clusters=[2,4,7,9].map((v,i)=>Array.from({length:[1,3,1,1][i]},(_,j)=>tag(240+i*245,400-j*58,v,[A,G,Y,R][i])).join('')).join('');
+      const high=Array.from({length:3},(_,j)=>tag(485,400-j*58,4,G)).join('');
+      art=build(1,raw)+build(2,shoe+clusters+T(600,120,'SORT BY SHOE SIZE',23,M,800))+build(3,shoe+`<g opacity=".18">${clusters}</g>${high}<path d="M420 435 V190 H550" fill="none" stroke="${Y}" stroke-width="6" stroke-dasharray="12 8"/>`+T(485,140,'MOST COMMON',23,Y,800))+build(4,shoe+clusters+T(485,142,'MODE = 4',34,Y,900));break;
+    }
+    case 'endpoint-span': {
+      const xs=[210,350,425,780,990],vals=['3','4','8','9','11'];
+      const base=L(150,340,1050,340,'#667391',7)+Array.from({length:10},(_,i)=>L(180+i*90,326,180+i*90,355,'#8490a8',2)).join('');
+      const points=xs.map((x,i)=>D(x,340,20,A)+T(x,290,vals[i],26,C,800)).join('');
+      const ruler=O('ruler',470,410,260,72);
+      art=build(1,base+points+ruler+T(600,500,'measurements on one scale',24,M))+build(2,base+`<g opacity=".14">${points}</g>${D(xs[0],340,25,Y)}${D(xs[4],340,25,R)}${T(xs[0],290,'3',26,Y,900)}${T(xs[4],290,'11',26,R,900)}${ruler}`)+build(3,base+`<g opacity=".1">${points}</g>${D(xs[0],340,25,Y)}${D(xs[4],340,25,R)}${L(xs[0],340,xs[4],340,A,8)}${T(210,290,'2',26,Y,900)}${T(990,290,'10',26,R,900)}${ruler}`)+build(4,base+`<g opacity=".1">${points}</g>${D(xs[0],340,25,Y)}${D(xs[4],340,25,R)}${L(xs[0],340,xs[4],340,A,8)}<path d="M210 385 v30 H990 v-30" fill="none" stroke="${Y}" stroke-width="6"/>${ruler}${T(600,490,'range = 11 - 3 = 8',36,Y,900)}`);break;
+    }
+    case 'weighted-values': {
+      const xs=[260,600,940], vals=['1','2','3'], freqs=['2','4','2'], prods=['2','8','6'];
+      const row=(ys,arr,color)=>arr.map((v,i)=>T(xs[i],ys,v,38,color,850)).join('');
+      art=build(1,row(190,vals,C)+row(360,freqs,G)+T(80,190,'VALUE',18,M,800,'start')+T(80,360,'COUNT',18,M,800,'start'))+
+       build(2,row(190,vals,C)+row(360,freqs,G)+xs.map((x,i)=>T(x,280,'x',32,Y,900)).join('')+row(455,prods,Y)+T(80,455,'PRODUCT',18,M,800,'start'))+
+       build(3,row(455,prods,Y)+T(600,535,'2 + 8 + 6 = 16',34,C,800)+T(600,155,'TOTAL FREQUENCY = 8',22,G,800))+
+       build(4,row(455,prods,Y)+T(600,535,'16 / 8 = 2',40,Y,900)+T(600,155,'MEAN = WEIGHTED TOTAL / TOTAL COUNT',20,M,800));break;
+    }
+    case 'objects-to-bars': {
+      const colors=[A,G,Y];
+      const raw=O('dice-5',85,145,92,92)+Array.from({length:9},(_,i)=>D(220+(i%5)*190,160+Math.floor(i/5)*155,23,colors[[0,1,2,1,2,1,0,2,1][i]] )).join('');
+      const groups=[0,1,2].map((v,i)=>Array.from({length:[2,4,3][i]},(_,j)=>D(250+i*350,395-j*46,20,colors[i])).join('')+T(250+i*350,465,String(v+1),26,C,800)).join('');
+      const bars=[0,1,2].map((v,i)=>`<rect x="${195+i*350}" y="${390-[2,4,3][i]*64}" width="110" height="${[2,4,3][i]*64}" fill="${colors[i]}" opacity=".92"/>${T(250+i*350,438,String(v+1),25,C,800)}${T(250+i*350,365-[2,4,3][i]*64,String([2,4,3][i]),25,M,800)}`).join('');
+      art=build(1,raw+T(600,95,'NINE OBSERVATIONS',22,M))+
+       build(2,groups+T(600,115,'MATCH VALUES',23,M,800))+
+       build(3,groups+L(250,492,950,492,M,2)+T(600,545,'Each stack has one value',24,C))+
+       build(4,bars+O('chart-bar',1020,225,100,100)+T(600,115,'FREQUENCY',23,G,800)+T(600,545,'Stack height becomes bar height',24,C)); break;
+    }
+    case 'bodmas-expression': {
+      const expr=(bracket,power,multiply,answer)=>`<g opacity="${bracket?'1':'.55'}">${T(600,310,'8 + 3 \u00d7 (10 \u2212 6)\u00b2',66,C,800)}</g>${bracket?`<path d="M603 342 h145" stroke="${Y}" stroke-width="9" stroke-linecap="round"/><path d="M603 367 v-25 M748 367 v-25" stroke="${Y}" stroke-width="6"/>${T(675,425,'BRACKETS FIRST',24,Y,800)}`:''}${power?T(770,235,'2',34,G,900)+T(600,425,'4 squared = 16',26,G,800):''}${multiply?T(600,485,'3 x 16 = 48',32,G,800):''}${answer?T(600,565,'8 + 48 = 56',38,Y,900):''}`;
+      const book=O('book-2',75,455,95,112);
+      art=build(1,book+expr(true,false,false,false))+build(2,book+expr(false,true,false,false))+build(3,book+expr(false,true,true,false))+build(4,book+expr(false,true,true,true)); break;
+    }
+    case 'fraction-area': {
+      const x=260,y=190,w=680,h=190,q=w/6;
+      const frame=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${C}" stroke-width="4"/>`;
+      const sixths=Array.from({length:5},(_,i)=>L(x+q*(i+1),y,x+q*(i+1),y+h,C,3)).join('');
+      art=build(1,`<rect x="${x}" y="${y}" width="${q*2}" height="${h}" fill="${A}"/>${frame}${L(x+w/3,y,x+w/3,y+h,C,3)}${T(600,135,'1/3',36,C,800)}`)+
+       build(2,`<rect x="${x}" y="${y}" width="${q*2}" height="${h}" fill="${A}"/><rect x="${x+q*2}" y="${y}" width="${q}" height="${h}" fill="${G}"/>${frame}${sixths}${T(600,135,'1/3 = 2/6; add 1/6',33,C,800)}`)+
+       build(3,`<rect x="${x}" y="${y}" width="${q*3}" height="${h}" fill="${G}"/>${frame}${sixths}${T(600,450,'2/6 + 1/6 = 3/6',38,C,800)}`)+
+       build(4,`<rect x="${x}" y="${y}" width="${q*3}" height="${h}" fill="${Y}"/>${frame}${sixths}${T(600,450,'3/6 = 1/2',46,Y,900)}`); break;
+    }
+    case 'survey-grid': {
+      const x=365,y=75,cell=44,gap=4;
+      const grid=Array.from({length:100},(_,i)=>{const xx=x+(i%10)*(cell+gap), yy=y+Math.floor(i/10)*(cell+gap);return `<rect x="${xx}" y="${yy}" width="${cell}" height="${cell}" rx="4" fill="${(i%10<5&&Math.floor(i/10)<5)?A:'#202a46'}" stroke="#8590a7" stroke-width="1.4"/>`}).join('');
+      const focus=`<rect x="${x-10}" y="${y-10}" width="${5*(cell+gap)+gap+20}" height="${5*(cell+gap)+gap+20}" fill="none" stroke="${Y}" stroke-width="7" stroke-dasharray="14 9" rx="12"/>`;
+      art=build(1,grid+T(600,48,'100 EQUAL SQUARES',23,M,800))+
+       build(2,grid+T(600,580,'25 squares fill one quarter',28,C,700))+
+       build(3,grid+focus+T(600,580,'25 OUT OF 100',29,Y,800))+
+       build(4,grid+focus+T(600,580,'25%',72,Y,900)); break;
+    }
+    case 'two-stage-machine':
+    case 'reverse-machine': {
+      const reverse=spec.visual==='reverse-machine';
+      const machine=(cx,op)=>`<path d="M${cx-104} 185 Q${cx-104} 135 ${cx-54} 135 H${cx+54} Q${cx+104} 135 ${cx+104} 185 V425 Q${cx+104} 475 ${cx+54} 475 H${cx-54} Q${cx-104} 475 ${cx-104} 425 Z" fill="#1c2941" stroke="${A}" stroke-width="5"/>${D(cx,250,39,'#273958')}${D(cx,250,18,A)}${T(cx,365,op,40,C,900)}`;
+      if(!reverse){
+       art=build(1,D(145,305,58,Y)+T(145,318,'5',40,'#10172a',900)+T(145,420,'INPUT',22,M,800))+
+        build(2,D(145,305,58,Y)+T(145,318,'5',40,'#10172a',900)+L(215,305,300,305,G,7)+machine(420,'\u00d7 3')+L(525,305,620,305,G,7)+D(680,305,52,G)+T(680,318,'15',34,'#10172a',900)+T(680,395,'INTERMEDIATE',18,M,800))+
+        build(3,D(145,305,58,Y)+T(145,318,'5',40,'#10172a',900)+L(215,305,300,305,G,7)+machine(420,'\u00d7 3')+L(525,305,620,305,G,7)+D(680,305,52,G)+T(680,318,'15',34,'#10172a',900)+L(740,305,815,305,G,7)+machine(935,'+ 2')+L(1040,305,1090,305,G,7)+D(1120,305,46,Y)+T(1120,318,'17',30,'#10172a',900))+
+        build(4,D(145,305,58,Y)+T(145,318,'5',40,'#10172a',900)+L(215,305,300,305,G,7)+machine(420,'\u00d7 3')+L(525,305,620,305,G,7)+D(680,305,52,G)+T(680,318,'15',34,'#10172a',900)+L(740,305,815,305,G,7)+machine(935,'+ 2')+L(1040,305,1090,305,G,7)+D(1120,305,46,Y)+T(1120,318,'17',30,'#10172a',900)+T(600,565,'5 x 3 + 2 = 17',34,Y,800));
+      } else {
+       const flow=(x1,x2)=>`${L(x1,305,x2,305,G,7)}<path d="M${x2} 305 l-18 -12 v24 z" fill="${G}"/>`;
+       const output=D(120,305,54,Y)+T(120,318,'17',38,'#10172a',900)+T(120,420,'OUTPUT',21,M,800);
+       const minus=machine(350,'- 2'),middle=D(580,305,50,G)+T(580,318,'15',32,'#10172a',900);
+       const divide=machine(810,'/ 3'),input=D(1080,305,48,Y)+T(1080,318,'5',34,'#10172a',900)+T(1080,420,'INPUT',21,M,800);
+       art=build(1,output)+
+        build(2,output+flow(178,245)+minus+flow(455,520)+middle)+
+        build(3,output+flow(178,245)+minus+flow(455,520)+middle+flow(630,705)+divide+flow(915,1010)+input)+
+        build(4,output+flow(178,245)+minus+flow(455,520)+middle+flow(630,705)+divide+flow(915,1010)+input+T(600,565,'17 - 2, then divide by 3',32,Y,800));
+      } break;
+    }
+    case 'variable-slot': {
+      art=build(1,T(400,270,'a = 3',62,A,900)+T(800,270,'b = 4',62,G,900)+T(600,430,'a + 2b',62,C,800))+build(2,T(600,245,'3 + 2 x 4',68,C,900)+T(600,430,'replace each letter with its value',28,M,800))+build(3,T(600,245,'3 + 8',78,G,900)+T(600,430,'multiply before adding',30,M,800))+build(4,T(600,275,'11',128,Y,900)+T(600,430,'a + 2b = 3 + 8 = 11',36,C,800));break;
+    }
+    case 'equation-balance': {
+      const beam=(tilt=0)=>`<ellipse cx="600" cy="535" rx="158" ry="15" fill="#05091b" opacity=".62"/><path d="M600 218 525 510h150z" fill="#26364d" stroke="${A}" stroke-width="8" stroke-linejoin="round"/><path d="M490 514h220q18 0 18 12t-18 12H490q-18 0-18-12t18-12Z" fill="#394762" stroke="${C}" stroke-width="5"/><g transform="rotate(${tilt} 600 218)"><path d="M300 205 600 218 900 205" fill="none" stroke="${C}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><circle cx="600" cy="218" r="17" fill="${Y}" stroke="${C}" stroke-width="5"/><path d="M390 210 350 390m80-176 40 176M770 212 730 390m80-176 40 176" fill="none" stroke="${M}" stroke-width="5" stroke-linecap="round"/><path d="M325 390q72 35 145 0m-145 0h145m240 0q72 35 145 0m-145 0h145" fill="none" stroke="${A}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+      art=build(1,beam()+T(405,360,'x',52,G,900)+D(480,335,24,A)+T(810,350,'12',45,Y,900)+T(600,600,'x + 7 = 12',34,C,800))+
+       build(2,beam(8)+T(405,360,'x',52,G,900)+T(810,350,'12',45,Y,900)+T(420,475,'- 7',25,R,800)+T(600,600,'Remove 7 from the left',30,C))+
+       build(3,beam()+T(405,360,'x',52,G,900)+T(810,350,'12 - 7',36,Y,900)+T(600,600,'Take away the same amount',30,C))+
+       build(4,beam()+T(600,360,'x = 5',68,Y,900)+T(600,600,'Both sides stay balanced',30,G,800)); break;
+    }
+    case 'walk-the-grid': {
+      const x0=300,y0=500,xStep=150,yStep=75,x1=x0+xStep*3,y1=y0-yStep*4;
+      const grid=Array.from({length:7},(_,i)=>L(150+i*xStep,110,150+i*xStep,560,'#33415b',2)).join('')+Array.from({length:5},(_,i)=>L(150,200+i*yStep,1050,200+i*yStep,'#33415b',2)).join('')+L(150,y0,1080,y0,C,4)+L(x0,560,x0,95,C,4)+T(1090,y0+12,'x',25,Y,800)+T(x0-25,102,'y',25,G,800)+D(x0,y0,11,Y)+T(x0-34,y0+45,'0',22,M,700);
+      art=build(1,grid+T(600,78,'START AT THE ORIGIN',23,M,800))+build(2,grid+L(x0,y0,x1,y0,Y,9)+`<path d="M${x1} ${y0} l-22 -14 v28 z" fill="${Y}"/>`+D(x1,y0,16,Y)+T(x0+xStep*1.5,y0+48,'3 across',25,Y,800))+build(3,grid+L(x0,y0,x1,y0,Y,9)+L(x1,y0,x1,y1,G,9)+D(x1,y1,18,G)+T(x0+xStep*1.5,y0+48,'3 across',25,Y,800)+T(x1+72,y0-yStep*2,'4 up',25,G,800))+build(4,grid+L(x0,y0,x1,y0,Y,9)+L(x1,y0,x1,y1,G,9)+D(x1,y1,22,R)+T(x1+110,y1-18,'(3, 4)',30,R,900)+T(600,610,'(x, y) = across, then up',29,C,800)); break;
+    }
+  }
+  const contextIcons={
+    'chapter-preview':slide.dataset.chapter==='c12'?'book-2':slide.dataset.chapter==='c13'?'chart-bar':'ruler',
+    'averages-comparison':'book-2','fair-share':'coin','sortable-line':'ruler',
+    'size-clusters':'shoe','endpoint-span':'ruler','objects-to-bars':'dice-5',
+    'weighted-values':'coin','averages-context':'thermometer','error-spotlight':'book-2',
+    'chapter-map':'book-2','place-value':'ruler','decimal-scale':'shopping-cart',
+    'decimal-division':'bottle','fraction-equivalence':'chocolate','fraction-area':'chocolate',
+    'fraction-product':'chocolate','fraction-division':'chocolate','mixed-number':'book-2',
+    'fraction-quantity':'basket','fraction-decimal':'ruler','decimal-fraction':'ruler',
+    'survey-grid':'ticket','percent-amount':'basket','rounding-line':'ruler-2',
+    'estimate-close':'shopping-cart','function-bridge':'shopping-cart',
+    'two-stage-machine':'ruler','reverse-machine':'ruler','mapping-flow':'chart-bar',
+    'square-perimeter':'ruler','formula-real-world':'car','variable-slot':'book-2',
+    'variable-rule':'book-2','sequence-hop':'dice-5','nth-position':'book-2',
+    'linear-graph':'chart-bar','story-graph':'bottle','bodmas-expression':'book-2',
+    'equation-balance':'balance','walk-the-grid':'ruler'
+  };
+  const iconName=contextIcons[spec.visual]||'book-2';
+  const context=`<g class="scene-context" opacity=".9"><use href="#icon-${iconName}" x="1080" y="20" width="72" height="72"/></g>`;
+  return `<div class="story-scene art-${spec.visual}" data-scene="${spec.visual}" data-max-build="${spec.builds.length}"><svg viewBox="0 0 1200 640" role="img" aria-label="${svgText(aria)}" xmlns="http://www.w3.org/2000/svg"><g class="scene-art">${art}</g>${context}</svg><div class="build-cue" aria-live="polite"></div></div>`;
+}
+
+function fitScene(scene) {
+  if(scene&&scene.dataset.kit) { scene.querySelector('.scene-art')?.removeAttribute('transform'); return true; }
+  const svg=scene?.querySelector('svg'), art=svg?.querySelector('.scene-art');
+  if(!svg||!art) return false;
+  try {
+    const box=art.getBBox(), view=svg.viewBox.baseVal, pad=64;
+    if(!box.width||!box.height||!view.width||!view.height) return false;
+    const scale=Math.min(1.35,(view.width-pad*2)/box.width,(view.height-pad*2)/box.height);
+    const x=(view.width-box.width*scale)/2-box.x*scale, y=(view.height-box.height*scale)/2-box.y*scale;
+    art.setAttribute('transform',`translate(${x} ${y}) scale(${scale})`);
+    scene.dataset.fitScale=String(scale);
+    return true;
+  } catch { return false; }
+}
+
+function applyArtDirection(slide) {
+  const spec=STORYBOARD[slide.dataset.title];
+  if(!spec) return;
+  slide.classList.add('art-directed','story-layout-'+spec.layout);
+  const content=slide.querySelector('.content');
+  const text=content?.querySelector('.text');
+  const scene=content?.querySelector('.story-scene')||slide.querySelector(':scope > .story-scene');
+  if(slide.classList.contains('section')&&scene){
+    slide.classList.add('art-directed');
+    slide.querySelectorAll('.orb').forEach(el=>el.hidden=true);
+    slide.dataset.maxBuild=String(spec.builds.length);slide.dataset.build='1';scene.dataset.build='1';
+    scene.querySelectorAll('[data-build]').forEach(el=>el.classList.toggle('build-visible',Number(el.dataset.build)===1));updateBuildCue(slide,1);return;
+  }
+  if(!content||!text||!scene) return;
+  const details=document.createElement('details'); details.className='story-more';
+  const summary=document.createElement('summary'); summary.textContent='More explanation'; details.append(summary);
+  while(text.firstChild) details.append(text.firstChild);
+  text.replaceChildren();
+  const teaser=document.createElement('p');teaser.className='story-kicker';teaser.textContent=spec.headline;
+  text.append(teaser,details);
+  content.querySelectorAll('.visual').forEach(el=>el.hidden=true);
+  content.append(scene);
+  slide.dataset.maxBuild=String(spec.builds.length);
+  slide.dataset.build= '1';
+  scene.dataset.build='1';
+  scene.querySelectorAll('[data-build]').forEach(el=>el.classList.toggle('build-visible',Number(el.dataset.build)===1));
+  updateBuildCue(slide,1);
+}
+
+function updateBuildCue(slide,build) {
+  const scene=slide.querySelector('.story-scene[data-max-build]');
+  if(!scene) return;
+  const spec=STORYBOARD[slide.dataset.title];
+  const cue=scene.querySelector('.build-cue');
+  const max=Number(scene.dataset.maxBuild);
+  const pips=Array.from({length:max},(_,i)=>`<button type="button" class="pip${i+1<=build?' on':''}" data-step="${i+1}" aria-label="Step ${i+1} of ${max}"${i+1===build?' aria-current="step"':''}>${i+1}</button>`).join('');
+  cue.innerHTML=`<span class="steps" role="group" aria-label="Steps">${pips}</span><span class="cap">${svgText(spec.builds[build-1]||'')}</span><span class="hint">${build<max?'\u2192 next step':'\u2192 next slide'}</span>`;
+}
+
+function visualSvgSource(slide, question = false) {
+  const explicit=STORYBOARD[slide.dataset.title];
+  if(explicit) return artDirectedScene(slide,explicit);
+  const t = (slide.dataset.title || '').toLowerCase();
+  const ch = slide.dataset.chapter || 'intro';
+  const a = chapterAccent(ch);
+  const labels = (Array.from(slide.querySelectorAll('.lead')).map(x => x.textContent.trim()).join(' ') + ' ' + (slide.querySelector('h1')?.textContent.trim() || '')).trim();
+  const formulaText = slide.querySelector('.formula')?.textContent.trim() || '';
+  const nums = (labels.match(/-?\d+(?:\.\d+)?/g) || []).slice(0, 7);
+  const data = nums.length ? nums : ['4','8','6','10','2'];
+  const frame = (inside, label = 'Visual model', after = '') => `<div class="visual-panel story-visual"><div class="visual-eyebrow"><span></span>${svgText(label)}</div><svg viewBox="0 0 620 340" role="img" aria-label="${svgText(label)}" xmlns="http://www.w3.org/2000/svg"><g class="visual-art">${inside}</g>${after}</svg></div>`;
+  const tx = (x,y,s,size=20,fill='#f3f5ff',weight=700,anchor='middle') => `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${size}" fill="${fill}" font-weight="${weight}" class="${/^\d+$/.test(String(s))?'numeric-svg':''}" font-family="Mali,Arial,sans-serif">${svgText(s)}</text>`;
+  const line=(x1,y1,x2,y2,color=a,w=4)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`;
+  const icon=(name,x,y,w,h)=>`<use href="#icon-${name}" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+  const card=(x,y,w,h,txt,fill='#202a46',color='#f3f5ff',size=22)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="${fill}" stroke="${a}" stroke-width="2"/>${tx(x+w/2,y+h/2+size*.34,txt,size,color,800)}`;
+  let art, label='Concept model';
+  const kind = (question && /y\s*=/.test(labels)) ? (t.includes('mapping') ? 'mapping' : 'formula') : t.includes('mean from frequency') ? 'meanfreq' : t.includes('mean') ? 'mean' : t.includes('median') ? 'median' : t.includes('mode') ? 'mode' : t.includes('range') ? 'range' : t.includes('frequen') ? 'frequency' : t.includes('bodmas') || t.includes('order of operations') || t.includes('bracket') ? 'bodmas' : t.includes('round') ? 'rounding' : t.includes('estim') ? 'estimate' : t.includes('percent') ? 'percent' : t.includes('fraction') || t.includes('mixed number') ? 'fraction' : t.includes('decimal') ? 'decimal' : t.includes('inverse') ? 'inverse' : t.includes('mapping') ? 'mapping' : t.includes('function') ? 'machine' : t.includes('coordinate') ? 'coordinate' : t.includes('graph') ? 'graph' : t.includes('sequence') || t.includes('pattern') || t.includes('nth term') ? 'sequence' : t.includes('equation') || t.includes('solv') ? 'equation' : t.includes('substitut') || t.includes('formula') ? 'formula' : t.includes('summary') || t.includes('recap') || t.includes('vocabulary') || t.includes('roadmap') || t.includes('well done') ? 'recap' : t.includes('chapter') && slide.classList.contains('section') ? 'hero' : 'intro';
+  switch(kind){
+    case 'mean': label='Share equally'; {
+      const vals=question?data:['4','8','6','10','2'];
+      art=icon('coin',552,29,50,50)+tx(310,40,'Combine the values',17,'#aeb8d7',700)+vals.slice(0,5).map((v,i)=>card(48+i*108,65,82,54,v)).join('')+line(310,132,310,170,a,3)+tx(310,199,question?'One equal share for each value':'30 shared into 5 equal groups',19,'#aeb8d7',700)+(!question?Array.from({length:5},(_,i)=>card(48+i*108,225,82,58,'6','#263c47','#b7fff0',23)).join(''):Array.from({length:5},(_,i)=>card(48+i*108,225,82,58,'?','#263c47','#b7fff0',23)).join('')); break; }
+    case 'median': label=question?'Sort the data':'Find the centre'; {
+      const vals=question?data:['12','3','7','9','15'];
+      art=icon('ruler',277,38,66,50)+vals.slice(0,7).map((v,i)=>card(28+i*82,126,68,70,v,'#202a46','#f4f5ff',22)).join('')+tx(310,245,question?'Arrange from least to greatest':'Middle card after sorting',18,'#aeb8d7',700); if(!question) art=icon('ruler',277,38,66,50)+Array.from(['3','7','9','12','15'],(v,i)=>card(90+i*88,126,72,70,v,i===2?'#473b25':'#202a46',i===2?'#fbbf24':'#f4f5ff',23)).join('')+tx(310,245,'centre',18,'#fbbf24',800); break; }
+    case 'mode': label=question?'Compare the data cards':'Count repeated values'; {
+      const vals=question?data:['2','4','4','4','7','9'];
+      art=icon('dice-5',26,30,66,66)+vals.slice(0,7).map((v,i)=>card(34+i*80,126,66,70,v,'#202a46','#f4f5ff',22)).join('')+tx(310,245,question?'Look for repeats':'The tallest stack marks the mode',18,'#aeb8d7',700); if(!question) art+=Array.from({length:3},(_,i)=>`<circle cx="${213+i*50}" cy="${292-(i%2)*12}" r="13" fill="${a}"/>`).join(''); break; }
+    case 'range': label='Distance from minimum to maximum'; {
+      art=icon('ruler',275,38,70,52)+line(80,190,540,190,'#586681',7)+line(126,176,126,204,'#fbbf24',5)+line(494,176,494,204,'#fb7185',5)+line(126,190,494,190,a,5)+tx(126,145,question?'min':'minimum',17,'#fbbf24',700)+tx(494,145,question?'max':'maximum',17,'#fb7185',700)+tx(310,250,question?'range = ?':'range = maximum \u2212 minimum',22,'#f3f5ff',800)+tx(310,292,'endpoint distance',16,'#aeb8d7',700); break; }
+    case 'frequency': case 'meanfreq': label=kind==='meanfreq'?'Value \u00d7 frequency':'Frequency at a glance'; {
+      if(question&&kind==='meanfreq'){
+        const rows=[...slide.querySelectorAll('table tr')].map(r=>[...r.querySelectorAll('th,td')].map(c=>c.textContent.trim())).filter(r=>r.length>=2);
+        const vals=rows.length?(rows[0][0].toLowerCase()==='value'?rows[0].slice(1):rows[0].slice(1)):['1','2','3'],freqs=rows.length>1?rows[1].slice(1):['2','4','2'];
+        art=vals.slice(0,3).map((v,i)=>card(30+i*196,102,172,70,`${v} ? ${freqs[i]||'?'}`,'#202a46',i===1?'#b7fff0':'#f3f5ff',22)).join('')+tx(310,227,'group products by value',18,'#aeb8d7',700)+card(178,250,264,52,'mean = ?','#263c47','#fbbf24',21);
+      }else if(question){
+        art=data.slice(0,7).map((v,i)=>card(34+i*80,126,66,70,v,'#202a46','#f3f5ff',21)).join('')+tx(310,245,'count the group asked for',18,'#aeb8d7',700);
+      }else{
+        const bars=kind==='meanfreq'?[2,4,2]:[2,4,3]; const vals=['1','2','3'];
+        art=bars.map((n,i)=>{let x=125+i*145; return Array.from({length:n},(_,j)=>`<rect x="${x}" y="${250-j*35}" width="64" height="25" rx="5" fill="${i===1?a:'#465273'}"/>`).join('')+tx(x+32,290,vals[i],17,'#d9def0',700)+tx(x+32,72,kind==='meanfreq'?`\u00d7 ${n}`:`${n}`,18,i===1?'#b7fff0':'#aeb8d7',800)}).join('')+tx(310,326,kind==='meanfreq'?'multiply, then combine products':'bar height shows how often',16,'#aeb8d7',700);
+      } break; }
+    case 'bodmas': label='Order of operations'; {
+      const steps=['Brackets','Orders','\u00f7  \u00d7','+  \u2212']; art=icon('book-2',24,266,64,70)+steps.map((v,i)=>{let y=32+i*74;return `<rect x="174" y="${y}" width="272" height="54" rx="16" fill="${i===0?'#473b25':'#202a46'}" stroke="${i===0?'#fbbf24':a}" stroke-width="2"/>${tx(310,y+35,v,22,i===0?'#fbbf24':'#f3f5ff',800)}${i<3?tx(310,y+71,'\u2193',17,'#aeb8d7',700):''}`}).join(''); break; }
+    case 'decimal': label=question?'Decimal calculation':'Line up place values'; {
+      if(question){
+        const vals=(labels.match(/-?\d+(?:\.\d+)?/g)||[]).slice(0,2), op=(labels.match(/[+???]/)||[])[0]||'?';
+        art=card(74,112,176,82,vals[0]||'number','#202a46','#f3f5ff',28)+tx(310,165,op,32,'#fbbf24',800)+card(370,112,176,82,vals[1]||'number','#202a46','#f3f5ff',28)+tx(310,260,'calculate and check the place value',17,'#aeb8d7',700);
+      }else if(t.includes('multiplying')){
+        art=card(75,92,194,72,'0.4 \u00d7 0.3','#202a46','#f3f5ff',25)+tx(310,204,'4 \u00d7 3 = 12',22,'#b7fff0',800)+line(310,220,310,253,a,3)+card(351,240,194,58,'0.12','#263c47','#b7fff0',25)+tx(310,324,'two decimal places in total',16,'#aeb8d7',700);
+      }else{
+        const cols=['ones','.','tenths','hundredths']; art=cols.map((v,i)=>{let x=78+i*116;return `<rect x="${x}" y="75" width="104" height="194" rx="13" fill="#1b2440" stroke="${a}" stroke-width="2"/>${tx(x+52,112,v,14,'#aeb8d7',700)}${line(x+15,132,x+89,132,'#465273',1)}${tx(x+52,190,['3','.','4','5'][i],30,i===2?'#b7fff0':'#f3f5ff',800)}${tx(x+52,234,['2','.','7','0'][i],30,'#fbbf24',800)}`}).join('')+tx(310,310,'line up decimal points',17,'#b7fff0',700);
+      } break; }
+    case 'fraction': label=question?'Given fraction strips':'Equivalent fraction partitions'; {
+      const parts=(question?labels:formulaText).match(/\d+\s*\/\s*\d+/g)||['1/3','1/6'];
+      const seg=(x,y,n,k,fill)=>Array.from({length:n},(_,i)=>`<rect x="${x+i*420/n}" y="${y}" width="${420/n-3}" height="42" rx="5" fill="${i<k?fill:'#202a46'}" stroke="#7885a4" stroke-width="1"/>`).join('');
+      art=parts.slice(0,2).map((f,i)=>{const [nn,dd]=f.split('/').map(Number), y=85+i*96, fill=i?'#2dd4bf':a;return tx(64,y+28,f,17,'#f3f5ff',800,'start')+seg(115,y,dd,nn,fill)}).join('');
+      if(!question) art+=tx(310,305,'equal-sized parts make fractions comparable',17,'#b7fff0',700); else art+=tx(310,305,'compare the same-sized parts',17,'#aeb8d7',700);
+      break; }
+    case 'percent': label='100-square percentage model'; {
+      art=icon('basket',18,277,58,58)+Array.from({length:100},(_,i)=>{let x=75+(i%10)*47,y=42+Math.floor(i/10)*27;return `<rect x="${x}" y="${y}" width="40" height="20" rx="3" fill="${!question&&i<25?a:'#202a46'}" stroke="#65708e" stroke-width=".7"/>`}).join('')+tx(310,330,question?'each small square is 1%':'25 shaded squares = 25%',17,'#dce2f5',700); break; }
+    case 'rounding': label=question?'Choose the nearest benchmark':'Rounding checkpoints'; {
+      if(question){const val=(labels.match(/-?\d+\.\d+/)||[])[0]||'number';const dp=(labels.match(/(\d+)\s*(?:dp|decimal place)/i)||[])[1]||'1';art=card(78,73,180,68,val,'#202a46','#f3f5ff',26)+tx(310,114,`round to ${dp} decimal place${dp==='1'?'':'s'}`,17,'#aeb8d7',700)+card(78,172,180,57,'lower','#202a46','#dce2f5',20)+card(362,172,180,57,'upper','#202a46','#dce2f5',20)+line(258,200,362,200,a,3)+tx(310,270,'check which benchmark is closer',17,'#aeb8d7',700);}
+      else{const f=slide.querySelector('.formula')?.textContent||'3.467 \u2192 3.47 \u2192 3.5 \u2192 3';art=tx(310,100,'keep the required place; inspect the next digit',17,'#aeb8d7',700)+card(40,145,120,62,'3.467','#202a46','#f3f5ff',21)+tx(190,183,'?',22,'#fbbf24',800)+card(235,145,120,62,'3.47','#202a46','#c7b9ff',21)+tx(385,183,'?',22,'#fbbf24',800)+card(430,145,145,62,'3.5 / 3','#263c47','#b7fff0',20)+tx(310,275,'each step keeps fewer decimal places',17,'#aeb8d7',700);} break; }
+    case 'estimate': label='Estimate before calculating'; {
+      if(question){const vals=(labels.match(/-?\d+(?:\.\d+)?/g)||[]).slice(0,2);art=card(35,102,205,68,`${vals[0]||'number'} \u2248 ?`,'#202a46','#f3f5ff',21)+tx(310,146,'?',30,'#fbbf24',800)+card(380,102,205,68,`${vals[1]||'number'} \u2248 ?`,'#202a46','#f3f5ff',21)+tx(310,248,'round each factor, then estimate',18,'#aeb8d7',700)+card(208,270,204,48,'estimate = ?','#263c47','#b7fff0',20);}
+      else art=card(55,95,185,78,'48 \u00d7 2.9','#202a46','#f3f5ff',24)+tx(310,145,'\u2248',33,'#fbbf24',800)+card(380,95,185,78,'50 \u00d7 3','#263c47','#b7fff0',24)+tx(310,245,'round first \u2192 multiply',19,'#aeb8d7',700)+tx(310,292,'a quick reasonableness check',16,'#aeb8d7',700); break; }
+    case 'machine': case 'inverse': label=kind==='inverse'?'Undo operations in reverse order':'Function machine'; {
+      const qtext=labels, MUL='\u00d7', DIV='\u00f7', MINUS='\u2212';
+      let left='5', right='17', ops=[MUL+' 3','+ 2'], caption='apply each operation in order';
+      if(kind==='inverse'){
+        left=(qtext.match(/output(?:\s+of)?\s+(-?\d+(?:\.\d+)?)/i)||[])[1]||'17';
+        const original=(qtext.match(/[\u00d7\u00f7+\u2212-]\s*\d+(?:\.\d+)?/g)||[]).map(x=>x.replace(/\s/g,''));
+        ops=original.slice(0,2).map(op=>{const sym=op[0],n=op.slice(1);return sym===MUL?DIV+' '+n:sym===DIV?MUL+' '+n:sym==='+'?MINUS+' '+n:(sym===MINUS||sym==='-')?'+ '+n:op;});
+        if(!ops.length){const add=qtext.match(/adds?\s+(\d+(?:\.\d+)?)/i),sub=qtext.match(/subtracts?\s+(\d+(?:\.\d+)?)/i);if(add)ops=[MINUS+' '+add[1]];else if(sub)ops=['+ '+sub[1]];}
+        if(!ops.length)ops=[MINUS+' 2',DIV+' 3'];caption='start at the output; undo in reverse order';
+      } else if(question){
+        left=(qtext.match(/input\s+(-?\d+(?:\.\d+)?)/i)||[])[1]||'x';
+        const parsed=(qtext.match(/[\u00d7\u00f7+\u2212-]\s*\d+(?:\.\d+)?/g)||[]).map(x=>x.replace(/\s/g,''));
+        if(parsed.length)ops=parsed.slice(0,2).map(op=>op[0]+' '+op.slice(1));
+        else{const mult=qtext.match(/multipli(?:es|y)(?:\s+the\s+input)?\s+by\s+(\d+(?:\.\d+)?)/i),add=qtext.match(/add(?:s)?\s+(\d+(?:\.\d+)?)/i),sub=qtext.match(/subtract(?:s)?\s+(\d+(?:\.\d+)?)/i);ops=[];if(mult)ops.push(MUL+' '+mult[1]);if(add)ops.push('+ '+add[1]);if(sub)ops.push(MINUS+' '+sub[1]);}
+      } else if(t.includes('what is a function')){left='Input x';ops=['f(x)'];}
+      const machineOps=ops.length===1?[ops[0],'?']:ops.slice(0,2);
+      if(kind==='inverse'){
+        const pathOps=ops.length?ops:[MINUS+' 2',DIV+' 3'],drawOps=pathOps.length>1?[pathOps[1],pathOps[0]]:[pathOps[0],''];
+        art=card(28,132,110,65,'Input ?','#263c47','#b7fff0',20)+line(205,165,142,165,a,4)+`<polygon points="142,165 158,156 158,174" fill="${a}"/>`+card(207,91,130,62,drawOps[0],'#30304d','#c7b9ff',20)+line(275,157,275,182,a,3)+card(207,185,130,62,drawOps[1],'#30304d','#c7b9ff',20)+line(405,165,340,165,a,4)+`<polygon points="340,165 356,156 356,174" fill="${a}"/>`+card(414,132,178,65,`Output ${left}`,'#273646','#b7fff0',20)+tx(310,295,caption,17,'#aeb8d7',700);
+      } else if(!question&&t.includes('what is a function')){
+        art=card(25,132,150,65,'Input x','#263c47','#b7fff0',21)+line(179,165,240,165,a,4)+`<polygon points="240,165 224,156 224,174" fill="${a}"/>`+card(244,132,132,65,'f(x)','#30304d','#c7b9ff',24)+line(380,165,441,165,a,4)+`<polygon points="441,165 425,156 425,174" fill="${a}"/>`+card(445,132,150,65,'Output y','#273646','#b7fff0',21)+tx(310,270,'one input has exactly one output',18,'#aeb8d7',700);
+      } else {
+        art=card(28,132,110,65,left,'#263c47','#b7fff0',left.length>5?18:23)+line(142,165,205,165,a,4)+`<polygon points="205,165 189,156 189,174" fill="${a}"/>`+card(207,91,130,62,machineOps[0],'#30304d','#c7b9ff',20)+line(275,157,275,182,a,3)+card(207,185,130,62,machineOps[1],'#30304d','#c7b9ff',20)+line(340,165,405,165,a,4)+`<polygon points="405,165 389,156 389,174" fill="${a}"/>`+card(414,132,178,65,question?'?':'17','#273646','#b7fff0',23)+tx(310,295,caption,17,'#aeb8d7',700);
+      } break; }
+    case 'mapping': label='Input and output mapping'; {
+      if(question){const expr=(labels.match(/y\s*=\s*[^.]+/i)||[])[0]||'y = f(x)',x=(labels.match(/x\s*=\s*(-?\d+(?:\.\d+)?)/i)||[])[1]||'?';art=card(30,122,206,72,expr,'#202a46','#f3f5ff',21)+line(241,158,375,158,a,4)+`<polygon points="375,158 359,149 359,167" fill="${a}"/>`+card(380,122,205,72,`x = ${x}`,'#263c47','#b7fff0',21)+tx(310,255,'evaluate the rule; output remains ?',18,'#aeb8d7',700)+card(226,272,168,46,'y = ?','#202a46','#fbbf24',20);}
+      else art=[['0','1'],['1','2'],['2','5'],['3','10']].map((v,i)=>{let y=55+i*67;return `<circle cx="115" cy="${y}" r="24" fill="#202a46" stroke="${a}" stroke-width="2"/>${tx(115,y+7,v[0],19,'#f3f5ff',800)}${line(150,y,443,y,'#667391',2)}<polygon points="443,${y} 430,${y-7} 430,${y+7}" fill="#667391"/><circle cx="493" cy="${y}" r="24" fill="#263c47" stroke="#2dd4bf" stroke-width="2"/>${tx(493,y+7,v[1],19,'#b7fff0',800)}`}).join('')+tx(115,326,'input',16,'#aeb8d7',700)+tx(493,326,'output',16,'#aeb8d7',700); break; }
+    case 'formula': label=t.includes('area')?'Area formula':'Variables describe quantities'; {
+      if(question&&(/substitut|write a formula|real-life formula|area formula|practice: formula/i.test(t)||/y\s*=/.test(labels))){const expr=(labels.match(/y\s*=\s*[^,.;]+/i)||[])[0]||(labels.match(/(?:A|C)\s*=\s*[^.;,]+/i)||[])[0]||(labels.match(/(?:find|use)\s+(.+?)(?:\s+when|\s+if|$)/i)||[])[1]||(labels.match(/for\s+(.+?),\s*find/i)||[])[1]||formulaText||'expression';const given=(labels.split(/\b(?:when|if)\b/i).pop()||labels),slots=[...given.matchAll(/\b([a-z])\s*=\s*(-?\d+(?:\.\d+)?)/gi)].map(m=>[m[1],m[2]]).slice(0,3);art=card(36,87,548,68,expr,'#202a46','#c7b9ff',22)+slots.map((v,i)=>card(60+i*168,190,144,59,`${v[0]} = ${v[1]}`,'#263c47','#b7fff0',20)).join('')+tx(310,298,'substitute the given values; result = ?',17,'#aeb8d7',700);}
+      else if(t==='formulae') art=`<rect x="168" y="74" width="284" height="190" rx="12" fill="#202a46" stroke="${a}" stroke-width="3"/>${tx(310,60,'side',18,'#b7fff0',800)}${tx(145,174,'side',18,'#c7b9ff',800)}${tx(310,155,'P = 4 \u00d7 side',25,'#f3f5ff',800)}${tx(310,303,'four equal sides make the perimeter',17,'#aeb8d7',700)}`;
+      else if(t.includes('area')) art=`<rect x="168" y="74" width="284" height="190" rx="12" fill="#202a46" stroke="${a}" stroke-width="3"/>${tx(310,60,'w',18,'#b7fff0',800)}${tx(145,174,'l',18,'#c7b9ff',800)}${tx(310,155,'A = l × w',25,'#f3f5ff',800)}${tx(310,303,'length \u00d7 width gives area',17,'#aeb8d7',700)}`;
+      else if(t.includes('writing formula')) art=card(100,88,420,74,'2(x + 5)','#202a46','#c7b9ff',28)+tx(310,211,'group first, then double',20,'#aeb8d7',700)+card(155,240,310,56,'brackets show the group','#263c47','#b7fff0',18);
+      else if(t.includes('real-life formula')) art=`<path d="M95 215 L143 165 L223 165 L265 215 Z" fill="#263c47" stroke="#2dd4bf" stroke-width="3"/><circle cx="143" cy="220" r="17" fill="#111827" stroke="#aeb8d7" stroke-width="3"/><circle cx="223" cy="220" r="17" fill="#111827" stroke="#aeb8d7" stroke-width="3"/>${tx(180,145,'speed s',17,'#b7fff0',700)}${tx(310,200,'\u00d7',28,'#fbbf24',800)}<circle cx="424" cy="185" r="52" fill="#202a46" stroke="#fb7185" stroke-width="3"/>${tx(424,193,'time t',18,'#ffc1ca',700)}${tx(310,290,'distance d = speed ? time',19,'#dce2f5',700)}`;
+      else art=`<circle cx="100" cy="180" r="44" fill="#263c47" stroke="#2dd4bf" stroke-width="3"/>${tx(100,188,'d',28,'#b7fff0',800)}${tx(170,189,'=',28,'#fbbf24',800)}<rect x="205" y="138" width="128" height="82" rx="18" fill="#202a46" stroke="${a}" stroke-width="2"/>${tx(269,171,'speed',18,'#c7b9ff',700)}${tx(269,201,'s',25,'#f3f5ff',800)}${tx(365,189,'\u00d7',28,'#fbbf24',800)}<rect x="402" y="138" width="128" height="82" rx="18" fill="#202a46" stroke="#fb7185" stroke-width="2"/>${tx(466,171,'time',18,'#ffc1ca',700)}${tx(466,201,'t',25,'#f3f5ff',800)}${tx(310,286,'distance = speed ? time',19,'#dce2f5',700)}`; break; }
+    case 'equation': label='Keep both sides balanced'; {
+      art=icon('balance',488,34,72,66)+`<path d="M150 126 L470 126 M310 126 L310 214 M260 214 L360 214" stroke="#aeb8d7" stroke-width="5" fill="none" stroke-linecap="round"/>${line(190,130,160,215,'#fbbf24',3)}${line(270,130,300,215,'#fbbf24',3)}${line(350,130,320,215,'#2dd4bf',3)}${line(430,130,460,215,'#2dd4bf',3)}<path d="M130 218 Q230 250 330 218 M290 218 Q390 250 490 218" stroke="#aeb8d7" stroke-width="4" fill="none"/>${tx(230,204,'x + 7',19,'#fbbf24',800)}${tx(390,204,'12',19,'#b7fff0',800)}${tx(310,300,'same operation on each side',17,'#dce2f5',700)}`; break; }
+    case 'sequence': label=t.includes('nth term')?'Substitute the term number':'Spot the step rule'; {
+      if(question&&(t.includes('nth term')||/nth term/i.test(labels))){const f=(labels.match(/\d+n\s*[+\u2212-]\s*\d+/i)||[])[0]||'an + b',n=(labels.match(/(\d+)(?:st|nd|rd|th) term/i)||[])[1]||'n';art=card(42,92,190,76,f,'#202a46','#c7b9ff',25)+tx(310,143,'n =',20,'#aeb8d7',800)+card(368,92,190,76,n,'#263c47','#b7fff0',25)+tx(310,239,'substitute, then evaluate',19,'#aeb8d7',700)+card(211,257,198,52,'result = ?','#202a46','#fbbf24',20);}
+      else{const vals=question?data.slice(0,4):['3','6','9','12'];let step=3;if(question&&vals.length>1){const d=Number(vals[1])-Number(vals[0]);if(Number.isFinite(d)&&d!==0)step=d;}art=vals.slice(0,4).map((v,i)=>card(28+i*119,142,95,76,v,'#202a46','#f3f5ff',24)).join('')+tx(310,111,question?'Find the next term':'add 3 each step',18,'#aeb8d7',700)+vals.slice(0,3).map((_,i)=>tx(154+i*119,248,step>0?`+${step}`:`\u2212${Math.abs(step)}`,17,a,800)).join('')+tx(548,182,'?',30,'#aeb8d7',800);} break; }
+    case 'coordinate': label=question?'Coordinate grid':'Across first, then up'; {
+      art=Array.from({length:7},(_,i)=>line(140+i*55,55,140+i*55,280,'#394662',1)).join('')+Array.from({length:5},(_,i)=>line(140,55+i*56,470,55+i*56,'#394662',1)).join('')+line(140,55,140,280,'#aeb8d7',3)+line(140,280,470,280,'#aeb8d7',3)+tx(480,305,'x',17,'#fbbf24',800)+tx(122,56,'y',17,'#2dd4bf',800)+(question?'':`<circle cx="305" cy="112" r="9" fill="#fb7185"/>${tx(325,100,'(3, 4)',15,'#ffc1ca',700,'start')}`); break; }
+    case 'graph': label=question?'Axes ready for plotting':'A straight line graph'; {
+      art=Array.from({length:7},(_,i)=>line(100+i*70,45,100+i*70,280,'#394662',1)).join('')+Array.from({length:5},(_,i)=>line(100,45+i*58,520,45+i*58,'#394662',1)).join('')+line(100,280,530,280,'#aeb8d7',3)+line(100,280,100,38,'#aeb8d7',3)+(question?'':`<path d="M170 253 L450 79" stroke="${a}" stroke-width="5" fill="none"/>${[170,310,450].map((x,i)=>`<circle cx="${x}" cy="${253-i*87}" r="6" fill="#fbbf24"/>`).join('')}`)+tx(539,299,'x',16,'#fbbf24',800)+tx(80,45,'y',16,'#2dd4bf',800); break; }
+    case 'recap': label='Chapter idea map'; {
+      const items=ch==='c12'?['Mean','Median','Mode','Range']:ch==='c13'?['Operations','Decimals','Fractions','Percent']:['Functions','Formulae','Equations','Graphs'];
+      const center=[310,170], radius=53, rectHalf=[76,25];
+      const links=items.map((v,i)=>{const pos=[[140,70],[480,70],[140,270],[480,270]][i],dx=center[0]-pos[0],dy=center[1]-pos[1],length=Math.hypot(dx,dy),ux=dx/length,uy=dy/length,edge=Math.min(rectHalf[0]/Math.abs(ux),rectHalf[1]/Math.abs(uy)),sx=pos[0]+ux*edge,sy=pos[1]+uy*edge,ex=center[0]-ux*radius,ey=center[1]-uy*radius;return `<path d="M${sx} ${sy} L${ex} ${ey}" stroke="#56617f" stroke-width="2" fill="none"/>`+card(pos[0]-76,pos[1]-25,152,50,v,'#202a46','#dce2f5',17)}).join('');
+      art=`${links}<circle cx="310" cy="170" r="53" fill="#202a46" stroke="${a}" stroke-width="3"/>${tx(310,178,ch==='c12'?'DATA':ch==='c13'?'CALC':'ALGEBRA',18,'#f3f5ff',800)}`; break; }
+    case 'hero': label=`Chapter ${ch.slice(-2)}`; {
+      art=`<circle cx="310" cy="172" r="106" fill="#202a46" stroke="${a}" stroke-width="4"/><circle cx="310" cy="172" r="75" fill="none" stroke="#56617f" stroke-width="2"/><circle cx="310" cy="172" r="41" fill="${a}" opacity=".2"/>${tx(310,192,ch.slice(-2),72,a,800)}${tx(310,313,ch==='c12'?'data \u00b7 typical \u00b7 spread':ch==='c13'?'calculate \u00b7 compare \u00b7 estimate':'input \u00b7 rule \u00b7 output',18,'#dce2f5',700)}`; break; }
+    default: label='Learning path'; {
+      art=[['01','Notice'],['02','Explore'],['03','Practise']].map((v,i)=>{const x=32+i*198,y=115;return card(x,y,165,92,v[1],'#202a46',i===1?'#b7fff0':'#f3f5ff',21)+`<circle cx="${x+14}" cy="${y+14}" r="15" fill="${a}" stroke="#0a0e27" stroke-width="3"/>`+tx(x+14,y+19,v[0],11,'#10172a',900)}).join('')+tx(310,266,'one idea at a time',18,'#aeb8d7',700); break; }
+  }
+  const contextByKind={
+    frequency:'dice-5',meanfreq:'coin',decimal:'ruler',fraction:'chocolate',
+    rounding:'ruler-2',estimate:'shopping-cart',machine:'ruler',inverse:'ruler',
+    mapping:'chart-bar',formula:'clock',sequence:'dice-5',coordinate:'ruler',
+    graph:'chart-bar',recap:'book-2',hero:'book-2',intro:'book-2'
+  };
+  const contextObject=contextByKind[kind]&&!['mean','median','mode','range','bodmas','percent','equation'].includes(kind)
+    ? icon(contextByKind[kind],552,12,58,58)
+    : '';
+  return frame(art,label,contextObject);
+}
+
+const visualSvgCache=new Map();
+function visualSvg(slide,question=false){const key=`${slide.dataset.title}:${question}`;if(!visualSvgCache.has(key))visualSvgCache.set(key,visualSvgSource(slide,question));return visualSvgCache.get(key);}
+
+const slides = [stage.querySelector('.slide')];
+slidesData.forEach((s, i) => {
+  const sec = document.createElement('section');
+  let cls = 'slide';
+  if (s.section) cls += ' section ' + s.ch;
+  if (s.q) cls += ' question';
+  sec.className = cls + (['c12','c13','c14'].includes(s.ch)?' '+s.ch:'');
+  sec.dataset.chapter = s.ch;
+  sec.dataset.title = s.title;
+  sec.innerHTML = s.html;
+  sec.querySelector('.kicker')?.classList.add(s.ch);
+  if (s.q) {
+    const expected = s.expected ?? questionAnswers[s.title];
+    if (!Number.isFinite(Number(expected))) throw new Error(`Missing numeric answer for ${s.title}`);
+    sec.dataset.answer = String(expected);
+    const scoreChip=document.createElement('span'); scoreChip.className='scoreTracker'; scoreChip.setAttribute('aria-live','polite'); scoreChip.textContent='\u2713 0 / 0'; sec.querySelector('.topbar')?.append(scoreChip);
+    sec.querySelectorAll('.keyHint').forEach(hint => hint.remove());
+    const answer = sec.querySelector('.answer');
+    if (answer) {
+      answer.setAttribute('aria-hidden', 'true');
+      answer.parentNode.insertBefore(createAnswerPad(i + 1), answer);
+    }
+  }
+  slides.push(sec);
+  slideFragment.appendChild(sec);
+});
+stage.appendChild(slideFragment);
+const completionText=slides.find(slide=>slide.dataset.title==='Well done!')?.querySelector('.content .text');
+if(completionText){const actions=document.createElement('div');actions.className='restart-actions';actions.innerHTML='<button type="button" class="answerBtn" data-restart="start">Restart deck</button><button type="button" class="answerBtn" data-restart="mixed">Try mixed practice again</button>';completionText.append(actions);}
+
+function hasTopicVisual(slide) {
+  if(slide.dataset.title==='Stage 7 Maths'||slide.dataset.title==='Well done!') return;
+  const topic = visualSvg(slide, slide.classList.contains('question'));
+  const content = slide.querySelector('.content');
+  if (slide.classList.contains('section')) {
+    const host = slide.querySelector('.subtitle') || slide;
+    host.insertAdjacentHTML('afterend', topic);
+    slide.classList.add('hasHeroVisual');
+  } else if (content && slide.querySelector('.assetVisual img')) {
+    // Keep original topic-specific image paths intact and use generated art as their fallback.
+    slide.querySelector('.assetVisual').insertAdjacentHTML('beforeend', topic);
+  } else if (content) {
+    content.classList.add('hasStoryVisual');
+    content.insertAdjacentHTML('beforeend', topic);
+  } else {
+    slide.insertAdjacentHTML('beforeend', topic);
+  }
+  slide.querySelectorAll('img').forEach(img => {
+    const showImageFallback = () => {
+      img.hidden = true;
+      const host = img.parentElement;
+      if (host.classList.contains('assetVisual')) {
+        host.classList.add('image-fallback');
+        if (!slide.querySelector('.story-scene')) host.insertAdjacentHTML('beforeend', visualSvg(slide, slide.classList.contains('question')));
+      } else {
+        host.insertAdjacentHTML('beforeend', visualSvg(slide, slide.classList.contains('question')));
+      }
+    };
+    img.addEventListener('error', showImageFallback, { once: true });
+    if (img.complete && img.naturalWidth === 0) showImageFallback();
+  });
+}
+slides.forEach(slide => hasTopicVisual(slide));
+slides.forEach(applyArtDirection);
+const slideTrack=document.createElement('div');
+slideTrack.className='slide-track';
+slides.forEach(slide=>slideTrack.appendChild(slide));
+stage.replaceChildren(slideTrack);
+let buildLevels=slides.map(slide=>slide.querySelector('.story-scene[data-max-build]')?1:0);
+let current = 0;
+const correctSlides = new Set();
+const bookmarkKey = 'maliMaths:lastSlide';
+let activeSlide = -1;
+const total = slides.length;
+slides.forEach((slide, index) => {
+  const number = slide.querySelector('.num');
+  if (number) number.textContent = `${index + 1} / ${total}`;
+});
+const slideCountLabel = slides[0].querySelector('.pillrow span:nth-child(2)');
+if (slideCountLabel) slideCountLabel.textContent = `${total} slides`;
+
+function decodeImageOnce(img, src, slideIndex) {
+  const cacheKey=`${slideIndex}:${src}`;
+  let pending = imageDecodeCache.get(cacheKey);
+  if (!pending) {
+    pending = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+    imageDecodeCache.set(cacheKey, pending);
+  }
+  return pending;
+}
+
+function preloadNearbyImages(index) {
+  [index, (index + 1) % total, (index - 1 + total) % total].forEach(slideIndex => {
+    slides[slideIndex].querySelectorAll('img[data-src]').forEach(img => {
+      const src = img.dataset.src;
+      img.loading = 'eager';
+      img.src = src;
+      delete img.dataset.src;
+      decodeImageOnce(img, src, slideIndex);
+    });
+  });
+}
+
+function show(i) {
+  if (activeSlide !== i) {
+    if (activeSlide >= 0) slides[activeSlide].classList.remove('active');
+    slides[i].classList.add('active');
+    activeSlide = i;
+  }
+  slides.forEach((slide,index)=>slide.setAttribute('aria-hidden',String(index!==i)));
+  preloadNearbyImages(i);
+  const scene=slides[i].querySelector('.story-scene');
+  if(scene) fitScene(scene);
+  if(buildLevels[i]) { setSlideBuild(i,buildLevels[i]); }
+  progress.style.width = ((i+1) / total * 100) + '%';
+  progress.setAttribute('aria-valuemax', total);
+  progress.setAttribute('aria-valuenow', i + 1);
+  localStorage.setItem(bookmarkKey,String(i));
+  const totalPractice=slides.filter(slide=>slide.classList.contains('question')).length;
+  document.querySelectorAll('.scoreTracker').forEach(chip=>chip.textContent=`\u2713 ${correctSlides.size} / ${totalPractice}`);
+  const showAll=document.getElementById('showAllSteps'); if(showAll) showAll.hidden=!slides[i].querySelector('.story-scene[data-max-build]');
+}
+
+let navigationLocked = false;
+function setSlideBuild(index,level) {
+  const slide=slides[index], scene=slide.querySelector('.story-scene[data-max-build]');
+  if(!scene) return false;
+  const max=Number(scene.dataset.maxBuild);
+  buildLevels[index]=Math.max(1,Math.min(max,level));
+  scene.dataset.build=String(buildLevels[index]);
+  scene.querySelectorAll('[data-build]').forEach(el=>el.classList.toggle('build-visible',Number(el.dataset.build)===buildLevels[index]));
+  slide.dataset.build=String(buildLevels[index]);
+  updateBuildCue(slide,buildLevels[index]);
+  window.MathSceneKit?.onBuild(scene,buildLevels[index]);
+  return true;
+}
+function nav(dir,automatic=false) {
+  if (navigationLocked) return;
+  const scene=slides[current].querySelector('.story-scene[data-max-build]');
+  if(dir>0 && scene && buildLevels[current]<Number(scene.dataset.maxBuild)) { setSlideBuild(current,buildLevels[current]+1); return; }
+  if(dir<0 && scene && buildLevels[current]>1) { setSlideBuild(current,buildLevels[current]-1); return; }
+  navigationLocked = true;
+  current = (current + dir + total) % total;
+  show(current);
+  window.setTimeout(() => { navigationLocked = false; }, 120);
+}
+
+function toggleOverview() {
+  let ov = document.querySelector('.overview');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.className = 'overview';
+    const thumbFragment = document.createDocumentFragment();
+    slides.forEach((s, i) => {
+      const ch = s.dataset.chapter;
+      const t = s.dataset.title;
+      const div = document.createElement('div');
+      div.className = 'thumb ' + ch;
+      div.innerHTML = `<b>${i+1}</b><span>${t}</span>`;
+      div.onclick = () => { current = i; show(i); ov.classList.remove('show'); };
+      thumbFragment.appendChild(div);
+    });
+    ov.appendChild(thumbFragment);
+    document.body.appendChild(ov);
+    if ('IntersectionObserver' in window) {
+      const thumbObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const thumb = entry.target;
+            thumb.classList.add('is-visible');
+            thumb.addEventListener('animationend', () => thumb.classList.remove('is-visible'), {once:true});
+            thumbObserver.unobserve(thumb);
+          }
+        });
+      }, {root:ov, rootMargin:'80px'});
+      ov.querySelectorAll('.thumb').forEach(thumb => thumbObserver.observe(thumb));
+    } else {
+      ov.querySelectorAll('.thumb').forEach(thumb => thumb.classList.add('is-visible'));
+    }
+  }
+  ov.classList.toggle('show');
+}
+
+document.addEventListener('animationstart', event => {
+  if (event.animationName === 'slideEnter' && event.target.classList.contains('active')) {
+    event.target.style.willChange = 'transform, opacity, filter';
+  }
+}, true);
+function releaseSlideLayer(event) {
+  if (event.animationName === 'slideEnter') event.target.style.willChange = '';
+}
+document.addEventListener('animationend', releaseSlideLayer, true);
+document.addEventListener('animationcancel', releaseSlideLayer, true);
+
+function sanitizeAnswerInput(input) {
+  let value = input.value.replace(/[^0-9.\-]/g, '');
+  const negative = value.startsWith('-');
+  value = value.replace(/-/g, '');
+  const decimal = value.indexOf('.');
+  if (decimal !== -1) value = value.slice(0, decimal + 1) + value.slice(decimal + 1).replace(/\./g, '');
+  input.value = (negative ? '-' : '') + value;
+}
+
+function addAnswerCharacter(slide, character) {
+  const input = slide.querySelector('.answerInput');
+  if (!input) return;
+  if (character === '-') {
+    if (!input.value) input.value = '-';
+  } else if (character === '.') {
+    if (!input.value.includes('.')) input.value += input.value === '' || input.value === '-' ? '0.' : '.';
+  } else if (/^\d$/.test(character)) {
+    input.value = input.value === '0' ? character : input.value + character;
+  }
+  input.dispatchEvent(new Event('input', {bubbles:true}));
+  input.focus({preventScroll:true});
+}
+
+function checkAnswer(slide) {
+  const input=slide.querySelector('.answerInput'), feedback=slide.querySelector('.answerFeedback'), answer=slide.querySelector('.answer');
+  const value=Number(input?.value), expected=Number(slide.dataset.answer);
+  if(!input?.value||!Number.isFinite(value)){feedback.textContent='Enter a number first.';feedback.className='answerFeedback incorrect';return;}
+  const tolerance=Math.max(.001,Math.abs(expected)*.0001);
+  if(Math.abs(value-expected)<=tolerance){
+    feedback.textContent='Correct!';feedback.className='answerFeedback correct';
+    if(!correctSlides.has(slide)){correctSlides.add(slide);const score=`\u2713 ${correctSlides.size} / ${slides.filter(s=>s.classList.contains('question')).length}`;document.querySelectorAll('.scoreTracker').forEach(chip=>chip.textContent=score);}
+    answer?.classList.add('show');answer?.setAttribute('aria-hidden','false');
+    document.getElementById('nextSlide')?.focus({preventScroll:true});
+  }else{
+    let hint='Not quite ? try again.';const prompt=slide.querySelector('.lead')?.textContent||'';
+    if(expected<0&&Math.abs(value)===Math.abs(expected))hint='Did you forget the negative sign?';
+    else if(expected!==0&&[10,100,1000].some(scale=>Math.abs(value/expected-scale)<.001||Math.abs(expected/value-scale)<.001))hint='Check your decimal places.';
+    else if(/BODMAS|order of operations/i.test(slide.dataset.title+' '+prompt))hint='Close! Check the order of operations.';
+    else if(Math.abs(value-expected)<=Math.max(.1,Math.abs(expected)*.1))hint='Close! Check your working.';
+    feedback.textContent=hint;feedback.className='answerFeedback incorrect';
+  }
+}
+
+stage.addEventListener('input', e => {
+  if (!e.target.matches('.answerInput')) return;
+  sanitizeAnswerInput(e.target);
+  const slide=e.target.closest('.slide.question');
+  if (!slide) return;
+  const feedback=slide.querySelector('.answerFeedback');
+  if (feedback.classList.contains('correct')) {
+    feedback.textContent='';
+    feedback.className='answerFeedback';
+    const answer=slide.querySelector('.answer');
+    if (answer) {
+      answer.classList.remove('show');
+      answer.setAttribute('aria-hidden','true');
+    }
+  }
+});
+
+stage.addEventListener('click', e => {
+  const button = e.target.closest('.answerPad button');
+  if (!button) return;
+  const slide = button.closest('.slide.question');
+  if (!slide) return;
+  if (button.dataset.key) addAnswerCharacter(slide, button.dataset.key);
+  else if (button.dataset.action === 'delete') {
+    const input = slide.querySelector('.answerInput');
+    input.value = '';
+    const feedback = slide.querySelector('.answerFeedback');
+    feedback.textContent = '';
+    feedback.className = 'answerFeedback';
+    input.focus({preventScroll:true});
+  } else if (button.dataset.action === 'check') checkAnswer(slide);
+  else if(button.dataset.action==='reveal'){const answer=slide.querySelector('.answer');if(answer){answer.classList.add('show');answer.setAttribute('aria-hidden','false');}slide.querySelector('.answerFeedback').textContent='Answer revealed.';}
+});
+
+document.addEventListener('keydown', e => {
+  const target = e.target;
+  const isTyping = target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(target.tagName));
+  const question = activeSlide >= 0 && slides[activeSlide].classList.contains('question') ? slides[activeSlide] : null;
+  const answerFocused = target instanceof HTMLElement && target.matches('.answerInput');
+  const pageFocused = target === document.body || target === document.documentElement;
+  if (e.key === 'Enter' && question && (answerFocused || pageFocused)) { e.preventDefault(); checkAnswer(question); return; }
+  if (isTyping && e.key !== 'Escape') return;
+  if (question && !e.ctrlKey && !e.metaKey && !e.altKey && (/^\d$/.test(e.key) || e.key === '.' || e.key === '-')) {
+    e.preventDefault();
+    addAnswerCharacter(question, e.key);
+    return;
+  }
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nav(1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); nav(-1); }
+  else if (e.key.toLowerCase() === 'o') toggleOverview();
+  else if (e.key === 'Escape') {
+    const ov = document.querySelector('.overview');
+    if (ov) ov.classList.remove('show');
+  }
+});
+
+stage.addEventListener('click', e => {
+  if (e.target.closest('.answerPad') || e.target.closest('.overview') || e.target.closest('.answer') || e.target.closest('.answerBtn') || e.target.closest('.keyHint') || e.target.closest('.build-cue') || e.target.closest('.try-hit')) return;
+  if (e.clientX > window.innerWidth / 2) nav(1); else nav(-1);
+});
+
+
+document.addEventListener('visibilitychange', () => {
+  const paused = document.hidden ? 'paused' : 'running';
+  document.querySelectorAll('.particle,.aurora-blob').forEach(el => el.style.animationPlayState = paused);
+  document.documentElement.classList.toggle('tab-hidden', document.hidden);
+});
+
+stage.addEventListener('click',e=>{const pip=e.target.closest('.build-cue [data-step]');if(pip){e.stopPropagation();setSlideBuild(current,Number(pip.dataset.step));}},true);
+document.getElementById('showAllSteps').addEventListener('click',()=>{const scene=slides[current].querySelector('.story-scene[data-max-build]');if(scene)setSlideBuild(current,Number(scene.dataset.maxBuild));});
+stage.addEventListener('click',e=>{const restart=e.target.closest('[data-restart]');if(restart){current=restart.dataset.restart==='mixed'?slides.findIndex(s=>s.dataset.title==='Mixed: averages'):0;show(current);}});
+const bookmarked=Number(localStorage.getItem(bookmarkKey));
+if(Number.isInteger(bookmarked)&&bookmarked>0&&bookmarked<total&&window.confirm(`Continue from slide ${bookmarked+1}?`)) show(bookmarked); else show(0);
+</script>
+</body>
+</html>
