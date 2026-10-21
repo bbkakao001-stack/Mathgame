@@ -1947,17 +1947,18 @@ body:not(.mg-unlocked) #mgAuthClose{display:none!important}
 #mgMenuLogout{padding:8px 12px;border:0;border-radius:9px;background:#fce5e5;color:#a62f3e;font-weight:800;cursor:pointer}
 </style>
 <style id="mathgame-email-auth-style">
-#mgAuthOverlay{position:fixed;inset:0;z-index:999999;background:rgba(17,24,39,.65);display:none;align-items:center;justify-content:center;padding:16px}
-#mgAuthOverlay.open{display:flex}#mgAuthPanel{background:#fff;border-radius:22px;padding:24px;max-width:420px;width:100%;max-height:95vh;overflow:auto;color:#28324a;box-shadow:0 20px 80px #0005;font-family:inherit}
-#mgAuthPanel h2{margin:0 0 6px;font-size:1.35rem}#mgAuthPanel p{margin:0 0 16px;color:#62718a;font-size:.88rem}
+#mgAuthOverlay{position:fixed;inset:0;z-index:999999;background:radial-gradient(circle at 12% 18%,rgba(255,207,91,.22) 0 8%,transparent 31%),radial-gradient(circle at 89% 79%,rgba(112,233,233,.22) 0 9%,transparent 34%),linear-gradient(125deg,#292568 0%,#4435a2 45%,#1a2559 100%);display:none;align-items:center;justify-content:center;padding:16px;isolation:isolate;overflow:hidden}
+#mgAuthOverlay.open{display:flex}#mgAuthPanel{background:linear-gradient(160deg,#fff 0%,#f1f5ff 100%);border-radius:22px;padding:24px;max-width:420px;width:100%;max-height:95vh;overflow:auto;color:#28324a;box-shadow:0 20px 80px #0005;font-family:inherit}
+#mgAuthPanel h2{margin:0 0 6px;font-size:1.55rem;color:#44319b}#mgAuthPanel p{margin:0 0 16px;color:#62718a;font-size:.88rem}
 #mgAuthPanel label{display:block;margin:12px 0 5px;font-weight:700;font-size:.85rem}#mgAuthPanel input{width:100%;border:1px solid #c9d2e2;border-radius:11px;padding:11px;font:inherit;box-sizing:border-box;background:white;color:#19243c}
 #mgAuthPanel .mgTabs{display:flex;gap:8px}#mgAuthPanel button{padding:11px;border:0;border-radius:11px;font:inherit;cursor:pointer;font-weight:700}#mgAuthPanel .mgTabs button{flex:1;background:#eef0f7;color:#344567}#mgAuthPanel .mgTabs button[aria-selected=true]{background:#725de5;color:white}#mgAuthSubmit{background:#725de5;color:white;width:100%;margin-top:18px}#mgAuthSubmit:disabled{opacity:.6;cursor:wait}
 #mgAuthNotice{font-size:.84rem;line-height:1.5;white-space:pre-wrap;min-height:20px;margin-top:12px}#mgAuthClose{float:right;background:#f2f3f9;color:#4d5970}#mgAuthForget{background:none;color:#725de5;padding-left:0!important}#mgAuthPanel .mgHidden{display:none}
+#mgAuthOverlay::before,#mgAuthOverlay::after{content:'✦';position:absolute;pointer-events:none;color:rgba(255,255,255,.25);font-size:clamp(6rem,19vw,17rem);z-index:-1}#mgAuthOverlay::before{top:-9%;left:5%;transform:rotate(-16deg)}#mgAuthOverlay::after{bottom:-15%;right:4%;transform:rotate(18deg)}#mgAuthPanel{border:1px solid rgba(255,255,255,.8);box-shadow:0 28px 85px rgba(8,11,51,.45)}
 </style>
 <div id="mgAuthOverlay" role="presentation">
 <section id="mgAuthPanel" role="dialog" aria-modal="true" aria-labelledby="mgAuthHeading">
  <button id="mgAuthClose" type="button" aria-label="ปิดหน้าต่าง">✕</button>
- <h2 id="mgAuthHeading">☁️ บัญชี Mathgame</h2><p>ชื่อผู้ใช้ + รหัสผ่าน ไม่ต้องใช้อีเมลหรือ OTP</p>
+ <h2 id="mgAuthHeading">⚡ M.1 Math Adventure</h2><p>ชื่อผู้ใช้ + รหัสผ่าน ไม่ต้องใช้อีเมลหรือ OTP</p>
  <div class="mgTabs"><button id="mgTabLogin" type="button" aria-selected="true">เข้าสู่ระบบ</button><button id="mgTabRegister" type="button" aria-selected="false">สมัครสมาชิก</button></div>
  <form id="mgAuthForm">
   <label for="mgAuthUsername">ชื่อผู้ใช้ (ภาษาอังกฤษ / ตัวเลข / _)</label><input id="mgAuthUsername" type="text" autocomplete="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" autocapitalize="off" spellcheck="false" placeholder="เช่น bb_student01"/>
@@ -2059,13 +2060,10 @@ function skipLearningQuestion(qid){const q=QUESTIONS.find(q=>String(q.id)===Stri
 window.skipLearningQuestion=skipLearningQuestion;
 
 function loadState(){
- let stored=null,migrated=false;
- try{const raw=localStorage.getItem(STORAGE_KEY);if(raw)stored=JSON.parse(raw)}catch(e){}
- if(!stored||typeof stored!=='object')try{const raw=localStorage.getItem(LEGACY_STORAGE_KEY);if(raw){stored=migrateLegacyProgress(JSON.parse(raw));migrated=true}}catch(e){}
- state=normalizeProgress(stored||createDefaultProgress());if(stored)seedRequestedStudyDates();ensureDailyStars();
- if(!state.lastQuestionId&&Number.isInteger(state.lastSlide)){const previous=slides[state.lastSlide];if(previous&&previous.dataset.qid)state.lastQuestionId=previous.dataset.qid}
- if(migrated){const saved=saveState();if(saved)try{localStorage.removeItem(LEGACY_STORAGE_KEY)}catch(e){}}
+ // Intentionally disabled: progress must come from Supabase AFTER verified Auth.
+ state=normalizeProgress(createDefaultProgress());
 }
+
 function saveState(){
  if(!mgCanAccess())return false;
  const current=slides[cur];state.lastSlide=cur;if(current&&current.dataset.qid)state.lastQuestionId=String(current.dataset.qid);
@@ -2075,9 +2073,9 @@ function saveState(){
 
 // V4.16: GitHub Pages frontend + Supabase Auth with username-derived internal identifiers and RLS.
 let cloudClient=null,cloudUser=null,cloudReady=false,cloudDirty=false,cloudSyncTimer=null,cloudWrites=Promise.resolve(),cloudBooted=false;
-let cloudRestoring=false,cloudGeneration=0;
+let cloudRestoring=false,cloudGeneration=0,mgSigningOut=false;
 // Authentication is checked before every slide transition and protected interaction.
-function mgCanAccess(){return Boolean(cloudUser?.id && cloudReady && cloudClient && document.body.classList.contains('mg-unlocked'))}
+function mgCanAccess(){return Boolean(!mgSigningOut && cloudUser?.id && cloudReady && cloudClient && document.body.classList.contains('mg-unlocked'))}
 function mgRequireSession(){
  if(mgCanAccess())return true;
  mgSetGate(false);
@@ -2085,14 +2083,17 @@ function mgRequireSession(){
 }
 let mgSessionCheckInFlight=null;
 async function mgVerifySession(){
- if(!cloudClient){mgSetGate(false);return false}
+ if(!cloudClient||mgSigningOut){mgSetGate(false);return false}
  if(mgSessionCheckInFlight)return mgSessionCheckInFlight;
  mgSessionCheckInFlight=(async()=>{
   try{
+   if(mgSigningOut)return false;
    // getUser verifies the identity with Supabase Auth, unlike trusting cached local storage.
    const {data,error}=await cloudClient.auth.getUser();
    if(error||!data?.user){cloudUser=null;cloudReady=false;cloudGeneration++;state=normalizeProgress(createDefaultProgress());mgSetGate(false);return false}
+   if(mgSigningOut){mgSetGate(false);return false}
    if(cloudUser?.id!==data.user.id||!cloudReady){cloudUser=data.user;cloudReady=false;mgSetGate(false);await cloudRestore(data.user)}
+   else {cloudUser=data.user;mgSetGate(true)}
    return mgCanAccess();
   }catch(e){cloudReady=false;mgSetGate(false);cloudStatus('⚠️ ยืนยัน Session ไม่ได้ กรุณาตรวจอินเทอร์เน็ต','error');return false}
   finally{mgSessionCheckInFlight=null}
@@ -2111,7 +2112,8 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.addEventListener('popstate',()=>{if(!mgCanAccess())mgSetGate(false)});
 window.addEventListener('hashchange',()=>{if(!mgCanAccess())mgSetGate(false)});
 function mgSetGate(unlocked){
- document.body.classList.toggle('mg-unlocked',Boolean(unlocked));
+ unlocked=Boolean(unlocked && !mgSigningOut && cloudUser?.id && cloudReady);
+ document.body.classList.toggle('mg-unlocked',unlocked);
  document.body.classList.toggle('mg-locked',!unlocked);
  const dialog=document.getElementById('mgAuthOverlay');
  if(dialog)dialog.classList.toggle('open',!unlocked);
@@ -2186,14 +2188,14 @@ async function cloudRestore(user){
   const {data,error}=await cloudClient.from('learning_progress').select('progress').eq('user_id',user.id).maybeSingle();
   if(error)throw error;
   if(cloudUser?.id!==user.id||generation!==cloudGeneration)return;
-  let previousOwner=null;try{previousOwner=localStorage.getItem(CLOUD_LAST_USER_KEY)}catch(e){}
-  const localCandidate=previousOwner===user.id?state:createDefaultProgress();
-  state=data?.progress?cloudMergeProgress(data.progress,localCandidate):normalizeProgress(localCandidate);
+  // Authenticated server progress is the only authority. LocalStorage is never consulted to unlock gameplay.
+  state=data?.progress?normalizeProgress(data.progress):normalizeProgress(createDefaultProgress());
   try{localStorage.setItem(CLOUD_LAST_USER_KEY,user.id);localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){}
-  cloudReady=true;mgSetGate(true);cloudRefreshUI();cloudDirty=true;mgUpdateAccountUI();
+  if(mgSigningOut||!cloudUser||cloudUser.id!==user.id||generation!==cloudGeneration)return;
+  cloudReady=true;mgSetGate(true);cloudRefreshUI();cloudDirty=false;mgUpdateAccountUI();
  }catch(err){cloudReady=false;cloudStatus('⚠️ โหลดข้อมูลออนไลน์ไม่สำเร็จ · ยังเก็บในเครื่อง ('+(err.message||'network')+')','error');console.error('Supabase restore error',err)}
  finally{cloudRestoring=false}
- if(cloudReady)await cloudFlush();
+ // Do not write back unchanged progress on login.
 }
 async function cloudBoot(){
  if(cloudBooted)return;
@@ -2203,15 +2205,22 @@ async function cloudBoot(){
   cloudClient=window.supabase.createClient(window.M1_SUPABASE_CONFIG.url,window.M1_SUPABASE_CONFIG.key, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   cloudBooted=true;
   cloudClient.auth.onAuthStateChange((event,session)=>{
+   if(mgSigningOut)return;
    if(event==='PASSWORD_RECOVERY')setTimeout(()=>mgShowPasswordRecovery(),0);
-   // Do not await Supabase API calls inside this auth callback.
-   const user=session?.user||null;
-   if(user){if(cloudUser?.id!==user.id){mgSetGate(false);cloudUser=user;cloudReady=false;state=normalizeProgress(createDefaultProgress());setTimeout(()=>cloudRestore(user),0)}else cloudUser=user;mgUpdateAccountUI();}
-   else {cloudUser=null;cloudReady=false;cloudGeneration++;clearTimeout(cloudSyncTimer);state=normalizeProgress(createDefaultProgress());mgSetGate(false);cloudStatus('กรุณาเข้าสู่ระบบก่อนเริ่มเรียน','local')}
+   // Never unlock from an unverified cached onAuthStateChange session.
+   if(event==='SIGNED_OUT'){
+    cloudUser=null;cloudReady=false;cloudGeneration++;clearTimeout(cloudSyncTimer);
+    state=normalizeProgress(createDefaultProgress());mgSetGate(false);
+    cloudStatus('กรุณาเข้าสู่ระบบก่อนเริ่มเรียน','local');return;
+   }
+   if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'){
+    mgSetGate(false);cloudReady=false;
+    setTimeout(()=>mgVerifySession(),0);
+   }
   });
-  const {data,error}=await cloudClient.auth.getSession();if(error)throw error;
-  if(data.session?.user){cloudUser=data.session.user;await cloudRestore(cloudUser)}
-  else {mgSetGate(false);cloudStatus('กรุณาเข้าสู่ระบบก่อนเริ่มเรียน','local');}
+  // getUser verifies the session with Supabase Auth; getSession alone trusts browser cache.
+  const valid=await mgVerifySession();
+  if(!valid){mgSetGate(false);cloudStatus('กรุณาเข้าสู่ระบบก่อนเริ่มเรียน','local')}
  }catch(err){cloudStatus('⚠️ เชื่อม Supabase ไม่สำเร็จ: '+(err.message||err),'error');console.error(err)}
 }
 let mgAuthMode='login',mgAuthBusy=false;
@@ -2248,7 +2257,8 @@ async function mgAuthSubmit(ev){
   if(!result.data?.session){mgAuthMessage('บัญชีถูกสร้างแล้ว แต่ยังไม่มี Session: โปรดตรวจว่า Supabase ปิด Confirm email แล้ว จากนั้นลองเข้าสู่ระบบ',true);return}
   mgAuthMessage('สำเร็จ กำลังโหลดความคืบหน้า...');e.password.value='';e.confirm.value='';
   mgSetGate(false);
-  if(cloudUser?.id!==result.data.user.id){cloudUser=result.data.user;await cloudRestore(cloudUser)}
+  await mgVerifySession();
+  if(!mgCanAccess())mgAuthMessage('ยังยืนยัน Session หรือโหลดความคืบหน้าไม่สำเร็จ กรุณาลองอีกครั้ง',true);
  }catch(err){mgAuthMessage('ไม่สำเร็จ: '+(err.message||'โปรดลองอีกครั้ง'),true)}
  finally{mgAuthBusy=false;e.submit.disabled=false}
 }
@@ -2259,13 +2269,23 @@ document.getElementById('mgAuthForm').addEventListener('submit',mgAuthSubmit);
 document.getElementById('mgAuthOverlay').addEventListener('click',e=>{if(e.target.id==='mgAuthOverlay')mgCloseAuth()});
 window.addEventListener('keydown',e=>{if(e.key==='Escape')mgCloseAuth()});
 async function cloudSignOut(){
- if(!cloudClient||!cloudUser)return;
- if(cloudDirty){await cloudFlush();if(cloudDirty&&!confirm('ข้อมูลล่าสุดยังไม่ขึ้นคลาวด์ ออกจากระบบโดยเก็บสำรองไว้ในเครื่องหรือไม่?'))return}
- const {error}=await cloudClient.auth.signOut();if(error){cloudStatus('⚠️ ออกจากระบบไม่สำเร็จ: '+error.message,'error');return}
- cloudUser=null;cloudReady=false;cloudGeneration++;mgSetGate(false);mgSetAuthMode('login');
- state=normalizeProgress(createDefaultProgress());
- try{localStorage.removeItem(STORAGE_KEY)}catch(e){}
- cloudRefreshUI();cloudStatus('กรุณาเข้าสู่ระบบก่อนเรียนต่อ','local');
+ if(!cloudClient||mgSigningOut)return;
+ // Lock immediately: no browser-back, hash, local cache or late async restore may reopen lessons.
+ mgSigningOut=true;mgSetGate(false);
+ clearTimeout(cloudSyncTimer);
+ try{
+  // Pending progress must finish before revoking the credentials.
+  if(cloudDirty){mgSigningOut=false;await cloudFlush();mgSigningOut=true;mgSetGate(false)}
+  const {error}=await cloudClient.auth.signOut({scope:'global'});
+  if(error)throw error;
+  cloudUser=null;cloudReady=false;cloudDirty=false;cloudGeneration++;
+  state=normalizeProgress(createDefaultProgress());
+  try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(CLOUD_LAST_USER_KEY);localStorage.removeItem(LEGACY_STORAGE_KEY)}catch(e){}
+  mgSetAuthMode('login');cloudStatus('ออกจากระบบแล้ว กรุณาเข้าสู่ระบบ','local');
+ }catch(err){
+  // Stay locked on sign-out errors. User must refresh and verify with server.
+  cloudReady=false;cloudStatus('⚠️ ออกจากระบบไม่สำเร็จ: '+(err.message||err),'error');
+ }finally{mgSigningOut=false;mgSetGate(false)}
 }
 async function mgShowPasswordRecovery(){
  const newPassword=prompt('ตั้งรหัสผ่านใหม่สำหรับ Mathgame (อย่างน้อย 8 ตัวอักษร)');
@@ -2406,7 +2426,7 @@ function persistNavigationLater(){
 window.addEventListener('pagehide',()=>{if(navigationSaveTimer!==null){clearTimeout(navigationSaveTimer);navigationSaveTimer=null;saveState()}});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&navigationSaveTimer!==null){clearTimeout(navigationSaveTimer);navigationSaveTimer=null;saveState()}});
 function show(i){
- if(!mgCanAccess() && cloudBooted){mgSetGate(false);return}
+ if(!mgCanAccess()){mgSetGate(false);return}
  clearAutoAdvance();closeMenu();i=Math.max(0,Math.min(total-1,i));
  const target=slides[i];
  if(leaveAnimationTimer!==null){clearTimeout(leaveAnimationTimer);leaveAnimationTimer=null}
@@ -3149,7 +3169,7 @@ function openAdminSettings(){let o=document.getElementById('mbAdmin');if(o)o.rem
   state.reviewCfg=n;saveState();updateWeeklyUI();o.remove()}}
 
 buildMissionUI();
-mgSetGate(false);loadState();prepareQuestionLayout();buildQuizzes();refreshAuditTables();updateUI();updateWeeklyUI();cloudBoot();const restoredIndex=state.lastQuestionId==null?-1:slides.findIndex(slide=>String(slide.dataset.qid)===String(state.lastQuestionId));cur=restoredIndex>=0?restoredIndex:Math.min(state.lastSlide||0,total-1);setTimeout(startSuccessPreload,350);
+mgSetGate(false);state=normalizeProgress(createDefaultProgress());prepareQuestionLayout();buildQuizzes();refreshAuditTables();updateUI();updateWeeklyUI();cloudBoot();const restoredIndex=state.lastQuestionId==null?-1:slides.findIndex(slide=>String(slide.dataset.qid)===String(state.lastQuestionId));cur=restoredIndex>=0?restoredIndex:Math.min(state.lastSlide||0,total-1);setTimeout(startSuccessPreload,350);
 console.log('M1 Math Adventure loaded',{questions:QUESTIONS.length,verified:QUESTIONS.length,slides:total});
 setInterval(updateWeeklyUI,60*1000);
 </script></body></html>
