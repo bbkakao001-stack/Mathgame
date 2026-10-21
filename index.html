@@ -1946,15 +1946,15 @@ body:has(.hub-slide.active) #scoreBox{width:max-content;max-width:160px;padding:
 <div id="mgAuthOverlay" role="presentation">
 <section id="mgAuthPanel" role="dialog" aria-modal="true" aria-labelledby="mgAuthHeading">
  <button id="mgAuthClose" type="button" aria-label="ปิดหน้าต่าง">✕</button>
- <h2 id="mgAuthHeading">☁️ บัญชี Mathgame</h2><p>สมัครครั้งเดียว เรียนต่อได้ทุกเครื่อง ไม่ต้องใช้ Google หรือ OTP</p>
+ <h2 id="mgAuthHeading">☁️ บัญชี Mathgame</h2><p>ชื่อผู้ใช้ + รหัสผ่าน ไม่ต้องใช้อีเมลหรือ OTP</p>
  <div class="mgTabs"><button id="mgTabLogin" type="button" aria-selected="true">เข้าสู่ระบบ</button><button id="mgTabRegister" type="button" aria-selected="false">สมัครสมาชิก</button></div>
  <form id="mgAuthForm">
-  <label for="mgAuthEmail">อีเมล</label><input id="mgAuthEmail" type="email" autocomplete="email" required maxlength="254" placeholder="student@example.com"/>
+  <label for="mgAuthUsername">ชื่อผู้ใช้ (ภาษาอังกฤษ / ตัวเลข / _)</label><input id="mgAuthUsername" type="text" autocomplete="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" autocapitalize="off" spellcheck="false" placeholder="เช่น bb_student01"/>
   <label for="mgAuthPassword">รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)</label><input id="mgAuthPassword" type="password" autocomplete="current-password" required minlength="8" maxlength="128"/>
   <div id="mgAuthConfirmRow" class="mgHidden"><label for="mgAuthConfirm">ยืนยันรหัสผ่าน</label><input id="mgAuthConfirm" type="password" autocomplete="new-password" minlength="8" maxlength="128"/></div>
   <button type="submit" id="mgAuthSubmit">เข้าสู่ระบบ</button>
  </form>
- <button id="mgAuthForget" type="button">ลืมรหัสผ่าน?</button>
+ <p class="mgAuthWarning" style="font-size:.78rem;line-height:1.5;color:#706981;margin-top:10px">โปรดจำชื่อผู้ใช้และรหัสผ่าน ไม่มีระบบกู้บัญชีด้วยอีเมล · ใช้ชื่อผู้ใช้เดิมบนทุกอุปกรณ์</p>
  <div id="mgAuthNotice" role="status" aria-live="polite"></div>
 </section></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -2061,7 +2061,7 @@ function saveState(){
  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));cloudQueueSave();return true}catch(e){cloudQueueSave();return false}
 }
 
-// V4.14: GitHub Pages frontend + Supabase Auth and Postgres with per-user RLS.
+// V4.16: GitHub Pages frontend + Supabase Auth with username-derived internal identifiers and RLS.
 let cloudClient=null,cloudUser=null,cloudReady=false,cloudDirty=false,cloudSyncTimer=null,cloudWrites=Promise.resolve(),cloudBooted=false;
 let cloudRestoring=false,cloudGeneration=0;
 function cloudStatus(message,mode='local'){
@@ -2071,11 +2071,12 @@ function cloudStatus(message,mode='local'){
  btn.textContent=cloudUser?'ออกจากบัญชี':'☁️ เข้าสู่ระบบ';
  btn.onclick=cloudUser?cloudSignOut:cloudSignIn;
 }
+function cloudDisplayName(user){return user?.user_metadata?.mathgame_username || (user?.email?.match(/^u_([a-z0-9_]{3,24})@students\.mathgame\.example\.com$/)?.[1]) || 'ผู้เรียน'}
 function cloudConfigured(){const c=window.M1_SUPABASE_CONFIG;return Boolean(c&&/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(c.url||'')&&/^sb_publishable_/.test(c.key||''))}
 function cloudQueueSave(){
  if(!cloudReady||!cloudUser||cloudRestoring)return;
  cloudDirty=true;clearTimeout(cloudSyncTimer);
- cloudStatus('☁️ รอซิงก์ · '+(cloudUser.email||'ผู้เรียน'),'local');
+ cloudStatus('☁️ รอซิงก์ · '+(cloudDisplayName(cloudUser)||'ผู้เรียน'),'local');
  cloudSyncTimer=setTimeout(cloudFlush,850);
 }
 async function cloudFlush(){
@@ -2087,7 +2088,7 @@ async function cloudFlush(){
   const {error}=await cloudClient.from('learning_progress').upsert({user_id:uid,progress:snapshot,client_updated_at:snapshot.updatedAt||new Date().toISOString(),server_updated_at:new Date().toISOString()},{onConflict:'user_id'});
   if(error)throw error;
  });
- try{await cloudWrites;if(cloudUser?.id===uid&&generation===cloudGeneration){if(cloudDirty)cloudQueueSave();else cloudStatus('☁️ บันทึกออนไลน์แล้ว · '+(cloudUser.email||'ผู้เรียน'),'success')}}
+ try{await cloudWrites;if(cloudUser?.id===uid&&generation===cloudGeneration){if(cloudDirty)cloudQueueSave();else cloudStatus('☁️ บันทึกออนไลน์แล้ว · '+(cloudDisplayName(cloudUser)||'ผู้เรียน'),'success')}}
  catch(err){cloudDirty=true;cloudStatus('⚠️ บันทึกออนไลน์ไม่สำเร็จ: '+(err.message||'network'),'error');console.error('Supabase save error',err)}
 }
 function cloudMergeProgress(remoteRaw,localRaw){
@@ -2157,7 +2158,7 @@ async function cloudBoot(){
  }catch(err){cloudStatus('⚠️ เชื่อม Supabase ไม่สำเร็จ: '+(err.message||err),'error');console.error(err)}
 }
 let mgAuthMode='login',mgAuthBusy=false;
-function mgAuthElements(){return {overlay:document.getElementById('mgAuthOverlay'),form:document.getElementById('mgAuthForm'),notice:document.getElementById('mgAuthNotice'),email:document.getElementById('mgAuthEmail'),password:document.getElementById('mgAuthPassword'),confirm:document.getElementById('mgAuthConfirm'),confirmRow:document.getElementById('mgAuthConfirmRow'),submit:document.getElementById('mgAuthSubmit'),forgot:document.getElementById('mgAuthForget')}}
+function mgAuthElements(){return {overlay:document.getElementById('mgAuthOverlay'),form:document.getElementById('mgAuthForm'),notice:document.getElementById('mgAuthNotice'),username:document.getElementById('mgAuthUsername'),password:document.getElementById('mgAuthPassword'),confirm:document.getElementById('mgAuthConfirm'),confirmRow:document.getElementById('mgAuthConfirmRow'),submit:document.getElementById('mgAuthSubmit'),forgot:document.getElementById('mgAuthForget')}}
 function mgAuthMessage(msg,isError=false){const el=mgAuthElements().notice;el.textContent=msg;el.style.color=isError?'#b33340':'#26714b'}
 function mgSetAuthMode(mode){
  mgAuthMode=mode;const e=mgAuthElements();
@@ -2165,24 +2166,27 @@ function mgSetAuthMode(mode){
  document.getElementById('mgTabRegister').setAttribute('aria-selected',String(mode==='register'));
  e.confirmRow.classList.toggle('mgHidden',mode!=='register');e.confirm.required=mode==='register';
  e.password.autocomplete=mode==='register'?'new-password':'current-password';
- e.submit.textContent=mode==='register'?'สมัครสมาชิก':'เข้าสู่ระบบ';e.forgot.classList.toggle('mgHidden',mode!=='login');
+ e.submit.textContent=mode==='register'?'สมัครสมาชิก':'เข้าสู่ระบบ';
  mgAuthMessage('');
 }
 function cloudSignIn(){
  const e=mgAuthElements();if(!e.overlay)return;
- mgSetAuthMode('login');e.overlay.classList.add('open');e.email.focus();
+ mgSetAuthMode('login');e.overlay.classList.add('open');e.username.focus();
  if(!cloudClient)mgAuthMessage('ยังเชื่อมต่อ Supabase ไม่สำเร็จ กรุณาลองโหลดเว็บใหม่',true);
 }
 function mgCloseAuth(){if(!mgAuthBusy)mgAuthElements().overlay.classList.remove('open')}
 async function mgAuthSubmit(ev){
  ev.preventDefault();if(mgAuthBusy)return;
- const e=mgAuthElements();const email=e.email.value.trim().toLowerCase(),password=e.password.value;
+ const e=mgAuthElements();const username=e.username.value.trim().toLowerCase(),password=e.password.value;
+ if(!/^[a-z0-9_]{3,24}$/.test(username)){mgAuthMessage('ชื่อผู้ใช้ต้องมี 3–24 ตัว ใช้ a-z ตัวเลข หรือ _ เท่านั้น',true);return}
+ // Reserved example.com namespace serves only as an Auth identifier. Never deliver mail to it.
+ const email='u_'+username+'@students.mathgame.example.com';
  if(!cloudClient){mgAuthMessage('Supabase ยังไม่พร้อม',true);return}
  if(password.length<8){mgAuthMessage('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร',true);return}
  if(mgAuthMode==='register'&&password!==e.confirm.value){mgAuthMessage('รหัสผ่านทั้งสองช่องไม่ตรงกัน',true);return}
  mgAuthBusy=true;e.submit.disabled=true;mgAuthMessage('กำลังดำเนินการ...');
  try{
-  const result=mgAuthMode==='register'?await cloudClient.auth.signUp({email,password}):await cloudClient.auth.signInWithPassword({email,password});
+  const result=mgAuthMode==='register'?await cloudClient.auth.signUp({email,password,options:{data:{mathgame_username:username}}}):await cloudClient.auth.signInWithPassword({email,password});
   if(result.error)throw result.error;
   if(!result.data?.session){mgAuthMessage('บัญชีถูกสร้างแล้ว แต่ยังไม่มี Session: โปรดตรวจว่า Supabase ปิด Confirm email แล้ว จากนั้นลองเข้าสู่ระบบ',true);return}
   mgAuthMessage('สำเร็จ กำลังโหลดความคืบหน้า...');e.password.value='';e.confirm.value='';
@@ -2191,19 +2195,10 @@ async function mgAuthSubmit(ev){
  }catch(err){mgAuthMessage('ไม่สำเร็จ: '+(err.message||'โปรดลองอีกครั้ง'),true)}
  finally{mgAuthBusy=false;e.submit.disabled=false}
 }
-async function mgForgotPassword(){
- const e=mgAuthElements(),email=e.email.value.trim().toLowerCase();
- if(!email||!e.email.checkValidity()){mgAuthMessage('ใส่อีเมลที่ใช้สมัครก่อนครับ',true);e.email.focus();return}
- if(!cloudClient){mgAuthMessage('Supabase ยังไม่พร้อม',true);return}
- try{const {error}=await cloudClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;
-  mgAuthMessage('ถ้าบัญชีนี้มีอยู่ ระบบจะส่งลิงก์กู้รหัสผ่านทางอีเมล (ใช้เฉพาะกรณีลืมรหัสผ่าน)')
- }catch(err){mgAuthMessage('ส่งอีเมลไม่สำเร็จ: '+(err.message||''),true)}
-}
 document.getElementById('mgTabLogin').addEventListener('click',()=>mgSetAuthMode('login'));
 document.getElementById('mgTabRegister').addEventListener('click',()=>mgSetAuthMode('register'));
 document.getElementById('mgAuthClose').addEventListener('click',mgCloseAuth);
 document.getElementById('mgAuthForm').addEventListener('submit',mgAuthSubmit);
-document.getElementById('mgAuthForget').addEventListener('click',mgForgotPassword);
 document.getElementById('mgAuthOverlay').addEventListener('click',e=>{if(e.target.id==='mgAuthOverlay')mgCloseAuth()});
 window.addEventListener('keydown',e=>{if(e.key==='Escape')mgCloseAuth()});
 async function cloudSignOut(){
