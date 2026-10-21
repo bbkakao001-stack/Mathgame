@@ -1890,7 +1890,7 @@ body:has(.hub-slide.active) #scoreBox{width:max-content;max-width:160px;padding:
 #cloudStatusBar strong{color:#5a4eac}#cloudStatusBar button{background:#eeeaff;color:#5e4aa5;border:0;border-radius:9px;font-weight:800;font-size:.73rem;padding:7px 10px;cursor:pointer}
 #cloudStatusBar button:hover{background:#e2dbfa}#cloudStatusBar[data-status="error"]{background:#fff1f0;border-color:#ffcecb;color:#ab4942}#cloudStatusBar[data-status="success"]{background:#e9fbf2;border-color:#c9e9d8;color:#287054}
 </style>
-</head><body><span id="buildMarker">V4.13</span>
+</head><body class="mg-locked"><span id="buildMarker">V4.17</span>
 <nav aria-label="Slide navigation" id="navControls"><button aria-label="First slide" id="first" type="button">⌂ เริ่ม</button><button aria-label="Previous slide" id="prev" type="button">← ก่อนหน้า</button><span aria-live="polite" id="counter">หน้าหลัก</span><button aria-label="Next slide" id="next" type="button">ถัดไป →</button><button aria-label="Last slide" id="last" type="button">จบ ⏭</button></nav>
 <div id="progress"></div><div id="topics"></div>
 <div id="scoreBox" aria-label="สรุปผลการเรียน">
@@ -1902,6 +1902,7 @@ body:has(.hub-slide.active) #scoreBox{width:max-content;max-width:160px;padding:
 <button aria-expanded="false" aria-label="Open menu" id="menuFab" onclick="toggleMenu()" type="button"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
 <div id="menuDrawer">
 <div class="menu-head"><div><div class="menu-title">สมการเชิงเส้นตัวแปรเดียว</div><div class="menu-sub">Jump to a section or open tools</div></div><button class="menu-close" onclick="closeMenu()" type="button">×</button></div>
+<div id="mgMenuAccount"><span>👤 <span id="mgMenuUsername">ยังไม่เข้าสู่ระบบ</span></span><button type="button" id="mgMenuLogout" onclick="closeMenu();cloudSignOut()">ออกจากระบบ</button></div>
 <div class="menu-current"><small>Now viewing</small><b id="menuCurrentLabel">Start</b></div>
 <div id="cloudStatusBar" data-status="local" role="status" aria-live="polite"><strong id="cloudStatusText">💾 บันทึกเฉพาะเครื่องนี้</strong><button type="button" id="cloudAuthButton" onclick="cloudSignIn()">☁️ เข้าสู่ระบบ</button></div>
 <div class="menu-section-label">Sections</div>
@@ -1935,6 +1936,16 @@ body:has(.hub-slide.active) #scoreBox{width:max-content;max-width:160px;padding:
 <div class="title-pills"><span class="pill c1">Learn at your own pace</span><span class="pill c2">5 Daily Stars</span><span class="pill c4">Hangman 9 Parts</span></div>
 <div class="scrollhint">Use ◀ ▶ / keyboard arrows to navigate</div></section>
 </div>
+<style id="mg-v417-auth-gate">
+/* Login-first: gameplay is not painted or clickable before cloud progress loads. */
+body:not(.mg-unlocked) > :not(#mgAuthOverlay):not(script):not(style){display:none!important}
+body:not(.mg-unlocked) #mgAuthOverlay{display:flex!important}
+body:not(.mg-unlocked) #mgAuthClose{display:none!important}
+#mgAuthOverlay{overscroll-behavior:contain}
+#mgMenuAccount{padding:12px 14px;margin:8px 0;border-radius:12px;background:#eef4ff;display:flex;align-items:center;justify-content:space-between;gap:8px}
+#mgMenuUsername{font-weight:850;overflow-wrap:anywhere}
+#mgMenuLogout{padding:8px 12px;border:0;border-radius:9px;background:#fce5e5;color:#a62f3e;font-weight:800;cursor:pointer}
+</style>
 <style id="mathgame-email-auth-style">
 #mgAuthOverlay{position:fixed;inset:0;z-index:999999;background:rgba(17,24,39,.65);display:none;align-items:center;justify-content:center;padding:16px}
 #mgAuthOverlay.open{display:flex}#mgAuthPanel{background:#fff;border-radius:22px;padding:24px;max-width:420px;width:100%;max-height:95vh;overflow:auto;color:#28324a;box-shadow:0 20px 80px #0005;font-family:inherit}
@@ -2064,10 +2075,21 @@ function saveState(){
 // V4.16: GitHub Pages frontend + Supabase Auth with username-derived internal identifiers and RLS.
 let cloudClient=null,cloudUser=null,cloudReady=false,cloudDirty=false,cloudSyncTimer=null,cloudWrites=Promise.resolve(),cloudBooted=false;
 let cloudRestoring=false,cloudGeneration=0;
+function mgSetGate(unlocked){
+ document.body.classList.toggle('mg-unlocked',Boolean(unlocked));
+ document.body.classList.toggle('mg-locked',!unlocked);
+ const dialog=document.getElementById('mgAuthOverlay');
+ if(dialog)dialog.classList.toggle('open',!unlocked);
+ if(!unlocked){closeMenu();try{document.activeElement?.blur()}catch(e){}}
+}
+function mgUpdateAccountUI(){
+ const name=document.getElementById('mgMenuUsername');
+ if(name)name.textContent=cloudUser?cloudDisplayName(cloudUser):'ยังไม่เข้าสู่ระบบ';
+}
 function cloudStatus(message,mode='local'){
  const bar=document.getElementById('cloudStatusBar'),txt=document.getElementById('cloudStatusText'),btn=document.getElementById('cloudAuthButton');
  if(!bar||!txt||!btn)return;
- bar.dataset.status=mode;txt.textContent=message;
+ bar.dataset.status=mode;txt.textContent=message;mgUpdateAccountUI();
  btn.textContent=cloudUser?'ออกจากบัญชี':'☁️ เข้าสู่ระบบ';
  btn.onclick=cloudUser?cloudSignOut:cloudSignIn;
 }
@@ -2123,25 +2145,25 @@ function cloudRefreshUI(){
 async function cloudRestore(user){
  if(!user||!cloudClient||cloudRestoring)return;
  cloudRestoring=true;cloudReady=false;
- const generation=++cloudGeneration;
+ const generation=++cloudGeneration;mgSetGate(false);
  cloudStatus('☁️ กำลังโหลดความคืบหน้าของ '+(user.email||'ผู้เรียน'),'local');
  try{
   const {data,error}=await cloudClient.from('learning_progress').select('progress').eq('user_id',user.id).maybeSingle();
   if(error)throw error;
   if(cloudUser?.id!==user.id||generation!==cloudGeneration)return;
   let previousOwner=null;try{previousOwner=localStorage.getItem(CLOUD_LAST_USER_KEY)}catch(e){}
-  const localCandidate=previousOwner&&previousOwner!==user.id?createDefaultProgress():state;
+  const localCandidate=previousOwner===user.id?state:createDefaultProgress();
   state=data?.progress?cloudMergeProgress(data.progress,localCandidate):normalizeProgress(localCandidate);
   try{localStorage.setItem(CLOUD_LAST_USER_KEY,user.id);localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){}
-  cloudRefreshUI();cloudReady=true;cloudDirty=true;
+  cloudRefreshUI();cloudReady=true;cloudDirty=true;mgSetGate(true);mgUpdateAccountUI();
  }catch(err){cloudReady=false;cloudStatus('⚠️ โหลดข้อมูลออนไลน์ไม่สำเร็จ · ยังเก็บในเครื่อง ('+(err.message||'network')+')','error');console.error('Supabase restore error',err)}
  finally{cloudRestoring=false}
  if(cloudReady)await cloudFlush();
 }
 async function cloudBoot(){
  if(cloudBooted)return;
- if(!cloudConfigured()){cloudStatus('⚠️ ยังไม่ได้ตั้งค่า Supabase','error');return}
- if(!window.supabase?.createClient){cloudStatus('⚠️ โหลด Supabase SDK ไม่สำเร็จ','error');return}
+ if(!cloudConfigured()){mgSetGate(false);cloudStatus('⚠️ ยังไม่ได้ตั้งค่า Supabase','error');return}
+ if(!window.supabase?.createClient){mgSetGate(false);cloudStatus('⚠️ โหลด Supabase SDK ไม่สำเร็จ','error');return}
  try{
   cloudClient=window.supabase.createClient(window.M1_SUPABASE_CONFIG.url,window.M1_SUPABASE_CONFIG.key, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   cloudBooted=true;
@@ -2149,12 +2171,12 @@ async function cloudBoot(){
    if(event==='PASSWORD_RECOVERY')setTimeout(()=>mgShowPasswordRecovery(),0);
    // Do not await Supabase API calls inside this auth callback.
    const user=session?.user||null;
-   if(user){if(cloudUser?.id!==user.id){cloudUser=user;cloudReady=false;setTimeout(()=>cloudRestore(user),0)}else cloudUser=user;}
-   else if(cloudUser){cloudUser=null;cloudReady=false;cloudGeneration++;clearTimeout(cloudSyncTimer);cloudStatus('💾 เฉพาะเครื่อง · เข้าสู่ระบบเพื่อซิงก์','local')}
+   if(user){if(cloudUser?.id!==user.id){mgSetGate(false);cloudUser=user;cloudReady=false;state=normalizeProgress(createDefaultProgress());setTimeout(()=>cloudRestore(user),0)}else cloudUser=user;mgUpdateAccountUI();}
+   else {cloudUser=null;cloudReady=false;cloudGeneration++;clearTimeout(cloudSyncTimer);state=normalizeProgress(createDefaultProgress());mgSetGate(false);cloudStatus('กรุณาเข้าสู่ระบบก่อนเริ่มเรียน','local')}
   });
   const {data,error}=await cloudClient.auth.getSession();if(error)throw error;
   if(data.session?.user){cloudUser=data.session.user;await cloudRestore(cloudUser)}
-  else cloudStatus('💾 เฉพาะเครื่อง · เข้าสู่ระบบเพื่อซิงก์','local');
+  else {mgSetGate(false);cloudStatus('กรุณาเข้าสู่ระบบก่อนเริ่มเรียน','local');}
  }catch(err){cloudStatus('⚠️ เชื่อม Supabase ไม่สำเร็จ: '+(err.message||err),'error');console.error(err)}
 }
 let mgAuthMode='login',mgAuthBusy=false;
@@ -2174,7 +2196,7 @@ function cloudSignIn(){
  mgSetAuthMode('login');e.overlay.classList.add('open');e.username.focus();
  if(!cloudClient)mgAuthMessage('ยังเชื่อมต่อ Supabase ไม่สำเร็จ กรุณาลองโหลดเว็บใหม่',true);
 }
-function mgCloseAuth(){if(!mgAuthBusy)mgAuthElements().overlay.classList.remove('open')}
+function mgCloseAuth(){if(!mgAuthBusy&&cloudUser&&cloudReady)mgAuthElements().overlay.classList.remove('open')}
 async function mgAuthSubmit(ev){
  ev.preventDefault();if(mgAuthBusy)return;
  const e=mgAuthElements();const username=e.username.value.trim().toLowerCase(),password=e.password.value;
@@ -2190,7 +2212,7 @@ async function mgAuthSubmit(ev){
   if(result.error)throw result.error;
   if(!result.data?.session){mgAuthMessage('บัญชีถูกสร้างแล้ว แต่ยังไม่มี Session: โปรดตรวจว่า Supabase ปิด Confirm email แล้ว จากนั้นลองเข้าสู่ระบบ',true);return}
   mgAuthMessage('สำเร็จ กำลังโหลดความคืบหน้า...');e.password.value='';e.confirm.value='';
-  e.overlay.classList.remove('open');
+  mgSetGate(false);
   if(cloudUser?.id!==result.data.user.id){cloudUser=result.data.user;await cloudRestore(cloudUser)}
  }catch(err){mgAuthMessage('ไม่สำเร็จ: '+(err.message||'โปรดลองอีกครั้ง'),true)}
  finally{mgAuthBusy=false;e.submit.disabled=false}
@@ -2205,10 +2227,10 @@ async function cloudSignOut(){
  if(!cloudClient||!cloudUser)return;
  if(cloudDirty){await cloudFlush();if(cloudDirty&&!confirm('ข้อมูลล่าสุดยังไม่ขึ้นคลาวด์ ออกจากระบบโดยเก็บสำรองไว้ในเครื่องหรือไม่?'))return}
  const {error}=await cloudClient.auth.signOut();if(error){cloudStatus('⚠️ ออกจากระบบไม่สำเร็จ: '+error.message,'error');return}
- cloudUser=null;cloudReady=false;cloudGeneration++;
+ cloudUser=null;cloudReady=false;cloudGeneration++;mgSetGate(false);mgSetAuthMode('login');
  state=normalizeProgress(createDefaultProgress());
  try{localStorage.removeItem(STORAGE_KEY)}catch(e){}
- cloudRefreshUI();cloudStatus('💾 ออกจากระบบแล้ว · กรุณาเข้าสู่ระบบก่อนเรียนต่อ','local');
+ cloudRefreshUI();cloudStatus('กรุณาเข้าสู่ระบบก่อนเรียนต่อ','local');
 }
 async function mgShowPasswordRecovery(){
  const newPassword=prompt('ตั้งรหัสผ่านใหม่สำหรับ Mathgame (อย่างน้อย 8 ตัวอักษร)');
@@ -3091,7 +3113,7 @@ function openAdminSettings(){let o=document.getElementById('mbAdmin');if(o)o.rem
   state.reviewCfg=n;saveState();updateWeeklyUI();o.remove()}}
 
 buildMissionUI();
-loadState();prepareQuestionLayout();buildQuizzes();refreshAuditTables();updateUI();updateWeeklyUI();cloudBoot();const restoredIndex=state.lastQuestionId==null?-1:slides.findIndex(slide=>String(slide.dataset.qid)===String(state.lastQuestionId));cur=restoredIndex>=0?restoredIndex:Math.min(state.lastSlide||0,total-1);show(cur);setTimeout(startSuccessPreload,350);
+mgSetGate(false);loadState();prepareQuestionLayout();buildQuizzes();refreshAuditTables();updateUI();updateWeeklyUI();cloudBoot();const restoredIndex=state.lastQuestionId==null?-1:slides.findIndex(slide=>String(slide.dataset.qid)===String(state.lastQuestionId));cur=restoredIndex>=0?restoredIndex:Math.min(state.lastSlide||0,total-1);show(cur);setTimeout(startSuccessPreload,350);
 console.log('M1 Math Adventure loaded',{questions:QUESTIONS.length,verified:QUESTIONS.length,slides:total});
 setInterval(updateWeeklyUI,60*1000);
 </script></body></html>
