@@ -1889,8 +1889,9 @@ body:has(.hub-slide.active) #scoreBox{width:max-content;max-width:160px;padding:
 #cloudStatusBar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:8px 0;padding:9px 11px;border-radius:13px;background:#f5f8ff;border:1px solid #e2eafc;font-size:.75rem;color:#576986;line-height:1.5}
 #cloudStatusBar strong{color:#5a4eac}#cloudStatusBar button{background:#eeeaff;color:#5e4aa5;border:0;border-radius:9px;font-weight:800;font-size:.73rem;padding:7px 10px;cursor:pointer}
 #cloudStatusBar button:hover{background:#e2dbfa}#cloudStatusBar[data-status="error"]{background:#fff1f0;border-color:#ffcecb;color:#ab4942}#cloudStatusBar[data-status="success"]{background:#e9fbf2;border-color:#c9e9d8;color:#287054}
+#mgTeacherDashboardLink[hidden]{display:none!important}
 </style>
-</head><body class="mg-locked"><span id="buildMarker">V4.18</span>
+</head><body class="mg-locked"><span id="buildMarker">V4.21</span>
 <nav aria-label="Slide navigation" id="navControls"><button aria-label="First slide" id="first" type="button">⌂ เริ่ม</button><button aria-label="Previous slide" id="prev" type="button">← ก่อนหน้า</button><span aria-live="polite" id="counter">หน้าหลัก</span><button aria-label="Next slide" id="next" type="button">ถัดไป →</button><button aria-label="Last slide" id="last" type="button">จบ ⏭</button></nav>
 <div id="progress"></div><div id="topics"></div>
 <div id="scoreBox" aria-label="สรุปผลการเรียน">
@@ -1908,10 +1909,11 @@ body:has(.hub-slide.active) #scoreBox{width:max-content;max-width:160px;padding:
 <div class="menu-section-label">Sections</div>
 <div class="menu-sections" id="menuSections"></div>
 <div class="menu-section-label">Tools</div>
+<button class="menu-item" id="mgTeacherDashboardLink" type="button" hidden onclick="closeMenu();window.location.href='./admin.html'">📊 Teacher Dashboard · ติดตามนักเรียน</button>
 <div class="menu-tools">
 <button class="menu-item" onclick="closeMenu();openAudit()" type="button">📋 Audit / Question List</button>
 <button class="menu-item" onclick="closeMenu();goLastSlide()" type="button">🧾 All Questions Table</button>
-<button class="menu-item" type="button" onclick="closeMenu();requireResetPin('เข้าตั้งค่าแอดมิน',openAdminSettings)">⚙️ Admin Settings (ตั้งค่าเรื่องทบทวน)</button>
+<button class="menu-item" type="button" onclick="closeMenu();requireResetPin('เข้าตั้งค่าแอดมิน',openAdminSettings)">⚙️ ตั้งค่าเรื่องทบทวน (ไม่ใช่สิทธิ์ครู)</button>
 <button class="menu-item danger" id="resetBtn" onclick="closeMenu()" type="button">↻ Reset Today</button>
 <button class="menu-item danger reset-all" id="resetAllBtn" onclick="closeMenu();resetAllProgress()" type="button">Reset All Progress</button>
 </div>
@@ -2138,7 +2140,7 @@ function mgSetGate(unlocked){
  document.body.classList.toggle('mg-locked',!unlocked);
  const dialog=document.getElementById('mgAuthOverlay');
  if(dialog)dialog.classList.toggle('open',!unlocked);
- if(!unlocked){closeMenu();try{document.activeElement?.blur()}catch(e){}}
+ if(!unlocked){const teacherLink=document.getElementById('mgTeacherDashboardLink');if(teacherLink)teacherLink.hidden=true;closeMenu();mgResetTrackingClock();try{document.activeElement?.blur()}catch(e){}}
 }
 function mgUpdateAccountUI(){
  const name=document.getElementById('mgMenuUsername');
@@ -2214,6 +2216,8 @@ async function cloudRestore(user){
   try{localStorage.setItem(CLOUD_LAST_USER_KEY,user.id);localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){}
   if(mgSigningOut||!cloudUser||cloudUser.id!==user.id||generation!==cloudGeneration)return;
   cloudReady=true;mgSetGate(true);cloudRefreshUI();cloudDirty=false;mgUpdateAccountUI();
+   if(slides[cur]?.dataset.qid)mgStartTracking('lesson:'+String(slides[cur].dataset.qid));
+   mgRestoreAttemptQueue();mgCheckTeacherPermission();
  }catch(err){cloudReady=false;cloudStatus('⚠️ โหลดข้อมูลออนไลน์ไม่สำเร็จ · ยังเก็บในเครื่อง ('+(err.message||'network')+')','error');console.error('Supabase restore error',err)}
  finally{cloudRestoring=false}
  // Do not write back unchanged progress on login.
@@ -2230,7 +2234,7 @@ async function cloudBoot(){
    if(event==='PASSWORD_RECOVERY')setTimeout(()=>mgShowPasswordRecovery(),0);
    // Never unlock from an unverified cached onAuthStateChange session.
    if(event==='SIGNED_OUT'){
-    cloudUser=null;cloudReady=false;cloudGeneration++;clearTimeout(cloudSyncTimer);
+    cloudUser=null;cloudReady=false;cloudGeneration++;clearTimeout(cloudSyncTimer);mgAttemptQueue=[];
     state=normalizeProgress(createDefaultProgress());mgSetGate(false);
     cloudStatus('กรุณาเข้าสู่ระบบก่อนเริ่มเรียน','local');return;
    }
@@ -2479,7 +2483,9 @@ function show(i){
  const nextMenu=document.querySelector(`.section-jump[data-start="${active}"]`);if(nextMenu)nextMenu.classList.add('active');
  const ml=document.getElementById('menuCurrentLabel');if(ml)ml.textContent=target.dataset.title||activeTopic;
  const card=target.querySelector('.question-card');if(card)card.scrollTop=0;
- mountHangman(target);persistNavigationLater();
+ mountHangman(target);
+ mgStartTracking(target.dataset.qid?'lesson:'+String(target.dataset.qid):null);
+ persistNavigationLater();
 }
 const firstBtn=document.getElementById('first'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next'),lastBtn=document.getElementById('last');if(firstBtn)firstBtn.textContent='⌂ Dashboard';if(firstBtn)firstBtn.addEventListener('click',()=>show(0));if(prevBtn)prevBtn.addEventListener('click',()=>show(cur-1));if(nextBtn)nextBtn.addEventListener('click',()=>show(cur+1));if(lastBtn)lastBtn.textContent='📚 เลือกบท';if(lastBtn)lastBtn.addEventListener('click',showCourse);document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.closest('.mission-overlay'))return;if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);if(e.key==='Home')show(0);if(e.key==='End')show(total-1);if(e.key==='Escape'){closeAudit();closeHangmanModal()}});
 document.getElementById('deck').addEventListener('click',e=>{if(e.target.closest('.card')||e.target.closest('button')||e.target.closest('#topics'))return;const x=e.clientX/innerWidth;if(x<.27)show(cur-1);else if(x>.73)show(cur+1)});
@@ -2581,7 +2587,76 @@ function launchCelebrationEffects(anchor){
   }
  }
 
-function markCorrect(q,feedback,anchor,value=q.answer){recordQuestionAnswer(q.id,value,true);recordStudy(q.id,'correct');feedback.innerHTML='Correct! <span style="font-weight:500">'+formatMathHTML(q.explanation)+'</span>';feedback.style.color='var(--c4)';saveState();updateUI();updateWeeklyUI();celebrate(anchor);if(slides[cur]&&slides[cur].classList.contains('quiz-slide'))scheduleNextQuestionAutoAdvance()}
+// V4.21: Each submitted answer is a separate append-only tracking event.
+// Clock excludes time while the browser tab is hidden; measurements are client-side estimates.
+let mgTracking=null,mgAttemptQueue=[],mgAttemptFlushing=false,mgAttemptFlushTimer=null;
+const MG_QUEUE_PREFIX='mathgameAttemptQueueV1:';
+function mgResetTrackingClock(){mgTracking=null}
+function mgStartTracking(key){
+ if(!mgCanAccess()){mgTracking=null;return}
+ if(!key){mgTracking=null;return}
+ if(mgTracking?.key===key)return;
+ const t=performance.now();mgTracking={key,begin:t,last:t,hiddenAt:document.hidden?t:null};
+}
+document.addEventListener('visibilitychange',()=>{
+ const t=mgTracking;if(!t)return;
+ if(document.hidden&&t.hiddenAt===null)t.hiddenAt=performance.now();
+ else if(!document.hidden&&t.hiddenAt!==null){const delta=performance.now()-t.hiddenAt;t.begin+=delta;t.last+=delta;t.hiddenAt=null}
+});
+function mgAttemptQueueKey(uid){return MG_QUEUE_PREFIX+uid}
+function mgRestoreAttemptQueue(){
+ if(!mgCanAccess())return;
+ try{const value=JSON.parse(localStorage.getItem(mgAttemptQueueKey(cloudUser.id))||'[]');
+  mgAttemptQueue=Array.isArray(value)?value.filter(e=>e&&e.user_id===cloudUser.id).slice(-2000):[];
+ }catch(e){mgAttemptQueue=[]}
+ mgScheduleAttemptFlush();
+}
+function mgSaveAttemptQueue(uid){
+ try{localStorage.setItem(mgAttemptQueueKey(uid),JSON.stringify(mgAttemptQueue))}catch(e){console.warn('Tracking queue unavailable',e)}
+}
+function mgScheduleAttemptFlush(){clearTimeout(mgAttemptFlushTimer);mgAttemptFlushTimer=setTimeout(mgFlushAttemptQueue,400)}
+async function mgFlushAttemptQueue(){
+ if(mgAttemptFlushing||!mgCanAccess()||!mgAttemptQueue.length)return;
+ const uid=cloudUser.id,chunk=mgAttemptQueue.filter(e=>e.user_id===uid).slice(0,35);
+ if(!chunk.length)return;mgAttemptFlushing=true;
+ try{
+  // The event id is fixed before retry. ON CONFLICT DO NOTHING avoids duplicate attempt counts.
+  const {error}=await cloudClient.from('mathgame_attempts').upsert(chunk,{onConflict:'id',ignoreDuplicates:true});
+  if(error)throw error;
+  if(cloudUser?.id===uid){const done=new Set(chunk.map(e=>e.id));mgAttemptQueue=mgAttemptQueue.filter(e=>!done.has(e.id));mgSaveAttemptQueue(uid)}
+ }catch(e){console.warn('Attempt tracking sync failed',e)}
+ finally{mgAttemptFlushing=false;if(mgCanAccess()&&mgAttemptQueue.length&&navigator.onLine)mgAttemptFlushTimer=setTimeout(mgFlushAttemptQueue,6000)}
+}
+function mgSecureEventId(){
+ if(crypto.randomUUID)return crypto.randomUUID();
+ // UUIDv4 fallback for non-HTTPS local previews. Uses cryptographic RNG, never Math.random.
+ const bytes=crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;
+ const h=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+ return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);
+}
+function mgTrackAnswer(q,isCorrect,mode){
+ if(!mgCanAccess()||!cloudUser)return;
+ const key=mode+':'+String(q.id);
+ if(!mgTracking||(mode==='lesson'&&mgTracking.key!==key)||
+    (mode==='review'&&!mgTracking.key.startsWith('review:')))mgStartTracking(key);
+ const t=mgTracking,now=performance.now(),active=t?(t.hiddenAt===null?now:t.hiddenAt):now;
+ const attempt_ms=t?Math.max(0,Math.min(3600000,Math.round(active-t.last))):0;
+ const question_ms=t?Math.max(0,Math.min(3600000,Math.round(active-t.begin))):0;
+ if(t)t.last=active;
+ const prompt=String(q.promptTH||q.promptEN||q.prompt||q.thai||'').replace(/<[^>]*>/g,'').slice(0,1800);
+ const event={id:mgSecureEventId(),user_id:cloudUser.id,question_id:String(q.id).slice(0,100),question_text:prompt,mode,is_correct:Boolean(isCorrect),attempt_ms,question_ms};
+ mgAttemptQueue.push(event);if(mgAttemptQueue.length>2000)mgAttemptQueue=mgAttemptQueue.slice(-2000);
+ mgSaveAttemptQueue(cloudUser.id);mgScheduleAttemptFlush();
+}
+async function mgCheckTeacherPermission(){
+ const link=document.getElementById('mgTeacherDashboardLink');if(!link||!mgCanAccess())return;
+ const uid=cloudUser.id;link.hidden=true;
+ try{const {data,error}=await cloudClient.from('mathgame_instructors').select('user_id').eq('user_id',uid).maybeSingle();
+  if(!error&&cloudUser?.id===uid&&mgCanAccess())link.hidden=!data;
+ }catch(e){link.hidden=true}
+}
+window.addEventListener('online',()=>{if(mgCanAccess())mgScheduleAttemptFlush()});
+function markCorrect(q,feedback,anchor,value=q.answer){mgTrackAnswer(q,true,'lesson');recordQuestionAnswer(q.id,value,true);recordStudy(q.id,'correct');feedback.innerHTML='Correct! <span style="font-weight:500">'+formatMathHTML(q.explanation)+'</span>';feedback.style.color='var(--c4)';saveState();updateUI();updateWeeklyUI();celebrate(anchor);if(slides[cur]&&slides[cur].classList.contains('quiz-slide'))scheduleNextQuestionAutoAdvance()}
 function refreshAuditTables(){
   const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const rows=QUESTIONS.map(q=>`<tr><td>${q.id}</td><td>${esc(q.topic)}</td><td class="left">${formatMathHTML(q.prompt)}</td><td>${formatMathHTML(q.answer)}</td><td>${esc(q.level)}</td><td>✓ Verified</td></tr>`).join('');
@@ -2635,6 +2710,7 @@ function same(a,b){
 function wrongMessage(q,value){const map=q.commonWrongAnswers||{};const key=String(value).trim();return map[key]||map[cleanAnswerKey(key)]||'Not quite yet. Check the operation and try again.'}
 function cleanAnswerKey(v){return String(v).replace(/\s+/g,'')}
 function markWrong(qid,feedback,btn=null,q=null,value=''){
+  mgTrackAnswer(q||QUESTIONS.find(item=>String(item.id)===String(qid))||{id:qid,prompt:''},false,'lesson');
   if(btn){btn.classList.add('wrong');setTimeout(()=>btn.classList.remove('wrong'),650)}
   state.wrongChoices=state.wrongChoices||{};state.wrongChoices[String(qid)]=(state.wrongChoices[String(qid)]||0)+1;recordQuestionAnswer(qid,value,false);
   if(state.hangmanParts>=9){hangmanModal.classList.add('show');return;}state.hangmanParts++;const coach=q?wrongMessage(q,value):'Not quite yet. Check the operation and try again.';
@@ -2770,13 +2846,14 @@ function updateWeeklyUI(){
  if(reviewButton){
   const locked=done<MIN_LEARNED_TO_REVIEW&&(mbCfg().latest||mbCfg().chapters.length>0);
   reviewButton.disabled=locked;reviewButton.title=locked?`เรียนให้สำเร็จอีก ${MIN_LEARNED_TO_REVIEW-done} ข้อก่อนเริ่มทบทวน`:'เริ่มทบทวนจากโจทย์ที่เคยเรียนแล้ว';
-  reviewButton.textContent=locked?`🔒 เรียนอีก ${MIN_LEARNED_TO_REVIEW-done} ข้อ`:'⚔️ พิชิตมอน · ทบทวน 15 ข้อ';
+  reviewButton.textContent=locked?`🔒 เรียนอีก ${MIN_LEARNED_TO_REVIEW-done} ข้อ`:'⚔️ พิชิตมอน · ทบทวน 10 ข้อ';
  }
  const todayLabel=document.getElementById('homeToday');if(todayLabel)todayLabel.textContent=`วันนี้ ${formatThaiDate(bkkDate())}`;
  let box=document.getElementById('weeklyScore');if(!box){box=document.createElement('div');box.id='weeklyScore';document.getElementById('scoreBox').appendChild(box)}box.textContent=`Weekly Mission ${n}/3`;
  if(document.getElementById('calendarOverlay')?.classList.contains('show'))renderCalendar();
 }
 const MIN_LEARNED_TO_REVIEW=10;
+const REVIEW_QUESTIONS_PER_MISSION=10; // mission length, not total lesson bank
 function learnedCourseQuestions(){return QUESTIONS.filter(q=>isQuestionComplete(q.id))}
 function missionUnlockCount(){return learnedCourseQuestions().length}
 function learnedReviewTopics(){return new Set(learnedCourseQuestions().map(q=>`${q.chapterNum}|${q.subtopic}`))}
@@ -2872,14 +2949,14 @@ function chooseMissionQuestions(){
  if(c.int)src.push({fam:'int'});if(c.pow)src.push({fam:'pow'});
  if(!src.length)return null;
  const sel=[],seen=new Set();let guard=0;
- while(sel.length<15&&guard++<160){
+ while(sel.length<REVIEW_QUESTIONS_PER_MISSION&&guard++<160){
   for(const item of fisherYates(src)){
-   if(sel.length>=15)break;
+   if(sel.length>=REVIEW_QUESTIONS_PER_MISSION)break;
    const q=item.fam?mbGen(item.fam,'normal'):gentleReviewFromLesson(item.lessons[rnd(0,item.lessons.length-1)]);
    if(q&&!seen.has(String(q.promptTH).replace(/\s+/g,''))){gen[q.id]=q;sel.push(q.id);seen.add(String(q.promptTH).replace(/\s+/g,''))}
   }
  }
- return sel.length===15?{poolVersion:4,questionIds:fisherYates(sel),reviewCount:15,skippedCount:0,gen}:null;
+ return sel.length===REVIEW_QUESTIONS_PER_MISSION?{poolVersion:4,questionIds:fisherYates(sel),reviewCount:REVIEW_QUESTIONS_PER_MISSION,skippedCount:0,gen}:null;
 }
 function mbUpgradeMission(m){
  if(!m||m.poolVersion===4)return m;
@@ -2893,7 +2970,7 @@ function mbUpgradeMission(m){
 }
 
 /* The 3-stage battle belongs to the existing 10-question Mission. No external question generator is used. */
-const MB_MONSTERS=[{name:'เจลลี่สมการ',kind:'slime',hue:160,hp:2},{name:'โกเลมหินตัวแปร',kind:'golem',hue:20,hp:3},{name:'จอมมารสมการ',kind:'demon',hue:280,hp:4},{name:'ราชามังกรสมการ',kind:'dragon',hue:5,hp:6}];
+const MB_MONSTERS=[{name:'เจลลี่สมการ',kind:'slime',hue:160,hp:2},{name:'โกเลมหินตัวแปร',kind:'golem',hue:20,hp:2},{name:'จอมมารสมการ',kind:'demon',hue:280,hp:3},{name:'ราชามังกรสมการ',kind:'dragon',hue:5,hp:3}];
 let mbBusy=false,missionNextTimer=null,mbEffectTimer=null;
 let mbIdleInterval=null,mbIdleStartedAt=0,mbIdleLastStep=0;
 function mbStopIdle(){if(mbIdleInterval!==null){clearInterval(mbIdleInterval);mbIdleInterval=null}}
@@ -3035,7 +3112,7 @@ function renderMission(){
  mbStopIdle();
  const m=state.activeMission;if(!m)return;
  if(mbGetBattle(m).stage>=MB_MONSTERS.length){finishMission();return}
-  if(m.cursor>=m.questionIds.length){const ex=selectExtraReviewQuestion(m)||mbGenAny(m);if(!ex){showMissionNotice('ไม่มีโจทย์ทบทวนที่เหมาะสม','เรียนเพิ่มอย่างน้อยหนึ่งข้อก่อนกลับมาทบทวน');return}m.questionIds.push(ex.id);m.reviewCount=m.questionIds.length}
+  if(m.cursor>=m.questionIds.length){finishMission();return}
  const standard=getMissionQuestion(m.questionIds[m.cursor]);
  if(!standard){m.cursor++;saveState();renderMission();return}
  const b=mbGetBattle(m),skip=document.getElementById('missionSkip');
@@ -3044,6 +3121,7 @@ function renderMission(){
  if(b.action==='sp'&&!b.bonusQuestion)b.bonusQuestion=chooseUltimateQuestion(m);
  const isBonus=b.action==='sp'&&!!b.bonusQuestion;
  const q=isBonus?b.bonusQuestion:standard;
+ mgStartTracking('review:'+String(m.id||m.startedAt||'mission')+':'+String(m.cursor)+':'+String(q.id));
  const isSkippedContent=false;
  document.querySelector('.monster-mission-shell').classList.remove('mb-complete');
  skip.style.display='';skip.disabled=isBonus||m.skipped>=5||b.hearts===0;{const ch=document.getElementById('missionChoice');if(ch){ch.style.display='';ch.disabled=(m.choiceUsed||0)>=3||b.hearts===0||b.choiceFor===String(q.id)}}
@@ -3063,6 +3141,7 @@ function renderMission(){
   mbStopIdle();mbBusy=true;
   const value=answer.trim(),chosen=b.action;
   if(answerMatches(q,value)){
+    mgTrackAnswer(q,true,'review');
     if(isBonus){
      m.bonusCorrect=(m.bonusCorrect||0)+1;
      m.correct++;m.cursor++; // ultimate answer replaces 1 regular review problem
@@ -3088,6 +3167,7 @@ function renderMission(){
    mbUpdateScene();clearTimeout(missionNextTimer);
    missionNextTimer=setTimeout(()=>{mbBusy=false;renderMission()},window.mbSC?2400:1100);
   }else{
+   mgTrackAnswer(q,false,'review');
    m.wrongAttempts++;
    {const stats=state.reviewStats[String(q.id)]||{timesCorrect:0,timesWrong:0};stats.timesWrong++;state.reviewStats[String(q.id)]=stats}
    /* Wrong heal/special: no healing/ultimate damage, monster always retaliates. */
@@ -3187,7 +3267,7 @@ function mbStuckCheck(){const m=state.activeMission,root=document.getElementById
 setInterval(mbStuckCheck,5000);
 function openAdminSettings(){let o=document.getElementById('mbAdmin');if(o)o.remove();const c=mbCfg(),L=mbLatestCh();o=document.createElement('div');o.id='mbAdmin';o.className='modal-overlay show';o.style.display='flex';
  const ck=(id,on,lab)=>`<label style="display:block;margin:.35rem 0;text-align:left"><input type="checkbox" id="${id}" ${on?'checked':''}> ${lab}</label>`;
- o.innerHTML=`<div class="modal" style="max-width:480px;max-height:90vh;overflow:auto"><h2>⚙️ ตั้งค่าเรื่องทบทวน</h2><p style="font-size:.8rem">เลือกเรื่องที่จะออกในภารกิจพิชิตมอน (15 ข้อ)</p><h3 style="text-align:left">1. เรื่องที่เรียนล่าสุด</h3>${ck('cfgLatest',c.latest,'บทล่าสุดที่เรียน'+(L?` (บทที่ ${L}: ${escHTML(COURSE_ORDER[L-1]||'')})`:''))}<h3 style="text-align:left">2. ทบทวน</h3><b style="display:block;text-align:left">2.1 เรื่องที่เคยเรียน</b>${COURSE_ORDER.map((n,i)=>ck('cfgCh'+(i+1),c.chapters.includes(i+1),`บทที่ ${i+1}: ${escHTML(n)}`)).join('')}<b style="display:block;text-align:left;margin-top:.5rem">2.2 เรื่องทบทวนจริง ๆ</b>${ck('cfgInt',c.int,'การบวก ลบ คูณ หาร จำนวนเต็ม/จำนวนจริง (เลขติดลบ)')}${ck('cfgPow',c.pow,'เลขยกกำลัง')}<p id="cfgErr" style="color:#d85173;font-size:.8rem"></p><button class="modal-btn" id="cfgSave">บันทึก</button> <button class="modal-btn alt" id="cfgReset" style="color:#d85173">🔄 รีเซตทบทวน (ดูบัค)</button> <button class="modal-btn alt" onclick="document.getElementById('mbAdmin').remove()">ยกเลิก</button></div>`;
+ o.innerHTML=`<div class="modal" style="max-width:480px;max-height:90vh;overflow:auto"><h2>⚙️ ตั้งค่าเรื่องทบทวน</h2><p style="font-size:.8rem">เลือกเรื่องที่จะออกในภารกิจพิชิตมอน (10 ข้อ)</p><h3 style="text-align:left">1. เรื่องที่เรียนล่าสุด</h3>${ck('cfgLatest',c.latest,'บทล่าสุดที่เรียน'+(L?` (บทที่ ${L}: ${escHTML(COURSE_ORDER[L-1]||'')})`:''))}<h3 style="text-align:left">2. ทบทวน</h3><b style="display:block;text-align:left">2.1 เรื่องที่เคยเรียน</b>${COURSE_ORDER.map((n,i)=>ck('cfgCh'+(i+1),c.chapters.includes(i+1),`บทที่ ${i+1}: ${escHTML(n)}`)).join('')}<b style="display:block;text-align:left;margin-top:.5rem">2.2 เรื่องทบทวนจริง ๆ</b>${ck('cfgInt',c.int,'การบวก ลบ คูณ หาร จำนวนเต็ม/จำนวนจริง (เลขติดลบ)')}${ck('cfgPow',c.pow,'เลขยกกำลัง')}<p id="cfgErr" style="color:#d85173;font-size:.8rem"></p><button class="modal-btn" id="cfgSave">บันทึก</button> <button class="modal-btn alt" id="cfgReset" style="color:#d85173">🔄 รีเซตทบทวน (ดูบัค)</button> <button class="modal-btn alt" onclick="document.getElementById('mbAdmin').remove()">ยกเลิก</button></div>`;
  document.body.appendChild(o);document.getElementById('cfgReset').onclick=()=>{if(!confirm('รีเซตทบทวน: ล้างภารกิจที่กำลังทำ/ที่บันทึกไว้ ประวัติภารกิจ นับสัปดาห์ และข้อจำกัดรายวัน (ความคืบหน้าบทเรียนยังอยู่) ยืนยันหรือไม่?'))return;mbStopIdle();state.activeMission=null;state.pausedMissions=[];state.weeklyHistory=[];state.reviewStats={};saveState();closeMission();updateWeeklyUI();o.remove();alert('รีเซตทบทวนเรียบร้อย')};document.getElementById('cfgSave').onclick=()=>{const n={latest:cfgLatest.checked,chapters:[1,2,3,4].filter(i=>document.getElementById('cfgCh'+i).checked),int:cfgInt.checked,pow:cfgPow.checked};
   if(!n.latest&&!n.chapters.length&&!n.int&&!n.pow){document.getElementById('cfgErr').textContent='เลือกอย่างน้อย 1 รายการ';return}
   state.reviewCfg=n;saveState();updateWeeklyUI();o.remove()}}
