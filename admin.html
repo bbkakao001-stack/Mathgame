@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light"><title>Mathgame · Teacher Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{font-family:'Mali',system-ui,sans-serif;color:#424565;background:#eff2ff;--purple:#7361d4;--line:#e4e9fa}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 6% 8%,#ded8ff 0,transparent 33%),radial-gradient(circle at 95% 10%,#c6f2f5 0,transparent 32%),linear-gradient(145deg,#f5f4ff,#eaf8ff)}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.shell{max-width:1500px;margin:auto;padding:24px clamp(14px,3vw,40px) 55px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:19px}.top h1{font-size:clamp(1.3rem,2.7vw,2rem);margin:0;color:#5146a4}.top p{margin:4px 0;color:#7b819d;font-size:.82rem}.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;color:#5b55a4;border-radius:12px;padding:10px 14px;box-shadow:0 5px 18px #545cb00d;font-size:.83rem;font-weight:700}.btn.primary{background:var(--purple);color:white;border-color:var(--purple)}.btn:focus-visible,input:focus-visible{outline:3px solid #a4d8ef;outline-offset:2px}.content{display:grid;grid-template-columns:minmax(225px,280px) minmax(0,1fr);gap:18px}.panel{background:#ffffffef;border:1px solid #fff;border-radius:22px;padding:19px;box-shadow:0 15px 35px #5c5e9930}.pane-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.pane-heading h2{margin:0;font-size:1rem;color:#5b50aa}.search{display:block;width:100%;border:1px solid #d6dcf1;border-radius:11px;padding:10px;background:#fbfcff;color:#424565;margin-bottom:11px}.user-list{display:flex;flex-direction:column;gap:7px;max-height:calc(100dvh - 280px);min-height:155px;overflow:auto}.user{display:flex;align-items:center;justify-content:space-between;gap:5px;text-align:left;background:#f7f8ff;border:1px solid #e5e8f7;border-radius:12px;padding:12px 10px;color:#515780;width:100%}.user b{font-size:.82rem}.user small{display:block;margin-top:3px;font-size:.67rem;color:#8893ad}.user.active{background:#eae8ff;border-color:#9887ef}.tag{font-size:.65rem;background:#e0f5e9;color:#25946c;padding:4px 7px;border-radius:20px;white-space:nowrap}.kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.metric{border-radius:14px;background:linear-gradient(160deg,#f6f7ff,#f0f9ff);border:1px solid #e9eefa;padding:14px 12px}.metric .val{font-weight:700;font-size:clamp(1.15rem,2.1vw,1.7rem);color:#5c4daf}.metric .lab{font-size:.7rem;color:#8790a6;display:block;margin-top:4px}.section{margin-top:19px}.section h3{font-size:1rem;color:#5d51ab;margin:0 0 10px}.muted{color:#8390aa;font-size:.79rem}.scroll{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff}table{width:100%;border-collapse:collapse;min-width:700px;font-size:.76rem}th{position:sticky;top:0;background:#f0f2ff;color:#6659a2;text-align:left;padding:11px 10px;white-space:nowrap}td{padding:11px 10px;border-top:1px solid #edf0fb;vertical-align:top}td.right,th.right{text-align:right}tbody tr:hover{background:#fafaff}td.question{max-width:390px;min-width:200px;overflow-wrap:anywhere}td small{color:#8490a5}.correct{color:#20846d;font-weight:700}.wrong{color:#d45e77;font-weight:700}.loading{color:#6459a8;text-align:center;padding:50px 20px}.error{background:#ffe9ed;border:1px solid #f8b7c7;color:#9e3e57;padding:13px;border-radius:13px}.empty{padding:22px;color:#8892a6;text-align:center}.footer{margin-top:22px;color:#8a92a9;font-size:.7rem;line-height:1.8}.status{font-size:.72rem;color:#687697}.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:9px}.filters select{padding:8px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#5a547b}.date{font-size:.69rem;color:#818da3}.buttons{display:flex;justify-content:center;margin-top:12px}#app{display:none}#errorBox{max-width:620px;margin:18vh auto 0}#loadingBox{max-width:620px;margin:18vh auto 0}
+@media(max-width:850px){.content{grid-template-columns:1fr}.user-list{display:flex;flex-direction:row;overflow:auto;max-height:125px;min-height:0;padding-bottom:4px}.user{min-width:142px}.kpi{grid-template-columns:repeat(2,1fr)}.panel{padding:14px}}
+@media(max-width:460px){.shell{padding:13px 9px 30px}.kpi{gap:6px}.metric{padding:10px 8px}.btn{padding:8px 10px}.top{gap:5px}}
+</style></head><body>
+<div id="loadingBox" class="panel loading">🔐 กำลังตรวจบัญชีและสิทธิ์ผู้สอนกับ Supabase…</div>
+<div id="errorBox" class="panel" hidden><h2>🔒 ไม่สามารถเปิด Teacher Dashboard</h2><p class="muted" id="errMsg"></p><a class="btn" href="./index.html">← กลับ Mathgame / Login</a></div>
+<main class="shell" id="app"><header class="top"><div><h1>📊 Teacher Dashboard</h1><p>Mathgame · ติดตามผลรายนักเรียน · ข้อมูลจาก Supabase</p></div><div class="actions"><span id="teacherName" class="status"></span><a class="btn" href="./index.html">← กลับเกม</a><button class="btn primary" type="button" id="refresh">↻ รีเฟรช</button><button class="btn" type="button" id="logout">ออกจากระบบ</button></div></header>
+<div class="content"><aside class="panel"><div class="pane-heading"><h2>👨‍🎓 นักเรียน</h2><span class="tag" id="studentCount">0 คน</span></div><input class="search" id="find" type="search" autocomplete="off" placeholder="ค้นหาชื่อ Username" aria-label="ค้นหาชื่อนักเรียน"><div class="user-list" id="studentList"><div class="empty">กำลังโหลด...</div></div></aside>
+<section class="panel"><div class="pane-heading"><h2 id="currentStudent">เลือกรายชื่อนักเรียน</h2><span class="status" id="lastActive"></span></div>
+<div class="kpi" id="kpis"><div class="metric"><span class="val">—</span><span class="lab">จำนวนครั้งที่ตอบ</span></div><div class="metric"><span class="val">—</span><span class="lab">ตอบถูก</span></div><div class="metric"><span class="val">—</span><span class="lab">ตอบผิด</span></div><div class="metric"><span class="val">—</span><span class="lab">ถูก (%)</span></div></div>
+<div class="section"><h3>ผลแยกรายข้อ</h3><p class="muted">หนึ่งครั้ง = การกดส่งคำตอบหนึ่งครั้ง · เวลาเป็นเวลาที่ใช้จริงบนหน้าที่เปิดค้างอยู่ (ไม่นับช่วงเปลี่ยนแอป/ซ่อนแท็บ)</p><div class="filters"><select id="mode"><option value="all">ทั้งหมด</option><option value="lesson">บทเรียน</option><option value="review">ทบทวน/มอนสเตอร์</option></select><span class="status" id="questionCount"></span></div><div class="scroll"><table><thead><tr><th>โจทย์ / หัวข้อ</th><th class="right">ครั้ง</th><th class="right">ถูก</th><th class="right">ผิด</th><th class="right">% ถูก</th><th class="right">เวลารวม</th><th>ทำล่าสุด</th></tr></thead><tbody id="questionRows"><tr><td colspan="7" class="empty">เลือกนักเรียน</td></tr></tbody></table></div></div>
+<div class="section"><h3>ประวัติการส่งคำตอบรายครั้ง</h3><div class="scroll"><table><thead><tr><th>วัน/เวลา (ไทย)</th><th>ประเภท</th><th>โจทย์</th><th>ผล</th><th class="right">เวลารอบนี้</th><th class="right">เวลาสะสมในข้อ</th></tr></thead><tbody id="attemptRows"><tr><td colspan="6" class="empty">เลือกนักเรียน</td></tr></tbody></table></div><div class="buttons"><button id="more" type="button" class="btn" hidden>โหลดประวัติเพิ่ม</button></div></div>
+</section></div><footer class="footer">ข้อมูลใหม่เริ่มเก็บหลัง Deploy V4.21 และรัน admin.sql แล้วเท่านั้น · เวลาตอบเป็นค่าจากอุปกรณ์ผู้เรียน ไม่ใช่เวลาที่รับรองโดยเซิร์ฟเวอร์ · เฉพาะบัญชีครูที่ได้สิทธิ์ในฐานข้อมูลเท่านั้นจึงจะดูข้อมูลรวมได้</footer></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="./supabase-config.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const formatTime=iso=>iso?new Intl.DateTimeFormat('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'}).format(new Date(iso)):'ยังไม่มีข้อมูล';
+const duration=ms=>{const sec=Math.round(Number(ms||0)/1000);if(sec<60)return sec+' วิ';return Math.floor(sec/60)+' นาที '+(sec%60)+' วิ'};
+const fmt=n=>new Intl.NumberFormat('th-TH').format(Number(n)||0);
+let supa=null,teacherUid='',students=[],selected=null,questions=[],attempts=[],attemptOffset=0,moreAttempts=false,selectionToken=0;
+function fail(text){$('loadingBox').hidden=true;$('app').style.display='none';$('errorBox').hidden=false;$('errMsg').textContent=text}
+async function init(){
+ try{
+  const c=window.M1_SUPABASE_CONFIG;
+  if(!c?.url||!c?.key||!window.supabase?.createClient)throw Error('Supabase config หรือ SDK ไม่พร้อม');
+  supa=window.supabase.createClient(c.url,c.key,{auth:{persistSession:true,autoRefreshToken:true}});
+  const {data,error}=await supa.auth.getUser();
+  if(error||!data?.user)throw Error('กรุณา Login ก่อนเข้า Teacher Dashboard');
+  teacherUid=data.user.id;
+  const r=await supa.from('mathgame_instructors').select('user_id').eq('user_id',teacherUid).maybeSingle();
+  if(r.error)throw Error('ยังไม่ได้รัน admin.sql หรือไม่สามารถตรวจสิทธิ์ครู: '+r.error.message);
+  if(!r.data)throw Error('บัญชีนี้ไม่ได้รับสิทธิ์ครู กรุณาเพิ่ม Username ครูผ่าน SQL Editor เท่านั้น');
+  $('teacherName').textContent='👤 '+(data.user.user_metadata?.mathgame_username||'ครู');
+  $('loadingBox').hidden=true;$('app').style.display='block';
+  await loadStudents();
+ }catch(e){fail(e.message||String(e))}
+}
+async function loadStudents(){
+ const {data,error}=await supa.from('mathgame_student_stats').select('*').order('username',{ascending:true}).limit(1000);
+ if(error){$('studentList').textContent='โหลดรายชื่อไม่สำเร็จ: '+error.message;return}
+ students=data||[];$('studentCount').textContent=fmt(students.length)+' คน';renderStudents();
+ if(selected){const r=students.find(s=>s.user_id===selected.user_id);if(r)selectStudent(r)}
+}
+function renderStudents(){
+ const needle=$('find').value.trim().toLowerCase();
+ $('studentList').replaceChildren();
+ const list=students.filter(s=>s.username?.toLowerCase().includes(needle));
+ if(!list.length){const d=document.createElement('div');d.className='empty';d.textContent='ไม่พบชื่อที่ค้นหา';$('studentList').appendChild(d);return}
+ for(const s of list){
+  const b=document.createElement('button');b.type='button';b.className='user'+(selected?.user_id===s.user_id?' active':'');
+  const t=document.createElement('span'),name=document.createElement('b'),small=document.createElement('small');name.textContent=s.username;
+  small.textContent=fmt(s.attempts)+' ครั้ง · ถูก '+Number(s.correct_pct||0)+'%';t.append(name,small);
+  const tag=document.createElement('span');tag.className='tag';tag.textContent=fmt(s.solved_questions||0)+' ข้อ';b.append(t,tag);
+  b.onclick=()=>selectStudent(s);$('studentList').appendChild(b)
+ }
+}
+async function selectStudent(s){
+ const token=++selectionToken;selected=s;questions=[];attempts=[];attemptOffset=0;moreAttempts=false;
+ renderStudents();$('currentStudent').textContent='👤 '+s.username;$('lastActive').textContent='ล่าสุด: '+formatTime(s.last_answered_at);
+ $('kpis').innerHTML=[['ส่งคำตอบ',s.attempts],['ตอบถูก',s.correct_attempts],['ตอบผิด',s.wrong_attempts],['เปอร์เซ็นต์ถูก',Number(s.correct_pct||0)+'%']].map(([label,v])=>`<div class="metric"><span class="val">${escapeHtml(fmt(v))}${label==='เปอร์เซ็นต์ถูก'?'%':''}</span><span class="lab">${escapeHtml(label)}</span></div>`).join('');
+ // Percentage is deliberately calculated over ALL submitted answers, including retries.
+ $('kpis').lastElementChild.querySelector('.val').textContent=Number(s.correct_pct||0).toFixed(1)+'%';
+ $('questionRows').innerHTML='<tr><td colspan="7" class="loading">กำลังโหลด...</td></tr>';
+ $('attemptRows').innerHTML='<tr><td colspan="6" class="loading">กำลังโหลด...</td></tr>';
+ const [qr]=await Promise.all([supa.from('mathgame_question_stats').select('*').eq('user_id',s.user_id).order('last_attempt_at',{ascending:false}).limit(1000),loadAttempts(true,token)]);
+ if(token!==selectionToken)return;
+ if(qr.error){$('questionRows').innerHTML='<tr><td colspan="7" class="error">'+escapeHtml(qr.error.message)+'</td></tr>';return}
+ questions=qr.data||[];renderQuestions();
+}
+function renderQuestions(){
+ const mode=$('mode').value,rows=mode==='all'?questions:questions.filter(q=>q.mode===mode);
+ $('questionCount').textContent=fmt(rows.length)+' ข้อ';
+ $('questionRows').innerHTML=rows.length?rows.map(q=>`<tr><td class="question"><b>${escapeHtml(q.question_id)}</b> <small>${q.mode==='lesson'?'บทเรียน':'ทบทวน'}</small><div>${escapeHtml(q.question_text||'')}</div></td><td class="right">${fmt(q.attempts)}</td><td class="right correct">${fmt(q.correct_attempts)}</td><td class="right wrong">${fmt(q.wrong_attempts)}</td><td class="right">${Number(q.correct_pct).toFixed(1)}%</td><td class="right">${duration(q.total_attempt_ms)}</td><td><span class="date">${formatTime(q.last_attempt_at)}</span></td></tr>`).join(''):'<tr><td colspan="7" class="empty">ยังไม่มีประวัติในกลุ่มนี้</td></tr>';
+}
+async function loadAttempts(reset,token=selectionToken){
+ if(!selected)return;
+ const offset=reset?0:attemptOffset;
+ $('more').disabled=true;
+ const {data,error}=await supa.from('mathgame_attempts').select('answered_at,mode,question_id,question_text,is_correct,attempt_ms,question_ms').eq('user_id',selected.user_id).order('answered_at',{ascending:false}).range(offset,offset+99);
+ if(token!==selectionToken)return;
+ $('more').disabled=false;
+ if(error){$('attemptRows').innerHTML='<tr><td colspan="6" class="error">'+escapeHtml(error.message)+'</td></tr>';return}
+ if(reset)attempts=[];attempts.push(...(data||[]));attemptOffset=offset+(data||[]).length;moreAttempts=(data||[]).length===100;renderAttempts();
+}
+function renderAttempts(){
+ $('more').hidden=!moreAttempts;
+ $('attemptRows').innerHTML=attempts.length?attempts.map(a=>`<tr><td>${formatTime(a.answered_at)}</td><td>${a.mode==='lesson'?'เรียน':'ทบทวน'}</td><td class="question"><b>${escapeHtml(a.question_id)}</b><div><small>${escapeHtml(a.question_text||'')}</small></div></td><td class="${a.is_correct?'correct':'wrong'}">${a.is_correct?'✓ ถูก':'✕ ผิด'}</td><td class="right">${duration(a.attempt_ms)}</td><td class="right">${duration(a.question_ms)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">ยังไม่มีคำตอบที่บันทึกไว้</td></tr>';
+}
+$('find').addEventListener('input',renderStudents);
+$('mode').addEventListener('change',renderQuestions);
+$('more').addEventListener('click',()=>loadAttempts(false));
+$('refresh').addEventListener('click',loadStudents);
+$('logout').addEventListener('click',async()=>{try{await supa?.auth.signOut()}finally{location.replace('./index.html')}});
+init();
+</script></body></html>
