@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1.0" name="viewport"/>
-<title>M.1 Algebra Adventure V4.13 · สมการเชิงเส้นตัวแปรเดียว</title>
+<title>M.1 Algebra Adventure V4.14 · สมการเชิงเส้นตัวแปรเดียว · Review Fixed</title>
 <link crossorigin="" href="https://i.kym-cdn.com" rel="preconnect"/>
 <link href="https://i.kym-cdn.com" rel="dns-prefetch"/>
 <link crossorigin="" href="https://media.tenor.com" rel="preconnect"/>
@@ -1891,6 +1891,45 @@ body:has(.hub-slide.active) #scoreBox{width:max-content;max-width:160px;padding:
 #cloudStatusBar button:hover{background:#e2dbfa}#cloudStatusBar[data-status="error"]{background:#fff1f0;border-color:#ffcecb;color:#ab4942}#cloudStatusBar[data-status="success"]{background:#e9fbf2;border-color:#c9e9d8;color:#287054}
 #mgTeacherDashboardLink[hidden]{display:none!important}
 </style>
+
+<style id="v414-mission-notice-picker-fix">
+/* V4.14: The monster grid is intentionally hidden in mb-complete mode.
+   Status and saved-mission buttons therefore need their own visible panel. */
+#missionOverlay .monster-mission-shell.mb-complete {
+  height:auto;
+  min-height:250px;
+  max-height:calc(100dvh - 32px);
+  overflow-y:auto!important;
+  justify-content:flex-start;
+}
+#missionOverlay #mbNoticePanel {
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  flex:1 1 auto;
+  min-height:145px;
+  width:100%;
+  margin:6px auto 2px;
+  padding:clamp(12px,3vw,28px);
+  background:#f8faff;
+  border:1px solid #e7e9fa;
+  border-radius:20px;
+  text-align:center;
+}
+#missionOverlay .monster-mission-shell.mb-complete #mbNoticePanel {display:flex}
+#mbNoticeTitle {font-size:clamp(1.1rem,2.6vw,1.7rem);color:#6653af;line-height:1.5;margin:0}
+#mbNoticeDescription {font-size:clamp(.78rem,1.45vw,.95rem);color:#72809b;line-height:1.65;margin:0}
+#mbNoticeActions {display:flex;justify-content:center;align-items:stretch;flex-wrap:wrap;gap:10px;width:100%;margin-top:7px}
+#mbNoticeActions .pill-btn {min-width:min(235px,100%);padding:11px 17px;white-space:normal;line-height:1.45}
+#mbNoticeActions .mb-resume-button {background:#eaf4ff;color:#574cb2;border:1px solid #d8d9fd}
+@media(max-width:520px){
+  #missionOverlay #mbNoticePanel{padding:13px 10px;gap:9px}
+  #mbNoticeActions {flex-direction:column;gap:7px}
+  #mbNoticeActions .pill-btn{width:100%;min-width:0;padding:9px 11px}
+}
+</style>
 </head><body class="mg-locked"><span id="buildMarker">V4.21</span>
 <nav aria-label="Slide navigation" id="navControls"><button aria-label="First slide" id="first" type="button">⌂ เริ่ม</button><button aria-label="Previous slide" id="prev" type="button">← ก่อนหน้า</button><span aria-live="polite" id="counter">หน้าหลัก</span><button aria-label="Next slide" id="next" type="button">ถัดไป →</button><button aria-label="Last slide" id="last" type="button">จบ ⏭</button></nav>
 <div id="progress"></div><div id="topics"></div>
@@ -3075,7 +3114,7 @@ function mbVisual(type,text){
 function openMission(){
  const date=bkkDate(),root=document.getElementById('missionOverlay');root.classList.add('show');
  const c=mbCfg();
- if((c.latest||c.chapters.length)&&!c.int&&!c.pow&&missionUnlockCount()<MIN_LEARNED_TO_REVIEW){mbStopIdle();showMissionNotice('🔒 เรียนให้ครบ 10 ข้อก่อนทบทวน',`ขณะนี้เรียนสำเร็จ ${missionUnlockCount()}/10 ข้อ`);return}
+ if((c.latest||c.chapters.length)&&!c.int&&!c.pow&&missionUnlockCount()<MIN_LEARNED_TO_REVIEW){mbStopIdle();showMissionNotice('🔒 เรียนให้ครบ 10 ข้อก่อนทบทวน',`ขณะนี้เรียนสำเร็จ ${missionUnlockCount()}/10 ข้อ`);mbNoticeButton('กลับไปเรียนต่อ',closeMission);return}
  root.querySelector('.monster-mission-shell').classList.remove('mb-complete');
  state.pausedMissions=(state.pausedMissions||[]).filter(p=>[3,4].includes(p.poolVersion)).map(mbUpgradeMission);
  const am=mbUpgradeMission(state.activeMission);
@@ -3086,16 +3125,38 @@ function openMission(){
  const startedToday=!!state.activeMission||state.pausedMissions.some(p=>p.date===date)||(state.weeklyHistory||[]).some(r=>(r.startDate||r.date)===date);
  if(!state.activeMission){
   if(state.pausedMissions.length){mbPicker(!startedToday);return}
-  if(startedToday){showMissionNotice('วันนี้เริ่มภารกิจใหม่ไปแล้ว 🏆','เริ่มใหม่ได้ 1 ภารกิจต่อวัน · กลับมาลุยพรุ่งนี้');return}
+  if(startedToday){showMissionNotice('วันนี้เริ่มภารกิจใหม่ไปแล้ว 🏆','เริ่มใหม่ได้ 1 ภารกิจต่อวัน · กลับมาลุยพรุ่งนี้');mbNoticeButton('ปิดหน้าต่าง',closeMission);return}
   mbStartFresh();return;
  }
  mbProgressAt=Date.now();mbGetBattle(state.activeMission);mbBusy=false;renderMission();
 }
+function mbNoticeActions(){return document.getElementById('mbNoticeActions')}
+function mbNoticeButton(label,onclick,secondary=false){
+ const button=document.createElement('button');button.type='button';
+ button.className='pill-btn'+(secondary?' secondary mb-resume-button':'');
+ button.textContent=label;button.addEventListener('click',onclick);
+ mbNoticeActions().appendChild(button);return button;
+}
 function showMissionNotice(message,meta){
  mbStopIdle();
- document.querySelector('.monster-mission-shell').classList.add('mb-complete');
- document.getElementById('missionPrompt').textContent=message;document.getElementById('missionMeta').textContent=meta;
- document.getElementById('missionEntry').innerHTML='';document.getElementById('missionSkip').style.display='none';document.getElementById('missionMessage').textContent='';
+ const shell=document.querySelector('#missionOverlay .monster-mission-shell');
+ shell.classList.add('mb-complete');
+ // This separate panel remains visible while .mb-grid is hidden.
+ let panel=document.getElementById('mbNoticePanel');
+ if(!panel){
+  panel=document.createElement('section');panel.id='mbNoticePanel';
+  panel.setAttribute('role','status');
+  panel.innerHTML='<h3 id="mbNoticeTitle"></h3><p id="mbNoticeDescription"></p><div id="mbNoticeActions"></div>';
+  shell.appendChild(panel);
+ }
+ document.getElementById('mbNoticeTitle').textContent=message;
+ document.getElementById('mbNoticeDescription').textContent=meta||'';
+ mbNoticeActions().replaceChildren();
+ document.getElementById('missionMeta').textContent='';
+ document.getElementById('missionEntry').replaceChildren();
+ document.getElementById('missionMessage').textContent='';
+ document.getElementById('missionSkip').style.display='none';
+ document.getElementById('missionChoice').style.display='none';
 }
 function closeMission(){
  mbStopIdle();document.getElementById('missionOverlay').classList.remove('show');clearTimeout(missionNextTimer);clearTimeout(mbEffectTimer);mbBusy=false;
@@ -3193,8 +3254,9 @@ function finishMission(){
  const m=state.activeMission;if(!m)return;const date=bkkDate(),b=mbGetBattle(m),success=b.stage>=MB_MONSTERS.length;
  const rec={...m,startDate:m.date,date,week:isoWeek(date),completed:success,monstersDefeated:b.stage,revives:b.revives||0,durationSeconds:Math.max(0,Math.round((Date.now()-Date.parse(m.startedAt))/1000)),finishedAt:new Date().toISOString(),starsAtFinish:state.stars};
  state.weeklyHistory.push(rec);state.activeMission=null;recordStudy(null,'mission-finished');rememberStars();saveState();updateWeeklyUI();
- showMissionNotice(success?`🏆 Mission สำเร็จ! ถูก ${m.correct}/${m.questionIds.length} · พิชิต ${b.stage}/${MB_MONSTERS.length} มอน`:`ศึกจบแล้ว! ถูก ${m.correct}/${m.questionIds.length} · ยังไม่ครบเกณฑ์`,`${m.reviewCount} ข้อจากเนื้อหาที่เรียนแล้ว • โบนัสไม้ตาย ${m.bonusCorrect||0} ข้อ`);
- document.getElementById('missionMessage').textContent='บันทึกลงปฏิทินเรียบร้อย';
+ showMissionNotice(success?`🏆 Mission สำเร็จ! ถูก ${m.correct}/${m.questionIds.length} · พิชิต ${b.stage}/${MB_MONSTERS.length} มอน`:`ศึกจบแล้ว! ถูก ${m.correct}/${m.questionIds.length} · ยังไม่ครบเกณฑ์`,`${m.reviewCount} ข้อจากเนื้อหาที่เรียนแล้ว • โบนัสไม้ตาย ${m.bonusCorrect||0} ข้อ · บันทึกลงปฏิทินแล้ว`);
+ mbNoticeButton('📅 ดูประวัติในปฏิทิน',()=>{closeMission();openCalendar()},true);
+ mbNoticeButton('ปิดหน้าต่าง',closeMission);
 }
 let calendarCursor=new Date(bkkDate()+'T12:00:00');
 function openCalendar(){document.getElementById('calendarOverlay').classList.add('show');renderCalendar()}
@@ -3254,11 +3316,25 @@ function mbGen(fam,tier){const hard=tier==='hard';let p,a,h1,h2,f;
   else{const b=rnd(2,7),m=rnd(2,6),n=rnd(2,6);const o=hard?rnd(0,2):rnd(0,1);if(o===0){p=`${b}${sup(m)} × ${b}${sup(n)} = ${b}^?`;a=m+n}else if(o===1){p=`${b}${sup(m+n)} ÷ ${b}${sup(n)} = ${b}^?`;a=m}else{p=`(${b}${sup(m)})${sup(n)} = ${b}^?`;a=m*n}h1='คูณฐานเดียวกัน → บวกเลขชี้กำลัง, หาร → ลบ, ยกกำลังซ้อน → คูณ';h2='เช่น 2³ × 2⁴ = 2⁷ ; 5⁶ ÷ 5² = 5⁴ ; (3²)³ = 3⁶'}}
  return {id:'g-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),fam,chapterNum:90,subtopic:fam,tier:hard?'ultimate':'normal',promptTH:p,answer:String(a),type:'numeric',levelNum:hard?3:2,h1,h2}}
 function mbGenAny(m){const c=mbCfg();if(gentleLearnedQuestions().length)return gentleNewQuestion(m);const fam=c.pow&&!c.int?'pow':'int',q=mbGen(fam,'normal');mbReg(q,m);return q}
-function mbStartFresh(){const date=bkkDate(),sel=chooseMissionQuestions();if(!sel){showMissionNotice('ยังไม่มีโจทย์ตามการตั้งค่า','เปิด Admin Settings เพื่อเลือกเรื่องทบทวน');return}
+function mbStartFresh(){const date=bkkDate(),sel=chooseMissionQuestions();if(!sel){
+ showMissionNotice('ยังไม่สามารถสร้างโจทย์ทบทวนได้','ตรวจว่ามีโจทย์ที่เรียนสำเร็จอย่างน้อย 10 ข้อ และเลือกหัวข้อที่เรียนแล้วในการตั้งค่าทบทวน');
+ mbNoticeButton('⚙️ ตั้งค่าเรื่องทบทวน',openAdminSettings,true);
+ mbNoticeButton('กลับไปเรียนบทเรียน',closeMission);
+ return;
+ }
  mbLoadGen(sel);state.activeMission={id:'m'+Date.now(),date,week:isoWeek(date),...sel,cursor:0,correct:0,skipped:0,wrongAttempts:0,answers:[],startedAt:new Date().toISOString()};saveState();mbProgressAt=Date.now();mbGetBattle(state.activeMission);mbBusy=false;renderMission()}
-function mbResume(i){const m=state.pausedMissions.splice(i,1)[0];if(!m)return;state.activeMission=m;mbLoadGen(m);saveState();mbProgressAt=Date.now();mbGetBattle(m);mbBusy=false;renderMission()}
-function mbPicker(fresh){showMissionNotice('เลือกภารกิจ','มีภารกิจที่บันทึกไว้ · ทำเสร็จแล้วนับเป็นภารกิจของสัปดาห์');
- const e=document.getElementById('missionEntry');e.innerHTML=state.pausedMissions.map((p,i)=>`<button class="pill-btn secondary" type="button" onclick="mbResume(${i})">▶ ทำต่อ (เริ่ม ${p.date}) · ถูก ${p.correct||0}</button>`).join(' ')+(fresh?' <button class="pill-btn" type="button" onclick="mbStartFresh()">⚔️ ภารกิจใหม่วันนี้</button>':'')}
+function mbResume(i){const m=state.pausedMissions?.[i];if(!m)return;
+ state.pausedMissions.splice(i,1);state.activeMission=m;mbLoadGen(m);saveState();mbProgressAt=Date.now();mbGetBattle(m);mbBusy=false;renderMission()}
+function mbPicker(fresh){
+ const count=state.pausedMissions.length;
+ showMissionNotice('⚔️ เลือกภารกิจทบทวน',`มีภารกิจที่บันทึกไว้ ${count} รายการ · ทำเสร็จแล้วนับเป็นภารกิจของสัปดาห์`);
+ state.pausedMissions.forEach((p,i)=>{
+  const date=typeof p.date==='string'?p.date:'ไม่ทราบวันที่';
+  mbNoticeButton(`▶ ทำต่อ · เริ่ม ${date} · ตอบถูก ${Number(p.correct)||0} ข้อ`,()=>mbResume(i),true);
+ });
+ if(fresh)mbNoticeButton('⚔️ เริ่มภารกิจใหม่วันนี้',mbStartFresh);
+ mbNoticeButton('ปิดหน้าต่าง',closeMission,true);
+}
 function mbPause(){const m=state.activeMission;if(!m)return;mbStopIdle();state.pausedMissions=state.pausedMissions||[];state.pausedMissions.push(m);state.activeMission=null;saveState();closeMission()}
 function mbStuckCheck(){const m=state.activeMission,root=document.getElementById('missionOverlay');if(!m||!root?.classList.contains('show')||document.hidden||document.getElementById('mbStuck'))return;
  if(Date.now()-mbProgressAt<20*60*1000)return;mbStopIdle();const d=document.createElement('div');d.id='mbStuck';d.className='modal-overlay show';d.style.display='flex';
